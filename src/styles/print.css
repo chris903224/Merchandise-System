@@ -1,0 +1,56 @@
+@media print {
+  html,
+  body {
+    background: #fff;
+    color: #111827;
+  }
+
+  body::before,
+  .site-nav,
+  .site-footer,
+  .print-hidden,
+  .receipt-actions {
+    display: none !important;
+  }
+
+  .page-shell,
+  .page-shell--receipt {
+    width: 100%;
+    padding: 0;
+  }
+
+  .receipt-card,
+  .panel,
+  .data-panel,
+  .summary-box,
+  .payment-summary,
+  .customer-summary {
+    border-color: #d1d5db;
+    background: #fff;
+    box-shadow: none;
+    color: #111827;
+  }
+
+  .receipt-title,
+  .receipt-section__title,
+  .receipt-summary__value,
+  .receipt-line-item__name,
+  .summary-box__title,
+  .summary-box__total,
+  .receipt-info-grid strong {
+    color: #111827;
+  }
+
+  .receipt-reference,
+  .receipt-info-grid,
+  .summary-box__line,
+  .receipt-line-item__meta {
+    color: #4b5563;
+  }
+
+  .receipt-reference strong,
+  .receipt-line-item__price,
+  .summary-total__value {
+    color: #92400e;
+  }
+}

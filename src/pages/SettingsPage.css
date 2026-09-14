@@ -1,0 +1,659 @@
+/* ============================================
+   SETTINGS PAGE - DARK THEME
+   ============================================ */
+
+/* ----- Page Background ----- */
+.settings-page {
+  min-height: 100vh;
+  background: var(--color-bg, #0c1420);
+  padding: 2rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* ----- Settings Container ----- */
+.settings-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+
+.settings-header {
+  margin-bottom: 1.5rem;
+}
+
+.settings-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted, #a8b4c1);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
+}
+
+.settings-back:hover {
+  color: var(--color-text, #f5f7f9);
+}
+
+.settings-back .react-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.settings-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text, #f5f7f9);
+  margin: 0 0 0.15rem 0;
+}
+
+.settings-description {
+  font-size: 0.875rem;
+  color: var(--color-text-muted, #a8b4c1);
+  margin: 0;
+}
+
+/* ============================================
+   LAYOUT
+   ============================================ */
+
+.settings-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .settings-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
+
+.settings-sidebar {
+  background: var(--color-surface, #121d2b);
+  border-radius: var(--radius-lg, 1rem);
+  border: 1px solid var(--color-line, rgba(226, 232, 240, 0.12));
+  box-shadow: var(--shadow-panel, 0 18px 42px rgba(2, 8, 18, 0.22));
+  padding: 1.5rem;
+  height: fit-content;
+  position: sticky;
+  top: 80px;
+}
+
+/* ----- Profile Section - FORCE CIRCLE ----- */
+.settings-user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-line, rgba(226, 232, 240, 0.12));
+}
+
+.settings-picture-wrapper {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  margin-bottom: 0.75rem;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+/* FORCE PERFECT CIRCLE - kahit may image */
+.settings-picture-wrapper > div,
+.settings-picture-wrapper > img,
+.settings-picture-wrapper svg,
+.settings-picture-wrapper .profile-picture {
+  width: 64px !important;
+  height: 64px !important;
+  border-radius: 50% !important;
+  aspect-ratio: 1/1 !important;
+  overflow: hidden !important;
+  display: block !important;
+}
+
+/* Ensure image inside is also circle */
+.settings-picture-wrapper img {
+  width: 64px !important;
+  height: 64px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  aspect-ratio: 1/1 !important;
+  display: block !important;
+}
+
+/* Upload button */
+.settings-picture-upload {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 26px;
+  height: 26px;
+  background: var(--color-surface-raised, #182638);
+  color: var(--color-text-muted, #a8b4c1);
+  border: 2px solid var(--color-line, rgba(226, 232, 240, 0.12));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  z-index: 10;
+  box-shadow: var(--shadow-panel, 0 18px 42px rgba(2, 8, 18, 0.22));
+}
+
+.settings-picture-upload:hover {
+  background: var(--color-surface-soft, #202f41);
+  border-color: var(--color-brand, #d9aa5b);
+  transform: scale(1.1);
+}
+
+.settings-picture-upload .react-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.settings-user-info {
+  min-width: 0;
+}
+
+.settings-user-name {
+  font-weight: 600;
+  color: var(--color-text, #f5f7f9);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.settings-user-email {
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #a8b4c1);
+  margin: 0.1rem 0 0.25rem 0;
+}
+
+.settings-user-role {
+  display: inline-block;
+  font-size: 0.55rem;
+  font-weight: 600;
+  color: var(--color-text-muted, #a8b4c1);
+  background: var(--color-surface-soft, #202f41);
+  padding: 2px 10px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--color-line, rgba(226, 232, 240, 0.12));
+}
+
+/* ----- Tabs ----- */
+.settings-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 1.5rem;
+}
+
+.settings-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border: none;
+  background: none;
+  color: var(--color-text-muted, #a8b4c1);
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: var(--radius-sm, 0.5rem);
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  text-align: left;
+}
+
+.settings-tab:hover {
+  background: var(--color-surface-raised, #182638);
+  color: var(--color-text, #f5f7f9);
+}
+
+.settings-tab .react-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-subtle, #718092);
+}
+
+.settings-tab--active {
+  background: var(--color-surface-raised, #182638);
+  color: var(--color-text, #f5f7f9);
+  border: 1px solid var(--color-line-strong, rgba(226, 232, 240, 0.2));
+}
+
+.settings-tab--active .react-icon {
+  color: var(--color-brand, #d9aa5b);
+}
+
+/* ----- Sign Out ----- */
+.settings-signout {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: none;
+  background: none;
+  color: var(--color-danger, #e68484);
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: var(--radius-sm, 0.5rem);
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1rem;
+  border-top: 1px solid var(--color-line, rgba(226, 232, 240, 0.12));
+  padding-top: 1rem;
+}
+
+.settings-signout:hover {
+  background: var(--color-danger-soft, rgba(230, 132, 132, 0.14));
+}
+
+.settings-signout .react-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-danger, #e68484);
+}
+
+/* ============================================
+   CONTENT
+   ============================================ */
+
+.settings-content {
+  background: var(--color-surface, #121d2b);
+  border-radius: var(--radius-lg, 1rem);
+  border: 1px solid var(--color-line, rgba(226, 232, 240, 0.12));
+  box-shadow: var(--shadow-panel, 0 18px 42px rgba(2, 8, 18, 0.22));
+  padding: 2rem;
+}
+
+.settings-section {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.settings-section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text, #f5f7f9);
+  margin: 0 0 0.25rem 0;
+}
+
+.settings-section-description {
+  font-size: 0.85rem;
+  color: var(--color-text-muted, #a8b4c1);
+  margin: 0 0 1.5rem 0;
+}
+
+/* ============================================
+   FORM FIELDS
+   ============================================ */
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.settings-field-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--color-text-subtle, #718092);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding-left: 0.25rem;
+}
+
+.settings-field-input {
+  padding: 0.625rem 0.75rem;
+  background: var(--color-surface-raised, #182638);
+  border: 1px solid var(--color-line, rgba(226, 232, 240, 0.12));
+  border-radius: var(--radius-sm, 0.5rem);
+  transition: all 0.3s ease;
+  color: var(--color-text, #f5f7f9);
+  width: 100%;
+  font-size: 0.875rem;
+  min-height: 44px;
+}
+
+.settings-field-input:focus {
+  outline: none;
+  border-color: var(--color-brand, #d9aa5b);
+  background: var(--color-surface, #121d2b);
+  box-shadow: 0 0 0 3px rgba(217, 170, 91, 0.12);
+}
+
+.settings-field-input::placeholder {
+  color: var(--color-text-subtle, #718092);
+}
+
+.settings-field-hint {
+  font-size: 0.7rem;
+  color: var(--color-text-subtle, #718092);
+  margin: 0;
+  padding-left: 0.25rem;
+}
+
+.settings-field-select {
+  padding: 0.625rem 0.75rem;
+  background: var(--color-surface-raised, #182638);
+  border: 1px solid var(--color-line, rgba(226, 232, 240, 0.12));
+  border-radius: var(--radius-sm, 0.5rem);
+  transition: all 0.3s ease;
+  color: var(--color-text, #f5f7f9);
+  width: 100%;
+  font-size: 0.875rem;
+  min-height: 44px;
+  appearance: none;
+  cursor: pointer;
+}
+
+.settings-field-select:focus {
+  outline: none;
+  border-color: var(--color-brand, #d9aa5b);
+  background: var(--color-surface, #121d2b);
+  box-shadow: 0 0 0 3px rgba(217, 170, 91, 0.12);
+}
+
+.settings-field-select option {
+  background: var(--color-surface, #121d2b);
+  color: var(--color-text, #f5f7f9);
+}
+
+/* ----- Password Toggle ----- */
+.settings-password-wrapper {
+  position: relative;
+  display: flex;
+}
+
+.settings-password-wrapper .settings-field-input {
+  flex: 1;
+  padding-right: 2.75rem;
+}
+
+.settings-password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-text-subtle, #718092);
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: color 0.2s;
+}
+
+.settings-password-toggle:hover {
+  color: var(--color-text-muted, #a8b4c1);
+}
+
+.settings-password-toggle .react-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* ============================================
+   RADIO GROUP
+   ============================================ */
+
+.settings-radio-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.settings-radio-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  background: var(--color-surface-raised, #182638);
+  border: 1px solid var(--color-line, rgba(226, 232, 240, 0.12));
+  border-radius: var(--radius-sm, 0.5rem);
+  color: var(--color-text-muted, #a8b4c1);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.settings-radio-btn:hover {
+  background: var(--color-surface-soft, #202f41);
+  color: var(--color-text, #f5f7f9);
+}
+
+.settings-radio-btn .react-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-subtle, #718092);
+}
+
+.settings-radio-btn--active {
+  border-color: var(--color-brand, #d9aa5b);
+  background: var(--color-brand-soft, rgba(217, 170, 91, 0.14));
+  color: var(--color-brand, #d9aa5b);
+}
+
+.settings-radio-btn--active .react-icon {
+  color: var(--color-brand, #d9aa5b);
+}
+
+/* ============================================
+   TOGGLE SWITCH
+   ============================================ */
+
+.settings-toggle-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-toggle-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+}
+
+.settings-toggle-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.settings-toggle-info .react-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-subtle, #718092);
+}
+
+.settings-toggle-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text, #f5f7f9);
+  margin: 0;
+}
+
+.settings-toggle-description {
+  font-size: 0.7rem;
+  color: var(--color-text-muted, #a8b4c1);
+  margin: 0;
+}
+
+.settings-divider {
+  border-top: 1px solid var(--color-line, rgba(226, 232, 240, 0.12));
+}
+
+/* Toggle Switch */
+.settings-toggle {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.settings-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.settings-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--color-surface-soft, #202f41);
+  transition: 0.3s;
+  border-radius: 9999px;
+}
+
+.settings-toggle-slider::before {
+  content: '';
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background: var(--color-text-muted, #a8b4c1);
+  transition: 0.3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.settings-toggle input:checked + .settings-toggle-slider {
+  background: var(--color-brand, #d9aa5b);
+}
+
+.settings-toggle input:checked + .settings-toggle-slider::before {
+  transform: translateX(18px);
+  background: #ffffff;
+}
+
+/* ----- Save Button ----- */
+.settings-save-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  background: var(--color-brand, #d9aa5b);
+  color: #20170b;
+  border: none;
+  border-radius: var(--radius-sm, 0.5rem);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+
+.settings-save-btn:hover:not(:disabled) {
+  background: #e5b96e;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover, 0 18px 36px rgba(2, 8, 18, 0.36));
+}
+
+.settings-save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.settings-save-btn .react-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 1024px) {
+  .settings-page {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .settings-page {
+    padding: 1rem;
+  }
+
+  .settings-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-sidebar {
+    position: relative;
+    top: 0;
+  }
+
+  .settings-content {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .settings-page {
+    padding: 0.75rem;
+  }
+
+  .settings-content {
+    padding: 1rem;
+    border-radius: 0.75rem;
+  }
+
+  .settings-title {
+    font-size: 1.25rem;
+  }
+
+  .settings-radio-group {
+    flex-direction: column;
+  }
+
+  .settings-radio-btn {
+    justify-content: center;
+  }
+
+  .settings-save-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

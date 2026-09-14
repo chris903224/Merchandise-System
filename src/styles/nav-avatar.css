@@ -1,0 +1,238 @@
+/* ============================================================
+   NAV AVATAR + DROPDOWN MENU
+   ============================================================ */
+
+/* ===== Profile Avatar ===== */
+.nav-profile {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-avatar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px 4px 4px;
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+}
+
+.nav-avatar:hover {
+  background-color: rgba(35, 26, 12, 0.05);
+}
+
+.nav-avatar > :first-child {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.nav-avatar img,
+.nav-avatar svg {
+  width: 36px !important;
+  height: 36px !important;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.nav-avatar-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  object-fit: cover;
+  border: 2px solid var(--color-line);
+}
+
+.nav-avatar-initials {
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-brand), var(--color-brand-strong));
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  border: 2px solid var(--color-line);
+  text-transform: uppercase;
+}
+
+.nav-avatar-chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-subtle);
+  transition: transform 0.2s;
+}
+
+.nav-avatar-chevron--open {
+  transform: rotate(180deg);
+}
+
+/* ===== Dropdown Menu ===== */
+.nav-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 280px;
+  background: var(--color-surface);
+  border-radius: 12px;
+  box-shadow: var(--shadow-hover);
+  padding: 12px 0;
+  z-index: 1000;
+  animation: dropdownFadeIn 0.15s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nav-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+}
+
+.nav-dropdown-header > :first-child {
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.nav-dropdown-header img,
+.nav-dropdown-header svg {
+  width: 48px !important;
+  height: 48px !important;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.nav-dropdown-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  object-fit: cover;
+  border: 2px solid var(--color-line);
+}
+
+.nav-dropdown-initials {
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-brand), var(--color-brand-strong));
+  color: white;
+  font-weight: 600;
+  font-size: 18px;
+  text-transform: uppercase;
+}
+
+.nav-dropdown-user {
+  flex: 1;
+  min-width: 0;
+}
+
+.nav-dropdown-name {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 14px;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-dropdown-role {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.nav-dropdown-email {
+  font-size: 12px;
+  color: var(--color-text-subtle);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-dropdown-divider {
+  border: none;
+  border-top: 1px solid var(--color-line);
+  margin: 8px 12px;
+}
+
+.nav-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color 0.15s;
+  background: none;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+}
+
+.nav-dropdown-item:hover {
+  background-color: rgba(35, 26, 12, 0.05);
+}
+
+.nav-dropdown-item .react-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-subtle);
+}
+
+.nav-dropdown-item--danger {
+  color: var(--color-danger);
+}
+
+.nav-dropdown-item--danger .react-icon {
+  color: var(--color-danger);
+}
+
+.nav-dropdown-item--danger:hover {
+  background-color: var(--color-danger-soft);
+}
+
+/* ===== Dropdown header link (wrapper around dropdown header) ===== */
+
+.nav-dropdown-header-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.15s;
+}
+
+.nav-dropdown-header-link:hover {
+  background-color: rgba(35, 26, 12, 0.05);
+}
