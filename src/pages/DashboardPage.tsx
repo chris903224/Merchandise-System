@@ -15,7 +15,7 @@ import {
   Mail,
   Building,
   CreditCard,
-  User,
+
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
