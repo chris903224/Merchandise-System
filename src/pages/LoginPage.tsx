@@ -1,11 +1,18 @@
 // src/pages/LoginPage.tsx
 
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, LogIn, Mail, Eye, EyeOff, Lock } from 'lucide-react';
+import { ArrowRight, LogIn, Mail, Eye, EyeOff, Lock, AlertCircle } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
 import { loginUser, mapSupabaseUser } from '../data/auth';
+import {
+  checkRateLimit,
+  recordFailedAttempt,
+  clearRateLimit,
+  formatLockoutTime,
+  RATE_LIMIT_CONFIG,
+} from '../data/rateLimit';
 
 const ROUTES = {
   REGISTER: '/register',
@@ -22,12 +29,76 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // Rate limit state
+  const [lockedUntil, setLockedUntil] = useState<number | null>(null);
+  const [secondsLeft, setSecondsLeft] = useState(0);
+  const [attemptsRemaining, setAttemptsRemaining] = useState(
+    RATE_LIMIT_CONFIG.MAX_ATTEMPTS,
+  );
+
+  // ============================================
+  // LOCKOUT COUNTDOWN TIMER
+  // ============================================
+  useEffect(() => {
+    if (!lockedUntil) return;
+
+    const tick = () => {
+      const remaining = Math.ceil((lockedUntil - Date.now()) / 1000);
+      if (remaining <= 0) {
+        setLockedUntil(null);
+        setSecondsLeft(0);
+        setAttemptsRemaining(RATE_LIMIT_CONFIG.MAX_ATTEMPTS);
+        clearRateLimit(email);
+        return;
+      }
+      setSecondsLeft(remaining);
+    };
+
+    tick(); // initial call
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [lockedUntil, email]);
+
+  // ============================================
+  // CHECK RATE LIMIT WHEN EMAIL CHANGES
+  // ============================================
+  useEffect(() => {
+    if (!email.trim()) return;
+    const status = checkRateLimit(email);
+    if (!status.allowed && status.lockedUntil) {
+      setLockedUntil(status.lockedUntil);
+      setSecondsLeft(status.secondsUntilUnlock);
+    }
+    setAttemptsRemaining(status.attemptsRemaining);
+  }, [email]);
+
+  const isLocked = lockedUntil !== null && secondsLeft > 0;
+
+  // ============================================
+  // SUBMIT
+  // ============================================
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    // Check rate limit first
+    const status = checkRateLimit(email);
+    if (!status.allowed) {
+      setLockedUntil(status.lockedUntil);
+      setSecondsLeft(status.secondsUntilUnlock);
+      toast(
+        `Too many failed attempts. Please try again in ${formatLockoutTime(status.secondsUntilUnlock)}.`,
+        'danger',
+      );
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const result = await loginUser(email, password);
       const user = mapSupabaseUser(result.user);
+
+      // ✅ Successful login → clear rate limit
+      clearRateLimit(email);
 
       signIn({
         id: user.id,
@@ -41,11 +112,25 @@ export default function LoginPage() {
       toast(`Welcome back, ${user.name}.`, 'success');
       navigate(ROUTES.HOME, { replace: true });
     } catch (error) {
-      console.error('Login error:', error);
-      toast(
-        error instanceof Error ? error.message : 'Login failed. Please try again.',
-        'danger',
-      );
+      // ❌ Failed login → record attempt
+      const newStatus = recordFailedAttempt(email);
+      setAttemptsRemaining(newStatus.attemptsRemaining);
+
+      if (!newStatus.allowed && newStatus.lockedUntil) {
+        setLockedUntil(newStatus.lockedUntil);
+        setSecondsLeft(newStatus.secondsUntilUnlock);
+        toast(
+          `Account locked for ${formatLockoutTime(newStatus.secondsUntilUnlock)} due to too many failed attempts.`,
+          'danger',
+        );
+      } else {
+        toast(
+          error instanceof Error
+            ? error.message
+            : `Invalid credentials. ${newStatus.attemptsRemaining} attempt${newStatus.attemptsRemaining === 1 ? '' : 's'} remaining.`,
+          'danger',
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -68,6 +153,46 @@ export default function LoginPage() {
           </p>
         </header>
 
+        {/* Rate limit warning */}
+        {isLocked ? (
+          <div
+            className="callout"
+            role="alert"
+            style={{
+              marginBottom: '1rem',
+              borderColor: 'rgba(156, 55, 55, 0.35)',
+              background: 'var(--color-danger-soft)',
+              color: 'var(--color-danger)',
+            }}
+          >
+            <AlertCircle className="react-icon" aria-hidden="true" />
+            <span>
+              <strong>Account temporarily locked.</strong> Too many failed
+              login attempts. Please wait{' '}
+              <strong>{formatLockoutTime(secondsLeft)}</strong> before trying
+              again.
+            </span>
+          </div>
+        ) : attemptsRemaining < RATE_LIMIT_CONFIG.MAX_ATTEMPTS ? (
+          <div
+            className="callout"
+            role="status"
+            style={{
+              marginBottom: '1rem',
+              borderColor: 'rgba(156, 98, 30, 0.35)',
+              background: 'var(--color-warning-soft)',
+              color: 'var(--color-warning)',
+            }}
+          >
+            <AlertCircle className="react-icon" aria-hidden="true" />
+            <span>
+              Warning: <strong>{attemptsRemaining}</strong> attempt
+              {attemptsRemaining === 1 ? '' : 's'} remaining before your
+              account is temporarily locked.
+            </span>
+          </div>
+        ) : null}
+
         <form
           className="auth-form"
           onSubmit={(event) => void handleSubmit(event)}
@@ -87,6 +212,7 @@ export default function LoginPage() {
                 placeholder="student@phinmaed.com"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
+                disabled={isLocked}
               />
             </div>
           </div>
@@ -106,6 +232,7 @@ export default function LoginPage() {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
+                disabled={isLocked}
               />
               <button
                 type="button"
@@ -125,9 +252,15 @@ export default function LoginPage() {
           <button
             type="submit"
             className="button button--primary button--block"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isLocked}
           >
-            <span>{isSubmitting ? 'Signing in…' : 'Sign in'}</span>
+            <span>
+              {isLocked
+                ? `Locked (${formatLockoutTime(secondsLeft)})`
+                : isSubmitting
+                  ? 'Signing in…'
+                  : 'Sign in'}
+            </span>
             <ArrowRight className="react-icon" aria-hidden="true" />
           </button>
         </form>
