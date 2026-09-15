@@ -131,7 +131,8 @@ export default function HomePage() {
 
         {/* =========================================================
             RIGHT — HERO IMAGE
-            Clean image only. No text / badge / overlay.
+            Photo with a frosted-glass fade blending into the
+            left content area (matches the reference screenshot).
         ========================================================== */}
         <aside
           className="hero-photo"

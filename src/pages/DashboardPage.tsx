@@ -1,6 +1,6 @@
 // src/pages/DashboardPage.tsx
 
-import { useEffect, useMemo, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowUpRight,
@@ -12,14 +12,15 @@ import {
   Store,
   X,
   Zap,
-  Mail,
-  Building,
-  CreditCard,
-
+  Home,
+  User,
+  Shield,
+  ShoppingCart,
+  Menu,
+  ChevronRight,
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
-import ProfilePicture from '../components/ProfilePicture';
 import {
   formatDate,
   formatPrice,
@@ -32,12 +33,22 @@ import {
 
 type StatusFilter = 'ALL' | 'Pending' | 'Processing' | 'Ready for Pickup' | 'Claimed' | 'Cancelled';
 
+const sideNavItems = [
+  { to: '/', label: 'Home', icon: Home, end: true },
+  { to: '/catalog', label: 'Shop', icon: Store },
+  { to: '/cart', label: 'Cart', icon: ShoppingCart },
+  { to: '/dashboard', label: 'My Orders', icon: Package, active: true },
+  { to: '/profile', label: 'Profile', icon: User },
+  { to: '/settings', label: 'Settings', icon: Shield },
+];
+
 export default function DashboardPage() {
   const { session, orders } = useApp();
   const toast = useToast();
   const navigate = useNavigate();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
   const [noticeDismissed, setNoticeDismissed] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!session) {
@@ -60,12 +71,18 @@ export default function DashboardPage() {
     [userOrders, statusFilter],
   );
 
-  const { pendingCount, totalSpent } = useMemo(
+  const { pendingCount, totalSpent, completedCount, cancelledCount } = useMemo(
     () => ({
       pendingCount: userOrders.filter((order) =>
         ['Pending', 'Processing'].includes(getOrderStatus(order)),
       ).length,
       totalSpent: userOrders.reduce((sum, order) => sum + getOrderTotal(order), 0),
+      completedCount: userOrders.filter(
+        (order) => getOrderStatus(order) === 'Claimed',
+      ).length,
+      cancelledCount: userOrders.filter(
+        (order) => getOrderStatus(order) === 'Cancelled',
+      ).length,
     }),
     [userOrders],
   );
@@ -83,131 +100,157 @@ export default function DashboardPage() {
     );
   }
 
+  const getInitials = () => {
+    const name = session.name || '';
+    return (
+      name
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((p) => p[0]?.toUpperCase())
+        .join('') || 'U'
+    );
+  };
+
   return (
-    <div className="dashboard-page">
-      {/* Notice Banner */}
-      {readyOrder && !noticeDismissed ? (
-        <div className="notice-banner" role="status">
-          <span className="notice-banner__icon">
-            <Bell className="react-icon" aria-hidden="true" />
-          </span>
-          <div className="notice-banner__body">
-            <p className="notice-banner__title">You have 1 order ready for pickup!</p>
-            <p className="notice-banner__description">
-              Your order #{getOrderId(readyOrder)} is ready at {session.organization || 'SJCM Main Campus'}.
-            </p>
+    <div className="dashboard-shell">
+      {/* ============================================
+          SIDEBAR
+          ============================================ */}
+      <aside className={`dashboard-sidebar ${isSidebarOpen ? 'is-open' : ''}`}>
+        <div className="dashboard-sidebar__top">
+          {/* Profile block */}
+          <div className="dashboard-sidebar__user">
+            <span className="dashboard-sidebar__avatar">
+              {session.profilePicture ? (
+                <img src={session.profilePicture} alt={session.name} />
+              ) : (
+                <span className="dashboard-sidebar__initials">{getInitials()}</span>
+              )}
+            </span>
+            <span className="dashboard-sidebar__user-copy">
+              <span className="dashboard-sidebar__user-name">{session.name}</span>
+              <span className="dashboard-sidebar__user-role">{session.role}</span>
+            </span>
           </div>
-          <Link to={`/orders/${encodeURIComponent(getOrderId(readyOrder))}`} className="notice-banner__action">
-            View order <ArrowUpRight className="react-icon" aria-hidden="true" />
-          </Link>
-          <button
-            type="button"
-            className="notice-banner__dismiss"
-            aria-label="Dismiss notification"
-            onClick={() => setNoticeDismissed(true)}
-          >
-            <X className="react-icon" aria-hidden="true" />
-          </button>
+
+          {/* Nav */}
+          <nav className="dashboard-sidebar__nav">
+            {sideNavItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = item.active || item.to === '/dashboard';
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={`dashboard-sidebar__item ${isActive ? 'is-active' : ''}`}
+                  onClick={() => setIsSidebarOpen(false)}
+                >
+                  <Icon className="react-icon" aria-hidden="true" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </nav>
         </div>
+
+        <div className="dashboard-sidebar__bottom">
+          <p className="dashboard-sidebar__brand">SJCM STORE</p>
+          <p className="dashboard-sidebar__motto">
+            "Official Merchandise
+            <br />
+            for a Stronger SJCM"
+          </p>
+        </div>
+      </aside>
+
+      {/* Backdrop for mobile */}
+      {isSidebarOpen ? (
+        <div
+          className="dashboard-backdrop"
+          onClick={() => setIsSidebarOpen(false)}
+          aria-hidden="true"
+        />
       ) : null}
 
-      {/* Profile Card */}
-      <div className="dashboard-profile-card">
-        <div className="dashboard-profile-row">
-          {/* Avatar */}
-          <div className="dashboard-avatar-wrapper">
-            <ProfilePicture
-              name={session.name}
-              imageUrl={session.profilePicture || null}
-              size="xl"
-              bordered={true}
-            />
-          </div>
+      {/* ============================================
+          MAIN AREA
+          ============================================ */}
+      <div className="dashboard-main">
+        {/* Mobile floating menu */}
+        <button
+          type="button"
+          className="dashboard-mobile-menu"
+          aria-label="Toggle navigation"
+          onClick={() => setIsSidebarOpen((p) => !p)}
+        >
+          {isSidebarOpen ? (
+            <X className="react-icon" aria-hidden="true" />
+          ) : (
+            <Menu className="react-icon" aria-hidden="true" />
+          )}
+        </button>
 
-          {/* User Info */}
-          <div className="dashboard-user-info">
-            <h1 className="dashboard-user-name">{session.name}</h1>
-            <span className="dashboard-user-role">{session.role}</span>
-            <div className="dashboard-user-details">
-              <span><Mail className="react-icon" aria-hidden="true" /> {session.email}</span>
-              <span><Building className="react-icon" aria-hidden="true" /> {session.organization || 'SJCM General'}</span>
-              <span><CreditCard className="react-icon" aria-hidden="true" /> {session.idNumber || session.id}</span>
+        <div className="dashboard-scroll">
+          {/* Notice Banner */}
+          {readyOrder && !noticeDismissed ? (
+            <div className="notice-banner" role="status">
+              <span className="notice-banner__icon">
+                <Bell className="react-icon" aria-hidden="true" />
+              </span>
+              <div className="notice-banner__body">
+                <p className="notice-banner__title">You have 1 order ready for pickup!</p>
+                <p className="notice-banner__description">
+                  Your order #{getOrderId(readyOrder)} is ready at{' '}
+                  {session.organization || 'SJCM Main Campus'}.
+                </p>
+              </div>
+              <Link
+                to={`/orders/${encodeURIComponent(getOrderId(readyOrder))}`}
+                className="notice-banner__action"
+              >
+                View order <ArrowUpRight className="react-icon" aria-hidden="true" />
+              </Link>
+              <button
+                type="button"
+                className="notice-banner__dismiss"
+                aria-label="Dismiss notification"
+                onClick={() => setNoticeDismissed(true)}
+              >
+                <X className="react-icon" aria-hidden="true" />
+              </button>
             </div>
-          </div>
+          ) : null}
 
-          {/* Actions */}
-          <div className="dashboard-actions-wrapper">
-            <Link to="/catalog" className="button button--primary">
-              <Store className="react-icon" aria-hidden="true" />
-              <span>Browse store</span>
-            </Link>
-          </div>
-        </div>
-      </div>
+          {/* Hero banner */}
+          <header className="dashboard-hero">
+            <div className="dashboard-hero__copy">
+              <p className="dashboard-hero__kicker">My Orders</p>
+              <h1 className="dashboard-hero__title">Order History</h1>
+              <p className="dashboard-hero__description">
+                Track your merchandise reservations and pickup status.
+              </p>
+            </div>
+            <div className="dashboard-hero__quote">
+              <span>"Faith • Excellence • Service"</span>
+              <span>Saint Jude College</span>
+            </div>
+          </header>
 
-      {/* Stats */}
-      <div className="dashboard-stats-grid">
-        <div className="dashboard-stat-card" style={{ '--metric-color': 'var(--color-info)' } as CSSProperties}>
-          <div className="dashboard-stat-top">
-            <span className="dashboard-stat-label">Total orders</span>
-            <span className="dashboard-stat-icon"><Package className="react-icon" aria-hidden="true" /></span>
-          </div>
-          <strong className="dashboard-stat-value">{userOrders.length}</strong>
-        </div>
-
-        <div className="dashboard-stat-card" style={{ '--metric-color': 'var(--color-warning)' } as CSSProperties}>
-          <div className="dashboard-stat-top">
-            <span className="dashboard-stat-label">Pending pickup</span>
-            <span className="dashboard-stat-icon"><Clock3 className="react-icon" aria-hidden="true" /></span>
-          </div>
-          <strong className="dashboard-stat-value">{pendingCount}</strong>
-        </div>
-
-        <div className="dashboard-stat-card" style={{ '--metric-color': 'var(--color-success)' } as CSSProperties}>
-          <div className="dashboard-stat-top">
-            <span className="dashboard-stat-label">Total spent</span>
-            <span className="dashboard-stat-icon"><ReceiptText className="react-icon" aria-hidden="true" /></span>
-          </div>
-          <strong className="dashboard-stat-value">{formatPrice(totalSpent)}</strong>
-        </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="dashboard-quick-actions">
-        <div className="dashboard-quick-label">
-          <Zap className="react-icon" aria-hidden="true" />
-          <div>
-            <p className="dashboard-quick-title">Quick actions</p>
-            <p className="dashboard-quick-note">Get to what you need, faster.</p>
-          </div>
-        </div>
-        <div className="dashboard-quick-buttons">
-          <Link to="/catalog" className="button button--secondary">
-            <Store className="react-icon" aria-hidden="true" />
-            <span>Browse Store</span>
-          </Link>
-          <Link to="/orders" className="button button--secondary">
-            <Package className="react-icon" aria-hidden="true" />
-            <span>My Orders</span>
-          </Link>
-        </div>
-      </div>
-
-      {/* Order History */}
-      <div className="dashboard-orders-panel">
-        <div className="dashboard-orders-header">
-          <div>
-            <p className="dashboard-section-kicker">Your activity</p>
-            <h2 className="dashboard-section-title">Order history</h2>
-            <p className="dashboard-section-description">Track merchandise reservations and pickup status.</p>
-          </div>
-          <div className="dashboard-filter">
-            <label htmlFor="order-status-filter">Filter status</label>
+          {/* Toolbar: search + filter */}
+          <div className="dashboard-toolbar">
+            <div className="dashboard-toolbar__search">
+              <input
+                type="search"
+                placeholder="Search by order ID, item, or date..."
+                aria-label="Search orders"
+              />
+            </div>
             <select
-              id="order-status-filter"
-              className="dashboard-filter-select"
+              className="dashboard-toolbar__select"
               value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value as StatusFilter)}
+              onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+              aria-label="Filter by status"
             >
               <option value="ALL">All statuses</option>
               <option value="Pending">Pending</option>
@@ -217,59 +260,184 @@ export default function DashboardPage() {
               <option value="Cancelled">Cancelled</option>
             </select>
           </div>
-        </div>
 
-        <div className="dashboard-table-wrap">
-          <table className="dashboard-data-table">
-            <thead>
-              <tr>
-                <th>Order ID</th>
-                <th>Date</th>
-                <th>Items</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th className="dashboard-table-action">Action</th>
-              </tr>
-            </thead>
-            <tbody>
+          {/* Body: orders + summary */}
+          <div className="dashboard-body">
+            {/* Orders list */}
+            <section className="dashboard-orders">
               {filteredOrders.length === 0 ? (
-                <tr>
-                  <td colSpan={6}>
-                    <div className="dashboard-empty-state">
-                      <PackageOpen className="react-icon" aria-hidden="true" />
-                      <p className="dashboard-empty-title">No reservations found</p>
-                      <p className="dashboard-empty-description">
-                        Your orders will appear here once you place a campus pickup reservation.
-                      </p>
-                      <Link to="/catalog" className="button button--primary">Browse catalog</Link>
-                    </div>
-                  </td>
-                </tr>
+                <div className="dashboard-orders-empty">
+                  <PackageOpen className="react-icon" aria-hidden="true" />
+                  <p className="dashboard-orders-empty__title">No reservations found</p>
+                  <p className="dashboard-orders-empty__description">
+                    Your orders will appear here once you place a campus pickup reservation.
+                  </p>
+                  <Link to="/catalog" className="button button--primary">
+                    Browse catalog
+                  </Link>
+                </div>
               ) : (
-                filteredOrders.map((order) => {
-                  const badge = getOrderStatusBadge(getOrderStatus(order));
-                  const itemCount = (order.items ?? []).reduce(
-                    (sum, item) => sum + (Number(item.qty) || 0),
-                    0,
-                  );
-                  return (
-                    <tr key={getOrderId(order)}>
-                      <td><span className="dashboard-order-id">{getOrderId(order)}</span></td>
-                      <td>{formatDate(getOrderDate(order))}</td>
-                      <td>{itemCount} item{itemCount === 1 ? '' : 's'}</td>
-                      <td className="dashboard-order-total">{formatPrice(getOrderTotal(order))}</td>
-                      <td><span className={badge.className}>{badge.text}</span></td>
-                      <td className="dashboard-table-action">
-                        <Link to={`/orders/${encodeURIComponent(getOrderId(order))}`} className="dashboard-action-link">
-                          Details <ArrowUpRight className="react-icon" aria-hidden="true" />
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })
+                <ul className="order-list">
+                  {filteredOrders.map((order) => {
+                    const badge = getOrderStatusBadge(getOrderStatus(order));
+                    const items = order.items ?? [];
+                    const itemCount = items.reduce(
+                      (sum, item) => sum + (Number(item.qty) || 0),
+                      0,
+                    );
+
+                    // Status flags para sa mini-progress
+                    const status = getOrderStatus(order);
+                    const isOrdered = true;
+                    const isProcessing = ['Processing', 'Ready for Pickup', 'Claimed'].includes(status);
+                    const isReady = ['Ready for Pickup', 'Claimed'].includes(status);
+                    const isClaimed = status === 'Claimed';
+
+                    return (
+                      <li className="order-row" key={getOrderId(order)}>
+                        {/* Left: order ID + date + items */}
+                        <div className="order-row__main">
+                          <div className="order-row__head">
+                            <span className="order-row__id">
+                              Order #{getOrderId(order)}
+                            </span>
+                            <span className={badge.className}>{badge.text}</span>
+                          </div>
+
+                          <div className="order-row__meta">
+                            <span>{formatDate(getOrderDate(order))}</span>
+                            <span className="order-row__dot" aria-hidden="true" />
+                            <span>
+                              {itemCount} item{itemCount === 1 ? '' : 's'}
+                            </span>
+                          </div>
+
+                          {/* Mini progress steps */}
+                          <div className="order-row__progress">
+                            <span className={`order-row__step ${isOrdered ? 'is-done' : ''}`}>
+                              <span className="order-row__step-dot" />
+                              <span className="order-row__step-label">Ordered</span>
+                            </span>
+                            <span className={`order-row__step ${isProcessing ? 'is-done' : ''}`}>
+                              <span className="order-row__step-dot" />
+                              <span className="order-row__step-label">Processing</span>
+                            </span>
+                            <span className={`order-row__step ${isReady ? 'is-done' : ''}`}>
+                              <span className="order-row__step-dot" />
+                              <span className="order-row__step-label">Ready</span>
+                            </span>
+                            <span className={`order-row__step ${isClaimed ? 'is-done' : ''}`}>
+                              <span className="order-row__step-dot" />
+                              <span className="order-row__step-label">Claimed</span>
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Right: total + payment + action */}
+                        <div className="order-row__right">
+                          <div className="order-row__price">
+                            {formatPrice(getOrderTotal(order))}
+                          </div>
+                          <div className="order-row__payment">
+                            Payment: {order.paymentMethod || 'Cash on pickup'}
+                          </div>
+                          <Link
+                            to={`/orders/${encodeURIComponent(getOrderId(order))}`}
+                            className="order-row__btn"
+                          >
+                            <span>View Details</span>
+                            <ChevronRight className="react-icon" aria-hidden="true" />
+                          </Link>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
               )}
-            </tbody>
-          </table>
+
+              {/* Pagination */}
+              {filteredOrders.length > 0 ? (
+                <div className="order-pagination">
+                  <span>
+                    Showing 1–{filteredOrders.length} of {filteredOrders.length} orders
+                  </span>
+                  <div className="order-pagination__controls">
+                    <button type="button" className="order-pagination__btn" disabled>
+                      ‹
+                    </button>
+                    <button type="button" className="order-pagination__btn is-active">
+                      1
+                    </button>
+                    <button type="button" className="order-pagination__btn" disabled>
+                      ›
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+            </section>
+
+            {/* Right rail: Order Summary */}
+            <aside className="dashboard-summary">
+              <div className="dashboard-summary__card">
+                <p className="dashboard-summary__title">Order Summary</p>
+
+                <ul className="dashboard-summary__list">
+                  <li className="dashboard-summary__item">
+                    <span className="dashboard-summary__icon">
+                      <ReceiptText className="react-icon" aria-hidden="true" />
+                    </span>
+                    <span className="dashboard-summary__label">Total Orders</span>
+                    <strong className="dashboard-summary__value">
+                      {userOrders.length}
+                    </strong>
+                  </li>
+
+                  <li className="dashboard-summary__item">
+                    <span className="dashboard-summary__icon dashboard-summary__icon--success">
+                      <Package className="react-icon" aria-hidden="true" />
+                    </span>
+                    <span className="dashboard-summary__label">Completed</span>
+                    <strong className="dashboard-summary__value">
+                      {completedCount}
+                    </strong>
+                  </li>
+
+                  <li className="dashboard-summary__item">
+                    <span className="dashboard-summary__icon dashboard-summary__icon--warning">
+                      <Clock3 className="react-icon" aria-hidden="true" />
+                    </span>
+                    <span className="dashboard-summary__label">Processing</span>
+                    <strong className="dashboard-summary__value">
+                      {pendingCount}
+                    </strong>
+                  </li>
+
+                  <li className="dashboard-summary__item">
+                    <span className="dashboard-summary__icon dashboard-summary__icon--danger">
+                      <X className="react-icon" aria-hidden="true" />
+                    </span>
+                    <span className="dashboard-summary__label">Cancelled</span>
+                    <strong className="dashboard-summary__value">
+                      {cancelledCount}
+                    </strong>
+                  </li>
+                </ul>
+
+                <div className="dashboard-summary__divider" />
+
+                <div className="dashboard-summary__total">
+                  <span>Total Spent</span>
+                  <strong>{formatPrice(totalSpent)}</strong>
+                </div>
+
+                <Link to="/catalog" className="dashboard-summary__cta">
+                  <Store className="react-icon" aria-hidden="true" />
+                  <span>Browse Store</span>
+                  <Zap className="react-icon" aria-hidden="true" />
+                </Link>
+              </div>
+            </aside>
+          </div>
         </div>
       </div>
     </div>

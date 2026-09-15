@@ -1,6 +1,20 @@
+// src/pages/CartPage.tsx
+
 import { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, MapPin, Minus, Package, Plus, ShoppingBag, Store, Trash2 } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  MapPin,
+  Minus,
+  Package,
+  Plus,
+  ShoppingBag,
+  Store,
+  Trash2,
+  ShieldCheck,
+  X,
+} from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
 import { formatPrice, isStaffRole, sumCartItems } from '../services';
@@ -11,6 +25,10 @@ export default function CartPage() {
   const { session, cart, products, setCart } = useApp();
 
   const subtotal = useMemo(() => sumCartItems(cart), [cart]);
+  const totalItems = useMemo(
+    () => cart.reduce((sum, item) => sum + (Number(item.qty) || 0), 0),
+    [cart],
+  );
 
   const updateQty = (index: number, delta: number) => {
     const item = cart[index];
@@ -63,538 +81,236 @@ export default function CartPage() {
   };
 
   return (
-    <main
-      style={{
-        width: 'min(100% - 2.5rem, 78rem)',
-        margin: '0 auto',
-        padding: '3rem 0 4.5rem',
-      }}
-    >
-      {/* Page header */}
-      <header
-        style={{
-          display: 'flex',
-          alignItems: 'flex-end',
-          justifyContent: 'space-between',
-          gap: '1.5rem',
-          marginBottom: '2rem',
-          flexWrap: 'wrap',
-        }}
-      >
-        <div style={{ maxWidth: '48rem' }}>
-          <p
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.45rem',
-              margin: '0 0 0.7rem',
-              color: 'var(--color-brand, #b3822c)',
-              fontSize: '0.68rem',
-              fontWeight: 700,
-              letterSpacing: '0.13em',
-              textTransform: 'uppercase',
-            }}
-          >
-            <span
-              style={{
-                display: 'inline-block',
-                width: '1.2rem',
-                height: '1px',
-                background: 'currentColor',
-              }}
-            />
-            Reservation list
-          </p>
-          <h1
-            style={{
-              margin: 0,
-              color: 'var(--color-text, #221a10)',
-              fontFamily: 'var(--font-display, "Fraunces", serif)',
-              fontSize: 'clamp(1.85rem, 4vw, 3rem)',
-              fontWeight: 700,
-              letterSpacing: '-0.025em',
-              lineHeight: 1.08,
-            }}
-          >
-            Your cart
-          </h1>
-          <p
-            style={{
-              margin: '0.45rem 0 0',
-              color: 'var(--color-text-muted, #675a45)',
-              fontSize: '0.88rem',
-            }}
-          >
-            Review your selected merchandise before choosing a pickup date.
-          </p>
-        </div>
-        <Link
-          to="/catalog"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.35rem',
-            color: 'var(--color-brand, #b3822c)',
-            fontSize: '0.75rem',
-            fontWeight: 700,
-            textDecoration: 'none',
-          }}
-        >
-          <ArrowLeft size={16} aria-hidden="true" />
-          <span>Continue shopping</span>
-        </Link>
-      </header>
-
-      {/* Commerce layout */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1fr) minmax(17rem, 21rem)',
-          gap: '1.25rem',
-          alignItems: 'start',
-        }}
-      >
-        {/* Cart items list */}
-        <section style={{ display: 'grid', gap: '0.75rem' }} aria-label="Cart items">
-          {cart.length === 0 ? (
-            <div
-              style={{
-                display: 'grid',
-                minHeight: '9.5rem',
-                padding: '1.75rem 1.5rem',
-                placeItems: 'center',
-                alignContent: 'center',
-                border: '1px dashed rgba(35, 26, 12, 0.22)',
-                borderRadius: '1rem',
-                background: 'rgba(255, 252, 244, 0.4)',
-                textAlign: 'center',
-              }}
-            >
-              <ShoppingBag size={44} aria-hidden="true" style={{ color: '#94855f' }} />
-              <h2
-                style={{
-                  margin: '0.9rem 0 0',
-                  color: 'var(--color-text, #221a10)',
-                  fontFamily: 'var(--font-display, "Fraunces", serif)',
-                  fontSize: '1rem',
-                  fontWeight: 700,
-                }}
-              >
-                Your cart is empty
-              </h2>
-              <p
-                style={{
-                  maxWidth: '28rem',
-                  margin: '0.35rem 0 1.1rem',
-                  color: 'var(--color-text-muted, #675a45)',
-                  fontSize: '0.76rem',
-                }}
-              >
-                Explore the catalog to reserve school uniforms, department apparel, and ID laces.
-              </p>
-              <Link
-                to="/catalog"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  minHeight: '2.7rem',
-                  padding: '0.65rem 1rem',
-                  border: '1px solid var(--color-brand, #b3822c)',
-                  borderRadius: '0.5rem',
-                  background: 'var(--color-brand, #b3822c)',
-                  color: '#2a1c0c',
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                  textDecoration: 'none',
-                }}
-              >
-                <Store size={16} aria-hidden="true" />
-                <span>Browse merchandise</span>
-              </Link>
-            </div>
-          ) : (
-            cart.map((item, index) => {
-              const itemTotal = (Number(item.price) || 0) * (Number(item.qty) || 0);
-              return (
-                <article
-                  key={`${item.id}-${item.size}`}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: '1.25rem',
-                    padding: '1rem',
-                    border: '1px solid var(--color-line, rgba(35, 26, 12, 0.1))',
-                    borderRadius: '1rem',
-                    background: 'var(--color-surface, #fffcf4)',
-                    boxShadow: '0 18px 42px rgba(35, 26, 12, 0.06)',
-                  }}
-                >
-                  {/* Left side: image + details */}
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.85rem',
-                      minWidth: 0,
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: 'grid',
-                        width: '4rem',
-                        height: '4rem',
-                        flex: '0 0 auto',
-                        placeItems: 'center',
-                        border: '1px solid var(--color-line, rgba(35, 26, 12, 0.1))',
-                        borderRadius: '0.75rem',
-                        background: 'var(--color-surface-soft, #eee0c2)',
-                        color: 'var(--color-brand, #b3822c)',
-                      }}
-                      aria-hidden="true"
-                    >
-                      <Package size={28} aria-hidden="true" />
-                    </div>
-                    <div style={{ minWidth: 0 }}>
-                      <div
-                        style={{
-                          color: 'var(--color-brand, #b3822c)',
-                          fontSize: '0.64rem',
-                          fontWeight: 700,
-                          letterSpacing: '0.08em',
-                          textTransform: 'uppercase',
-                        }}
-                      >
-                        {item.organization || 'General'}
-                      </div>
-                      <h2
-                        style={{
-                          margin: '0.25rem 0 0',
-                          overflow: 'hidden',
-                          color: 'var(--color-text, #221a10)',
-                          fontFamily: 'var(--font-display, "Fraunces", serif)',
-                          fontSize: '0.95rem',
-                          fontWeight: 700,
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                        title={item.name}
-                      >
-                        {item.name}
-                      </h2>
-                      <p
-                        style={{
-                          margin: '0.25rem 0 0',
-                          color: 'var(--color-text-muted, #675a45)',
-                          fontSize: '0.72rem',
-                        }}
-                      >
-                        Variant: <strong>{item.size || 'N/A'}</strong>
-                      </p>
-                      <p
-                        style={{
-                          margin: '0.25rem 0 0',
-                          color: 'var(--color-brand, #b3822c)',
-                          fontFamily: 'var(--font-mono, monospace)',
-                          fontSize: '0.72rem',
-                        }}
-                      >
-                        {formatPrice(item.price)} each
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Right side: qty, total, delete */}
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.85rem',
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '0.35rem',
-                        padding: '0.25rem',
-                        border: '1px solid var(--color-line, rgba(35, 26, 12, 0.1))',
-                        borderRadius: '0.5rem',
-                        background: 'var(--color-surface-raised, #faf2e0)',
-                      }}
-                      aria-label={`Quantity for ${item.name}`}
-                    >
-                      <button
-                        type="button"
-                        onClick={() => updateQty(index, -1)}
-                        aria-label="Decrease quantity"
-                        style={{
-                          display: 'grid',
-                          width: '1.8rem',
-                          height: '1.8rem',
-                          placeItems: 'center',
-                          border: 0,
-                          background: 'transparent',
-                          color: 'var(--color-text-muted, #675a45)',
-                          cursor: 'pointer',
-                          borderRadius: '0.5rem',
-                        }}
-                      >
-                        <Minus size={16} aria-hidden="true" />
-                      </button>
-                      <span
-                        style={{
-                          minWidth: '1.75rem',
-                          color: 'var(--color-text, #221a10)',
-                          fontFamily: 'var(--font-mono, monospace)',
-                          fontSize: '0.75rem',
-                          fontWeight: 700,
-                          textAlign: 'center',
-                        }}
-                      >
-                        {item.qty}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => updateQty(index, 1)}
-                        aria-label="Increase quantity"
-                        style={{
-                          display: 'grid',
-                          width: '1.8rem',
-                          height: '1.8rem',
-                          placeItems: 'center',
-                          border: 0,
-                          background: 'transparent',
-                          color: 'var(--color-text-muted, #675a45)',
-                          cursor: 'pointer',
-                          borderRadius: '0.5rem',
-                        }}
-                      >
-                        <Plus size={16} aria-hidden="true" />
-                      </button>
-                    </div>
-
-                    <div
-                      style={{
-                        minWidth: '5.5rem',
-                        color: 'var(--color-text, #221a10)',
-                        fontFamily: 'var(--font-mono, monospace)',
-                        fontSize: '0.82rem',
-                        fontWeight: 700,
-                        textAlign: 'right',
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: 'block',
-                          marginBottom: '0.15rem',
-                          color: 'var(--color-text-subtle, #94855f)',
-                          fontFamily: 'var(--font-body, "Inter", sans-serif)',
-                          fontSize: '0.64rem',
-                          fontWeight: 500,
-                        }}
-                      >
-                        Line total
-                      </span>
-                      {formatPrice(itemTotal)}
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => removeItem(index)}
-                      aria-label={`Remove ${item.name}`}
-                      style={{
-                        display: 'grid',
-                        width: '2.35rem',
-                        height: '2.35rem',
-                        placeItems: 'center',
-                        border: '1px solid var(--color-line, rgba(35, 26, 12, 0.1))',
-                        borderRadius: '0.5rem',
-                        background: 'var(--color-surface-raised, #faf2e0)',
-                        color: 'var(--color-text-muted, #675a45)',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      <Trash2 size={16} aria-hidden="true" />
-                    </button>
-                  </div>
-                </article>
-              );
-            })
-          )}
-        </section>
-
-        {/* Summary panel */}
-        <aside
-          style={{
-            position: 'sticky',
-            top: '5.5rem',
-            display: 'grid',
-            gap: '1.25rem',
-            padding: '1.25rem',
-            border: '1px solid var(--color-line-strong, rgba(35, 26, 12, 0.2))',
-            borderRadius: '1rem',
-            background: 'var(--color-surface-raised, #faf2e0)',
-            boxShadow: '0 18px 42px rgba(35, 26, 12, 0.1)',
-          }}
-          aria-labelledby="summary-title"
-        >
-          <h2
-            id="summary-title"
-            style={{
-              margin: 0,
-              paddingBottom: '0.9rem',
-              borderBottom: '1px solid var(--color-line, rgba(35, 26, 12, 0.1))',
-              color: 'var(--color-text, #221a10)',
-              fontFamily: 'var(--font-display, "Fraunces", serif)',
-              fontSize: '1.05rem',
-              fontWeight: 700,
-            }}
-          >
-            Reservation summary
-          </h2>
-
-          <div style={{ display: 'grid', gap: '0.65rem' }}>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '1rem',
-                color: 'var(--color-text-muted, #675a45)',
-                fontSize: '0.78rem',
-              }}
-            >
-              <span>Items subtotal</span>
-              <strong
-                style={{
-                  color: 'var(--color-text, #221a10)',
-                  fontFamily: 'var(--font-mono, monospace)',
-                  fontSize: '0.75rem',
-                }}
-              >
-                {formatPrice(subtotal)}
-              </strong>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '1rem',
-                color: 'var(--color-text-muted, #675a45)',
-                fontSize: '0.78rem',
-              }}
-            >
-              <span>Claim & processing fee</span>
-              <strong
-                style={{
-                  color: 'var(--color-success, #3c7a54)',
-                  fontFamily: 'var(--font-mono, monospace)',
-                  fontSize: '0.75rem',
-                }}
-              >
-                FREE
-              </strong>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '1rem',
-                paddingTop: '0.9rem',
-                borderTop: '1px solid var(--color-line, rgba(35, 26, 12, 0.1))',
-                color: 'var(--color-text, #221a10)',
-                fontSize: '0.9rem',
-                fontWeight: 700,
-              }}
-            >
-              <span>Total estimated</span>
-              <strong
-                style={{
-                  color: 'var(--color-brand, #b3822c)',
-                  fontFamily: 'var(--font-mono, monospace)',
-                  fontSize: '1.12rem',
-                  fontWeight: 700,
-                }}
-              >
-                {formatPrice(subtotal)}
-              </strong>
-            </div>
+    <main className="cart-page">
+      <div className="cart-container">
+        {/* ============================================
+            HERO BANNER
+            ============================================ */}
+        <header className="cart-hero">
+          <div className="cart-hero__copy">
+            <p className="cart-hero__kicker">SJCM Store</p>
+            <h1 className="cart-hero__title">Your Cart</h1>
+            <p className="cart-hero__description">
+              Review your selected items and proceed to checkout.
+            </p>
           </div>
+          <div className="cart-hero__quote">
+            <span>"Official Merch</span>
+            <span>for a Stronger</span>
+            <span>SJCM"</span>
+          </div>
+        </header>
 
-          <div style={{ display: 'grid', gap: '0.55rem' }}>
-            <button
-              type="button"
-              onClick={proceedToCheckout}
-              disabled={!cart.length}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.5rem',
-                width: '100%',
-                minHeight: '2.7rem',
-                padding: '0.65rem 1rem',
-                border: '1px solid var(--color-brand, #b3822c)',
-                borderRadius: '0.5rem',
-                background: 'var(--color-brand, #b3822c)',
-                color: '#2a1c0c',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                cursor: cart.length ? 'pointer' : 'not-allowed',
-                opacity: cart.length ? 1 : 0.68,
+        {/* ============================================
+            TOOLBAR: select all + remove + continue
+            ============================================ */}
+        <div className="cart-toolbar">
+          <label className="cart-toolbar__select-all">
+            <input
+              type="checkbox"
+              checked={cart.length > 0}
+              onChange={() => {
+                if (cart.length > 0) {
+                  setCart([]);
+                  toast('Cart cleared', 'info');
+                }
               }}
-            >
-              <span>Proceed to checkout</span>
-              <ArrowRight size={16} aria-hidden="true" />
-            </button>
+              aria-label="Select all items"
+            />
+            <span>Select All ({totalItems} item{totalItems === 1 ? '' : 's'})</span>
+          </label>
+
+          <div className="cart-toolbar__actions">
             <button
               type="button"
+              className="cart-toolbar__btn cart-toolbar__btn--ghost"
               onClick={clearCart}
               disabled={!cart.length}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.5rem',
-                width: '100%',
-                minHeight: '2.7rem',
-                padding: '0.65rem 1rem',
-                border: '1px solid var(--color-line, rgba(35, 26, 12, 0.1))',
-                borderRadius: '0.5rem',
-                background: 'transparent',
-                color: 'var(--color-text-muted, #675a45)',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                cursor: cart.length ? 'pointer' : 'not-allowed',
-                opacity: cart.length ? 1 : 0.68,
-              }}
             >
-              Clear entire cart
+              <Trash2 className="react-icon" aria-hidden="true" />
+              <span>Remove Selected</span>
             </button>
+            <Link to="/catalog" className="cart-toolbar__btn">
+              <span>Continue Shopping</span>
+            </Link>
           </div>
+        </div>
 
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: '0.65rem',
-              padding: '0.85rem',
-              border: '1px solid rgba(63, 106, 134, 0.28)',
-              borderRadius: '0.75rem',
-              background: 'rgba(63, 106, 134, 0.12)',
-              color: 'var(--color-info, #3f6a86)',
-              fontSize: '0.72rem',
-              lineHeight: 1.55,
-            }}
-          >
-            <MapPin size={16} aria-hidden="true" style={{ flexShrink: 0, marginTop: '0.1rem' }} />
-            <span>All orders are reserved for pickup on campus. Uniform items are not delivered.</span>
-          </div>
-        </aside>
+        {/* ============================================
+            BODY: cart items + summary
+            ============================================ */}
+        <div className="cart-body">
+          {/* Cart items */}
+          <section className="cart-items" aria-label="Cart items">
+            {cart.length === 0 ? (
+              <div className="cart-empty">
+                <ShoppingBag className="react-icon" aria-hidden="true" />
+                <h2 className="cart-empty__title">Your cart is empty</h2>
+                <p className="cart-empty__description">
+                  Explore the catalog to reserve school uniforms, department apparel, and ID laces.
+                </p>
+                <Link to="/catalog" className="button button--primary">
+                  <Store className="react-icon" aria-hidden="true" />
+                  <span>Browse merchandise</span>
+                </Link>
+              </div>
+            ) : (
+              <ul className="cart-list">
+                {cart.map((item, index) => {
+                  const itemTotal = (Number(item.price) || 0) * (Number(item.qty) || 0);
+                  return (
+                    <li className="cart-item" key={`${item.id}-${item.size}`}>
+                      {/* Select checkbox */}
+                      <label className="cart-item__select" aria-label="Select item">
+                        <input type="checkbox" defaultChecked />
+                      </label>
+
+                      {/* Media placeholder */}
+                      <div className="cart-item__media" aria-hidden="true">
+                        <Package className="react-icon" aria-hidden="true" />
+                      </div>
+
+                      {/* Details */}
+                      <div className="cart-item__details">
+                        <p className="cart-item__name" title={item.name}>
+                          {item.name}
+                        </p>
+                        <p className="cart-item__org">
+                          {item.organization || 'General'}
+                        </p>
+
+                        <div className="cart-item__tags">
+                          {item.size && (
+                            <span className="cart-item__tag">
+                              Size: <strong>{item.size}</strong>
+                            </span>
+                          )}
+                          <span className="cart-item__tag">
+                            Color: <strong>Maroon</strong>
+                          </span>
+                        </div>
+
+                        <p className="cart-item__price">
+                          {formatPrice(item.price)}
+                        </p>
+                      </div>
+
+                      {/* Quantity control */}
+                      <div className="cart-item__qty">
+                        <button
+                          type="button"
+                          className="cart-item__qty-btn"
+                          onClick={() => updateQty(index, -1)}
+                          aria-label="Decrease quantity"
+                        >
+                          <Minus className="react-icon" aria-hidden="true" />
+                        </button>
+                        <span className="cart-item__qty-value">{item.qty}</span>
+                        <button
+                          type="button"
+                          className="cart-item__qty-btn"
+                          onClick={() => updateQty(index, 1)}
+                          aria-label="Increase quantity"
+                        >
+                          <Plus className="react-icon" aria-hidden="true" />
+                        </button>
+                      </div>
+
+                      {/* Line total */}
+                      <div className="cart-item__total">
+                        {formatPrice(itemTotal)}
+                      </div>
+
+                      {/* Remove */}
+                      <button
+                        type="button"
+                        className="cart-item__remove"
+                        onClick={() => removeItem(index)}
+                        aria-label={`Remove ${item.name}`}
+                      >
+                        <Trash2 className="react-icon" aria-hidden="true" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+
+            {/* Info callout */}
+            {cart.length > 0 && (
+              <div className="cart-note">
+                <ShieldCheck className="react-icon" aria-hidden="true" />
+                <div>
+                  <p className="cart-note__title">All items are official SJCM merchandise.</p>
+                  <p className="cart-note__text">
+                    Unauthorized sellers are not allowed on campus.
+                  </p>
+                </div>
+              </div>
+            )}
+          </section>
+
+          {/* Summary panel */}
+          <aside className="cart-summary" aria-labelledby="summary-title">
+            <h2 id="summary-title" className="cart-summary__title">
+              Order Summary
+            </h2>
+
+            <div className="cart-summary__lines">
+              <div className="cart-summary__line">
+                <span>Items ({totalItems})</span>
+                <strong>{formatPrice(subtotal)}</strong>
+              </div>
+              <div className="cart-summary__line">
+                <span>Shipping / Pickup</span>
+                <strong className="cart-summary__line--free">FREE</strong>
+              </div>
+              <div className="cart-summary__total">
+                <span>Total</span>
+                <strong>{formatPrice(subtotal)}</strong>
+              </div>
+            </div>
+
+            <div className="cart-summary__actions">
+              <button
+                type="button"
+                className="cart-summary__btn cart-summary__btn--primary"
+                onClick={proceedToCheckout}
+                disabled={!cart.length}
+              >
+                <span>Proceed to Checkout</span>
+                <ArrowRight className="react-icon" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                className="cart-summary__btn cart-summary__btn--ghost"
+                onClick={clearCart}
+                disabled={!cart.length}
+              >
+                <Trash2 className="react-icon" aria-hidden="true" />
+                <span>Clear Cart</span>
+              </button>
+            </div>
+
+            {/* Pickup location card */}
+            <div className="cart-summary__pickup">
+              <span className="cart-summary__pickup-icon">
+                <MapPin className="react-icon" aria-hidden="true" />
+              </span>
+              <span className="cart-summary__pickup-copy">
+                <span className="cart-summary__pickup-label">Pickup Location</span>
+                <span className="cart-summary__pickup-title">SJCM Campus</span>
+                <span className="cart-summary__pickup-note">
+                  Please bring a valid school ID for pickup.
+                </span>
+              </span>
+              <ArrowRight
+                className="react-icon cart-summary__pickup-chev"
+                aria-hidden="true"
+              />
+            </div>
+          </aside>
+        </div>
       </div>
     </main>
   );

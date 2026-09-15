@@ -916,3 +916,525 @@
     white-space: nowrap;
   }
 }
+/* ============================================================
+   APP SHELL WITH DARK SIDEBAR (matches Settings page layout)
+   ============================================================ */
+
+.profile-shell {
+  --sjcm-maroon: #5a1119;
+  --sjcm-maroon-dark: #3d0b12;
+  --sjcm-maroon-darker: #25070b;
+  --sjcm-gold: #b5892b;
+  --sjcm-gold-light: #d9b872;
+
+  display: flex;
+  align-items: stretch;
+  min-height: calc(100vh - 4.25rem);
+  background: var(--cream-50);
+  font-family: var(--font-body);
+  color: var(--ink-900);
+}
+
+.profile-shell .react-icon {
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   DARK SIDEBAR
+   ============================================================ */
+
+.profile-sidebar {
+  display: flex;
+  flex: 0 0 15.5rem;
+  width: 15.5rem;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.5rem 1rem;
+  background:
+    linear-gradient(180deg, rgba(90, 17, 25, 0.92), rgba(37, 7, 11, 0.98)),
+    var(--sjcm-maroon-darker);
+  color: rgba(255, 253, 249, 0.82);
+  overflow-y: auto;
+}
+
+.profile-sidebar__top {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.profile-sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.35rem 0.4rem 1rem;
+  border-bottom: 1px solid rgba(255, 253, 249, 0.14);
+  text-decoration: none;
+}
+
+.profile-sidebar__brand-mark {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  place-items: center;
+  border: 1px solid rgba(217, 184, 114, 0.5);
+  border-radius: 0.75rem;
+  background: rgba(217, 184, 114, 0.12);
+  color: var(--sjcm-gold-light);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.92rem;
+  letter-spacing: 0.04em;
+}
+
+.profile-sidebar__brand-copy {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.profile-sidebar__brand-name {
+  color: #fffdf9;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.profile-sidebar__brand-tag {
+  color: rgba(217, 184, 114, 0.72);
+  font-size: 0.6rem;
+  letter-spacing: 0.02em;
+}
+
+.profile-sidebar__nav {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.profile-sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.6rem;
+  color: rgba(255, 253, 249, 0.72);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 160ms ease;
+}
+
+.profile-sidebar__item:hover {
+  background: rgba(255, 253, 249, 0.06);
+  color: #fffdf9;
+}
+
+.profile-sidebar__item.is-active {
+  background: rgba(217, 184, 114, 0.14);
+  color: var(--sjcm-gold-light);
+  box-shadow: inset 3px 0 0 var(--sjcm-gold);
+}
+
+.profile-sidebar__bottom {
+  display: grid;
+  gap: 0.15rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 253, 249, 0.14);
+  text-align: center;
+}
+
+.profile-sidebar__motto {
+  margin: 0;
+  color: rgba(217, 184, 114, 0.72);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.68rem;
+}
+
+.profile-sidebar__campus {
+  margin: 0;
+  color: rgba(255, 253, 249, 0.5);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.profile-backdrop {
+  display: none;
+}
+
+/* ============================================================
+   MAIN WRAP
+   ============================================================ */
+
+.profile-main-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-mobile-menu {
+  display: none;
+  position: fixed;
+  top: 5.25rem;
+  left: 1rem;
+  z-index: 40;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border: 1px solid var(--line-200);
+  border-radius: 0.6rem;
+  background: var(--white);
+  color: var(--ink-900);
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(74, 20, 28, 0.12);
+  transition: all 160ms ease;
+}
+
+.profile-mobile-menu:hover {
+  background: var(--cream-100);
+}
+
+/* Nested .profile-page inside main-wrap should stretch naturally */
+.profile-main-wrap .profile-page {
+  min-height: auto;
+  background: transparent;
+}
+
+.profile-main-wrap .profile-container {
+  width: min(100% - 2.5rem, 78rem);
+  max-width: none;
+  margin: 0 auto;
+  padding: 1.5rem 0 3rem;
+}
+
+/* ============================================================
+   RIGHT RAIL (rename from .profile-sidebar to .profile-side)
+   ============================================================ */
+
+.profile-side {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+  position: sticky;
+  top: 5rem;
+}
+
+.profile-side__card {
+  background: var(--white);
+  border: 1px solid var(--line-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 1rem 1.15rem;
+}
+
+.profile-side__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.profile-side__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ink-900);
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.profile-side__title .react-icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--gold-600);
+}
+
+.profile-side__card > .profile-side__title {
+  margin-bottom: 0.75rem;
+}
+
+.profile-side__pill {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--green-100);
+  color: var(--green-600);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.profile-side__viewall {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--maroon-700);
+  text-decoration: none;
+}
+
+.profile-side__viewall:hover {
+  text-decoration: underline;
+}
+
+/* Status list */
+.profile-status-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.profile-status-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink-900);
+}
+
+.profile-status-item .react-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.profile-status-item .react-icon.is-met {
+  color: var(--green-600);
+}
+
+.profile-status-item .react-icon.is-pending {
+  color: var(--ink-400);
+}
+
+/* Quick actions */
+.profile-quick-actions {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.profile-quick-action {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.5rem;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s ease;
+}
+
+.profile-quick-action:hover {
+  background: var(--cream-100);
+}
+
+.profile-quick-action:hover .profile-quick-action__chev {
+  transform: translateX(2px);
+}
+
+.profile-quick-action__icon {
+  display: grid;
+  width: 2.2rem;
+  height: 2.2rem;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: var(--radius-sm);
+}
+
+.profile-quick-action__icon .react-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.profile-quick-action__icon--teal {
+  background: var(--teal-100);
+  color: var(--teal-600);
+}
+
+.profile-quick-action__icon--pink {
+  background: var(--pink-100);
+  color: var(--pink-600);
+}
+
+.profile-quick-action__icon--purple {
+  background: var(--purple-100);
+  color: var(--purple-600);
+}
+
+.profile-quick-action__icon--blue {
+  background: var(--blue-100);
+  color: var(--blue-600);
+}
+
+.profile-quick-action__text {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 0.05rem;
+}
+
+.profile-quick-action__label {
+  color: var(--ink-900);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.profile-quick-action__desc {
+  color: var(--ink-600);
+  font-size: 0.72rem;
+}
+
+.profile-quick-action__chev {
+  width: 0.9rem !important;
+  height: 0.9rem !important;
+  color: var(--ink-400);
+  transition: transform 0.15s ease;
+}
+
+/* Activity list */
+.profile-activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.profile-activity-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease;
+}
+
+.profile-activity-item:hover {
+  background: var(--cream-100);
+}
+
+.profile-activity-icon {
+  display: grid;
+  width: 1.9rem;
+  height: 1.9rem;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 50%;
+}
+
+.profile-activity-icon .react-icon {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.profile-activity-icon--order {
+  background: var(--gold-100);
+  color: var(--gold-600);
+}
+
+.profile-activity-icon--profile {
+  background: var(--pink-100);
+  color: var(--pink-600);
+}
+
+.profile-activity-icon--security {
+  background: var(--purple-100);
+  color: var(--purple-600);
+}
+
+.profile-activity-text {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 0.05rem;
+}
+
+.profile-activity-label {
+  color: var(--ink-900);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.profile-activity-time {
+  color: var(--ink-600);
+  font-size: 0.7rem;
+}
+
+.profile-activity-chevron {
+  width: 0.8rem !important;
+  height: 0.8rem !important;
+  color: var(--ink-400);
+}
+
+/* ============================================================
+   RENAME old .profile-sidebar references
+   ============================================================ */
+/* WARNING: If your existing CSS uses .profile-sidebar for the RIGHT rail,
+   that will conflict with the new dark sidebar. Rename the old one or
+   make sure these new styles come LAST in the file so they win. */
+
+.profile-page .profile-side {
+  /* This overrides any old .profile-sidebar if it was used for the right rail */
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 980px) {
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-side {
+    position: static;
+    order: 2;
+  }
+}
+
+@media (max-width: 960px) {
+  .profile-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 60;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 220ms ease;
+    box-shadow: 24px 0 60px rgba(74, 20, 28, 0.25);
+  }
+
+  .profile-sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .profile-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(36, 28, 25, 0.5);
+    backdrop-filter: blur(2px);
+  }
+
+  .profile-mobile-menu {
+    display: grid;
+  }
+}
+
+@media (max-width: 720px) {
+  .profile-main-wrap .profile-container {
+    width: min(100% - 1.5rem, 78rem);
+    padding: 1rem 0 2rem;
+  }
+
+  .profile-mobile-menu {
+    top: 4.75rem;
+    left: 0.85rem;
+  }
+}
