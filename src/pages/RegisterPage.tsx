@@ -482,7 +482,7 @@ export default function RegisterPage() {
                 className={`register-input glass-input ${
                   errors.password ? 'register-input--error' : ''
                 }`}
-                placeholder="Christian@0110"
+                placeholder=""
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
