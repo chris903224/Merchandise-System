@@ -1,7 +1,7 @@
 // src/pages/CatalogPage.tsx
 
 import { useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   PackageX,
   Search,
@@ -15,8 +15,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
-import { useProducts, useApp } from '../store';
-import { useToast } from '../toast';
+import { useProducts } from '../store';
 import ProductImage from '../components/ProductImage';
 import { formatPrice, getStockBadge } from '../services';
 import type { Product } from '../types';
@@ -35,8 +34,7 @@ const categoryIcons: Record<string, typeof Grid2x2> = {
 
 export default function CatalogPage() {
   const products = useProducts();
-  const { cart, setCart } = useApp();
-  const toast = useToast();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState(searchParams.get('category') ?? 'ALL');
@@ -54,47 +52,11 @@ export default function CatalogPage() {
   };
 
   // ============================================
-  // ADD TO CART
+  // CLICK "Add to Cart" → redirect sa ProductPage
+  // Para pumili muna ng size bago mag-add sa cart
   // ============================================
-  const addToCart = (product: Product) => {
-    const stockCount = Number(product.stock) || 0;
-    if (stockCount <= 0) {
-      toast('This item is out of stock.', 'warning');
-      return;
-    }
-
-    // Hanapin kung nasa cart na (same id)
-    const existingIndex = cart.findIndex((item) => item.id === product.id);
-
-    if (existingIndex !== -1) {
-      // Nasa cart na → increment qty
-      const existing = cart[existingIndex];
-      const currentQty = Number(existing.qty) || 0;
-
-      if (currentQty + 1 > stockCount) {
-        toast(`Stock limit reached. Only ${stockCount} available.`, 'warning');
-        return;
-      }
-
-      const nextCart = [...cart];
-      nextCart[existingIndex] = { ...existing, qty: currentQty + 1 };
-      setCart(nextCart);
-      toast(`${product.name} quantity updated in cart.`, 'success');
-    } else {
-      // Bago → add sa cart
-      const newItem: any = {
-        id: product.id,
-        name: product.name,
-        price: Number(product.price) || 0,
-        qty: 1,
-        size: (product as any).sizes?.[0] || (product as any).size || 'N/A',
-        organization: product.organization,
-        category: product.category,
-      };
-
-      setCart([...cart, newItem]);
-      toast(`${product.name} added to cart!`, 'success');
-    }
+  const goToProduct = (product: Product) => {
+    navigate(`/products/${encodeURIComponent(product.id)}`);
   };
 
   // Categories list + count
@@ -206,7 +168,6 @@ export default function CatalogPage() {
 
         {/* BODY: categories card + product grid */}
         <div className="catalog-body">
-          {/* Categories card */}
           <aside className="catalog-categories">
             <div className="catalog-categories__card">
               <p className="catalog-categories__title">Categories</p>
@@ -242,7 +203,6 @@ export default function CatalogPage() {
             </div>
           </aside>
 
-          {/* Product grid */}
           <section className="catalog-grid-section">
             <div className="catalog-results-meta">
               <span>
@@ -267,7 +227,7 @@ export default function CatalogPage() {
                   <ProductCard
                     key={product.id}
                     product={product}
-                    onAddToCart={addToCart}
+                    onSelectProduct={goToProduct}
                   />
                 ))}
               </div>
@@ -300,19 +260,28 @@ export default function CatalogPage() {
 // ============================================
 function ProductCard({
   product,
-  onAddToCart,
+  onSelectProduct,
 }: {
   product: Product;
-  onAddToCart: (product: Product) => void;
+  onSelectProduct: (product: Product) => void;
 }) {
   const badge = getStockBadge(product.stock);
   const isOutOfStock = (Number(product.stock) || 0) <= 0;
 
   return (
     <article className="catalog-card">
-      <Link
-        to={`/products/${encodeURIComponent(product.id)}`}
+      {/* Media — clickable to ProductPage */}
+      <div
         className="catalog-card__media"
+        role="button"
+        tabIndex={0}
+        onClick={() => onSelectProduct(product)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onSelectProduct(product);
+          }
+        }}
         aria-label={`View ${product.name}`}
       >
         <ProductImage
@@ -333,7 +302,7 @@ function ProductCard({
         >
           <Heart className="react-icon" aria-hidden="true" />
         </button>
-      </Link>
+      </div>
 
       <div className="catalog-card__body">
         <p className="catalog-card__name" title={product.name}>
@@ -341,14 +310,16 @@ function ProductCard({
         </p>
         <p className="catalog-card__category">{product.category}</p>
         <p className="catalog-card__price">{formatPrice(product.price)}</p>
+
+        {/* Add to Cart → go to ProductPage (para pumili ng size) */}
         <button
           type="button"
           className="catalog-card__cta"
-          onClick={() => onAddToCart(product)}
+          onClick={() => onSelectProduct(product)}
           disabled={isOutOfStock}
         >
           <ShoppingCart className="react-icon" aria-hidden="true" />
-          <span>{isOutOfStock ? 'Out of Stock' : 'Add to Cart'}</span>
+          <span>{isOutOfStock ? 'Out of Stock' : 'Select Options'}</span>
         </button>
       </div>
     </article>
