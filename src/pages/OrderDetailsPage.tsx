@@ -31,7 +31,6 @@ import { useToast } from '../toast';
 import {
   formatDate,
   formatPrice,
-  getOrderClaimDate,
   getOrderCustomerName,
   getOrderDate,
   getOrderEmail,
