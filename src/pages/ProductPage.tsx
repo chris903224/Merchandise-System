@@ -1,7 +1,7 @@
 // src/pages/ProductPage.tsx
 
 import { useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link,  useParams } from 'react-router-dom';
 import {
   ArrowLeft,
   ShoppingCart,

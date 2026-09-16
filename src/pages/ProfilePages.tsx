@@ -1,6 +1,6 @@
 // src/pages/ProfilePage.tsx
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   User,
@@ -71,8 +71,12 @@ export default function ProfilePage() {
   const [coverPhoto, setCoverPhoto] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<ProfileTab>('info');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarPinned, setIsSidebarPinned] = useState(false);
 
-  // Not on the session model yet
+  const sidebarRef = useRef<HTMLElement>(null);
+  const hoverZoneRef = useRef<HTMLDivElement>(null);
+  const closeTimerRef = useRef<number | null>(null);
+
   const [courseStrand] = useState('');
   const [yearLevel] = useState('');
   const [dob] = useState('');
@@ -94,6 +98,45 @@ export default function ProfilePage() {
     setIdNumber(session.idNumber || '');
     setProfilePicture(session.profilePicture || null);
   }, [session, navigate]);
+
+  // Hover-to-open sidebar (desktop only)
+  useEffect(() => {
+    const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
+    if (!isDesktop()) return;
+
+    const openSidebar = () => {
+      if (closeTimerRef.current) {
+        window.clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
+      setIsSidebarOpen(true);
+    };
+
+    const scheduleClose = () => {
+      if (isSidebarPinned) return;
+      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = window.setTimeout(() => {
+        setIsSidebarOpen(false);
+      }, 150);
+    };
+
+    const zone = hoverZoneRef.current;
+    const sidebar = sidebarRef.current;
+    if (!zone || !sidebar) return;
+
+    zone.addEventListener('mouseenter', openSidebar);
+    sidebar.addEventListener('mouseenter', openSidebar);
+    sidebar.addEventListener('mouseleave', scheduleClose);
+    zone.addEventListener('mouseleave', scheduleClose);
+
+    return () => {
+      zone.removeEventListener('mouseenter', openSidebar);
+      sidebar.removeEventListener('mouseenter', openSidebar);
+      sidebar.removeEventListener('mouseleave', scheduleClose);
+      zone.removeEventListener('mouseleave', scheduleClose);
+      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+    };
+  }, [isSidebarPinned, session]);
 
   if (!session) return null;
 
@@ -184,12 +227,33 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="profile-shell">
-      {/* ============================================
-          SIDEBAR (dark, matches Settings page)
-          ============================================ */}
-      <aside className={`profile-sidebar ${isSidebarOpen ? 'is-open' : ''}`}>
+    <div className={`profile-shell ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
+      {/* Hover zone sa left edge — desktop only */}
+      <div
+        ref={hoverZoneRef}
+        className="profile-hover-zone"
+        aria-hidden="true"
+      />
+
+      <aside
+        ref={sidebarRef}
+        className={`profile-sidebar ${isSidebarOpen ? 'is-open' : ''}`}
+      >
         <div className="profile-sidebar__top">
+          <button
+            type="button"
+            className="profile-sidebar__pin"
+            onClick={() => setIsSidebarPinned((p) => !p)}
+            aria-label={isSidebarPinned ? 'Unpin sidebar' : 'Pin sidebar'}
+            title={isSidebarPinned ? 'Unpin sidebar' : 'Pin sidebar'}
+          >
+            {isSidebarPinned ? (
+              <X className="react-icon" />
+            ) : (
+              <ChevronRight className="react-icon" />
+            )}
+          </button>
+
           <Link to="/" className="profile-sidebar__brand" onClick={() => setIsSidebarOpen(false)}>
             <span className="profile-sidebar__brand-mark">SJ</span>
             <span className="profile-sidebar__brand-copy">
@@ -223,7 +287,6 @@ export default function ProfilePage() {
         </div>
       </aside>
 
-      {/* Backdrop for mobile */}
       {isSidebarOpen ? (
         <div
           className="profile-backdrop"
@@ -232,11 +295,7 @@ export default function ProfilePage() {
         />
       ) : null}
 
-      {/* ============================================
-          MAIN AREA
-          ============================================ */}
       <div className="profile-main-wrap">
-        {/* Mobile floating menu button */}
         <button
           type="button"
           className="profile-mobile-menu"
@@ -253,9 +312,7 @@ export default function ProfilePage() {
         <main className="profile-page">
           <div className="profile-container">
             <div className="profile-layout">
-              {/* ===== Main column ===== */}
               <div className="profile-main">
-                {/* Cover */}
                 <div
                   className="profile-cover"
                   style={coverPhoto ? { backgroundImage: `url(${coverPhoto})` } : undefined}
@@ -312,7 +369,6 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                {/* Tabs */}
                 <nav className="profile-tabs" role="tablist" aria-label="Profile sections">
                   <button
                     type="button"
@@ -343,7 +399,6 @@ export default function ProfilePage() {
                   </button>
                 </nav>
 
-                {/* Tab content — same as before */}
                 {activeTab === 'info' && (
                   <>
                     <div className="profile-card">
@@ -562,7 +617,6 @@ export default function ProfilePage() {
                 )}
               </div>
 
-              {/* ===== Right rail (secondary info) ===== */}
               <aside className="profile-side">
                 <div className="profile-side__card">
                   <div className="profile-side__header">

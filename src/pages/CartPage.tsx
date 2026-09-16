@@ -1,6 +1,6 @@
 // src/pages/CartPage.tsx
 
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
@@ -12,7 +12,6 @@ import {
   Store,
   Trash2,
   ShieldCheck,
-  
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
@@ -23,11 +22,62 @@ export default function CartPage() {
   const toast = useToast();
   const { session, cart, products, setCart } = useApp();
 
+  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
+
+  const getItemKey = (item: { id: string; size?: string }) =>
+    `${item.id}-${item.size ?? 'default'}`;
+
+  const itemKeys = useMemo(() => cart.map(getItemKey), [cart]);
+
+  useEffect(() => {
+    setSelectedKeys((prev) => {
+      const validKeys = new Set(itemKeys);
+      const next = new Set<string>();
+
+      prev.forEach((key) => {
+        if (validKeys.has(key)) next.add(key);
+      });
+
+      itemKeys.forEach((key) => {
+        if (!prev.has(key)) next.add(key);
+      });
+
+      if (next.size === prev.size && [...next].every((k) => prev.has(k))) {
+        return prev;
+      }
+      return next;
+    });
+  }, [itemKeys]);
+
+  const allSelected = itemKeys.length > 0 && itemKeys.every((k) => selectedKeys.has(k));
+  const someSelected = selectedKeys.size > 0 && !allSelected;
+  const selectedCount = selectedKeys.size;
+
   const subtotal = useMemo(() => sumCartItems(cart), [cart]);
   const totalItems = useMemo(
     () => cart.reduce((sum, item) => sum + (Number(item.qty) || 0), 0),
     [cart],
   );
+
+  const handleSelectAll = () => {
+    if (allSelected) {
+      setSelectedKeys(new Set());
+    } else {
+      setSelectedKeys(new Set(itemKeys));
+    }
+  };
+
+  const handleToggleItem = (key: string) => {
+    setSelectedKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  };
 
   const updateQty = (index: number, delta: number) => {
     const item = cart[index];
@@ -56,9 +106,24 @@ export default function CartPage() {
     toast('Item removed from cart', 'info');
   };
 
+  const removeSelected = () => {
+    if (selectedCount === 0) {
+      toast('No items selected.', 'info');
+      return;
+    }
+    const nextCart = cart.filter((item) => !selectedKeys.has(getItemKey(item)));
+    setCart(nextCart);
+    setSelectedKeys(new Set());
+    toast(
+      `${selectedCount} item${selectedCount === 1 ? '' : 's'} removed`,
+      'info',
+    );
+  };
+
   const clearCart = () => {
     if (!cart.length) return;
     setCart([]);
+    setSelectedKeys(new Set());
     toast('Cart cleared', 'info');
   };
 
@@ -76,15 +141,16 @@ export default function CartPage() {
       toast('Your cart is empty.', 'warning');
       return;
     }
+    if (selectedCount === 0) {
+      toast('Please select at least one item to checkout.', 'warning');
+      return;
+    }
     navigate('/checkout');
   };
 
   return (
     <main className="cart-page">
       <div className="cart-container">
-        {/* ============================================
-            HERO BANNER
-            ============================================ */}
         <header className="cart-hero">
           <div className="cart-hero__copy">
             <p className="cart-hero__kicker">SJCM Store</p>
@@ -100,31 +166,29 @@ export default function CartPage() {
           </div>
         </header>
 
-        {/* ============================================
-            TOOLBAR: select all + remove + continue
-            ============================================ */}
         <div className="cart-toolbar">
           <label className="cart-toolbar__select-all">
             <input
               type="checkbox"
-              checked={cart.length > 0}
-              onChange={() => {
-                if (cart.length > 0) {
-                  setCart([]);
-                  toast('Cart cleared', 'info');
-                }
+              checked={allSelected}
+              ref={(el) => {
+                if (el) el.indeterminate = someSelected;
               }}
+              onChange={handleSelectAll}
               aria-label="Select all items"
             />
-            <span>Select All ({totalItems} item{totalItems === 1 ? '' : 's'})</span>
+            <span>
+              Select All ({selectedCount} of {cart.length} item
+              {cart.length === 1 ? '' : 's'})
+            </span>
           </label>
 
           <div className="cart-toolbar__actions">
             <button
               type="button"
               className="cart-toolbar__btn cart-toolbar__btn--ghost"
-              onClick={clearCart}
-              disabled={!cart.length}
+              onClick={removeSelected}
+              disabled={selectedCount === 0}
             >
               <Trash2 className="react-icon" aria-hidden="true" />
               <span>Remove Selected</span>
@@ -135,11 +199,7 @@ export default function CartPage() {
           </div>
         </div>
 
-        {/* ============================================
-            BODY: cart items + summary
-            ============================================ */}
         <div className="cart-body">
-          {/* Cart items */}
           <section className="cart-items" aria-label="Cart items">
             {cart.length === 0 ? (
               <div className="cart-empty">
@@ -156,20 +216,27 @@ export default function CartPage() {
             ) : (
               <ul className="cart-list">
                 {cart.map((item, index) => {
-                  const itemTotal = (Number(item.price) || 0) * (Number(item.qty) || 0);
+                  const itemKey = getItemKey(item);
+                  const itemTotal =
+                    (Number(item.price) || 0) * (Number(item.qty) || 0);
+                  const isSelected = selectedKeys.has(itemKey);
                   return (
-                    <li className="cart-item" key={`${item.id}-${item.size}`}>
-                      {/* Select checkbox */}
+                    <li
+                      className={`cart-item ${isSelected ? 'is-selected' : ''}`}
+                      key={itemKey}
+                    >
                       <label className="cart-item__select" aria-label="Select item">
-                        <input type="checkbox" defaultChecked />
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => handleToggleItem(itemKey)}
+                        />
                       </label>
 
-                      {/* Media placeholder */}
                       <div className="cart-item__media" aria-hidden="true">
                         <Package className="react-icon" aria-hidden="true" />
                       </div>
 
-                      {/* Details */}
                       <div className="cart-item__details">
                         <p className="cart-item__name" title={item.name}>
                           {item.name}
@@ -194,7 +261,6 @@ export default function CartPage() {
                         </p>
                       </div>
 
-                      {/* Quantity control */}
                       <div className="cart-item__qty">
                         <button
                           type="button"
@@ -215,12 +281,10 @@ export default function CartPage() {
                         </button>
                       </div>
 
-                      {/* Line total */}
                       <div className="cart-item__total">
                         {formatPrice(itemTotal)}
                       </div>
 
-                      {/* Remove */}
                       <button
                         type="button"
                         className="cart-item__remove"
@@ -235,7 +299,6 @@ export default function CartPage() {
               </ul>
             )}
 
-            {/* Info callout */}
             {cart.length > 0 && (
               <div className="cart-note">
                 <ShieldCheck className="react-icon" aria-hidden="true" />
@@ -249,7 +312,6 @@ export default function CartPage() {
             )}
           </section>
 
-          {/* Summary panel */}
           <aside className="cart-summary" aria-labelledby="summary-title">
             <h2 id="summary-title" className="cart-summary__title">
               Order Summary
@@ -275,7 +337,7 @@ export default function CartPage() {
                 type="button"
                 className="cart-summary__btn cart-summary__btn--primary"
                 onClick={proceedToCheckout}
-                disabled={!cart.length}
+                disabled={!cart.length || selectedCount === 0}
               >
                 <span>Proceed to Checkout</span>
                 <ArrowRight className="react-icon" aria-hidden="true" />
@@ -291,7 +353,6 @@ export default function CartPage() {
               </button>
             </div>
 
-            {/* Pickup location card */}
             <div className="cart-summary__pickup">
               <span className="cart-summary__pickup-icon">
                 <MapPin className="react-icon" aria-hidden="true" />

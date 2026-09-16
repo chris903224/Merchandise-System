@@ -1,0 +1,319 @@
+/* ============================================
+   THEME VARIABLES — 9 glassy themes
+   ============================================ */
+
+:root,
+[data-theme='cream-glass'] {
+  --theme-primary: #d97706;
+  --theme-primary-hover: #b45309;
+  --theme-primary-rgb: 217, 119, 6;
+  --theme-accent: #fbbf24;
+  --theme-accent-rgb: 251, 191, 36;
+  --theme-bg: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fef3c7 100%);
+  --theme-bg-solid: #fef3c7;
+  --theme-surface: #ffffff;
+  --theme-surface-2: #fffbeb;
+  --theme-text: #78350f;
+  --theme-text-muted: rgba(120, 53, 15, 0.65);
+  --theme-border: rgba(217, 119, 6, 0.2);
+  --theme-border-strong: rgba(217, 119, 6, 0.35);
+}
+
+[data-theme='green-glass'] {
+  --theme-primary: #059669;
+  --theme-primary-hover: #047857;
+  --theme-primary-rgb: 5, 150, 105;
+  --theme-accent: #34d399;
+  --theme-accent-rgb: 52, 211, 153;
+  --theme-bg: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #d1fae5 100%);
+  --theme-bg-solid: #d1fae5;
+  --theme-surface: #ffffff;
+  --theme-surface-2: #f0fdf9;
+  --theme-text: #064e3b;
+  --theme-text-muted: rgba(6, 78, 59, 0.65);
+  --theme-border: rgba(5, 150, 105, 0.2);
+  --theme-border-strong: rgba(5, 150, 105, 0.35);
+}
+
+[data-theme='white-glass'] {
+  --theme-primary: #64748b;
+  --theme-primary-hover: #475569;
+  --theme-primary-rgb: 100, 116, 139;
+  --theme-accent: #94a3b8;
+  --theme-accent-rgb: 148, 163, 184;
+  --theme-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f8fafc 100%);
+  --theme-bg-solid: #f8fafc;
+  --theme-surface: #ffffff;
+  --theme-surface-2: #f1f5f9;
+  --theme-text: #1e293b;
+  --theme-text-muted: rgba(30, 41, 59, 0.65);
+  --theme-border: rgba(100, 116, 139, 0.2);
+  --theme-border-strong: rgba(100, 116, 139, 0.35);
+}
+
+[data-theme='yellow-glass'] {
+  --theme-primary: #ca8a04;
+  --theme-primary-hover: #a16207;
+  --theme-primary-rgb: 202, 138, 4;
+  --theme-accent: #facc15;
+  --theme-accent-rgb: 250, 204, 21;
+  --theme-bg: linear-gradient(135deg, #fef9c3 0%, #fde047 50%, #fef9c3 100%);
+  --theme-bg-solid: #fef9c3;
+  --theme-surface: #ffffff;
+  --theme-surface-2: #fefce8;
+  --theme-text: #713f12;
+  --theme-text-muted: rgba(113, 63, 18, 0.65);
+  --theme-border: rgba(202, 138, 4, 0.2);
+  --theme-border-strong: rgba(202, 138, 4, 0.35);
+}
+
+[data-theme='orange-glass'] {
+  --theme-primary: #ea580c;
+  --theme-primary-hover: #c2410c;
+  --theme-primary-rgb: 234, 88, 12;
+  --theme-accent: #fb923c;
+  --theme-accent-rgb: 251, 146, 60;
+  --theme-bg: linear-gradient(135deg, #ffedd5 0%, #fed7aa 50%, #ffedd5 100%);
+  --theme-bg-solid: #ffedd5;
+  --theme-surface: #ffffff;
+  --theme-surface-2: #fff7ed;
+  --theme-text: #7c2d12;
+  --theme-text-muted: rgba(124, 45, 18, 0.65);
+  --theme-border: rgba(234, 88, 12, 0.2);
+  --theme-border-strong: rgba(234, 88, 12, 0.35);
+}
+
+[data-theme='purple-glass'] {
+  --theme-primary: #7c3aed;
+  --theme-primary-hover: #6d28d9;
+  --theme-primary-rgb: 124, 58, 237;
+  --theme-accent: #a78bfa;
+  --theme-accent-rgb: 167, 139, 250;
+  --theme-bg: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 50%, #ede9fe 100%);
+  --theme-bg-solid: #ede9fe;
+  --theme-surface: #ffffff;
+  --theme-surface-2: #faf5ff;
+  --theme-text: #4c1d95;
+  --theme-text-muted: rgba(76, 29, 149, 0.65);
+  --theme-border: rgba(124, 58, 237, 0.2);
+  --theme-border-strong: rgba(124, 58, 237, 0.35);
+}
+
+[data-theme='gray-glass'] {
+  --theme-primary: #64748b;
+  --theme-primary-hover: #475569;
+  --theme-primary-rgb: 100, 116, 139;
+  --theme-accent: #94a3b8;
+  --theme-accent-rgb: 148, 163, 184;
+  --theme-bg: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 50%, #e2e8f0 100%);
+  --theme-bg-solid: #e2e8f0;
+  --theme-surface: #ffffff;
+  --theme-surface-2: #f1f5f9;
+  --theme-text: #1e293b;
+  --theme-text-muted: rgba(30, 41, 59, 0.65);
+  --theme-border: rgba(100, 116, 139, 0.2);
+  --theme-border-strong: rgba(100, 116, 139, 0.35);
+}
+
+[data-theme='light-black-glass'] {
+  --theme-primary: #52525b;
+  --theme-primary-hover: #3f3f46;
+  --theme-primary-rgb: 82, 82, 91;
+  --theme-accent: #a1a1aa;
+  --theme-accent-rgb: 161, 161, 170;
+  --theme-bg: linear-gradient(135deg, #e4e4e7 0%, #a1a1aa 50%, #e4e4e7 100%);
+  --theme-bg-solid: #e4e4e7;
+  --theme-surface: #ffffff;
+  --theme-surface-2: #f4f4f5;
+  --theme-text: #27272a;
+  --theme-text-muted: rgba(39, 39, 42, 0.65);
+  --theme-border: rgba(82, 82, 91, 0.2);
+  --theme-border-strong: rgba(82, 82, 91, 0.35);
+}
+
+[data-theme='dark-glass'] {
+  --theme-primary: #94a3b8;
+  --theme-primary-hover: #64748b;
+  --theme-primary-rgb: 148, 163, 184;
+  --theme-accent: #cbd5e1;
+  --theme-accent-rgb: 203, 213, 225;
+  --theme-bg: linear-gradient(135deg, #334155 0%, #1e293b 50%, #0f172a 100%);
+  --theme-bg-solid: #1e293b;
+  --theme-surface: #1e293b;
+  --theme-surface-2: #334155;
+  --theme-text: #f1f5f9;
+  --theme-text-muted: rgba(241, 245, 249, 0.7);
+  --theme-border: rgba(148, 163, 184, 0.2);
+  --theme-border-strong: rgba(148, 163, 184, 0.35);
+}
+
+/* ============================================
+   BODY BACKGROUND
+   ============================================ */
+
+body {
+  background: var(--theme-bg);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--theme-text);
+  transition: background 0.5s ease, color 0.3s ease;
+}
+
+/* Page wrappers — transparent para lumabas ang body background */
+.dashboard-shell,
+.order-page,
+.catalog-page,
+.cart-page,
+.checkout-page,
+.product-page,
+.settings-shell,
+.profile-shell,
+.auth-shell,
+.register-page {
+  background: transparent !important;
+}
+
+/* ============================================
+   THEME GRID — glassy cards sa Appearance tab
+   ============================================ */
+
+/* ============================================
+   THEME GRID — compact glassy cards (vertical layout)
+   ============================================ */
+
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+  max-width: 100%;
+}
+
+.theme-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 2px solid transparent;
+  color: #1a1a1a;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 4.5rem;
+  text-align: center;
+}
+
+.theme-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.theme-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.theme-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 24px -8px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.theme-card.is-active {
+  border-color: #10b981;
+  box-shadow:
+    0 0 0 2px rgba(16, 185, 129, 0.25),
+    0 12px 24px -8px rgba(16, 185, 129, 0.3);
+}
+
+.theme-card__emoji {
+  font-size: 1.35rem;
+  line-height: 1;
+  position: relative;
+  z-index: 3;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+}
+
+.theme-card__label {
+  position: relative;
+  z-index: 3;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.25);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Light text color */
+.theme-card[data-theme-id='green-glass'] .theme-card__label,
+.theme-card[data-theme-id='orange-glass'] .theme-card__label,
+.theme-card[data-theme-id='purple-glass'] .theme-card__label,
+.theme-card[data-theme-id='dark-glass'] .theme-card__label {
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark text color */
+.theme-card[data-theme-id='cream-glass'] .theme-card__label,
+.theme-card[data-theme-id='white-glass'] .theme-card__label,
+.theme-card[data-theme-id='yellow-glass'] .theme-card__label,
+.theme-card[data-theme-id='gray-glass'] .theme-card__label,
+.theme-card[data-theme-id='light-black-glass'] .theme-card__label {
+  color: #1a1a1a;
+}
+
+.theme-card__check {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: #10b981;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.5);
+  animation: theme-check-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 4;
+}
+
+.theme-card__check .react-icon {
+  width: 0.7rem;
+  height: 0.7rem;
+  stroke-width: 3;
+}
+
+@keyframes theme-check-pop {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .theme-grid {
+    grid-template-columns: 1fr;
+  }
+}

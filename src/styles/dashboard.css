@@ -3,16 +3,16 @@
    ============================================================ */
 
 .dashboard-shell {
-  --sjcm-maroon: #5a1119;
-  --sjcm-maroon-dark: #3d0b12;
-  --sjcm-gold: #b5892b;
-  --sjcm-cream: #f2ecdc;
-  --sjcm-cream-soft: #efe8d9;
-  --sjcm-white: #fffcf4;
-  --sjcm-ink: #221a10;
-  --sjcm-ink-soft: #6f6156;
-  --sjcm-border: rgba(35, 26, 12, 0.1);
-  --sjcm-border-strong: rgba(35, 26, 12, 0.18);
+  --sjcm-maroon: var(--theme-primary);
+  --sjcm-maroon-dark: var(--theme-primary-hover);
+  --sjcm-gold: var(--theme-accent);
+  --sjcm-cream: var(--theme-bg-solid);
+  --sjcm-cream-soft: var(--theme-bg-solid);
+  --sjcm-white: var(--theme-surface);
+  --sjcm-ink: var(--theme-text);
+  --sjcm-ink-soft: var(--theme-text-muted);
+  --sjcm-border: var(--theme-border);
+  --sjcm-border-strong: var(--theme-border);
   --sjcm-success: #3c7a54;
   --sjcm-warning: #9c621e;
   --sjcm-danger: #a3283a;
@@ -20,11 +20,10 @@
   display: flex;
   align-items: stretch;
   min-height: calc(100vh - 4.25rem);
-  background: var(--sjcm-cream);
-  color: var(--sjcm-ink);
+  background: var(--theme-bg-solid);      /* ← palitan din yung background */
+  color: var(--theme-text);
   font-family: var(--font-body, 'Inter', sans-serif);
 }
-
 .dashboard-shell .react-icon {
   width: 1rem;
   height: 1rem;
@@ -807,3 +806,126 @@
     align-items: flex-start;
   }
 }
+/* ============================================
+   HOVER-TO-OPEN SIDEBAR BEHAVIOR
+   ============================================ */
+
+/* Hover zone — manipis na strip sa left edge */
+.dashboard-hover-zone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 100vh;
+  z-index: 40;
+  pointer-events: auto;
+}
+
+/* Desktop: sidebar nakatago by default, slide-in kapag .is-open */
+@media (min-width: 1024px) {
+  .dashboard-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 50;
+    position: relative;
+  }
+
+  .dashboard-sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  /* Itago ang mobile menu button sa desktop */
+  .dashboard-mobile-menu {
+    display: none;
+  }
+
+  /* Itago ang backdrop sa desktop */
+  .dashboard-backdrop {
+    display: none;
+  }
+}
+
+/* Mobile: walang hover zone */
+@media (max-width: 1023px) {
+  .dashboard-hover-zone {
+    display: none;
+  }
+}
+
+/* Pin button */
+.dashboard-sidebar__pin {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  z-index: 2;
+}
+.dashboard-sidebar__pin:hover {
+  opacity: 1;
+}
+@media (min-width: 1024px) {
+  .dashboard-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 50;
+  }
+  .dashboard-sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  /* Premium centered layout kapag walang sidebar */
+  .dashboard-main {
+    margin-left: 0;
+    transition: margin-left 0.3s ease, padding 0.3s ease;
+    display: flex;
+    justify-content: center;
+    padding: 0 48px;
+  }
+
+  /* Content wrapper — capped width at centered */
+  .dashboard-scroll {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  /* Kapag bukas ang sidebar, naka-push pero may max-width pa rin */
+  .dashboard-shell.is-sidebar-open .dashboard-main {
+    margin-left: 280px;
+    padding: 0 40px;
+  }
+
+  .dashboard-mobile-menu,
+  .dashboard-backdrop {
+    display: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .dashboard-hover-zone {
+    display: none;
+  }
+}
+/* ============================================
+   SCALE EFFECT — mukhang 90% kahit 100% browser zoom
+   ============================================ */
+
+@media (min-width: 1024px) {
+  /* Main content wrapper — i-scale pababa */
+  .dashboard-scroll,
+  .profile-container,
+  .settings-scroll,
+  .order-container {
+    zoom: 0.9; /* palitan ng 0.7 para 70% effect */
+  }
+}
+

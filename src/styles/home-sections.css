@@ -159,7 +159,6 @@
   font-weight: 700;
   line-height: 1.3;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
 }
 
 .arrival-card__price {
@@ -245,7 +244,6 @@
   font-weight: 700;
   line-height: 1.3;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
 }
 
 .best-find-card__price { margin: 0; color: var(--color-text-muted); font-size: 0.72rem; }

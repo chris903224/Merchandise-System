@@ -1,24 +1,32 @@
 /* src/pages/ProfilePage.css
    SJCM Store — Profile page
-   Self-contained tokens (no shared design system file was provided,
-   so these are scoped to .profile-page and won't leak into the rest
-   of the app). Palette pulled from the school's maroon/gold crest. */
+   Theme-driven: lahat ng colors ay naka-map sa global theme variables.
+*/
+
+/* ============================================================
+   PROFILE PAGE — THEME-DRIVEN
+   ============================================================ */
 
 .profile-page {
-  --maroon-900: #4a141c;
-  --maroon-700: #6b1f2a;
-  --maroon-600: #7f2632;
-  --maroon-100: #f6e9ea;
-  --gold-600: #b8863a;
-  --gold-500: #c99a3f;
-  --gold-100: #f6ecd6;
-  --cream-50: #faf8f4;
-  --cream-100: #f3efe6;
-  --ink-900: #241c19;
-  --ink-600: #6f655d;
-  --ink-400: #a49a8f;
-  --line-200: #e9e2d5;
-  --white: #ffffff;
+  --maroon-900: var(--theme-text);
+  --maroon-700: var(--theme-primary);
+  --maroon-600: var(--theme-primary);
+  --maroon-100: var(--theme-surface-2);
+
+  --gold-600: var(--theme-accent);
+  --gold-500: var(--theme-accent);
+  --gold-100: var(--theme-surface-2);
+
+  --cream-50: var(--theme-bg-solid);
+  --cream-100: var(--theme-surface-2);
+
+  --ink-900: var(--theme-text);
+  --ink-600: var(--theme-text-muted);
+  --ink-400: var(--theme-text-muted);
+  --line-200: var(--theme-border);
+
+  --white: var(--theme-surface);
+
   --green-600: #1f9d55;
   --green-100: #e4f5ea;
   --teal-600: #0d9488;
@@ -29,7 +37,9 @@
   --purple-100: #ede8fb;
   --blue-600: #2f6fd8;
   --blue-100: #e6eefb;
-  --shadow-card: 0 1px 2px rgba(74, 20, 28, 0.04), 0 8px 24px rgba(74, 20, 28, 0.06);
+
+  --shadow-card: 0 1px 2px rgba(var(--theme-primary-rgb), 0.04),
+    0 8px 24px rgba(var(--theme-primary-rgb), 0.06);
   --radius-lg: 20px;
   --radius-md: 14px;
   --radius-sm: 10px;
@@ -37,9 +47,10 @@
   --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
   min-height: 100vh;
-  background: var(--cream-50);
+  background: transparent !important;
   font-family: var(--font-body);
-  color: var(--ink-900);
+  color: var(--theme-text);
+  transition: color 0.3s ease;
 }
 
 .profile-page * {
@@ -75,7 +86,7 @@
 }
 
 .profile-back:hover {
-  color: var(--maroon-700);
+  color: var(--theme-primary);
 }
 
 /* ===== Layout ===== */
@@ -101,17 +112,28 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   height: 240px;
-  background: linear-gradient(135deg, var(--maroon-900), var(--maroon-700)) center / cover;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  );
   background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
   display: flex;
   align-items: flex-end;
   box-shadow: var(--shadow-card);
+  transition: background 0.4s ease;
 }
 
 .profile-cover-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(36, 12, 16, 0.15) 0%, rgba(30, 10, 14, 0.75) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.15) 0%,
+    rgba(0, 0, 0, 0.75) 100%
+  );
   pointer-events: none;
 }
 
@@ -128,7 +150,7 @@
   border: 1px solid rgba(255, 255, 255, 0.5);
   background: rgba(255, 255, 255, 0.16);
   backdrop-filter: blur(6px);
-  color: var(--white);
+  color: #ffffff;
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
@@ -172,7 +194,7 @@
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  border: 4px solid var(--white);
+  border: 4px solid #ffffff;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
   overflow: hidden;
 }
@@ -190,9 +212,9 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  border: 2px solid var(--white);
-  background: var(--gold-500);
-  color: var(--maroon-900);
+  border: 2px solid #ffffff;
+  background: var(--theme-accent);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -206,7 +228,8 @@
 }
 
 .profile-picture-upload:hover {
-  background: var(--gold-600);
+  background: var(--theme-accent);
+  opacity: 0.85;
 }
 
 .profile-picture-upload:active {
@@ -215,7 +238,7 @@
 
 .profile-user-info {
   min-width: 0;
-  color: var(--white);
+  color: #ffffff;
 }
 
 .profile-name-row {
@@ -230,6 +253,7 @@
   font-size: 1.6rem;
   font-weight: 600;
   margin: 0;
+  color: #ffffff;
   line-height: 1.2;
 }
 
@@ -244,6 +268,7 @@
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.02em;
+  color: #ffffff;
 }
 
 .profile-status-dot {
@@ -299,12 +324,12 @@
 }
 
 .profile-tab:hover {
-  color: var(--maroon-700);
+  color: var(--theme-primary);
 }
 
 .profile-tab.is-active {
-  color: var(--maroon-700);
-  border-bottom-color: var(--maroon-700);
+  color: var(--theme-primary);
+  border-bottom-color: var(--theme-primary);
 }
 
 /* ===== Cards (shared) ===== */
@@ -315,6 +340,7 @@
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   padding: 22px 24px;
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .profile-card + .profile-card {
@@ -342,7 +368,7 @@
 .profile-card-title .react-icon {
   width: 18px;
   height: 18px;
-  color: var(--maroon-700);
+  color: var(--theme-primary);
 }
 
 .profile-card-subtitle {
@@ -358,14 +384,14 @@
   gap: 6px;
   padding: 8px 14px;
   border-radius: 999px;
-  border: 1px solid var(--gold-500);
-  background: var(--gold-100);
-  color: var(--maroon-700);
+  border: 1px solid var(--theme-accent);
+  background: var(--theme-surface-2);
+  color: var(--theme-primary);
   font-size: 0.82rem;
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
 .profile-edit-btn .react-icon {
@@ -374,8 +400,8 @@
 }
 
 .profile-edit-btn:hover {
-  background: var(--gold-500);
-  color: var(--white);
+  background: var(--theme-accent);
+  color: #ffffff;
 }
 
 .profile-edit-btn:active {
@@ -435,9 +461,9 @@
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  border: 2px solid var(--white);
-  background: var(--gold-500);
-  color: var(--maroon-900);
+  border: 2px solid #ffffff;
+  background: var(--theme-accent);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -450,7 +476,7 @@
 }
 
 .profile-photo-badge:hover {
-  background: var(--gold-600);
+  opacity: 0.85;
 }
 
 .profile-photo-btn {
@@ -474,8 +500,8 @@
 }
 
 .profile-photo-btn:hover {
-  border-color: var(--gold-500);
-  color: var(--maroon-700);
+  border-color: var(--theme-accent);
+  color: var(--theme-primary);
 }
 
 .profile-form-grid {
@@ -515,7 +541,7 @@
 .profile-form-field .react-icon {
   width: 15px;
   height: 15px;
-  color: var(--gold-600);
+  color: var(--theme-accent);
   flex-shrink: 0;
 }
 
@@ -536,8 +562,8 @@
   width: 38px;
   height: 38px;
   border-radius: var(--radius-sm);
-  background: var(--gold-100);
-  color: var(--maroon-700);
+  background: var(--theme-surface-2);
+  color: var(--theme-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -561,7 +587,7 @@
   color: var(--ink-600);
 }
 
-/* ===== Empty note (security tab, activity) ===== */
+/* ===== Empty note ===== */
 
 .profile-empty-note {
   margin: 0;
@@ -569,370 +595,18 @@
   color: var(--ink-600);
 }
 
-/* ===== Sidebar ===== */
-
-.profile-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  min-width: 0;
-}
-
-.sidebar-card {
-  background: var(--white);
-  border: 1px solid var(--line-200);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  padding: 18px 20px;
-}
-
-.sidebar-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.sidebar-card-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: var(--ink-900);
-}
-
-.sidebar-card-title .react-icon {
-  width: 16px;
-  height: 16px;
-  color: var(--gold-600);
-}
-
-.sidebar-card > .sidebar-card-title {
-  margin-bottom: 14px;
-}
-
-.sidebar-verified-pill {
-  padding: 3px 10px;
-  border-radius: 999px;
-  background: var(--green-100);
-  color: var(--green-600);
-  font-size: 0.72rem;
-  font-weight: 700;
-}
-
-.sidebar-viewall {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--maroon-700);
-  text-decoration: none;
-}
-
-.sidebar-viewall:hover {
-  text-decoration: underline;
-}
-
-/* Account status list */
-
-.status-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.status-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: var(--ink-900);
-}
-
-.status-item .react-icon {
-  width: 17px;
-  height: 17px;
-  flex-shrink: 0;
-}
-
-.status-item .react-icon.is-met {
-  color: var(--green-600);
-}
-
-.status-item .react-icon.is-pending {
-  color: var(--ink-400);
-}
-
-/* Quick actions */
-
-.quick-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.quick-action {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 8px;
-  border-radius: var(--radius-sm);
-  text-decoration: none;
-  color: inherit;
-  transition: background 0.15s ease;
-}
-
-.quick-action:hover {
-  background: var(--cream-100);
-}
-
-.quick-action:hover .quick-action-chevron {
-  transform: translateX(2px);
-}
-
-.quick-action-icon {
-  flex-shrink: 0;
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.quick-action-icon .react-icon {
-  width: 18px;
-  height: 18px;
-}
-
-.quick-action-icon--teal {
-  background: var(--teal-100);
-  color: var(--teal-600);
-}
-
-.quick-action-icon--pink {
-  background: var(--pink-100);
-  color: var(--pink-600);
-}
-
-.quick-action-icon--purple {
-  background: var(--purple-100);
-  color: var(--purple-600);
-}
-
-.quick-action-icon--blue {
-  background: var(--blue-100);
-  color: var(--blue-600);
-}
-
-.quick-action-text {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.quick-action-label {
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: var(--ink-900);
-}
-
-.quick-action-desc {
-  font-size: 0.76rem;
-  color: var(--ink-600);
-}
-
-.quick-action-chevron {
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  color: var(--ink-400);
-  transition: transform 0.15s ease;
-}
-
-/* Recent activity */
-
-.activity-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.activity-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px;
-  border-radius: var(--radius-sm);
-  transition: background 0.15s ease;
-}
-
-.activity-item:hover {
-  background: var(--cream-100);
-}
-
-.activity-icon {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.activity-icon .react-icon {
-  width: 15px;
-  height: 15px;
-}
-
-.activity-icon--order {
-  background: var(--gold-100);
-  color: var(--gold-600);
-}
-
-.activity-icon--profile {
-  background: var(--pink-100);
-  color: var(--pink-600);
-}
-
-.activity-icon--security {
-  background: var(--purple-100);
-  color: var(--purple-600);
-}
-
-.activity-text {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.activity-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--ink-900);
-}
-
-.activity-time {
-  font-size: 0.74rem;
-  color: var(--ink-600);
-}
-
-.activity-chevron {
-  flex-shrink: 0;
-  width: 15px;
-  height: 15px;
-  color: var(--ink-400);
-}
-
-/* ===== Focus states (accessibility) ===== */
-
-.profile-page a:focus-visible,
-.profile-page button:focus-visible {
-  outline: 2px solid var(--gold-600);
-  outline-offset: 2px;
-  border-radius: 6px;
-}
-
-/* ===== Motion ===== */
-
-@media (prefers-reduced-motion: reduce) {
-  .profile-page * {
-    transition: none !important;
-  }
-}
-
-/* ===== Responsive ===== */
-
-@media (max-width: 980px) {
-  .profile-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .profile-sidebar {
-    order: 2;
-  }
-}
-
-@media (max-width: 640px) {
-  .profile-container {
-    padding: 16px 14px 48px;
-  }
-
-  .profile-cover {
-    height: auto;
-    min-height: 200px;
-  }
-
-  .profile-cover-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 20px;
-  }
-
-  .profile-name {
-    font-size: 1.3rem;
-  }
-
-  .profile-info-body {
-    grid-template-columns: 1fr;
-  }
-
-  .profile-photo-block {
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .profile-form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .profile-card {
-    padding: 18px;
-  }
-
-  .profile-tabs {
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .profile-tabs::-webkit-scrollbar {
-    display: none;
-  }
-
-  .profile-tab {
-    white-space: nowrap;
-  }
-}
 /* ============================================================
-   APP SHELL WITH DARK SIDEBAR (matches Settings page layout)
+   APP SHELL WITH DARK SIDEBAR
    ============================================================ */
 
 .profile-shell {
-  --sjcm-maroon: #5a1119;
-  --sjcm-maroon-dark: #3d0b12;
-  --sjcm-maroon-darker: #25070b;
-  --sjcm-gold: #b5892b;
-  --sjcm-gold-light: #d9b872;
-
   display: flex;
   align-items: stretch;
   min-height: calc(100vh - 4.25rem);
-  background: var(--cream-50);
+  background: transparent !important;
   font-family: var(--font-body);
-  color: var(--ink-900);
+  color: var(--theme-text);
+  transition: background 0.4s ease, color 0.3s ease;
 }
 
 .profile-shell .react-icon {
@@ -940,21 +614,30 @@
 }
 
 /* ============================================================
-   DARK SIDEBAR
+   THEME-DRIVEN SIDEBAR
    ============================================================ */
 
 .profile-sidebar {
+  --sidebar-accent: var(--theme-accent);
+  --sidebar-accent-rgb: var(--theme-accent-rgb);
+  --sidebar-bg-from: var(--theme-primary);
+  --sidebar-bg-to: var(--theme-primary-hover);
+
   display: flex;
   flex: 0 0 15.5rem;
   width: 15.5rem;
   flex-direction: column;
   justify-content: space-between;
   padding: 1.5rem 1rem;
-  background:
-    linear-gradient(180deg, rgba(90, 17, 25, 0.92), rgba(37, 7, 11, 0.98)),
-    var(--sjcm-maroon-darker);
-  color: rgba(255, 253, 249, 0.82);
+  background: linear-gradient(
+    180deg,
+    var(--sidebar-bg-from) 0%,
+    var(--sidebar-bg-to) 100%
+  );
+  color: rgba(255, 255, 255, 0.85);
+  border-right: 1px solid rgba(var(--sidebar-accent-rgb), 0.15);
   overflow-y: auto;
+  transition: background 0.4s ease, border-color 0.4s ease;
 }
 
 .profile-sidebar__top {
@@ -968,7 +651,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.35rem 0.4rem 1rem;
-  border-bottom: 1px solid rgba(255, 253, 249, 0.14);
+  border-bottom: 1px solid rgba(var(--sidebar-accent-rgb), 0.18);
   text-decoration: none;
 }
 
@@ -978,10 +661,10 @@
   height: 2.5rem;
   flex-shrink: 0;
   place-items: center;
-  border: 1px solid rgba(217, 184, 114, 0.5);
+  border: 1px solid rgba(var(--sidebar-accent-rgb), 0.5);
   border-radius: 0.75rem;
-  background: rgba(217, 184, 114, 0.12);
-  color: var(--sjcm-gold-light);
+  background: rgba(var(--sidebar-accent-rgb), 0.12);
+  color: var(--sidebar-accent);
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 0.92rem;
@@ -995,7 +678,7 @@
 }
 
 .profile-sidebar__brand-name {
-  color: #fffdf9;
+  color: #ffffff;
   font-family: var(--font-display);
   font-size: 0.85rem;
   font-weight: 700;
@@ -1003,7 +686,7 @@
 }
 
 .profile-sidebar__brand-tag {
-  color: rgba(217, 184, 114, 0.72);
+  color: rgba(255, 255, 255, 0.75);
   font-size: 0.6rem;
   letter-spacing: 0.02em;
 }
@@ -1019,35 +702,50 @@
   gap: 0.75rem;
   padding: 0.65rem 0.75rem;
   border-radius: 0.6rem;
-  color: rgba(255, 253, 249, 0.72);
+  color: rgba(255, 255, 255, 0.75);
   font-size: 0.85rem;
   font-weight: 500;
   text-decoration: none;
-  transition: all 160ms ease;
+  transition: all 0.16s ease;
+}
+
+.profile-sidebar__item .react-icon {
+  color: rgba(255, 255, 255, 0.7);
+  width: 1rem;
+  height: 1rem;
 }
 
 .profile-sidebar__item:hover {
-  background: rgba(255, 253, 249, 0.06);
-  color: #fffdf9;
+  background: rgba(var(--sidebar-accent-rgb), 0.12);
+  color: #ffffff;
+}
+
+.profile-sidebar__item:hover .react-icon {
+  color: var(--sidebar-accent);
 }
 
 .profile-sidebar__item.is-active {
-  background: rgba(217, 184, 114, 0.14);
-  color: var(--sjcm-gold-light);
-  box-shadow: inset 3px 0 0 var(--sjcm-gold);
+  background: rgba(var(--sidebar-accent-rgb), 0.18);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 var(--sidebar-accent);
+}
+
+.profile-sidebar__item.is-active .react-icon {
+  color: var(--sidebar-accent);
 }
 
 .profile-sidebar__bottom {
   display: grid;
   gap: 0.15rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(255, 253, 249, 0.14);
+  border-top: 1px solid rgba(var(--sidebar-accent-rgb), 0.18);
   text-align: center;
 }
 
 .profile-sidebar__motto {
   margin: 0;
-  color: rgba(217, 184, 114, 0.72);
+  color: var(--sidebar-accent);
   font-family: var(--font-display);
   font-style: italic;
   font-size: 0.68rem;
@@ -1055,10 +753,27 @@
 
 .profile-sidebar__campus {
   margin: 0;
-  color: rgba(255, 253, 249, 0.5);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.62rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.profile-sidebar__pin {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  z-index: 2;
+}
+
+.profile-sidebar__pin:hover {
+  opacity: 1;
 }
 
 .profile-backdrop {
@@ -1090,15 +805,14 @@
   background: var(--white);
   color: var(--ink-900);
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(74, 20, 28, 0.12);
-  transition: all 160ms ease;
+  box-shadow: 0 8px 20px rgba(var(--theme-primary-rgb), 0.12);
+  transition: all 0.16s ease;
 }
 
 .profile-mobile-menu:hover {
   background: var(--cream-100);
 }
 
-/* Nested .profile-page inside main-wrap should stretch naturally */
 .profile-main-wrap .profile-page {
   min-height: auto;
   background: transparent;
@@ -1112,7 +826,7 @@
 }
 
 /* ============================================================
-   RIGHT RAIL (rename from .profile-sidebar to .profile-side)
+   RIGHT RAIL
    ============================================================ */
 
 .profile-side {
@@ -1153,7 +867,7 @@
 .profile-side__title .react-icon {
   width: 1rem;
   height: 1rem;
-  color: var(--gold-600);
+  color: var(--theme-accent);
 }
 
 .profile-side__card > .profile-side__title {
@@ -1172,7 +886,7 @@
 .profile-side__viewall {
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--maroon-700);
+  color: var(--theme-primary);
   text-decoration: none;
 }
 
@@ -1333,8 +1047,8 @@
 }
 
 .profile-activity-icon--order {
-  background: var(--gold-100);
-  color: var(--gold-600);
+  background: var(--theme-surface-2);
+  color: var(--theme-accent);
 }
 
 .profile-activity-icon--profile {
@@ -1372,18 +1086,42 @@
 }
 
 /* ============================================================
-   RENAME old .profile-sidebar references
+   FOCUS STATES
    ============================================================ */
-/* WARNING: If your existing CSS uses .profile-sidebar for the RIGHT rail,
-   that will conflict with the new dark sidebar. Rename the old one or
-   make sure these new styles come LAST in the file so they win. */
 
-.profile-page .profile-side {
-  /* This overrides any old .profile-sidebar if it was used for the right rail */
+.profile-page a:focus-visible,
+.profile-page button:focus-visible {
+  outline: 2px solid var(--theme-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
 }
 
 /* ============================================================
-   RESPONSIVE
+   MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-page * {
+    transition: none !important;
+  }
+}
+
+/* ============================================================
+   HOVER ZONE
+   ============================================================ */
+
+.profile-hover-zone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 100vh;
+  z-index: 60;
+  pointer-events: auto;
+}
+
+/* ============================================================
+   RESPONSIVE — LAYOUT
    ============================================================ */
 
 @media (max-width: 980px) {
@@ -1406,7 +1144,7 @@
     height: 100vh;
     transform: translateX(-100%);
     transition: transform 220ms ease;
-    box-shadow: 24px 0 60px rgba(74, 20, 28, 0.25);
+    box-shadow: 24px 0 60px rgba(var(--theme-primary-rgb), 0.25);
   }
 
   .profile-sidebar.is-open {
@@ -1418,7 +1156,7 @@
     position: fixed;
     inset: 0;
     z-index: 50;
-    background: rgba(36, 28, 25, 0.5);
+    background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(2px);
   }
 
@@ -1436,5 +1174,107 @@
   .profile-mobile-menu {
     top: 4.75rem;
     left: 0.85rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .profile-container {
+    padding: 16px 14px 48px;
+  }
+
+  .profile-cover {
+    height: auto;
+    min-height: 200px;
+  }
+
+  .profile-cover-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px;
+  }
+
+  .profile-name {
+    font-size: 1.3rem;
+  }
+
+  .profile-info-body {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-photo-block {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .profile-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-card {
+    padding: 18px;
+  }
+
+  .profile-tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .profile-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .profile-tab {
+    white-space: nowrap;
+  }
+}
+
+/* ============================================================
+   DESKTOP SIDEBAR — HOVER PUSH LAYOUT
+   ============================================================ */
+
+@media (min-width: 1024px) {
+  .profile-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 50;
+  }
+
+  .profile-sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .profile-main-wrap {
+    margin-left: 0;
+    transition: margin-left 0.3s ease;
+  }
+
+  .profile-shell.is-sidebar-open .profile-main-wrap {
+    margin-left: 15.5rem;
+  }
+
+  .profile-mobile-menu,
+  .profile-backdrop {
+    display: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .profile-hover-zone {
+    display: none;
+  }
+}
+
+/* ============================================================
+   SCALE EFFECT — mukhang 90% kahit 100% browser zoom
+   ============================================================ */
+
+@media (min-width: 1024px) {
+  .profile-container {
+    zoom: 0.9;
   }
 }

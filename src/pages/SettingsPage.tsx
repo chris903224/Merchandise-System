@@ -1,6 +1,4 @@
-// src/pages/SettingsPage.tsx
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   User,
@@ -8,16 +6,13 @@ import {
   Bell,
   Palette,
   Lock as LockIcon,
-  Sun,
-  Moon,
-  Smartphone,
   Mail,
   CreditCard,
   Calendar,
   MapPin,
   Home,
   Globe,
-  Link2,
+
   Trash2,
   AlertTriangle,
   Save,
@@ -32,9 +27,16 @@ import {
   Store,
   Package,
   ShoppingCart,
+  Check,
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
+import {
+  applyTheme,
+  getStoredTheme,
+  themeOptions,
+  type ThemeId,
+} from '../theme';
 import './SettingsPage.css';
 
 type SettingsTab = 'account' | 'security' | 'notifications' | 'appearance' | 'privacy';
@@ -63,9 +65,13 @@ export default function SettingsPage() {
 
   const [activeTab, setActiveTab] = useState<SettingsTab>('account');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarPinned, setIsSidebarPinned] = useState(false);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
-  // Account fields
+  const sidebarRef = useRef<HTMLElement>(null);
+  const hoverZoneRef = useRef<HTMLDivElement>(null);
+  const closeTimerRef = useRef<number | null>(null);
+
   const [fullName, setFullName] = useState('');
   const [studentId, setStudentId] = useState('');
   const [email, setEmail] = useState('');
@@ -74,7 +80,6 @@ export default function SettingsPage() {
   const [dob, setDob] = useState('');
   const [isSavingAccount, setIsSavingAccount] = useState(false);
 
-  // Security
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -83,26 +88,25 @@ export default function SettingsPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
-  // Notifications
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [orderUpdates, setOrderUpdates] = useState(true);
   const [promotions, setPromotions] = useState(false);
   const [pickupReminders, setPickupReminders] = useState(true);
 
-  // Appearance
-  const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('system');
+  const [theme, setTheme] = useState<ThemeId>(getStoredTheme());
 
-  // Privacy
   const [showActivityToOthers, setShowActivityToOthers] = useState(true);
   const [showProfileInDirectory, setShowProfileInDirectory] = useState(true);
 
-  // Misc
   const [language, setLanguage] = useState('en-US');
-  const [shippingAddress] = useState<string | null>(
+
+  const [shippingAddress, setShippingAddress] = useState<string>(
     'Room 302, SJCM Dormitory, PHINMA Saint Jude College, Manila'
   );
-  const [connectedGoogle, setConnectedGoogle] = useState(false);
-  const [connectedFacebook, setConnectedFacebook] = useState(false);
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+  const [draftAddress, setDraftAddress] = useState(shippingAddress);
+  const [draftLabel, setDraftLabel] = useState('Default');
+  const [isSavingAddress, setIsSavingAddress] = useState(false);
 
   useEffect(() => {
     if (!session) {
@@ -114,6 +118,57 @@ export default function SettingsPage() {
     setStudentId(session.idNumber || '');
     setProfilePicture(session.profilePicture || null);
   }, [session, navigate]);
+
+  useEffect(() => {
+    const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
+    if (!isDesktop()) return;
+
+    const openSidebar = () => {
+      if (closeTimerRef.current) {
+        window.clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
+      setIsSidebarOpen(true);
+    };
+
+    const scheduleClose = () => {
+      if (isSidebarPinned) return;
+      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = window.setTimeout(() => {
+        setIsSidebarOpen(false);
+      }, 150);
+    };
+
+    const zone = hoverZoneRef.current;
+    const sidebar = sidebarRef.current;
+    if (!zone || !sidebar) return;
+
+    zone.addEventListener('mouseenter', openSidebar);
+    sidebar.addEventListener('mouseenter', openSidebar);
+    sidebar.addEventListener('mouseleave', scheduleClose);
+    zone.addEventListener('mouseleave', scheduleClose);
+
+    return () => {
+      zone.removeEventListener('mouseenter', openSidebar);
+      sidebar.removeEventListener('mouseenter', openSidebar);
+      sidebar.removeEventListener('mouseleave', scheduleClose);
+      zone.removeEventListener('mouseleave', scheduleClose);
+      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+    };
+  }, [isSidebarPinned, session]);
+
+  useEffect(() => {
+    if (!isAddressModalOpen) return;
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsAddressModalOpen(false);
+    };
+    document.addEventListener('keydown', handleEscape);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = '';
+    };
+  }, [isAddressModalOpen]);
 
   const handleTabChange = (tab: SettingsTab) => setActiveTab(tab);
 
@@ -192,31 +247,74 @@ export default function SettingsPage() {
   };
 
   const handleSaveNotifications = () => toast('Notification preferences updated!', 'success');
-  const handleSaveAppearance = () => toast('Appearance updated!', 'success');
+
+  const handleSaveAppearance = () => {
+    applyTheme(theme);
+    toast('Appearance updated!', 'success');
+  };
+
   const handleSavePrivacy = () => toast('Privacy preferences updated!', 'success');
 
-  const handleConnect = (provider: 'google' | 'facebook') => {
-    if (provider === 'google') {
-      setConnectedGoogle(true);
-      toast('Connect this button to your Google OAuth flow.', 'warning');
-    } else {
-      setConnectedFacebook(true);
-      toast('Connect this button to your Facebook OAuth flow.', 'warning');
-    }
-  };
+
 
   const handleDeleteAccount = () => {
     if (!window.confirm('This will permanently delete your account and data. Continue?')) return;
     toast('Account deletion requested — wire this up to your backend.', 'warning');
   };
 
+  const openAddressModal = () => {
+    setDraftAddress(shippingAddress);
+    setIsAddressModalOpen(true);
+  };
+
+  const closeAddressModal = () => {
+    if (isSavingAddress) return;
+    setIsAddressModalOpen(false);
+  };
+
+  const handleSaveAddress = async () => {
+    if (!draftAddress.trim()) {
+      toast('Address cannot be empty.', 'warning');
+      return;
+    }
+    setIsSavingAddress(true);
+    try {
+      await new Promise((r) => setTimeout(r, 500));
+      setShippingAddress(draftAddress.trim());
+      toast('Shipping address updated!', 'success');
+      setIsAddressModalOpen(false);
+    } finally {
+      setIsSavingAddress(false);
+    }
+  };
+
   return (
-    <div className="settings-shell">
-      {/* ============================================
-          SIDEBAR (dark, with brand + nav)
-          ============================================ */}
-      <aside className={`settings-sidebar ${isSidebarOpen ? 'is-open' : ''}`}>
+    <div className={`settings-shell ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
+      <div
+        ref={hoverZoneRef}
+        className="settings-hover-zone"
+        aria-hidden="true"
+      />
+
+      <aside
+        ref={sidebarRef}
+        className={`settings-sidebar ${isSidebarOpen ? 'is-open' : ''}`}
+      >
         <div className="settings-sidebar__top">
+          <button
+            type="button"
+            className="settings-sidebar__pin"
+            onClick={() => setIsSidebarPinned((p) => !p)}
+            aria-label={isSidebarPinned ? 'Unpin sidebar' : 'Pin sidebar'}
+            title={isSidebarPinned ? 'Unpin sidebar' : 'Pin sidebar'}
+          >
+            {isSidebarPinned ? (
+              <X className="react-icon" />
+            ) : (
+              <ChevronRight className="react-icon" />
+            )}
+          </button>
+
           <Link to="/" className="settings-sidebar__brand" onClick={() => setIsSidebarOpen(false)}>
             <span className="settings-sidebar__brand-mark">SJ</span>
             <span className="settings-sidebar__brand-copy">
@@ -250,7 +348,6 @@ export default function SettingsPage() {
         </div>
       </aside>
 
-      {/* Backdrop for mobile */}
       {isSidebarOpen ? (
         <div
           className="settings-backdrop"
@@ -259,11 +356,7 @@ export default function SettingsPage() {
         />
       ) : null}
 
-      {/* ============================================
-          MAIN AREA — starts directly with hero (no duplicate topbar)
-          ============================================ */}
       <div className="settings-main">
-        {/* Mobile floating menu button */}
         <button
           type="button"
           className="settings-mobile-menu"
@@ -278,7 +371,6 @@ export default function SettingsPage() {
         </button>
 
         <div className="settings-scroll">
-          {/* Hero banner */}
           <section className="settings-hero">
             <div className="settings-hero__copy">
               <h1 className="settings-hero__title">Settings</h1>
@@ -295,7 +387,6 @@ export default function SettingsPage() {
             </div>
           </section>
 
-          {/* Horizontal tabs */}
           <nav className="settings-tabs" role="tablist" aria-label="Settings sections">
             {tabs.map((tab) => {
               const Icon = tab.icon;
@@ -315,13 +406,10 @@ export default function SettingsPage() {
             })}
           </nav>
 
-          {/* Two-column content */}
           <div className="settings-layout">
-            {/* ---------- MAIN COLUMN ---------- */}
             <div className="settings-content">
               {activeTab === 'account' && (
                 <>
-                  {/* Profile */}
                   <section className="settings-panel">
                     <header className="settings-panel__header">
                       <div className="settings-panel__heading">
@@ -375,20 +463,34 @@ export default function SettingsPage() {
 
                       <div className="settings-fields">
                         <div className="settings-field">
-                          <label className="settings-field__label">Full Name</label>
+                          <label className="settings-field__label">
+                            Full Name
+                            <span className="settings-field__lock" title="Managed by your registration record">
+                              <LockIcon className="react-icon" aria-hidden="true" />
+                              <span>Locked</span>
+                            </span>
+                          </label>
                           <input
-                            className="settings-field__input"
+                            className="settings-field__input settings-field__input--locked"
                             value={fullName}
-                            onChange={(e) => setFullName(e.target.value)}
+                            readOnly
+                            disabled
                           />
                         </div>
 
                         <div className="settings-field">
-                          <label className="settings-field__label">Student ID</label>
+                          <label className="settings-field__label">
+                            Student ID
+                            <span className="settings-field__lock" title="Managed by your registration record">
+                              <LockIcon className="react-icon" aria-hidden="true" />
+                              <span>Locked</span>
+                            </span>
+                          </label>
                           <input
-                            className="settings-field__input"
+                            className="settings-field__input settings-field__input--locked"
                             value={studentId}
-                            onChange={(e) => setStudentId(e.target.value)}
+                            readOnly
+                            disabled
                           />
                         </div>
 
@@ -435,14 +537,21 @@ export default function SettingsPage() {
                         </div>
 
                         <div className="settings-field">
-                          <label className="settings-field__label">Email Address</label>
+                          <label className="settings-field__label">
+                            Email Address
+                            <span className="settings-field__lock" title="Managed by your registration record">
+                              <LockIcon className="react-icon" aria-hidden="true" />
+                              <span>Locked</span>
+                            </span>
+                          </label>
                           <div className="settings-field__icon-wrap">
                             <Mail className="react-icon" aria-hidden="true" />
                             <input
                               type="email"
-                              className="settings-field__input settings-field__input--icon"
+                              className="settings-field__input settings-field__input--icon settings-field__input--locked"
                               value={email}
-                              onChange={(e) => setEmail(e.target.value)}
+                              readOnly
+                              disabled
                             />
                           </div>
                         </div>
@@ -450,7 +559,6 @@ export default function SettingsPage() {
                     </div>
                   </section>
 
-                  {/* Shipping */}
                   <section className="settings-panel">
                     <header className="settings-panel__header">
                       <div className="settings-panel__heading">
@@ -464,7 +572,11 @@ export default function SettingsPage() {
                           </p>
                         </div>
                       </div>
-                      <button type="button" className="settings-btn settings-btn--ghost">
+                      <button
+                        type="button"
+                        className="settings-btn settings-btn--ghost"
+                        onClick={openAddressModal}
+                      >
                         <Pencil className="react-icon" aria-hidden="true" />
                         <span>Edit</span>
                       </button>
@@ -482,7 +594,6 @@ export default function SettingsPage() {
                     </div>
                   </section>
 
-                  {/* Language */}
                   <section className="settings-panel">
                     <header className="settings-panel__header">
                       <div className="settings-panel__heading">
@@ -731,63 +842,58 @@ export default function SettingsPage() {
               )}
 
               {activeTab === 'appearance' && (
-                <section className="settings-panel">
-                  <header className="settings-panel__header">
-                    <div className="settings-panel__heading">
-                      <span className="settings-panel__icon">
-                        <Palette className="react-icon" aria-hidden="true" />
-                      </span>
-                      <div>
-                        <h2 className="settings-panel__title">Appearance</h2>
-                        <p className="settings-panel__subtitle">Customize your app experience.</p>
-                      </div>
-                    </div>
-                  </header>
+  <section className="settings-panel">
+    <header className="settings-panel__header">
+      <div className="settings-panel__heading">
+        <span className="settings-panel__icon">
+          <Palette className="react-icon" aria-hidden="true" />
+        </span>
+        <div>
+          <h2 className="settings-panel__title">Appearance</h2>
+          <p className="settings-panel__subtitle">Customize your app experience.</p>
+        </div>
+      </div>
+    </header>
 
-                  <div className="settings-panel__body">
-                    <div className="settings-form">
-                      <div className="settings-field">
-                        <label className="settings-field__label">Theme</label>
-                        <div className="settings-radio-group">
-                          <button
-                            type="button"
-                            className={`settings-radio ${theme === 'light' ? 'is-active' : ''}`}
-                            onClick={() => setTheme('light')}
-                          >
-                            <Sun className="react-icon" aria-hidden="true" />
-                            <span>Light</span>
-                          </button>
-                          <button
-                            type="button"
-                            className={`settings-radio ${theme === 'dark' ? 'is-active' : ''}`}
-                            onClick={() => setTheme('dark')}
-                          >
-                            <Moon className="react-icon" aria-hidden="true" />
-                            <span>Dark</span>
-                          </button>
-                          <button
-                            type="button"
-                            className={`settings-radio ${theme === 'system' ? 'is-active' : ''}`}
-                            onClick={() => setTheme('system')}
-                          >
-                            <Smartphone className="react-icon" aria-hidden="true" />
-                            <span>System</span>
-                          </button>
-                        </div>
-                      </div>
+    <div className="settings-panel__body">
+      <div className="settings-form">
+        <div className="settings-field">
+          <label className="settings-field__label">Theme</label>
+          <div className="theme-grid">
+            {themeOptions.map((option) => (
+              <button
+                key={option.id}
+                type="button"
+                data-theme-id={option.id}
+                className={`theme-card ${theme === option.id ? 'is-active' : ''}`}
+                style={{ background: option.gradient } as React.CSSProperties}
+                onClick={() => setTheme(option.id)}
+                aria-pressed={theme === option.id}
+              >
+                <span className="theme-card__emoji">{option.emoji}</span>
+                <span className="theme-card__label">{option.label}</span>
+                {theme === option.id && (
+                  <span className="theme-card__check">
+                    <Check className="react-icon" aria-hidden="true" />
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
 
-                      <button
-                        type="button"
-                        className="settings-btn settings-btn--primary"
-                        onClick={handleSaveAppearance}
-                      >
-                        <Save className="react-icon" aria-hidden="true" />
-                        <span>Save Preferences</span>
-                      </button>
-                    </div>
-                  </div>
-                </section>
-              )}
+        <button
+          type="button"
+          className="settings-btn settings-btn--primary"
+          onClick={handleSaveAppearance}
+        >
+          <Save className="react-icon" aria-hidden="true" />
+          <span>Save Preferences</span>
+        </button>
+      </div>
+    </div>
+  </section>
+)}
 
               {activeTab === 'privacy' && (
                 <section className="settings-panel">
@@ -865,9 +971,7 @@ export default function SettingsPage() {
               )}
             </div>
 
-            {/* ---------- RIGHT SIDEBAR ---------- */}
             <aside className="settings-side">
-              {/* Brand card */}
               <div className="settings-brand-card">
                 <span className="settings-brand-card__logo">SJ</span>
                 <div>
@@ -877,7 +981,6 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              {/* Quick Links */}
               <div className="settings-side-card">
                 <p className="settings-side-card__title">Quick Links</p>
                 <div className="settings-quicklinks">
@@ -924,56 +1027,6 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              {/* Connected accounts */}
-              <div className="settings-side-card">
-                <p className="settings-side-card__title">
-                  <Link2 className="react-icon" aria-hidden="true" />
-                  <span>Connected Accounts</span>
-                </p>
-                <p className="settings-side-card__subtitle">
-                  Link your accounts for a better experience.
-                </p>
-
-                <div className="settings-connected-item">
-                  <span className="settings-connected-icon settings-connected-icon--google">G</span>
-                  <span className="settings-connected-copy">
-                    <span className="settings-connected-label">Google</span>
-                    <span className="settings-connected-status">
-                      {connectedGoogle ? 'Connected' : 'Not connected'}
-                    </span>
-                  </span>
-                  {!connectedGoogle && (
-                    <button
-                      type="button"
-                      className="settings-connect-btn"
-                      onClick={() => handleConnect('google')}
-                    >
-                      Connect
-                    </button>
-                  )}
-                </div>
-
-                <div className="settings-connected-item">
-                  <span className="settings-connected-icon settings-connected-icon--facebook">f</span>
-                  <span className="settings-connected-copy">
-                    <span className="settings-connected-label">Facebook</span>
-                    <span className="settings-connected-status">
-                      {connectedFacebook ? 'Connected' : 'Not connected'}
-                    </span>
-                  </span>
-                  {!connectedFacebook && (
-                    <button
-                      type="button"
-                      className="settings-connect-btn"
-                      onClick={() => handleConnect('facebook')}
-                    >
-                      Connect
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Danger zone */}
               <div className="settings-side-card settings-side-card--danger">
                 <p className="settings-side-card__title settings-side-card__title--danger">
                   <AlertTriangle className="react-icon" aria-hidden="true" />
@@ -1002,6 +1055,103 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+
+      {isAddressModalOpen && (
+        <div
+          className="settings-modal-overlay"
+          onClick={closeAddressModal}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="address-modal-title"
+        >
+          <div
+            className="settings-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <header className="settings-modal__header">
+              <div className="settings-modal__heading">
+                <span className="settings-modal__icon">
+                  <MapPin className="react-icon" aria-hidden="true" />
+                </span>
+                <div>
+                  <h2 id="address-modal-title" className="settings-modal__title">
+                    Edit Shipping Address
+                  </h2>
+                  <p className="settings-modal__subtitle">
+                    Update your delivery address for future orders.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="settings-modal__close"
+                onClick={closeAddressModal}
+                aria-label="Close dialog"
+              >
+                <X className="react-icon" aria-hidden="true" />
+              </button>
+            </header>
+
+            <div className="settings-modal__body">
+              <div className="settings-field">
+                <label className="settings-field__label">Address</label>
+                <div className="settings-field__icon-wrap">
+                  <Home className="react-icon" aria-hidden="true" />
+                  <input
+                    type="text"
+                    className="settings-field__input settings-field__input--icon"
+                    value={draftAddress}
+                    onChange={(e) => setDraftAddress(e.target.value)}
+                    placeholder="Street, building, room, city"
+                    autoFocus
+                  />
+                </div>
+              </div>
+
+              <div className="settings-field">
+                <label className="settings-field__label">Label</label>
+                <div className="settings-modal__labels">
+                  {['Default', 'Home', 'Dorm', 'Other'].map((label) => (
+                    <button
+                      key={label}
+                      type="button"
+                      className={`settings-modal__label-chip ${
+                        draftLabel === label ? 'is-active' : ''
+                      }`}
+                      onClick={() => setDraftLabel(label)}
+                    >
+                      {draftLabel === label && (
+                        <Check className="react-icon" aria-hidden="true" />
+                      )}
+                      <span>{label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <footer className="settings-modal__footer">
+              <button
+                type="button"
+                className="settings-btn settings-btn--ghost"
+                onClick={closeAddressModal}
+                disabled={isSavingAddress}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="settings-btn settings-btn--primary"
+                onClick={handleSaveAddress}
+                disabled={isSavingAddress}
+              >
+                <Save className="react-icon" aria-hidden="true" />
+                <span>{isSavingAddress ? 'Saving...' : 'Save Address'}</span>
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 // src/pages/DashboardPage.tsx
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowUpRight,
@@ -49,6 +49,11 @@ export default function DashboardPage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
   const [noticeDismissed, setNoticeDismissed] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarPinned, setIsSidebarPinned] = useState(false);
+
+  const sidebarRef = useRef<HTMLElement>(null);
+  const hoverZoneRef = useRef<HTMLDivElement>(null);
+  const closeTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!session) {
@@ -57,6 +62,45 @@ export default function DashboardPage() {
       return () => window.clearTimeout(timer);
     }
   }, [session, navigate, toast]);
+
+  // Hover-to-open sidebar (desktop only)
+  useEffect(() => {
+    const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
+    if (!isDesktop()) return;
+
+    const openSidebar = () => {
+      if (closeTimerRef.current) {
+        window.clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
+      setIsSidebarOpen(true);
+    };
+
+    const scheduleClose = () => {
+      if (isSidebarPinned) return;
+      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = window.setTimeout(() => {
+        setIsSidebarOpen(false);
+      }, 150);
+    };
+
+    const zone = hoverZoneRef.current;
+    const sidebar = sidebarRef.current;
+    if (!zone || !sidebar) return;
+
+    zone.addEventListener('mouseenter', openSidebar);
+    sidebar.addEventListener('mouseenter', openSidebar);
+    sidebar.addEventListener('mouseleave', scheduleClose);
+    zone.addEventListener('mouseleave', scheduleClose);
+
+    return () => {
+      zone.removeEventListener('mouseenter', openSidebar);
+      sidebar.removeEventListener('mouseenter', openSidebar);
+      sidebar.removeEventListener('mouseleave', scheduleClose);
+      zone.removeEventListener('mouseleave', scheduleClose);
+      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+    };
+  }, [isSidebarPinned, session]);
 
   const userOrders = useMemo(
     () => (session ? orders.filter((order) => order.userId === session.id) : []),
@@ -113,12 +157,37 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="dashboard-shell">
+    <div className={`dashboard-shell ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
+      {/* Hover zone sa left edge — desktop only */}
+      <div
+        ref={hoverZoneRef}
+        className="dashboard-hover-zone"
+        aria-hidden="true"
+      />
+
       {/* ============================================
           SIDEBAR
           ============================================ */}
-      <aside className={`dashboard-sidebar ${isSidebarOpen ? 'is-open' : ''}`}>
+      <aside
+        ref={sidebarRef}
+        className={`dashboard-sidebar ${isSidebarOpen ? 'is-open' : ''}`}
+      >
         <div className="dashboard-sidebar__top">
+          {/* Pin button */}
+          <button
+            type="button"
+            className="dashboard-sidebar__pin"
+            onClick={() => setIsSidebarPinned((p) => !p)}
+            aria-label={isSidebarPinned ? 'Unpin sidebar' : 'Pin sidebar'}
+            title={isSidebarPinned ? 'Unpin sidebar' : 'Pin sidebar'}
+          >
+            {isSidebarPinned ? (
+              <X className="react-icon" />
+            ) : (
+              <ChevronRight className="react-icon" />
+            )}
+          </button>
+
           {/* Profile block */}
           <div className="dashboard-sidebar__user">
             <span className="dashboard-sidebar__avatar">
@@ -286,7 +355,6 @@ export default function DashboardPage() {
                       0,
                     );
 
-                    // Status flags para sa mini-progress
                     const status = getOrderStatus(order);
                     const isOrdered = true;
                     const isProcessing = ['Processing', 'Ready for Pickup', 'Claimed'].includes(status);
@@ -295,7 +363,6 @@ export default function DashboardPage() {
 
                     return (
                       <li className="order-row" key={getOrderId(order)}>
-                        {/* Left: order ID + date + items */}
                         <div className="order-row__main">
                           <div className="order-row__head">
                             <span className="order-row__id">
@@ -312,7 +379,6 @@ export default function DashboardPage() {
                             </span>
                           </div>
 
-                          {/* Mini progress steps */}
                           <div className="order-row__progress">
                             <span className={`order-row__step ${isOrdered ? 'is-done' : ''}`}>
                               <span className="order-row__step-dot" />
@@ -333,7 +399,6 @@ export default function DashboardPage() {
                           </div>
                         </div>
 
-                        {/* Right: total + payment + action */}
                         <div className="order-row__right">
                           <div className="order-row__price">
                             {formatPrice(getOrderTotal(order))}
@@ -355,7 +420,6 @@ export default function DashboardPage() {
                 </ul>
               )}
 
-              {/* Pagination */}
               {filteredOrders.length > 0 ? (
                 <div className="order-pagination">
                   <span>
@@ -376,7 +440,6 @@ export default function DashboardPage() {
               ) : null}
             </section>
 
-            {/* Right rail: Order Summary */}
             <aside className="dashboard-summary">
               <div className="dashboard-summary__card">
                 <p className="dashboard-summary__title">Order Summary</p>

@@ -2,9 +2,11 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  border-bottom: 1px solid var(--color-line);
-  background: rgba(255, 252, 244, 0.92);
-  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--theme-border);
+  background: rgba(var(--theme-primary-rgb), 0.04);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  transition: background 0.4s ease, border-color 0.4s ease;
 }
 
 .site-nav__inner {
@@ -16,6 +18,10 @@
   min-height: 4.25rem;
   margin: 0 auto;
 }
+
+/* ============================================
+   BRAND
+   ============================================ */
 
 .brand {
   display: inline-flex;
@@ -29,31 +35,41 @@
   width: 2.35rem;
   height: 2.35rem;
   place-items: center;
-  border: 1px solid rgba(179, 130, 44, 0.48);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.4);
   border-radius: var(--radius-md);
-  background: var(--color-brand-soft);
-  color: var(--color-brand);
+  background: rgba(var(--theme-primary-rgb), 0.12);
+  color: var(--theme-primary);
   font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 800;
   letter-spacing: 0.08em;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-.brand__copy { display: grid; gap: 0.05rem; }
+.brand__copy {
+  display: grid;
+  gap: 0.05rem;
+}
 
 .brand__name {
-  color: var(--color-text);
+  color: var(--theme-text);
   font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.1;
+  transition: color 0.3s ease;
 }
 
 .brand__tagline {
-  color: var(--color-text-subtle);
+  color: var(--theme-text-muted);
   font-size: 0.66rem;
   letter-spacing: 0.025em;
+  transition: color 0.3s ease;
 }
+
+/* ============================================
+   NAV ACTIONS
+   ============================================ */
 
 .nav-actions {
   display: flex;
@@ -72,43 +88,55 @@
   padding: 0.45rem 0.7rem;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
-  color: var(--color-text-muted);
+  color: var(--theme-text-muted);
   font-size: 0.76rem;
   font-weight: 600;
-  transition: border-color 180ms var(--ease-standard), color 180ms var(--ease-standard), background 180ms var(--ease-standard), transform 180ms var(--ease-standard);
+  transition:
+    border-color 180ms var(--ease-standard),
+    color 180ms var(--ease-standard),
+    background 180ms var(--ease-standard),
+    transform 180ms var(--ease-standard);
 }
 
 .nav-action:hover,
 .nav-action:focus-visible {
-  border-color: var(--color-line-strong);
-  background: var(--color-surface);
-  color: var(--color-text);
+  border-color: var(--theme-border);
+  background: rgba(var(--theme-primary-rgb), 0.08);
+  color: var(--theme-primary);
 }
 
 .nav-action:active,
 .button:active,
-.icon-button:active { transform: translateY(1px); }
+.icon-button:active {
+  transform: translateY(1px);
+}
 
 .nav-action--accent {
-  border-color: rgba(179, 130, 44, 0.38);
-  background: var(--color-brand-soft);
-  color: var(--color-brand);
+  border-color: rgba(var(--theme-primary-rgb), 0.35);
+  background: rgba(var(--theme-primary-rgb), 0.12);
+  color: var(--theme-primary);
 }
 
 .nav-action--accent:hover,
 .nav-action--accent:focus-visible {
-  border-color: rgba(179, 130, 44, 0.66);
-  background: rgba(179, 130, 44, 0.2);
-  color: var(--color-brand-strong);
+  border-color: rgba(var(--theme-primary-rgb), 0.6);
+  background: rgba(var(--theme-primary-rgb), 0.2);
+  color: var(--theme-primary-hover);
 }
 
-.nav-action--danger { color: var(--color-danger); }
+.nav-action--danger {
+  color: #9c3737;
+}
 
 .nav-session {
-  color: var(--color-text-subtle);
+  color: var(--theme-text-muted);
   font-size: 0.7rem;
   pointer-events: none;
 }
+
+/* ============================================
+   CART COUNT BADGE
+   ============================================ */
 
 .nav-cart-count {
   display: inline-grid;
@@ -117,9 +145,10 @@
   padding: 0 0.25rem;
   place-items: center;
   border-radius: 999px;
-  background: var(--color-brand);
-  color: #2a1c0c;
+  background: var(--theme-primary);
+  color: #ffffff;
   font-family: var(--font-mono);
   font-size: 0.62rem;
   font-weight: 700;
+  transition: background 0.3s ease;
 }

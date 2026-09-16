@@ -1,8 +1,8 @@
 /* ============================================================
    SJCM — Master stylesheet entry
-   Import order preserves the original cascade — do not reorder.
    ============================================================ */
 
+@import './theme.css';
 @import './tokens.css';
 @import './base.css';
 @import './layout.css';
@@ -18,4 +18,5 @@
 @import './tables.css';
 @import './toast.css';
 @import './responsive.css';
+@import './orders.css';
 @import './print.css';
