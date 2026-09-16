@@ -14,7 +14,6 @@ import {
   Mail,
   CreditCard,
   Calendar,
-  GraduationCap,
   MapPin,
   Home,
   Globe,

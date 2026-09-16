@@ -13,7 +13,7 @@ import {
   Store,
   Trash2,
   ShieldCheck,
-  X,
+  
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';

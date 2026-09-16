@@ -1,7 +1,7 @@
 // src/pages/ProductPage.tsx
 
 import { useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
   ShoppingCart,
@@ -22,7 +22,6 @@ const DEFAULT_SIZES = ['S', 'M', 'L', 'XL', '2XL'];
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const toast = useToast();
   const products = useProducts();
   const { cart, setCart } = useApp();
