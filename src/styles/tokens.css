@@ -64,4 +64,35 @@
   --shadow-glass: 0 24px 60px rgba(35, 26, 12, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -1px 0 rgba(35, 26, 12, 0.06);
   --glow-brand: rgba(179, 130, 44, 0.28);
   --glow-info: rgba(63, 106, 134, 0.18);
+
+  /* Unified auth experience */
+  --auth-forest-950: #002b0b;
+  --auth-forest-900: #003f0e;
+  --auth-forest-800: #005b11;
+  --auth-green-500: #178126;
+  --auth-green-300: #8ac88f;
+  --auth-ink: #06130a;
+  --auth-white: #ffffff;
+  --auth-white-muted: rgba(255, 255, 255, 0.72);
+  --auth-glass: rgba(4, 39, 18, 0.76);
+  --auth-glass-soft: rgba(6, 58, 24, 0.52);
+  --auth-glass-border: rgba(201, 235, 201, 0.2);
+  --auth-input-fill: rgba(214, 232, 222, 0.2);
+  --auth-focus-ring: rgba(138, 200, 143, 0.28);
+  --auth-danger: #f68e93;
+  --auth-font-display: 'Outfit', var(--font-body);
+  --auth-radius-panel: 2.25rem;
+  --auth-radius-card: 1.8rem;
+  --auth-radius-control: 999px;
+  --auth-gap: clamp(0.65rem, 1.5vw, 1.15rem);
+  --auth-page-gutter: clamp(1rem, 3vw, 3rem);
+  --auth-panel-height: clamp(25rem, 64vh, 31rem);
+  --auth-card-height: clamp(27rem, 68vh, 33rem);
+  --auth-marquee-viewport: clamp(22rem, 62vh, 31rem);
+  --auth-marquee-gap: clamp(0.55rem, 1vw, 0.8rem);
+  --auth-marquee-card-height: calc((var(--auth-marquee-viewport) - (var(--auth-marquee-gap) * 2) - 1.9rem) / 3);
+  --auth-marquee-sequence: calc((var(--auth-marquee-card-height) * 3) + (var(--auth-marquee-gap) * 2));
+  --auth-marquee-duration: 18s;
+  --auth-shadow: 0 24px 60px rgba(0, 20, 6, 0.32);
+  --auth-glass-blur: blur(18px) saturate(130%);
 }
