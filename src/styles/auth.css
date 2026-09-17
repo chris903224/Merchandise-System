@@ -1,5 +1,6 @@
 /* ============================================================
    AUTH — sign in, register, forgot password
+   Theme-driven
    ============================================================ */
 
 .auth-shell {
@@ -13,10 +14,11 @@
   position: relative;
   width: min(100%, 30rem);
   padding: clamp(1.5rem, 5vw, 2.25rem);
-  border: 1px solid var(--color-line-strong);
+  border: 1px solid var(--theme-border);
   border-radius: var(--radius-xl);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-panel);
+  background: var(--theme-surface);
+  box-shadow: 0 18px 42px rgba(var(--theme-primary-rgb), 0.1);
+  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 .auth-panel::before {
@@ -26,8 +28,9 @@
   left: 1.5rem;
   height: 2px;
   border-radius: 0 0 999px 999px;
-  background: var(--color-brand);
+  background: var(--theme-primary);
   content: '';
+  transition: background 0.4s ease;
 }
 
 .auth-panel__header {
@@ -41,10 +44,11 @@
   height: 3rem;
   margin: 0 auto 0.8rem;
   place-items: center;
-  border: 1px solid rgba(179, 130, 44, 0.4);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.4);
   border-radius: var(--radius-md);
-  background: var(--color-brand-soft);
-  color: var(--color-brand);
+  background: rgba(var(--theme-primary-rgb), 0.12);
+  color: var(--theme-primary);
+  transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
 }
 
 .auth-icon svg {
@@ -54,16 +58,18 @@
 
 .auth-panel__title {
   margin: 0;
-  color: var(--color-text);
+  color: var(--theme-text);
   font-family: var(--font-display);
   font-size: 1.65rem;
   font-weight: 700;
+  transition: color 0.3s ease;
 }
 
 .auth-panel__description {
   margin: 0.4rem 0 0;
-  color: var(--color-text-muted);
+  color: var(--theme-text-muted);
   font-size: 0.78rem;
+  transition: color 0.3s ease;
 }
 
 .auth-form {
@@ -88,29 +94,31 @@
 .auth-footer {
   margin-top: 1.5rem;
   padding-top: 1.15rem;
-  border-top: 1px solid var(--color-line);
-  color: var(--color-text-muted);
+  border-top: 1px solid var(--theme-border);
+  color: var(--theme-text-muted);
   font-size: 0.75rem;
   text-align: center;
+  transition: border-color 0.3s ease, color 0.3s ease;
 }
 
 .auth-footer a {
-  color: var(--color-brand);
+  color: var(--theme-primary);
   font-weight: 700;
+  transition: color 0.3s ease;
 }
 
 .auth-footer a:hover {
-  color: var(--color-brand-strong);
+  color: var(--theme-primary-hover);
 }
 
 /* ============================================
-   REGISTER PAGE - GLASSMORPHISM STYLES
+   REGISTER PAGE — GLASSMORPHISM STYLES
    ============================================ */
 
 .register-page {
   position: relative;
   min-height: 100vh;
-  background: var(--color-bg);
+  background: transparent;
   overflow: hidden;
   padding: 2rem;
   display: flex;
@@ -135,12 +143,13 @@
   filter: blur(100px);
   opacity: 0.25;
   animation: floatGlow 10s ease-in-out infinite;
+  transition: background 0.4s ease;
 }
 
 .register-glow.glow-1 {
   width: 500px;
   height: 500px;
-  background: rgba(179, 130, 44, 0.15);
+  background: rgba(var(--theme-primary-rgb), 0.18);
   top: -150px;
   right: -150px;
   animation-delay: 0s;
@@ -149,7 +158,7 @@
 .register-glow.glow-2 {
   width: 400px;
   height: 400px;
-  background: rgba(63, 106, 134, 0.12);
+  background: rgba(var(--theme-accent-rgb), 0.15);
   bottom: -150px;
   left: -150px;
   animation-delay: 4s;
@@ -167,11 +176,12 @@
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  border: 1px solid var(--color-line-strong);
+  border: 1px solid var(--theme-border);
   border-radius: var(--radius-xl);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-panel);
-  padding: 2.5rem 2.5rem;
+  background: var(--theme-surface);
+  box-shadow: 0 18px 42px rgba(var(--theme-primary-rgb), 0.12);
+  padding: 2.5rem;
+  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 .register-container::before {
@@ -181,8 +191,9 @@
   left: 1.5rem;
   height: 2px;
   border-radius: 0 0 999px 999px;
-  background: var(--color-brand);
+  background: var(--theme-primary);
   content: '';
+  transition: background 0.4s ease;
 }
 
 .register-header {
@@ -196,10 +207,11 @@
   height: 3.5rem;
   margin: 0 auto 0.8rem;
   place-items: center;
-  border: 1px solid rgba(179, 130, 44, 0.35);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.35);
   border-radius: var(--radius-md);
-  background: var(--color-brand-soft);
-  color: var(--color-brand);
+  background: rgba(var(--theme-primary-rgb), 0.12);
+  color: var(--theme-primary);
+  transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
 }
 
 .register-icon svg {
@@ -209,18 +221,20 @@
 
 .register-title {
   margin: 0;
-  color: var(--color-text);
+  color: var(--theme-text);
   font-family: var(--font-display);
   font-size: 1.65rem;
   font-weight: 700;
   letter-spacing: -0.025em;
+  transition: color 0.3s ease;
 }
 
 .register-description {
   margin: 0.4rem 0 0;
-  color: var(--color-text-muted);
+  color: var(--theme-text-muted);
   font-size: 0.82rem;
   line-height: 1.5;
+  transition: color 0.3s ease;
 }
 
 .register-form {
@@ -237,60 +251,78 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--color-text-muted);
+  color: var(--theme-text-muted);
   font-size: 0.78rem;
   font-weight: 600;
+  transition: color 0.3s ease;
 }
 
 .register-label .react-icon {
   width: 16px;
   height: 16px;
-  color: var(--color-text-subtle);
+  color: var(--theme-text-muted);
+  transition: color 0.3s ease;
 }
+
+/* ===== LOGIN/REGISTER INPUT FIELDS — theme-driven ===== */
 
 .register-input {
   width: 100%;
   min-height: 2.85rem;
   padding: 0.65rem 0.85rem;
-  border: 1px solid var(--color-line-strong);
+  border: 1px solid var(--theme-border);
   border-radius: var(--radius-sm);
-  background: var(--color-surface-raised);
-  color: var(--color-text);
+  background: var(--theme-surface-2);
+  color: var(--theme-text);
   font-size: 0.88rem;
-  transition: border-color 180ms var(--ease-standard), box-shadow 180ms var(--ease-standard);
+  font-family: inherit;
+  transition:
+    border-color 180ms var(--ease-standard),
+    box-shadow 180ms var(--ease-standard),
+    background 0.3s ease,
+    color 0.3s ease;
 }
 
 .register-input::placeholder {
-  color: var(--color-text-subtle);
+  color: var(--theme-text-muted);
+  opacity: 0.7;
 }
 
 .register-input:focus {
   outline: none;
-  border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px rgba(179, 130, 44, 0.12);
+  border-color: var(--theme-primary);
+  background: var(--theme-surface);
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.15);
+}
+
+.register-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .register-input--error {
-  border-color: rgba(156, 55, 55, 0.5);
+  border-color: #9c3737;
 }
 
 .register-input--error:focus {
-  border-color: var(--color-danger);
-  box-shadow: 0 0 0 3px rgba(156, 55, 55, 0.12);
+  border-color: #9c3737;
+  box-shadow: 0 0 0 3px rgba(156, 55, 55, 0.15);
 }
 
 .register-error {
-  color: var(--color-danger);
+  color: #9c3737;
   font-size: 0.72rem;
   margin-top: 0.15rem;
 }
 
 .register-hint {
-  color: var(--color-text-subtle);
+  color: var(--theme-text-muted);
   font-size: 0.68rem;
   margin: 0.15rem 0 0;
+  transition: color 0.3s ease;
 }
 
+/* Password wrapper */
 .register-password-wrapper {
   position: relative;
   display: flex;
@@ -311,14 +343,14 @@
   justify-content: center;
   background: none;
   border: none;
-  color: var(--color-text-subtle);
+  color: var(--theme-text-muted);
   cursor: pointer;
   padding: 0.25rem;
   transition: color 180ms var(--ease-standard);
 }
 
 .register-password-toggle:hover {
-  color: var(--color-text-muted);
+  color: var(--theme-primary);
 }
 
 .register-password-toggle .react-icon {
@@ -326,6 +358,7 @@
   height: 18px;
 }
 
+/* Submit button */
 .register-submit {
   display: flex;
   align-items: center;
@@ -334,19 +367,23 @@
   width: 100%;
   min-height: 2.85rem;
   padding: 0.75rem 1.5rem;
-  border: 1px solid var(--color-brand);
+  border: 1px solid var(--theme-primary);
   border-radius: var(--radius-sm);
-  background: var(--color-brand);
-  color: #2a1c0c;
+  background: var(--theme-primary);
+  color: #ffffff;
   font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
-  transition: border-color 180ms var(--ease-standard), background 180ms var(--ease-standard), transform 180ms var(--ease-standard), opacity 180ms var(--ease-standard);
+  transition:
+    border-color 180ms var(--ease-standard),
+    background 180ms var(--ease-standard),
+    transform 180ms var(--ease-standard),
+    opacity 180ms var(--ease-standard);
 }
 
 .register-submit:hover:not(:disabled) {
-  border-color: #c99a49;
-  background: #c99a49;
+  background: var(--theme-primary-hover);
+  border-color: var(--theme-primary-hover);
   transform: translateY(-2px);
 }
 
@@ -367,22 +404,27 @@
 .register-footer {
   margin-top: 1.5rem;
   padding-top: 1.25rem;
-  border-top: 1px solid var(--color-line);
-  color: var(--color-text-muted);
+  border-top: 1px solid var(--theme-border);
+  color: var(--theme-text-muted);
   font-size: 0.78rem;
   text-align: center;
+  transition: border-color 0.3s ease, color 0.3s ease;
 }
 
 .register-footer a {
-  color: var(--color-brand);
+  color: var(--theme-primary);
   font-weight: 700;
   transition: color 180ms var(--ease-standard);
 }
 
 .register-footer a:hover {
-  color: var(--color-brand-strong);
+  color: var(--theme-primary-hover);
 }
-/* OTP Input */
+
+/* ============================================
+   OTP INPUT
+   ============================================ */
+
 .register-otp-input {
   font-size: 28px !important;
   text-align: center;
@@ -390,6 +432,9 @@
   font-weight: 700;
   padding: 18px 12px !important;
   font-family: 'Courier New', monospace;
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text) !important;
+  border-color: var(--theme-border) !important;
 }
 
 .register-otp-meta {
@@ -401,7 +446,8 @@
 }
 
 .register-otp-timer {
-  color: #555;
+  color: var(--theme-text-muted);
+  transition: color 0.3s ease;
 }
 
 .register-otp-timer.is-danger {
@@ -412,14 +458,21 @@
 .register-otp-resend {
   background: none;
   border: none;
-  color: #0070f3;
+  color: var(--theme-primary);
   cursor: pointer;
   text-decoration: underline;
   font-size: 13px;
+  font-family: inherit;
+  transition: color 0.3s ease;
+}
+
+.register-otp-resend:hover:not(:disabled) {
+  color: var(--theme-primary-hover);
 }
 
 .register-otp-resend:disabled {
-  color: #aaa;
+  color: var(--theme-text-muted);
+  opacity: 0.5;
   cursor: not-allowed;
   text-decoration: none;
 }
@@ -427,9 +480,102 @@
 .register-otp-back {
   background: none;
   border: none;
-  color: #666;
+  color: var(--theme-text-muted);
   cursor: pointer;
   margin-top: 16px;
   font-size: 13px;
   text-decoration: underline;
+  font-family: inherit;
+  transition: color 0.3s ease;
+}
+
+.register-otp-back:hover {
+  color: var(--theme-primary);
+}
+/* ============================================
+   LOGIN FIELDS — theme-driven
+   .field-control at .field-control--icon
+   ============================================ */
+
+.field-control {
+  width: 100%;
+  min-height: 2.85rem;
+  padding: 0.65rem 0.85rem 0.65rem 2.6rem;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--radius-sm);
+  background: var(--theme-surface-2);
+  color: var(--theme-text);
+  font-size: 0.88rem;
+  font-family: inherit;
+  transition:
+    border-color 180ms var(--ease-standard),
+    box-shadow 180ms var(--ease-standard),
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+.field-control::placeholder {
+  color: var(--theme-text-muted);
+  opacity: 0.7;
+}
+
+.field-control:focus {
+  outline: none;
+  border-color: var(--theme-primary);
+  background: var(--theme-surface);
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.15);
+}
+
+.field-control:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Wrapper na may icon */
+.field-control--icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.field-control--icon > .react-icon {
+  position: absolute;
+  left: 0.85rem;
+  width: 1rem;
+  height: 1rem;
+  color: var(--theme-text-muted);
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.field-control--icon:focus-within > .react-icon {
+  color: var(--theme-primary);
+}
+
+/* Password toggle button */
+.password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--theme-text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.4rem;
+  transition: color 180ms var(--ease-standard), background 180ms var(--ease-standard);
+}
+
+.password-toggle:hover {
+  color: var(--theme-primary);
+  background: rgba(var(--theme-primary-rgb), 0.08);
+}
+
+.password-toggle .react-icon {
+  width: 1.1rem;
+  height: 1.1rem;
 }
