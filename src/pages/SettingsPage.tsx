@@ -105,7 +105,7 @@ export default function SettingsPage() {
   const [language, setLanguage] = useState('en-US');
 
   const [shippingAddress, setShippingAddress] = useState<string>(
-    'Room 302, SJCM Dormitory, PHINMA Saint Jude College, Manila'
+   ''
   );
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [draftAddress, setDraftAddress] = useState(shippingAddress);
