@@ -12,13 +12,15 @@ import {
   MessageCircle,
   Badge,
   Shirt,
+  Package,
 } from 'lucide-react';
 
-import { useProducts } from '../store';
+import { useApp, useProducts } from '../store';
 import ProductImage from '../components/ProductImage';
 import { formatPrice } from '../services';
 
 export default function HomePage() {
+  const { session } = useApp();
   const products = useProducts();
 
   // Featured product used only as the hero visual.
@@ -73,13 +75,23 @@ export default function HomePage() {
               <ArrowUpRight className="react-icon" aria-hidden="true" />
             </Link>
 
-            <Link
-              to="/login"
-              className="button button--secondary button--pill"
-            >
-              <LogIn className="react-icon" aria-hidden="true" />
-              <span>Sign in to reserve</span>
-            </Link>
+            {session ? (
+              <Link
+                to="/dashboard"
+                className="button button--secondary button--pill"
+              >
+                <Package className="react-icon" aria-hidden="true" />
+                <span>My orders</span>
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                className="button button--secondary button--pill"
+              >
+                <LogIn className="react-icon" aria-hidden="true" />
+                <span>Sign in to reserve</span>
+              </Link>
+            )}
           </div>
 
           <div className="hero-divider" />
@@ -131,8 +143,6 @@ export default function HomePage() {
 
         {/* =========================================================
             RIGHT — HERO IMAGE
-            Photo with a frosted-glass fade blending into the
-            left content area (matches the reference screenshot).
         ========================================================== */}
         <aside
           className="hero-photo"
