@@ -1,5 +1,6 @@
 import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { ArrowRight, LockKeyhole, UserRound } from 'lucide-react';
 import { authAssets } from './authAssets';
 
 interface AuthHeaderProps {
@@ -28,12 +29,13 @@ export default function AuthHeader({
           className="auth-brand__logo"
           src={authAssets.logo}
           alt="Saint Jude College Manila logo"
-          width={76}
-          height={76}
+          width={44}
+          height={44}
         />
         <span className="auth-brand__copy">
-          <span className="auth-brand__name">Saint Jude College</span>
-          <span className="auth-brand__name">Manila</span>
+          <span className="auth-brand__name">Saint Jude College Manila</span>
+          <span className="auth-brand__divider" aria-hidden="true" />
+          <span className="auth-brand__tagline">Faith &bull; Excellence &bull; Service</span>
         </span>
       </Link>
 
@@ -41,36 +43,43 @@ export default function AuthHeader({
         <label className="auth-sr-only" htmlFor="quick-login-username">
           Username
         </label>
-        <input
-          id="quick-login-username"
-          className="auth-quick-login__input"
-          type="text"
-          inputMode="email"
-          autoComplete="username"
-          placeholder="Username"
-          value={identifier}
-          onChange={(event) => onIdentifierChange(event.target.value)}
-          disabled={isLocked}
-        />
+        <div className="auth-quick-login__field">
+          <UserRound className="react-icon" aria-hidden="true" />
+          <input
+            id="quick-login-username"
+            className="auth-quick-login__input"
+            type="text"
+            inputMode="email"
+            autoComplete="username"
+            placeholder="Username"
+            value={identifier}
+            onChange={(event) => onIdentifierChange(event.target.value)}
+            disabled={isLocked}
+          />
+        </div>
         <label className="auth-sr-only" htmlFor="quick-login-password">
           Password
         </label>
-        <input
-          id="quick-login-password"
-          className="auth-quick-login__input"
-          type="password"
-          autoComplete="current-password"
-          placeholder="Password"
-          value={password}
-          onChange={(event) => onPasswordChange(event.target.value)}
-          disabled={isLocked}
-        />
+        <div className="auth-quick-login__field">
+          <LockKeyhole className="react-icon" aria-hidden="true" />
+          <input
+            id="quick-login-password"
+            className="auth-quick-login__input"
+            type="password"
+            autoComplete="current-password"
+            placeholder="Password"
+            value={password}
+            onChange={(event) => onPasswordChange(event.target.value)}
+            disabled={isLocked}
+          />
+        </div>
         <button
           className="auth-quick-login__submit"
           type="submit"
           disabled={isSubmitting || isLocked}
         >
           {isSubmitting ? '…' : 'Login'}
+          {!isSubmitting ? <ArrowRight className="react-icon" aria-hidden="true" /> : null}
         </button>
       </form>
     </header>

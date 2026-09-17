@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import {
-  Check,
   ChevronDown,
-  ClipboardCheck,
-  KeyRound,
-  LifeBuoy,
+  FileText,
+  HelpCircle,
   ShieldCheck,
+  UserRound,
 } from 'lucide-react';
 import type { GuidelineItem } from './authTypes';
 
@@ -39,13 +38,13 @@ const guidelines: GuidelineItem[] = [
 function GuidelineIcon({ icon }: { icon: GuidelineItem['icon'] }) {
   const Icon =
     icon === 'account'
-      ? Check
+      ? UserRound
       : icon === 'security'
-        ? KeyRound
+        ? ShieldCheck
         : icon === 'review'
-          ? ClipboardCheck
+          ? FileText
           : icon === 'support'
-            ? LifeBuoy
+            ? HelpCircle
             : ShieldCheck;
 
   return <Icon className="react-icon" aria-hidden="true" />;

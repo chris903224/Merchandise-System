@@ -36,6 +36,7 @@ import {
   STUDENT_ID_EXAMPLE,
 } from '../data/validation';
 import { loginUser, mapSupabaseUser, registerUser, resendOtp, verifyOtp } from '../data/auth';
+import '../styles/auth.css';
 
 interface UnifiedAuthPageProps {
   initialMode: AuthMode;
@@ -52,6 +53,10 @@ type RegistrationErrors = {
 
 const OTP_LENGTH = 6;
 const OTP_EXPIRY_SECONDS = 300;
+const OTP_PLACEHOLDER = '\u2013 \u2013 \u2013 \u2013 \u2013 \u2013'; // en-dash placeholders, spaced by letter-spacing
+
+// ✅ HARDCODED — direct URL sa public folder
+const CAMPUS_BACKGROUND_URL = '/background-images/campus.png';
 
 export default function UnifiedAuthPage({ initialMode }: UnifiedAuthPageProps) {
   const navigate = useNavigate();
@@ -298,6 +303,14 @@ export default function UnifiedAuthPage({ initialMode }: UnifiedAuthPageProps) {
 
   return (
     <main className="auth-experience">
+      {/* ✅ HARDCODED background image — direct URL sa public folder */}
+      <img
+        src={CAMPUS_BACKGROUND_URL}
+        alt=""
+        className="auth-experience__background"
+        aria-hidden="true"
+      />
+
       <AuthHeader
         identifier={loginIdentifier}
         password={loginPassword}
@@ -418,6 +431,7 @@ export default function UnifiedAuthPage({ initialMode }: UnifiedAuthPageProps) {
                   autoComplete="one-time-code"
                   maxLength={OTP_LENGTH}
                   required
+                  placeholder={OTP_PLACEHOLDER}
                   value={otp}
                   onChange={(event) => setOtp(event.target.value.replace(/\D/g, ''))}
                   aria-invalid={Boolean(errors.otp)}
