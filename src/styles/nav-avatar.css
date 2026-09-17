@@ -257,3 +257,61 @@
 .nav-dropdown-header-link:hover {
   background-color: rgba(var(--theme-primary-rgb), 0.06);
 }
+/* ============================================
+   SIDEBAR TOGGLE — menu button sa navbar
+   ============================================ */
+
+.site-nav__left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.nav-sidebar-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--radius-sm);
+  background: rgba(var(--theme-primary-rgb), 0.06);
+  color: var(--theme-primary);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  flex-shrink: 0;
+}
+
+.nav-sidebar-toggle:hover {
+  background: rgba(var(--theme-primary-rgb), 0.12);
+  border-color: var(--theme-primary);
+  transform: scale(1.05);
+}
+
+.nav-sidebar-toggle:active {
+  transform: scale(0.97);
+}
+
+.nav-sidebar-toggle .react-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Optional: badge indicator (parang notification dot) */
+.nav-sidebar-toggle::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--theme-primary);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.nav-sidebar-toggle:hover::after {
+  opacity: 1;
+}

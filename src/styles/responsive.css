@@ -547,3 +547,99 @@
     width: 100%;
   }
 }
+/* ============================================
+   MINI RAIL — collapsed sidebar na icons lang
+   ============================================ */
+
+@media (min-width: 1024px) {
+  /* Default: mini rail (icons lang) */
+  .profile-sidebar {
+    width: 3.5rem;
+    flex: 0 0 3.5rem;
+    padding: 1rem 0.5rem;
+    transition: width 0.3s ease, flex-basis 0.3s ease, padding 0.3s ease, transform 0.3s ease;
+    overflow: visible;
+  }
+
+  /* Hide text content sa mini rail */
+  .profile-sidebar:not(.is-open) .profile-sidebar__brand-copy,
+  .profile-sidebar:not(.is-open) .profile-sidebar__bottom,
+  .profile-sidebar:not(.is-open) .profile-sidebar__item span {
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    overflow: hidden;
+    transition: opacity 0.15s ease, width 0.3s ease;
+  }
+
+  /* Center icons sa mini rail */
+  .profile-sidebar:not(.is-open) .profile-sidebar__item {
+    justify-content: center;
+    padding: 0.75rem 0.5rem;
+    position: relative;
+  }
+
+  .profile-sidebar:not(.is-open) .profile-sidebar__item .react-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+
+  /* Active state sa mini rail */
+  .profile-sidebar:not(.is-open) .profile-sidebar__item.is-active {
+    background: rgba(var(--sidebar-accent-rgb), 0.25);
+    box-shadow: inset 3px 0 0 var(--sidebar-accent);
+  }
+
+  /* Brand mark lang sa mini rail */
+  .profile-sidebar:not(.is-open) .profile-sidebar__brand {
+    justify-content: center;
+    padding: 0.35rem 0;
+  }
+
+  /* Hover expand — buong sidebar */
+  .profile-sidebar:hover,
+  .profile-sidebar.is-open {
+    width: 15.5rem;
+    flex: 0 0 15.5rem;
+    padding: 1.5rem 1rem;
+    z-index: 60;
+    box-shadow: 24px 0 60px rgba(var(--theme-primary-rgb), 0.15);
+  }
+
+  /* Show text sa hover/expanded */
+  .profile-sidebar:hover .profile-sidebar__brand-copy,
+  .profile-sidebar:hover .profile-sidebar__bottom,
+  .profile-sidebar:hover .profile-sidebar__item span,
+  .profile-sidebar.is-open .profile-sidebar__brand-copy,
+  .profile-sidebar.is-open .profile-sidebar__bottom,
+  .profile-sidebar.is-open .profile-sidebar__item span {
+    opacity: 1;
+    visibility: visible;
+    width: auto;
+    overflow: visible;
+    transition: opacity 0.2s ease 0.1s, width 0.3s ease;
+  }
+
+  /* Tooltip sa mini rail (optional — kapag hover sa icon) */
+  .profile-sidebar:not(.is-open) .profile-sidebar__item::after {
+    content: attr(data-label);
+    position: absolute;
+    left: calc(100% + 0.5rem);
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--theme-text);
+    color: var(--theme-surface);
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.4rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    z-index: 70;
+  }
+
+  .profile-sidebar:not(.is-open) .profile-sidebar__item:hover::after {
+    opacity: 1;
+  }
+}

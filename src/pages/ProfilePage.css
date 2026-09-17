@@ -124,8 +124,13 @@
   display: flex;
   align-items: flex-end;
   box-shadow: var(--shadow-card);
-  transition: background-color 0.4s ease;
+  transition: background 0.4s ease;
 }
+
+/* Kapag may custom cover photo, gamitin yung CSS variable */
+.profile-cover.has-cover-photo {
+  background-image: var(--cover-photo);
+} 
 
 .profile-cover-overlay {
   position: absolute;
@@ -169,11 +174,6 @@
 
 .profile-cover-edit:active {
   transform: translateY(1px);
-}
-
-.profile-cover-edit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 .profile-cover-content {
@@ -240,11 +240,6 @@
 
 .profile-picture-upload:active {
   transform: scale(0.94);
-}
-
-.profile-picture-upload:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 .profile-user-info {
@@ -490,11 +485,6 @@
   opacity: 0.85;
 }
 
-.profile-photo-badge:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
 .profile-photo-btn {
   display: inline-flex;
   align-items: center;
@@ -515,14 +505,9 @@
   height: 13px;
 }
 
-.profile-photo-btn:hover:not(:disabled) {
+.profile-photo-btn:hover {
   border-color: var(--theme-accent);
   color: var(--theme-primary);
-}
-
-.profile-photo-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 .profile-form-grid {
@@ -1290,12 +1275,320 @@
   }
 }
 
-/* ============================================================
-   SCALE EFFECT
-   ============================================================ */
+
 
 @media (min-width: 1024px) {
   .profile-container {
     zoom: 0.9;
+  }
+}
+/* ============================================
+   MINI RAIL — compact floating pill (match sa picture)
+   ============================================ */
+
+@media (min-width: 1024px) {
+  /* ===== Mini rail — compact pill, naka-center vertically ===== */
+  .profile-sidebar {
+    position: fixed;
+    top: 50%;
+    left: 1.5rem;
+    transform: translateY(-50%);          /* ✅ Naka-center vertically */
+    height: auto;                         /* ✅ Hindi naka-stretch */
+    width: 4rem;
+    padding: 0.85rem 0.5rem;
+
+    opacity: 1;
+    visibility: visible;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0;
+
+    background: var(--theme-surface);
+    border: 1px solid var(--theme-border);
+    border-radius: 1.5rem;
+    box-shadow:
+      0 4px 6px rgba(0, 0, 0, 0.04),
+      0 12px 32px rgba(0, 0, 0, 0.1);
+
+    overflow: visible;
+    z-index: 50;
+
+    transition:
+      width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+      padding 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+      top 0.25s ease,
+      left 0.25s ease,
+      transform 0.25s ease,
+      border-radius 0.25s ease,
+      background 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  /* Hide text */
+  .profile-sidebar:not(.is-open) .profile-sidebar__brand-copy,
+  .profile-sidebar:not(.is-open) .profile-sidebar__item span,
+  .profile-sidebar:not(.is-open) .profile-sidebar__motto,
+  .profile-sidebar:not(.is-open) .profile-sidebar__campus {
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    overflow: hidden;
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .profile-sidebar:not(.is-open) .profile-sidebar__top {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 0 0 auto;
+    height: auto;
+    width: 100%;
+    align-items: center;
+  }
+
+  .profile-sidebar:not(.is-open) .profile-sidebar__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin: 0;
+    width: 100%;
+    align-items: center;
+  }
+
+  .profile-sidebar:not(.is-open) .profile-sidebar__brand {
+    display: none;
+  }
+
+  /* ===== Nav items — compact circles ===== */
+  .profile-sidebar:not(.is-open) .profile-sidebar__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    position: relative;
+    border-radius: 0.75rem;
+    transition: all 0.15s ease;
+    margin: 0;
+    color: var(--theme-text-muted);
+    background: transparent;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex-shrink: 0;
+  }
+
+  .profile-sidebar:not(.is-open) .profile-sidebar__item .react-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+    color: var(--theme-text-muted);
+    transition: all 0.15s ease;
+  }
+
+  .profile-sidebar:not(.is-open) .profile-sidebar__item:hover {
+    background: rgba(var(--theme-primary-rgb), 0.08);
+    color: var(--theme-primary);
+  }
+
+  .profile-sidebar:not(.is-open) .profile-sidebar__item:hover .react-icon {
+    color: var(--theme-primary);
+  }
+
+  /* Active — may left bar */
+  .profile-sidebar:not(.is-open) .profile-sidebar__item.is-active {
+    background: rgba(var(--theme-primary-rgb), 0.12);
+    color: var(--theme-primary);
+  }
+
+  .profile-sidebar:not(.is-open) .profile-sidebar__item.is-active .react-icon {
+    color: var(--theme-primary);
+  }
+
+  .profile-sidebar:not(.is-open) .profile-sidebar__item.is-active::before {
+    content: '';
+    position: absolute;
+    left: -0.4rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background: var(--theme-primary);
+    border-radius: 0 3px 3px 0;
+  }
+
+  /* ===== Bottom — avatar (CJ) sa ibaba ===== */
+  .profile-sidebar:not(.is-open) .profile-sidebar__bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 0 0;
+    margin-top: 0.5rem;
+    border-top: 1px solid var(--theme-border);
+    width: 100%;
+  }
+
+  .profile-sidebar:not(.is-open) .profile-sidebar__pin {
+    display: none;
+  }
+
+  /* ============================================
+     EXPANDED — original full sidebar
+     ============================================ */
+  .profile-sidebar:hover,
+  .profile-sidebar.is-open {
+    top: 0;
+    left: 0;
+    transform: translateY(0);
+    height: 100vh;
+    width: 15.5rem;
+    padding: 1.5rem 1rem;
+
+    background: linear-gradient(
+      180deg,
+      var(--theme-primary) 0%,
+      var(--theme-primary-hover) 100%
+    );
+    border: none;
+    border-right: 1px solid rgba(var(--theme-accent-rgb), 0.15);
+    border-radius: 0;
+    box-shadow: 24px 0 60px rgba(var(--theme-primary-rgb), 0.25);
+
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .profile-sidebar:hover .profile-sidebar__top,
+  .profile-sidebar.is-open .profile-sidebar__top {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-bottom: 0;
+    align-items: flex-start;
+  }
+
+  .profile-sidebar:hover .profile-sidebar__nav,
+  .profile-sidebar.is-open .profile-sidebar__nav {
+    display: grid;
+    gap: 0.25rem;
+    width: 100%;
+  }
+
+  .profile-sidebar:hover .profile-sidebar__brand,
+  .profile-sidebar.is-open .profile-sidebar__brand {
+    display: flex;
+    justify-content: flex-start;
+    padding: 0.35rem 0.4rem 1rem;
+    margin-top: 0;
+    border-top: none;
+    border-bottom: 1px solid rgba(var(--theme-accent-rgb), 0.2);
+    margin-bottom: 0;
+  }
+
+  .profile-sidebar:hover .profile-sidebar__brand-mark,
+  .profile-sidebar.is-open .profile-sidebar__brand-mark {
+    background: rgba(var(--theme-accent-rgb), 0.15);
+    color: var(--theme-accent);
+    border-color: rgba(var(--theme-accent-rgb), 0.4);
+  }
+
+  .profile-sidebar:hover .profile-sidebar__brand-copy,
+  .profile-sidebar:hover .profile-sidebar__item span,
+  .profile-sidebar:hover .profile-sidebar__motto,
+  .profile-sidebar:hover .profile-sidebar__campus,
+  .profile-sidebar.is-open .profile-sidebar__brand-copy,
+  .profile-sidebar.is-open .profile-sidebar__item span,
+  .profile-sidebar.is-open .profile-sidebar__motto,
+  .profile-sidebar.is-open .profile-sidebar__campus {
+    opacity: 1;
+    visibility: visible;
+    width: auto;
+    overflow: visible;
+    position: static;
+    pointer-events: auto;
+  }
+
+  /* Expanded — items full width */
+  .profile-sidebar:hover .profile-sidebar__item,
+  .profile-sidebar.is-open .profile-sidebar__item {
+    justify-content: flex-start;
+    padding: 0.65rem 0.75rem;
+    color: rgba(255, 255, 255, 0.75);
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+  }
+
+  .profile-sidebar:hover .profile-sidebar__item .react-icon,
+  .profile-sidebar.is-open .profile-sidebar__item .react-icon {
+    width: 1rem;
+    height: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .profile-sidebar:hover .profile-sidebar__item:hover,
+  .profile-sidebar.is-open .profile-sidebar__item:hover {
+    background: rgba(var(--theme-accent-rgb), 0.15);
+    color: #ffffff;
+  }
+
+  .profile-sidebar:hover .profile-sidebar__item.is-active,
+  .profile-sidebar.is-open .profile-sidebar__item.is-active {
+    background: rgba(var(--theme-accent-rgb), 0.22);
+    color: #ffffff;
+    box-shadow: inset 3px 0 0 var(--theme-accent);
+  }
+
+  .profile-sidebar:hover .profile-sidebar__item.is-active::before,
+  .profile-sidebar.is-open .profile-sidebar__item.is-active::before {
+    display: none;
+  }
+
+  .profile-sidebar:hover .profile-sidebar__pin,
+  .profile-sidebar.is-open .profile-sidebar__pin {
+    display: flex;
+  }
+
+  .profile-sidebar:hover .profile-sidebar__bottom,
+  .profile-sidebar.is-open .profile-sidebar__bottom {
+    display: grid;
+    border-top: 1px solid rgba(var(--theme-accent-rgb), 0.2);
+  }
+
+  /* Main offset */
+  .profile-main-wrap {
+    margin-left: 6rem;
+    transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .profile-shell.is-sidebar-open .profile-main-wrap {
+    margin-left: 15.5rem;
+  }
+
+  /* Tooltip */
+  .profile-sidebar:not(.is-open) .profile-sidebar__item::after {
+    content: attr(data-label);
+    position: absolute;
+    left: calc(100% + 0.75rem);
+    top: 50%;
+    transform: translateY(-50%) translateX(-4px);
+    background: var(--theme-text);
+    color: var(--theme-surface);
+    padding: 0.5rem 0.85rem;
+    border-radius: 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 70;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .profile-sidebar:not(.is-open) .profile-sidebar__item:hover::after {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
   }
 }

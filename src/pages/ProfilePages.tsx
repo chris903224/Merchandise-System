@@ -280,7 +280,7 @@ export default function ProfilePage() {
     },
   ];
 
-  // Cover style — direct inline backgroundImage (highest priority, cannot be overridden)
+  // Cover style — direct inline backgroundImage
   const coverStyle: React.CSSProperties | undefined = coverPhoto
     ? {
         backgroundImage: `url("${coverPhoto}")`,
@@ -336,6 +336,8 @@ export default function ProfilePage() {
                   to={item.to}
                   className={`profile-sidebar__item ${isActive ? 'is-active' : ''}`}
                   onClick={() => setIsSidebarOpen(false)}
+                  data-label={item.label}
+                  title={item.label}
                 >
                   <Icon className="react-icon" aria-hidden="true" />
                   <span>{item.label}</span>
@@ -377,7 +379,7 @@ export default function ProfilePage() {
           <div className="profile-container">
             <div className="profile-layout">
               <div className="profile-main">
-                {/* COVER — direct inline backgroundImage */}
+                {/* COVER */}
                 <div className="profile-cover" style={coverStyle}>
                   <div className="profile-cover-overlay" />
 
