@@ -1964,14 +1964,13 @@
   .settings-backdrop {
     display: none;
   }
-}
-/* ============================================
-   MINI RAIL — compact floating pill
-   Settings
+}/* ============================================
+   MINI RAIL — compact pill (default)
+   Expanded — full sidebar (naka-attach sa left edge)
    ============================================ */
 
 @media (min-width: 1024px) {
-  /* ===== Mini rail — compact pill, naka-center vertically ===== */
+  /* ===== Mini rail — floating pill, naka-center vertically ===== */
   .settings-sidebar {
     position: fixed;
     top: 50%;
@@ -2100,7 +2099,7 @@
     border-radius: 0 3px 3px 0;
   }
 
-  /* ===== Bottom — avatar sa ibaba ===== */
+  /* ===== Bottom — avatar / motto sa ibaba ===== */
   .settings-sidebar:not(.is-open) .settings-sidebar__bottom {
     display: flex;
     flex-direction: column;
@@ -2117,7 +2116,7 @@
   }
 
   /* ============================================
-     EXPANDED — original full sidebar
+     EXPANDED — naka-attach sa left edge, full height
      ============================================ */
   .settings-sidebar:hover,
   .settings-sidebar.is-open {
@@ -2239,7 +2238,7 @@
     border-top: 1px solid rgba(var(--theme-accent-rgb), 0.2);
   }
 
-  /* Main offset */
+  /* ===== Main content offset ===== */
   .settings-main {
     margin-left: 6rem;
     transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -2249,7 +2248,7 @@
     margin-left: 15.5rem;
   }
 
-  /* Tooltip */
+  /* ===== Tooltip ===== */
   .settings-sidebar:not(.is-open) .settings-sidebar__item::after {
     content: attr(data-label);
     position: absolute;
