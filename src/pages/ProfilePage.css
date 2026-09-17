@@ -112,7 +112,8 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   height: 240px;
-  background: linear-gradient(
+  background-color: var(--theme-primary);
+  background-image: linear-gradient(
     135deg,
     var(--theme-primary) 0%,
     var(--theme-primary-hover) 100%
@@ -123,7 +124,7 @@
   display: flex;
   align-items: flex-end;
   box-shadow: var(--shadow-card);
-  transition: background 0.4s ease;
+  transition: background-color 0.4s ease;
 }
 
 .profile-cover-overlay {
@@ -168,6 +169,11 @@
 
 .profile-cover-edit:active {
   transform: translateY(1px);
+}
+
+.profile-cover-edit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .profile-cover-content {
@@ -234,6 +240,11 @@
 
 .profile-picture-upload:active {
   transform: scale(0.94);
+}
+
+.profile-picture-upload:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .profile-user-info {
@@ -479,6 +490,11 @@
   opacity: 0.85;
 }
 
+.profile-photo-badge:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .profile-photo-btn {
   display: inline-flex;
   align-items: center;
@@ -499,9 +515,14 @@
   height: 13px;
 }
 
-.profile-photo-btn:hover {
+.profile-photo-btn:hover:not(:disabled) {
   border-color: var(--theme-accent);
   color: var(--theme-primary);
+}
+
+.profile-photo-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .profile-form-grid {
@@ -1270,7 +1291,7 @@
 }
 
 /* ============================================================
-   SCALE EFFECT — mukhang 90% kahit 100% browser zoom
+   SCALE EFFECT
    ============================================================ */
 
 @media (min-width: 1024px) {

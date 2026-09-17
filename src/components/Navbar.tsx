@@ -14,7 +14,8 @@ import {
 } from 'lucide-react';
 import { useApp } from '../store';
 import { countCartItems, getConsolePath, isStaffRole } from '../services';
-import NotificationBell from './NotificationBell';  // 👈 ADD THIS
+import { fetchProfileImages } from '../data/storage';
+import NotificationBell from './NotificationBell';
 
 // Fixed pixel sizes for the avatar images.
 const NAV_AVATAR_SIZE = 36;
@@ -37,6 +38,7 @@ export default function Navbar() {
   const cartCount = useMemo(() => countCartItems(cart), [cart]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [avatarFailed, setAvatarFailed] = useState(false);
+  const [remoteAvatarUrl, setRemoteAvatarUrl] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const closeDropdown = useCallback(() => setIsDropdownOpen(false), []);
@@ -68,10 +70,35 @@ export default function Navbar() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [closeDropdown]);
 
+  // Fetch avatar from Supabase when session changes
+  useEffect(() => {
+    if (!session) {
+      setRemoteAvatarUrl(null);
+      return;
+    }
+
+    // Set from session first (instant, kung meron)
+    setRemoteAvatarUrl(session.profilePicture || null);
+
+    // Fetch from Supabase
+    const loadAvatar = async () => {
+      try {
+        const { avatar_url } = await fetchProfileImages(session.id);
+        if (avatar_url) {
+          setRemoteAvatarUrl(avatar_url);
+        }
+      } catch (error) {
+        console.warn('[Navbar] Failed to fetch avatar:', error);
+      }
+    };
+
+    void loadAvatar();
+  }, [session]);
+
   // Give a new profile picture a fresh chance to load if it changes
   useEffect(() => {
     setAvatarFailed(false);
-  }, [session?.profilePicture]);
+  }, [remoteAvatarUrl]);
 
   // Get initials from name
   const getInitials = (name: string) =>
@@ -83,7 +110,7 @@ export default function Navbar() {
       .toUpperCase()
       .slice(0, 2) || 'U';
 
-  const avatarUrl = session?.profilePicture && !avatarFailed ? session.profilePicture : null;
+  const avatarUrl = remoteAvatarUrl && !avatarFailed ? remoteAvatarUrl : null;
   const initials = session?.name ? getInitials(session.name) : 'U';
 
   return (
@@ -124,7 +151,6 @@ export default function Navbar() {
                 </span>
               </Link>
 
-              {/* 👇 NOTIFICATION BELL - ADDED HERE */}
               <NotificationBell />
 
               {/* Avatar / Profile Circle with Dropdown */}

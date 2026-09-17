@@ -276,3 +276,61 @@
 .site-footer a:hover {
   color: var(--color-text);
 }
+/* ============================================
+   SIDEBAR PUSH — header at main content
+   Kapag bukas ang sidebar sa Profile, Settings,
+   Dashboard, o Order Details, nag-push sa kanan
+   yung navbar at main content
+   ============================================ */
+
+@media (min-width: 1024px) {
+  /* ============ PROFILE ============ */
+  body:has(.profile-sidebar.is-open) .site-nav {
+    padding-left: 15.5rem;
+    transition: padding-left 0.3s ease;
+  }
+
+  body:has(.profile-sidebar.is-open) main,
+  body:has(.profile-sidebar.is-open) .page-shell {
+    margin-left: 15.5rem;
+    transition: margin-left 0.3s ease;
+  }
+
+  /* ============ SETTINGS ============ */
+  body:has(.settings-sidebar.is-open) .site-nav {
+    padding-left: 15.5rem;
+    transition: padding-left 0.3s ease;
+  }
+
+  body:has(.settings-sidebar.is-open) main,
+  body:has(.settings-sidebar.is-open) .page-shell {
+    margin-left: 15.5rem;
+    transition: margin-left 0.3s ease;
+  }
+
+  /* ============ DASHBOARD ============ */
+  body:has(.dashboard-sidebar.is-open) .site-nav {
+    padding-left: 15.5rem;
+    transition: padding-left 0.3s ease;
+  }
+
+  body:has(.dashboard-sidebar.is-open) main,
+  body:has(.dashboard-sidebar.is-open) .page-shell,
+  body:has(.dashboard-sidebar.is-open) .dashboard-main {
+    margin-left: 15.5rem;
+    transition: margin-left 0.3s ease;
+  }
+
+  /* ============ ORDER DETAILS ============ */
+  body:has(.order-sidebar-nav.is-open) .site-nav {
+    padding-left: 15.5rem;
+    transition: padding-left 0.3s ease;
+  }
+
+  body:has(.order-sidebar-nav.is-open) main,
+  body:has(.order-sidebar-nav.is-open) .page-shell,
+  body:has(.order-sidebar-nav.is-open) .order-main-wrap {
+    margin-left: 15.5rem;
+    transition: margin-left 0.3s ease;
+  }
+}

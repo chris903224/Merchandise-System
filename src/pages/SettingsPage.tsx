@@ -12,7 +12,6 @@ import {
   MapPin,
   Home,
   Globe,
-
   Trash2,
   AlertTriangle,
   Save,
@@ -37,6 +36,7 @@ import {
   themeOptions,
   type ThemeId,
 } from '../theme';
+import { fetchProfileImages } from '../data/storage';
 import './SettingsPage.css';
 
 type SettingsTab = 'account' | 'security' | 'notifications' | 'appearance' | 'privacy';
@@ -66,7 +66,11 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>('account');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarPinned, setIsSidebarPinned] = useState(false);
-  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+
+  // ✅ Initialize with session.profilePicture — walang flash
+  const [profilePicture, setProfilePicture] = useState<string | null>(
+    session?.profilePicture ?? null
+  );
 
   const sidebarRef = useRef<HTMLElement>(null);
   const hoverZoneRef = useRef<HTMLDivElement>(null);
@@ -117,6 +121,20 @@ export default function SettingsPage() {
     setEmail(session.email || '');
     setStudentId(session.idNumber || '');
     setProfilePicture(session.profilePicture || null);
+
+    // ✅ Fetch avatar mula sa Supabase
+    const loadAvatar = async () => {
+      try {
+        const { avatar_url } = await fetchProfileImages(session.id);
+        if (avatar_url) {
+          setProfilePicture(avatar_url);
+        }
+      } catch (error) {
+        console.warn('[Settings] Failed to fetch avatar:', error);
+      }
+    };
+
+    void loadAvatar();
   }, [session, navigate]);
 
   useEffect(() => {
@@ -254,8 +272,6 @@ export default function SettingsPage() {
   };
 
   const handleSavePrivacy = () => toast('Privacy preferences updated!', 'success');
-
-
 
   const handleDeleteAccount = () => {
     if (!window.confirm('This will permanently delete your account and data. Continue?')) return;
@@ -842,58 +858,58 @@ export default function SettingsPage() {
               )}
 
               {activeTab === 'appearance' && (
-  <section className="settings-panel">
-    <header className="settings-panel__header">
-      <div className="settings-panel__heading">
-        <span className="settings-panel__icon">
-          <Palette className="react-icon" aria-hidden="true" />
-        </span>
-        <div>
-          <h2 className="settings-panel__title">Appearance</h2>
-          <p className="settings-panel__subtitle">Customize your app experience.</p>
-        </div>
-      </div>
-    </header>
+                <section className="settings-panel">
+                  <header className="settings-panel__header">
+                    <div className="settings-panel__heading">
+                      <span className="settings-panel__icon">
+                        <Palette className="react-icon" aria-hidden="true" />
+                      </span>
+                      <div>
+                        <h2 className="settings-panel__title">Appearance</h2>
+                        <p className="settings-panel__subtitle">Customize your app experience.</p>
+                      </div>
+                    </div>
+                  </header>
 
-    <div className="settings-panel__body">
-      <div className="settings-form">
-        <div className="settings-field">
-          <label className="settings-field__label">Theme</label>
-          <div className="theme-grid">
-            {themeOptions.map((option) => (
-              <button
-                key={option.id}
-                type="button"
-                data-theme-id={option.id}
-                className={`theme-card ${theme === option.id ? 'is-active' : ''}`}
-                style={{ background: option.gradient } as React.CSSProperties}
-                onClick={() => setTheme(option.id)}
-                aria-pressed={theme === option.id}
-              >
-                <span className="theme-card__emoji">{option.emoji}</span>
-                <span className="theme-card__label">{option.label}</span>
-                {theme === option.id && (
-                  <span className="theme-card__check">
-                    <Check className="react-icon" aria-hidden="true" />
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
+                  <div className="settings-panel__body">
+                    <div className="settings-form">
+                      <div className="settings-field">
+                        <label className="settings-field__label">Theme</label>
+                        <div className="theme-grid">
+                          {themeOptions.map((option) => (
+                            <button
+                              key={option.id}
+                              type="button"
+                              data-theme-id={option.id}
+                              className={`theme-card ${theme === option.id ? 'is-active' : ''}`}
+                              style={{ background: option.gradient } as React.CSSProperties}
+                              onClick={() => setTheme(option.id)}
+                              aria-pressed={theme === option.id}
+                            >
+                              <span className="theme-card__emoji">{option.emoji}</span>
+                              <span className="theme-card__label">{option.label}</span>
+                              {theme === option.id && (
+                                <span className="theme-card__check">
+                                  <Check className="react-icon" aria-hidden="true" />
+                                </span>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
 
-        <button
-          type="button"
-          className="settings-btn settings-btn--primary"
-          onClick={handleSaveAppearance}
-        >
-          <Save className="react-icon" aria-hidden="true" />
-          <span>Save Preferences</span>
-        </button>
-      </div>
-    </div>
-  </section>
-)}
+                      <button
+                        type="button"
+                        className="settings-btn settings-btn--primary"
+                        onClick={handleSaveAppearance}
+                      >
+                        <Save className="react-icon" aria-hidden="true" />
+                        <span>Save Preferences</span>
+                      </button>
+                    </div>
+                  </div>
+                </section>
+              )}
 
               {activeTab === 'privacy' && (
                 <section className="settings-panel">

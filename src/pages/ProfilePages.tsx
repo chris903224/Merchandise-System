@@ -31,6 +31,7 @@ import {
 import { useApp } from '../store';
 import { useToast } from '../toast';
 import ProfilePicture from '../components/ProfilePicture';
+import { uploadAvatar, uploadCover, fetchProfileImages } from '../data/storage';
 import './ProfilePage.css';
 
 type ProfileTab = 'info' | 'security' | 'school';
@@ -72,6 +73,7 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<ProfileTab>('info');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarPinned, setIsSidebarPinned] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const sidebarRef = useRef<HTMLElement>(null);
   const hoverZoneRef = useRef<HTMLDivElement>(null);
@@ -97,6 +99,24 @@ export default function ProfilePage() {
     setOrganization(session.organization || '');
     setIdNumber(session.idNumber || '');
     setProfilePicture(session.profilePicture || null);
+
+    // Fetch avatar + cover mula sa Supabase
+    const loadImages = async () => {
+      try {
+        const { avatar_url, cover_url } = await fetchProfileImages(session.id);
+        if (avatar_url) setProfilePicture(avatar_url);
+        if (cover_url) {
+          setCoverPhoto(cover_url);
+          console.log('[Profile] Cover loaded:', cover_url);
+        } else {
+          console.log('[Profile] No cover_url sa database');
+        }
+      } catch (error) {
+        console.error('[Profile] Failed to load images:', error);
+      }
+    };
+
+    void loadImages();
   }, [session, navigate]);
 
   // Hover-to-open sidebar (desktop only)
@@ -140,43 +160,77 @@ export default function ProfilePage() {
 
   if (!session) return null;
 
-  const handleImageUpload = (onSuccess: (dataUrl: string) => void) => {
+  // ============================================
+  // HANDLERS — Supabase upload
+  // ============================================
+
+  const validateFile = (file: File): boolean => {
+    if (file.size > 5 * 1024 * 1024) {
+      toast('Image size must be less than 5MB.', 'warning');
+      return false;
+    }
+    if (!file.type.startsWith('image/')) {
+      toast('Please upload a valid image file.', 'warning');
+      return false;
+    }
+    return true;
+  };
+
+  const handleProfilePictureUpload = () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    input.onchange = (e) => {
+    input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
-      if (!file) return;
-      if (file.size > 5 * 1024 * 1024) {
-        toast('Image size must be less than 5MB.', 'warning');
-        return;
+      if (!file || !validateFile(file)) return;
+
+      setIsUploading(true);
+      try {
+        const { url } = await uploadAvatar(session.id, file);
+        setProfilePicture(url);
+        updateProfilePicture(url);
+        toast('Profile picture updated!', 'success');
+      } catch (error) {
+        console.error('Avatar upload failed:', error);
+        toast(
+          error instanceof Error
+            ? error.message
+            : 'Failed to upload profile picture. Please try again.',
+          'danger',
+        );
+      } finally {
+        setIsUploading(false);
       }
-      if (!file.type.startsWith('image/')) {
-        toast('Please upload a valid image file.', 'warning');
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        onSuccess(event.target?.result as string);
-      };
-      reader.readAsDataURL(file);
     };
     input.click();
   };
 
-  const handleProfilePictureUpload = () => {
-    handleImageUpload((imageUrl) => {
-      setProfilePicture(imageUrl);
-      updateProfilePicture(imageUrl);
-      toast('Profile picture updated!', 'success');
-    });
-  };
-
   const handleCoverPhotoUpload = () => {
-    handleImageUpload((imageUrl) => {
-      setCoverPhoto(imageUrl);
-      toast('Cover photo updated!', 'success');
-    });
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file || !validateFile(file)) return;
+
+      setIsUploading(true);
+      try {
+        const { url } = await uploadCover(session.id, file);
+        setCoverPhoto(url);
+        toast('Cover photo updated!', 'success');
+      } catch (error) {
+        console.error('Cover upload failed:', error);
+        toast(
+          error instanceof Error
+            ? error.message
+            : 'Failed to upload cover photo. Please try again.',
+          'danger',
+        );
+      } finally {
+        setIsUploading(false);
+      }
+    };
+    input.click();
   };
 
   const getUsername = () => email.split('@')[0] || 'username';
@@ -226,9 +280,19 @@ export default function ProfilePage() {
     },
   ];
 
+  // Cover style — direct inline backgroundImage (highest priority, cannot be overridden)
+  const coverStyle: React.CSSProperties | undefined = coverPhoto
+    ? {
+        backgroundImage: `url("${coverPhoto}")`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundColor: 'var(--theme-primary)',
+      }
+    : undefined;
+
   return (
     <div className={`profile-shell ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
-      {/* Hover zone sa left edge — desktop only */}
       <div
         ref={hoverZoneRef}
         className="profile-hover-zone"
@@ -313,19 +377,18 @@ export default function ProfilePage() {
           <div className="profile-container">
             <div className="profile-layout">
               <div className="profile-main">
-                <div
-                  className="profile-cover"
-                  style={coverPhoto ? { backgroundImage: `url(${coverPhoto})` } : undefined}
-                >
+                {/* COVER — direct inline backgroundImage */}
+                <div className="profile-cover" style={coverStyle}>
                   <div className="profile-cover-overlay" />
 
                   <button
                     type="button"
                     className="profile-cover-edit"
                     onClick={handleCoverPhotoUpload}
+                    disabled={isUploading}
                   >
                     <ImagePlus className="react-icon" aria-hidden="true" />
-                    Edit Cover
+                    {isUploading ? 'Uploading…' : 'Edit Cover'}
                   </button>
 
                   <div className="profile-cover-content">
@@ -340,6 +403,7 @@ export default function ProfilePage() {
                         type="button"
                         className="profile-picture-upload"
                         onClick={handleProfilePictureUpload}
+                        disabled={isUploading}
                         aria-label="Upload profile picture"
                       >
                         <Camera className="react-icon" aria-hidden="true" />
@@ -432,6 +496,7 @@ export default function ProfilePage() {
                               type="button"
                               className="profile-photo-badge"
                               onClick={handleProfilePictureUpload}
+                              disabled={isUploading}
                               aria-label="Change photo"
                             >
                               <Camera className="react-icon" aria-hidden="true" />
@@ -441,9 +506,10 @@ export default function ProfilePage() {
                             type="button"
                             className="profile-photo-btn"
                             onClick={handleProfilePictureUpload}
+                            disabled={isUploading}
                           >
                             <Camera className="react-icon" aria-hidden="true" />
-                            Change Photo
+                            {isUploading ? 'Uploading…' : 'Change Photo'}
                           </button>
                         </div>
 
