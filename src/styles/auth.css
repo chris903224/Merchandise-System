@@ -14,7 +14,7 @@
 
 body:has(.auth-experience) {
   background-color: #071a12 !important;
-  background-image: url('/public/campus.png') !important;
+  background-image: url('/public/campus-log.png') !important;
   background-size: cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
