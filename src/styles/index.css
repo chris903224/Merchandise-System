@@ -27,12 +27,6 @@
    Hindi tinatakpan ang solid color — pinapatungan lang ng subtle image
    ============================================================ */
 
-/* ============================================================
-   GLASSY BACKGROUND LAYER
-   Extra semi-transparent layer on top of existing solid theme bg
-   Hindi tinatakpan ang solid color — pinapatungan lang ng subtle image
-   ============================================================ */
-
 body::before {
   content: '';
   position: fixed;
@@ -43,7 +37,7 @@ body::before {
   background-position: center;
   background-attachment: fixed;
   background-repeat: no-repeat;
-  opacity: 0.18;
+  opacity: 0.34;
   transition: background 0.5s ease, opacity 0.5s ease;
 }
 
@@ -54,104 +48,115 @@ body::before {
 }
 
 /* ============================================================
-   THEME-SPECIFIC GLASSY LAYERS
+   THEME-SPECIFIC GLASSY LAYERS — 10 Green Themes
    ============================================================ */
 
-[data-theme='green-glass'] body::before {
+[data-theme='forest-green'] body::before {
   background-image:
     linear-gradient(
       135deg,
-      rgba(16, 185, 129, 0.35) 0%,
-      rgba(5, 150, 105, 0.25) 50%,
-      rgba(16, 185, 129, 0.4) 100%
+      rgba(23, 107, 82, 0.35) 0%,
+      rgba(15, 76, 58, 0.25) 50%,
+      rgba(23, 107, 82, 0.4) 100%
     ),
     url('/campus.png');
 }
 
-[data-theme='cream-glass'] body::before {
+[data-theme='emerald-green'] body::before {
   background-image:
     linear-gradient(
       135deg,
-      rgba(254, 243, 199, 0.45) 0%,
-      rgba(253, 230, 138, 0.35) 50%,
-      rgba(254, 243, 199, 0.5) 100%
+      rgba(8, 127, 91, 0.35) 0%,
+      rgba(5, 102, 69, 0.25) 50%,
+      rgba(8, 127, 91, 0.4) 100%
     ),
     url('/campus.png');
 }
 
-[data-theme='white-glass'] body::before {
+[data-theme='dark-green'] body::before {
   background-image:
     linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.5) 0%,
-      rgba(241, 245, 249, 0.4) 50%,
-      rgba(255, 255, 255, 0.55) 100%
+      rgba(20, 83, 45, 0.4) 0%,
+      rgba(10, 61, 31, 0.3) 50%,
+      rgba(20, 83, 45, 0.45) 100%
     ),
     url('/campus.png');
 }
 
-[data-theme='yellow-glass'] body::before {
+[data-theme='hunter-green'] body::before {
   background-image:
     linear-gradient(
       135deg,
-      rgba(253, 224, 71, 0.4) 0%,
-      rgba(234, 179, 8, 0.3) 50%,
-      rgba(253, 224, 71, 0.45) 100%
+      rgba(53, 94, 59, 0.4) 0%,
+      rgba(38, 74, 44, 0.3) 50%,
+      rgba(53, 94, 59, 0.45) 100%
     ),
     url('/campus.png');
 }
 
-[data-theme='orange-glass'] body::before {
+[data-theme='sage-green'] body::before {
   background-image:
     linear-gradient(
       135deg,
-      rgba(251, 146, 60, 0.4) 0%,
-      rgba(234, 88, 12, 0.3) 50%,
-      rgba(251, 146, 60, 0.45) 100%
+      rgba(107, 128, 104, 0.35) 0%,
+      rgba(88, 107, 86, 0.25) 50%,
+      rgba(107, 128, 104, 0.4) 100%
     ),
     url('/campus.png');
 }
 
-[data-theme='purple-glass'] body::before {
+[data-theme='olive-green'] body::before {
   background-image:
     linear-gradient(
       135deg,
-      rgba(192, 132, 252, 0.4) 0%,
-      rgba(168, 85, 247, 0.3) 50%,
-      rgba(192, 132, 252, 0.45) 100%
+      rgba(101, 116, 58, 0.4) 0%,
+      rgba(79, 92, 45, 0.3) 50%,
+      rgba(101, 116, 58, 0.45) 100%
     ),
     url('/campus.png');
 }
 
-[data-theme='gray-glass'] body::before {
+[data-theme='jade-green'] body::before {
   background-image:
     linear-gradient(
       135deg,
-      rgba(203, 213, 225, 0.5) 0%,
-      rgba(148, 163, 184, 0.4) 50%,
-      rgba(203, 213, 225, 0.55) 100%
+      rgba(39, 138, 104, 0.35) 0%,
+      rgba(29, 110, 82, 0.25) 50%,
+      rgba(39, 138, 104, 0.4) 100%
     ),
     url('/campus.png');
 }
 
-[data-theme='light-black-glass'] body::before {
+[data-theme='pine-green'] body::before {
   background-image:
     linear-gradient(
       135deg,
-      rgba(63, 63, 70, 0.6) 0%,
-      rgba(24, 24, 27, 0.5) 50%,
-      rgba(63, 63, 70, 0.65) 100%
+      rgba(31, 95, 74, 0.35) 0%,
+      rgba(20, 71, 58, 0.25) 50%,
+      rgba(31, 95, 74, 0.4) 100%
     ),
     url('/campus.png');
 }
 
-[data-theme='dark-glass'] body::before {
+[data-theme='mint-green'] body::before {
   background-image:
     linear-gradient(
       135deg,
-      rgba(30, 41, 59, 0.7) 0%,
-      rgba(15, 23, 42, 0.6) 50%,
-      rgba(30, 41, 59, 0.75) 100%
+      rgba(76, 175, 131, 0.3) 0%,
+      rgba(61, 142, 105, 0.2) 50%,
+      rgba(76, 175, 131, 0.35) 100%
+    ),
+    url('/campus.png');
+}
+
+[data-theme='sea-green'] body::before {
+  background-image:
+    linear-gradient(
+      135deg,
+      rgba(46, 139, 114, 0.35) 0%,
+      rgba(36, 112, 92, 0.25) 50%,
+      rgba(46, 139, 114, 0.4) 100%
     ),
     url('/campus.png');
 }

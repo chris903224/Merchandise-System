@@ -1,15 +1,16 @@
 // src/theme.ts
 
 export type ThemeId =
-  | 'green-glass'
-  | 'cream-glass'
-  | 'white-glass'
-  | 'yellow-glass'
-  | 'orange-glass'
-  | 'purple-glass'
-  | 'gray-glass'
-  | 'light-black-glass'
-  | 'dark-glass';
+  | 'forest-green'
+  | 'emerald-green'
+  | 'dark-green'
+  | 'hunter-green'
+  | 'sage-green'
+  | 'olive-green'
+  | 'jade-green'
+  | 'pine-green'
+  | 'mint-green'
+  | 'sea-green';
 
 export type ThemeDefinition = {
   id: ThemeId;
@@ -21,79 +22,86 @@ export type ThemeDefinition = {
 
 export const themeOptions: ThemeDefinition[] = [
   {
-    id: 'green-glass',
-    label: 'Green Glass',
-    emoji: '🍀',
-    gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-    preview: 'linear-gradient(135deg, #34d399, #059669)',
+    id: 'forest-green',
+    label: 'Forest Green',
+    emoji: '🌲',
+    gradient: 'linear-gradient(135deg, #176B52 0%, #0F4C3A 100%)',
+    preview: 'linear-gradient(135deg, #176B52, #0F4C3A)',
   },
   {
-    id: 'cream-glass',
-    label: 'Cream Glass',
-    emoji: '🍦',
-    gradient: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-    preview: 'linear-gradient(135deg, #fef3c7, #fde68a)',
+    id: 'emerald-green',
+    label: 'Emerald Green',
+    emoji: '💎',
+    gradient: 'linear-gradient(135deg, #087F5B 0%, #056645 100%)',
+    preview: 'linear-gradient(135deg, #087F5B, #056645)',
   },
   {
-    id: 'white-glass',
-    label: 'White Glass',
-    emoji: '🤍',
-    gradient: 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)',
-    preview: 'linear-gradient(135deg, #ffffff, #e2e8f0)',
+    id: 'dark-green',
+    label: 'Dark Green',
+    emoji: '🌿',
+    gradient: 'linear-gradient(135deg, #14532D 0%, #0A3D1F 100%)',
+    preview: 'linear-gradient(135deg, #14532D, #0A3D1F)',
   },
   {
-    id: 'yellow-glass',
-    label: 'Yellow Glass',
-    emoji: '💛',
-    gradient: 'linear-gradient(135deg, #fde047 0%, #eab308 100%)',
-    preview: 'linear-gradient(135deg, #fde047, #eab308)',
+    id: 'hunter-green',
+    label: 'Hunter Green',
+    emoji: '🏹',
+    gradient: 'linear-gradient(135deg, #355E3B 0%, #264A2C 100%)',
+    preview: 'linear-gradient(135deg, #355E3B, #264A2C)',
   },
   {
-    id: 'orange-glass',
-    label: 'Orange Glass',
-    emoji: '🧡',
-    gradient: 'linear-gradient(135deg, #fb923c 0%, #ea580c 100%)',
-    preview: 'linear-gradient(135deg, #fb923c, #ea580c)',
+    id: 'sage-green',
+    label: 'Sage Green',
+    emoji: '🍃',
+    gradient: 'linear-gradient(135deg, #6B8068 0%, #586B56 100%)',
+    preview: 'linear-gradient(135deg, #6B8068, #586B56)',
   },
   {
-    id: 'purple-glass',
-    label: 'Purple Glass',
-    emoji: '💜',
-    gradient: 'linear-gradient(135deg, #c084fc 0%, #a855f7 100%)',
-    preview: 'linear-gradient(135deg, #c084fc, #a855f7)',
+    id: 'olive-green',
+    label: 'Olive Green',
+    emoji: '🫒',
+    gradient: 'linear-gradient(135deg, #65743A 0%, #4F5C2D 100%)',
+    preview: 'linear-gradient(135deg, #65743A, #4F5C2D)',
   },
   {
-    id: 'gray-glass',
-    label: 'Gray Glass',
-    emoji: '🩶',
-    gradient: 'linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%)',
-    preview: 'linear-gradient(135deg, #cbd5e1, #94a3b8)',
+    id: 'jade-green',
+    label: 'Jade Green',
+    emoji: '🪷',
+    gradient: 'linear-gradient(135deg, #278A68 0%, #1D6E52 100%)',
+    preview: 'linear-gradient(135deg, #278A68, #1D6E52)',
   },
   {
-    id: 'light-black-glass',
-    label: 'Light Black Glass',
-    emoji: '🖤',
-    gradient: 'linear-gradient(135deg, #3f3f46 0%, #18181b 100%)',
-    preview: 'linear-gradient(135deg, #3f3f46, #18181b)',
+    id: 'pine-green',
+    label: 'Pine Green',
+    emoji: '🌲',
+    gradient: 'linear-gradient(135deg, #1F5F4A 0%, #14473A 100%)',
+    preview: 'linear-gradient(135deg, #1F5F4A, #14473A)',
   },
   {
-    id: 'dark-glass',
-    label: 'Dark Glass',
-    emoji: '🌙',
-    gradient: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-    preview: 'linear-gradient(135deg, #1e293b, #0f172a)',
+    id: 'mint-green',
+    label: 'Mint Green',
+    emoji: '🌱',
+    gradient: 'linear-gradient(135deg, #4CAF83 0%, #3D8E69 100%)',
+    preview: 'linear-gradient(135deg, #4CAF83, #3D8E69)',
+  },
+  {
+    id: 'sea-green',
+    label: 'Sea Green',
+    emoji: '🌊',
+    gradient: 'linear-gradient(135deg, #2E8B72 0%, #24705C 100%)',
+    preview: 'linear-gradient(135deg, #2E8B72, #24705C)',
   },
 ];
 
 const STORAGE_KEY = 'sjcm_theme';
 
 export function getStoredTheme(): ThemeId {
-  if (typeof window === 'undefined') return 'cream-glass';
+  if (typeof window === 'undefined') return 'forest-green';
   const stored = window.localStorage.getItem(STORAGE_KEY);
   if (stored && themeOptions.some((t) => t.id === stored)) {
     return stored as ThemeId;
   }
-  return 'cream-glass';
+  return 'forest-green';
 }
 
 export function applyTheme(themeId: ThemeId) {
@@ -103,5 +111,5 @@ export function applyTheme(themeId: ThemeId) {
 }
 
 export function getThemeDefinition(id: string): ThemeDefinition {
-  return themeOptions.find((t) => t.id === id) ?? themeOptions[1];
+  return themeOptions.find((t) => t.id === id) ?? themeOptions[0];
 }

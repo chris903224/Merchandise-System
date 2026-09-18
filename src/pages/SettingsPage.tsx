@@ -901,7 +901,7 @@ export default function SettingsPage() {
                                 </div>
                                 <span className="theme-card__label">
                                   {option.label}
-                                  {option.id === 'green-glass' && (
+                                  {option.id === 'forest-green' && (
                                     <span className="theme-card__default"> (Default)</span>
                                   )}
                                 </span>
@@ -934,7 +934,7 @@ export default function SettingsPage() {
                       <div>
                         <p className="appearance-current-theme__label">Current Theme</p>
                         <p className="appearance-current-theme__name">
-                          {currentThemeOption?.label || 'SJ Green'}
+                          {currentThemeOption?.label || 'Forest Green'}
                         </p>
                       </div>
                       <span className="appearance-current-theme__badge">Active</span>
