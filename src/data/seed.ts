@@ -4,26 +4,13 @@ import type { Order, Product, UserRecord } from '../types';
 import { STORAGE_KEYS, readStorage, writeStorage } from './storage';
 import { createPasswordSalt, hashPassword } from './password';
 
-/** Shared query string so every stock photo is served pre-cropped and compressed. */
-const PHOTO_PARAMS = '?auto=compress&cs=tinysrgb&fit=crop&w=800&h=800';
+const SEED_VERSION = 'v5-real-filenames';
+const SEED_VERSION_KEY = 'sjcm_seed_version';
 
-/**
- * Placeholder image URLs — palitan mo na lang ito ng sarili mong images
- * sa /public/products/ kapag ready na.
- */
-const PLACEHOLDER_LACE = `https://images.pexels.com/photos/8761297/pexels-photo-8761297.jpeg${PHOTO_PARAMS}`;
-const PLACEHOLDER_POLO = `https://images.pexels.com/photos/11176397/pexels-photo-11176397.jpeg${PHOTO_PARAMS}`;
-const PLACEHOLDER_UNIFORM = `https://images.pexels.com/photos/28576633/pexels-photo-28576633.jpeg${PHOTO_PARAMS}`;
-const PLACEHOLDER_PE = `https://images.pexels.com/photos/16359090/pexels-photo-16359090.jpeg${PHOTO_PARAMS}`;
-const PLACEHOLDER_SHIRT = `https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg${PHOTO_PARAMS}`;
-const PLACEHOLDER_SCRUB = `https://images.pexels.com/photos/3768131/pexels-photo-3768131.jpeg${PHOTO_PARAMS}`;
-const PLACEHOLDER_JACKET = `https://images.pexels.com/photos/1183266/pexels-photo-1183266.jpeg${PHOTO_PARAMS}`;
-const PLACEHOLDER_SPORTS = `https://images.pexels.com/photos/1103829/pexels-photo-1103829.jpeg${PHOTO_PARAMS}`;
+const IMG = (filename: string) =>
+  `/product%20pictures/${encodeURIComponent(filename)}`;
 
 export const MOCK_PRODUCTS: Product[] = [
-  // ============================================
-  // GENERAL
-  // ============================================
   {
     id: 'prod-gen-001',
     name: 'SJC ID Lace',
@@ -32,7 +19,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 80.0,
     stock: 100,
     sizes: ['N/A'],
-    image: PLACEHOLDER_LACE,
+    image: IMG('SJC ID LACE.jpg'),
     imageAlt: 'Official SJC ID lace',
     description: 'Official Saint Jude College ID lace with safety clip.',
   },
@@ -44,7 +31,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 350.0,
     stock: 50,
     sizes: ['S', 'M', 'L', 'XL', '2XL'],
-    image: PLACEHOLDER_SHIRT,
+    image: IMG('SJC FOUNDATION SHIRT.jpg'),
     imageAlt: 'SJC Foundation Week shirt',
     description: 'Commemorative Foundation Week shirt.',
   },
@@ -56,7 +43,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 350.0,
     stock: 50,
     sizes: ['S', 'M', 'L', 'XL', '2XL'],
-    image: PLACEHOLDER_SHIRT,
+    image: IMG('SJC EDUCATIONAL TOUR SHIRT.jpg'),
     imageAlt: 'SJC Educational Tour shirt',
     description: 'Official Educational Tour shirt.',
   },
@@ -68,14 +55,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 500.0,
     stock: 30,
     sizes: ['S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_POLO,
+    image: IMG('CSDL CSG UNIFORM.jpg'),
     imageAlt: 'CSDL/CSG uniform polo',
     description: 'Official CSDL/CSG organization uniform.',
   },
-
-  // ============================================
-  // COLLEGE
-  // ============================================
   {
     id: 'prod-col-001',
     name: 'College General Uniform Set',
@@ -84,7 +67,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 40,
     sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('COLLEGE GENERAL UNIFORM.jpg'),
     imageAlt: 'College general uniform set',
     description: 'College general uniform set (Top P500 / Bottom P500).',
   },
@@ -96,7 +79,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 40,
     sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('SPECIALIZED UNIFORM .jpg'),
     imageAlt: 'College specialized uniform',
     description: 'College specialized uniform (Top P500 / Bottom P500).',
   },
@@ -108,14 +91,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 35,
     sizes: ['S', 'M', 'L', 'XL', '2XL'],
-    image: PLACEHOLDER_PE,
+    image: IMG('PE UNIFORM.jpg'),
     imageAlt: 'College PE uniform set',
     description: 'Official PE uniform set.',
   },
-
-  // ============================================
-  // SHS
-  // ============================================
   {
     id: 'prod-shs-001',
     name: 'SHS General Uniform Set',
@@ -124,7 +103,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 40,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('SHS GENERAL UNIFORM.jpg'),
     imageAlt: 'SHS general uniform set',
     description: 'SHS general uniform set (Top P500 / Bottom P500).',
   },
@@ -136,7 +115,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 40,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('SPECIALIZED UNIFORM (1).jpg'),
     imageAlt: 'SHS specialized uniform set',
     description: 'SHS specialized uniform set (Top P500 / Bottom P500).',
   },
@@ -148,7 +127,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 500.0,
     stock: 25,
     sizes: ['S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_POLO,
+    image: IMG('SHS SC UNIFORM.jpg'),
     imageAlt: 'SHS Student Council uniform',
     description: 'SHS Student Council uniform.',
   },
@@ -160,14 +139,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 300.0,
     stock: 50,
     sizes: ['S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_PE,
+    image: IMG('SHS PE UNIFORM TOP.jpg'),
     imageAlt: 'SHS PE uniform top',
     description: 'SHS PE uniform top.',
   },
-
-  // ============================================
-  // CAS
-  // ============================================
   {
     id: 'prod-cas-001',
     name: 'NSTP Uniform',
@@ -176,14 +151,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 500.0,
     stock: 30,
     sizes: ['S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_POLO,
+    image: IMG('NSTP UNIFORM.jpg'),
     imageAlt: 'NSTP uniform',
     description: 'Official NSTP uniform.',
   },
-
-  // ============================================
-  // CITE — BSIT
-  // ============================================
   {
     id: 'prod-cite-001',
     name: 'CITE Shirt',
@@ -192,7 +163,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 350.0,
     stock: 40,
     sizes: ['S', 'M', 'L', 'XL', '2XL'],
-    image: PLACEHOLDER_SHIRT,
+    image: IMG('CITE SHIRT.jpg'),
     imageAlt: 'CITE shirt',
     description: 'Official CITE department shirt.',
   },
@@ -204,7 +175,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 20,
     sizes: ['S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('CITE INTERNSHIP UNIFORM.jpg'),
     imageAlt: 'CITE internship uniform',
     description: 'CITE internship uniform.',
   },
@@ -216,7 +187,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 350.0,
     stock: 40,
     sizes: ['S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_SHIRT,
+    image: IMG('SSITE ORG SHIRT.jpg'),
     imageAlt: 'SSITE org shirt',
     description: 'SSITE organization shirt.',
   },
@@ -228,7 +199,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 15,
     sizes: ['S', 'M', 'L', 'XL', '2XL'],
-    image: PLACEHOLDER_JACKET,
+    image: IMG('SSITE WINDBREAKER.jpg'),
     imageAlt: 'SSITE windbreaker',
     description: 'SSITE organization windbreaker.',
   },
@@ -240,14 +211,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 80.0,
     stock: 100,
     sizes: ['N/A'],
-    image: PLACEHOLDER_LACE,
+    image: IMG('CITE ID LACE.jpg'),
     imageAlt: 'CITE ID lace',
     description: 'Official CITE ID lace.',
   },
-
-  // ============================================
-  // CITE — BSIS
-  // ============================================
   {
     id: 'prod-cis-001',
     name: 'CISE Shirt',
@@ -256,14 +223,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 350.0,
     stock: 40,
     sizes: ['S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_SHIRT,
+    image: IMG('CISE SHIRT.jpg'),
     imageAlt: 'CISE shirt',
     description: 'Official CISE organization shirt.',
   },
-
-  // ============================================
-  // COED — BSED
-  // ============================================
   {
     id: 'prod-coed-001',
     name: 'BSED Specialized Uniform',
@@ -272,14 +235,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 30,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('BSED SPECIALIZED UNIF.jpg'),
     imageAlt: 'BSED specialized uniform',
     description: 'BSED specialized uniform (Top P500 / Bottom P500).',
   },
-
-  // ============================================
-  // CCJE — BSCRIM
-  // ============================================
   {
     id: 'prod-ccje-001',
     name: 'BSCRIM Type A Specialized Uniform',
@@ -288,7 +247,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 25,
     sizes: ['S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('BSCRIM UNIF TYPE 1.jpg'),
     imageAlt: 'BSCRIM Type A specialized uniform',
     description: 'BSCRIM Type A specialized uniform.',
   },
@@ -300,7 +259,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 25,
     sizes: ['S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('BSCRIM UNIF TYPE 2.jpg'),
     imageAlt: 'BSCRIM Type B specialized uniform',
     description: 'BSCRIM Type B specialized uniform.',
   },
@@ -312,14 +271,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 500.0,
     stock: 25,
     sizes: ['S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_POLO,
+    image: IMG('CRIMINAL JUSTICE SC UNIFORM.jpg'),
     imageAlt: 'Criminal Justice Student Council uniform',
     description: 'Criminal Justice Student Council uniform.',
   },
-
-  // ============================================
-  // CMA — BSTM
-  // ============================================
   {
     id: 'prod-cma-001',
     name: 'BSTM Specialized Uniform',
@@ -328,14 +283,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 25,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('BSTM.jpg'),
     imageAlt: 'BSTM specialized uniform',
     description: 'BSTM specialized uniform (Top P500 / Bottom P500).',
   },
-
-  // ============================================
-  // CMA — BSHM
-  // ============================================
   {
     id: 'prod-cma-002',
     name: 'BSHM Specialized Uniform',
@@ -344,14 +295,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 25,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('BSHM.jpg'),
     imageAlt: 'BSHM specialized uniform',
     description: 'BSHM specialized uniform (Top P500 / Bottom P500).',
   },
-
-  // ============================================
-  // BSA
-  // ============================================
   {
     id: 'prod-bsa-001',
     name: 'BSA Specialized Uniform',
@@ -360,7 +307,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 25,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('BSA SPECIALIZED UNIF.jpg'),
     imageAlt: 'BSA specialized uniform',
     description: 'BSA specialized uniform (Top P500 / Bottom P500).',
   },
@@ -372,14 +319,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 350.0,
     stock: 40,
     sizes: ['S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_SHIRT,
+    image: IMG('JPIA ORG SHIRT.jpg'),
     imageAlt: 'JPIA shirt',
     description: 'Junior Philippine Institution of Accountancy shirt.',
   },
-
-  // ============================================
-  // BSBA
-  // ============================================
   {
     id: 'prod-bsba-001',
     name: 'BSBA Specialized Uniform',
@@ -388,14 +331,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 25,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('BSBA UNIF.jpg'),
     imageAlt: 'BSBA specialized uniform',
     description: 'BSBA specialized uniform (Top P500 / Bottom P500).',
   },
-
-  // ============================================
-  // CAHS — General
-  // ============================================
   {
     id: 'prod-cahs-001',
     name: 'CAHS Scrub',
@@ -404,7 +343,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 30,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_SCRUB,
+    image: IMG('CAHS SCRUB.jpg'),
     imageAlt: 'CAHS scrub',
     description: 'CAHS scrub (Top P500 / Bottom P500).',
   },
@@ -416,7 +355,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 600.0,
     stock: 30,
     sizes: ['S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_SHIRT,
+    image: IMG('VANGUARDS SHIRT.jpg'),
     imageAlt: 'Vanguards shirt',
     description: 'Vanguards organization shirt.',
   },
@@ -428,7 +367,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 30,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('CLASSROOM UNIFORM.jpg'),
     imageAlt: 'CAHS classroom uniform',
     description: 'CAHS classroom uniform (Top P500 / Bottom P500).',
   },
@@ -440,14 +379,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 20,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_SCRUB,
+    image: IMG('CLINICAL INTERNSHIP UNIF.jpg'),
     imageAlt: 'CAHS clinical internship uniform',
     description: 'CAHS clinical internship uniform (Top P500 / Bottom P500).',
   },
-
-  // ============================================
-  // CAHS — BSN
-  // ============================================
   {
     id: 'prod-bsn-001',
     name: 'BSN Specialized Uniform',
@@ -456,7 +391,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 25,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('BSN SPECIALIZED UNIFORM.jpg'),
     imageAlt: 'BSN specialized uniform',
     description: 'BSN specialized uniform (Top P500 / Bottom P500).',
   },
@@ -468,7 +403,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 25,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('TYPE B UNIF.jpg'),
     imageAlt: 'Nursing Type B uniform',
     description: 'Nursing Type B uniform.',
   },
@@ -480,14 +415,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 700.0,
     stock: 30,
     sizes: ['S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_SPORTS,
+    image: IMG('NURSING JERSEY.jpg'),
     imageAlt: 'Nursing jersey',
     description: 'Official Nursing jersey.',
   },
-
-  // ============================================
-  // CAHS — BSRT
-  // ============================================
   {
     id: 'prod-bsrt-001',
     name: 'BSRT Type B Uniform',
@@ -496,14 +427,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 25,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('TYPE B UNIF (1).jpg'),
     imageAlt: 'BSRT Type B uniform',
     description: 'BSRT Type B uniform.',
   },
-
-  // ============================================
-  // CAHS — BSMT
-  // ============================================
   {
     id: 'prod-bsmt-001',
     name: 'MLS Type B Uniform',
@@ -512,14 +439,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 1000.0,
     stock: 25,
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_UNIFORM,
+    image: IMG('MED LAB TYPE B.jpg'),
     imageAlt: 'MLS Type B uniform',
     description: 'MLS Type B uniform.',
   },
-
-  // ============================================
-  // INTEREST BASED ORGANIZATIONS — La Liga Historia
-  // ============================================
   {
     id: 'prod-org-llh-001',
     name: 'La Liga Historia Uniform',
@@ -528,7 +451,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 500.0,
     stock: 25,
     sizes: ['S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_POLO,
+    image: IMG('LA LIGA HISTORIA UNIFORM.jpg'),
     imageAlt: 'La Liga Historia uniform',
     description: 'La Liga Historia organization uniform.',
   },
@@ -540,14 +463,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 80.0,
     stock: 100,
     sizes: ['N/A'],
-    image: PLACEHOLDER_LACE,
+    image: IMG('LA LIGA HISTORIA ID LACE.jpg'),
     imageAlt: 'La Liga Historia ID lace',
     description: 'La Liga Historia ID lace.',
   },
-
-  // ============================================
-  // INTEREST BASED ORGANIZATIONS — MASID
-  // ============================================
   {
     id: 'prod-org-masid-001',
     name: 'MASID Uniform',
@@ -556,7 +475,7 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 500.0,
     stock: 25,
     sizes: ['S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_POLO,
+    image: IMG('MASID UNIFORM.jpg'),
     imageAlt: 'MASID uniform',
     description: 'MASID organization uniform.',
   },
@@ -568,14 +487,10 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 80.0,
     stock: 100,
     sizes: ['N/A'],
-    image: PLACEHOLDER_LACE,
+    image: IMG('MASID ID LACE.jpg'),
     imageAlt: 'MASID ID lace',
     description: 'MASID ID lace.',
   },
-
-  // ============================================
-  // INTEREST BASED ORGANIZATIONS — Behind The Lens
-  // ============================================
   {
     id: 'prod-org-btl-001',
     name: 'Behind The Lens Uniform',
@@ -584,13 +499,12 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 350.0,
     stock: 25,
     sizes: ['S', 'M', 'L', 'XL'],
-    image: PLACEHOLDER_POLO,
+    image: IMG('BEHIND THE LENS UNIFORM.jpg'),
     imageAlt: 'Behind The Lens uniform',
     description: 'Behind The Lens organization uniform.',
   },
 ];
 
-/** Seed accounts are declared with a plaintext password, then hashed before storage. */
 type SeedUser = Omit<UserRecord, 'passwordHash' | 'passwordSalt' | 'password'> & {
   password: string;
 };
@@ -693,11 +607,6 @@ async function toUserRecord(seed: SeedUser): Promise<UserRecord> {
   };
 }
 
-/**
- * Upgrades user records written by earlier builds, which stored the password in
- * plaintext, to salted SHA-256 hashes. Runs once; afterwards there is nothing
- * left to migrate.
- */
 async function migrateLegacyPasswords(): Promise<void> {
   const storedUsers = readStorage<UserRecord[]>(STORAGE_KEYS.users, []);
   let migratedAny = false;
@@ -722,7 +631,10 @@ async function migrateLegacyPasswords(): Promise<void> {
 }
 
 export async function ensureSeeded(): Promise<void> {
-  if (localStorage.getItem(STORAGE_KEYS.products) === null) {
+  const currentVersion = localStorage.getItem(SEED_VERSION_KEY);
+  const isNewVersion = currentVersion !== SEED_VERSION;
+
+  if (localStorage.getItem(STORAGE_KEYS.products) === null || isNewVersion) {
     writeStorage(STORAGE_KEYS.products, MOCK_PRODUCTS);
   }
   if (localStorage.getItem(STORAGE_KEYS.orders) === null) {
@@ -731,8 +643,10 @@ export async function ensureSeeded(): Promise<void> {
 
   if (localStorage.getItem(STORAGE_KEYS.users) === null) {
     writeStorage(STORAGE_KEYS.users, await Promise.all(SEED_USERS.map(toUserRecord)));
+    localStorage.setItem(SEED_VERSION_KEY, SEED_VERSION);
     return;
   }
 
   await migrateLegacyPasswords();
+  localStorage.setItem(SEED_VERSION_KEY, SEED_VERSION);
 }

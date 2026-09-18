@@ -1,0 +1,119 @@
+[33mcommit 815504ad04dd317651e9a77d2ab80c9ec2f7f44b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Thu Sep 17 23:06:48 2026 +0800
+
+    Improving Authentication Panels
+
+[33mcommit 52a379c411cb77ef21d6efe06e2e32b0640cf0ba[m
+Author: Your Name <clomocso08@gmail.com>
+Date:   Thu Sep 17 18:38:16 2026 +0800
+
+    login and register merge
+
+[33mcommit e346f4e60acdafcf2a9e440601ba91a755c4a771[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Thu Sep 17 12:27:42 2026 +0800
+
+    Settings sidebar glitch
+
+[33mcommit 4100c5d6bb8eee309045df6cefa2fc39344b4e13[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Thu Sep 17 12:17:03 2026 +0800
+
+    Settingspage shipping adddress
+
+[33mcommit 5f6af85e00761b9b649986888e88a6c9c1203a1a[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Thu Sep 17 12:11:13 2026 +0800
+
+    Sidebar Responsive
+
+[33mcommit 12356d9c46a27d3c75b9abb5629095a4f2dd677b[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Thu Sep 17 11:18:18 2026 +0800
+
+    Profile picture backend implementation
+
+[33mcommit f99f2af24d91a252ec865bcdc8729351e1c5b699[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Thu Sep 17 09:11:21 2026 +0800
+
+    from Sign In to reserve to my orders
+
+[33mcommit ac0bc5a46ed740000b2bb195d6eea55c9db35f43[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Thu Sep 17 08:54:54 2026 +0800
+
+    Loginpage.tsx improvement
+
+[33mcommit 426967c94af07f883e027d89d7ddd1d57756da32[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Thu Sep 17 00:37:21 2026 +0800
+
+    New revisions
+
+[33mcommit 136c287f0c35d0b5a2066e992d11952b0dcca01a[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Thu Sep 17 00:31:29 2026 +0800
+
+    Apperance Implementation these are 20+ files
+
+[33mcommit 14c301ce3f1d5ebd6fcadb25c90266b650c434f1[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Wed Sep 16 22:25:49 2026 +0800
+
+    Removed the arrow left
+
+[33mcommit 073e83c8c799056e424de5b38e1ee6534ec658da[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Wed Sep 16 22:23:42 2026 +0800
+
+    All tsx are already revised
+
+[33mcommit 1a0112862798ef03d48e4c539ed33fe3a651fe4d[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Wed Sep 16 22:13:18 2026 +0800
+
+    All tsx are already revised
+
+[33mcommit 782cf8f5e0f4eb3574e84b963628002f31817c9e[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Wed Sep 16 01:10:12 2026 +0800
+
+    New improvement for ui
+
+[33mcommit 4a32ad9316c35b1c68d49b2bb49c908f19d4859c[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Wed Sep 16 00:00:20 2026 +0800
+
+    Polished the settings and profilepage
+
+[33mcommit 5016c5d5913fc0078ac7c7c10b0ee7bd1c85b122[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Tue Sep 15 09:59:28 2026 +0800
+
+    Add rate limiting in loginPage.tsx
+
+[33mcommit a9d1372b9babc1884230e540307296c754744992[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Tue Sep 15 09:12:27 2026 +0800
+
+    Vercel json new file
+
+[33mcommit f98a2dedc9a5fadd8ac8517ab311f292aa745bc6[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Tue Sep 15 09:08:27 2026 +0800
+
+    changing the placeholder in register
+
+[33mcommit 25b0a896fc95812c4896aeb572ba834ad914389b[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Mon Sep 14 20:15:33 2026 +0800
+
+    New Revisions
+
+[33mcommit 6631edcec837e7b6f3c6b78a8b8c95a8b4cf4f77[m
+Author: chris903224 <christianvillanuevac9@gmail.com>
+Date:   Mon Sep 14 19:49:48 2026 +0800
+
+    Initial commit - SJCM Merchandise System

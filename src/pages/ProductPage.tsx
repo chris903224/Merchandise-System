@@ -1,7 +1,7 @@
 // src/pages/ProductPage.tsx
 
-import { useMemo, useState } from 'react';
-import { Link,  useParams } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
   ShoppingCart,
@@ -28,13 +28,12 @@ export default function ProductPage() {
 
   const product = useMemo(
     () => products.find((p) => p.id === id),
-    [products, id],
+    [products, id]
   );
 
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [qty, setQty] = useState(1);
 
-  // Available sizes — uses product.sizes if it exists, else defaults
   const availableSizes = useMemo(() => {
     if (!product) return [];
     const sizes = (product as any).sizes;
@@ -42,7 +41,6 @@ export default function ProductPage() {
     return DEFAULT_SIZES;
   }, [product]);
 
-  // Related products — same category, exclude current
   const relatedProducts = useMemo(() => {
     if (!product) return [];
     return products
@@ -50,7 +48,51 @@ export default function ProductPage() {
       .slice(0, 4);
   }, [products, product]);
 
-  // Not found
+  // Auto-select first size kapag may sizes at wala pang napili
+  useEffect(() => {
+    if (availableSizes.length > 0 && !selectedSize) {
+      setSelectedSize(availableSizes[0]);
+    }
+  }, [availableSizes, selectedSize]);
+
+  // Get per-size stock
+  const sizeStocks: Record<string, number> = (product as any)?.sizeStocks ?? {};
+
+  // Stock para sa napiling size (o total kung walang sizes)
+  const selectedSizeStock =
+    selectedSize && sizeStocks[selectedSize] !== undefined
+      ? Number(sizeStocks[selectedSize])
+      : Number(product?.stock) || 0;
+
+  // Qty sa cart para sa specific size
+  const qtyInCartForSize = useMemo(() => {
+    if (!product || !selectedSize) return 0;
+    return cart
+      .filter((item) => item.id === product.id && item.size === selectedSize)
+      .reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
+  }, [cart, product, selectedSize]);
+
+  // Available stock para sa user
+  const availableForUser = Math.max(0, selectedSizeStock - qtyInCartForSize);
+  const isSizeOutOfStock = selectedSizeStock <= 0;
+  const isAllInCart = selectedSizeStock > 0 && availableForUser === 0;
+
+  // Reset qty kapag lumampas
+  useEffect(() => {
+    if (qty > availableForUser && availableForUser > 0) {
+      setQty(availableForUser);
+    }
+    if (availableForUser === 0 && qty !== 1) {
+      setQty(1);
+    }
+  }, [availableForUser, qty]);
+
+  // Reset selected size kapag nagpalit ng product
+  useEffect(() => {
+    setSelectedSize('');
+    setQty(1);
+  }, [id]);
+
   if (!product) {
     return (
       <main className="product-page">
@@ -72,42 +114,52 @@ export default function ProductPage() {
   }
 
   const badge = getStockBadge(product.stock);
-  const currentStock = Number(product.stock) || 0;
-  const isOutOfStock = currentStock <= 0;
 
   // ============================================
   // ADD TO CART
   // ============================================
   const handleAddToCart = () => {
-    if (isOutOfStock) {
-      toast('This item is out of stock.', 'warning');
+    if (isSizeOutOfStock) {
+      toast(`Size ${selectedSize} is out of stock.`, 'warning');
       return;
     }
 
-    if (availableSizes.length > 1 && !selectedSize) {
+    if (!selectedSize) {
       toast('Please select a size first.', 'warning');
       return;
     }
 
-    const finalSize = selectedSize || availableSizes[0] || 'N/A';
+    if (qty > availableForUser) {
+      toast(
+        `Only ${availableForUser} available for size ${selectedSize}.`,
+        'warning'
+      );
+      return;
+    }
 
     const existingIndex = cart.findIndex(
-      (item) => item.id === product.id && item.size === finalSize,
+      (item) => item.id === product.id && item.size === selectedSize
     );
 
     if (existingIndex !== -1) {
       const existing = cart[existingIndex];
       const newQty = (Number(existing.qty) || 0) + qty;
 
-      if (newQty > currentStock) {
-        toast(`Stock limit reached. Only ${currentStock} available.`, 'warning');
+      if (newQty > selectedSizeStock) {
+        toast(
+          `Stock limit reached for size ${selectedSize}. Only ${selectedSizeStock} available.`,
+          'warning'
+        );
         return;
       }
 
       const nextCart = [...cart];
       nextCart[existingIndex] = { ...existing, qty: newQty };
       setCart(nextCart);
-      toast(`${product.name} quantity updated in cart.`, 'success');
+      toast(
+        `${product.name} (${selectedSize}) quantity updated in cart.`,
+        'success'
+      );
     } else {
       setCart([
         ...cart,
@@ -116,26 +168,23 @@ export default function ProductPage() {
           name: product.name,
           price: Number(product.price) || 0,
           qty,
-          size: finalSize,
+          size: selectedSize,
           organization: product.organization,
         } as any,
       ]);
-      toast(`${product.name} added to cart!`, 'success');
+      toast(`${product.name} (${selectedSize}) added to cart!`, 'success');
     }
   };
 
   return (
     <main className="product-page">
       <div className="product-container">
-        {/* Back link */}
         <Link to="/catalog" className="product-back">
           <ArrowLeft className="react-icon" aria-hidden="true" />
           <span>Back to catalog</span>
         </Link>
 
-        {/* PRODUCT LAYOUT */}
         <div className="product-layout">
-          {/* LEFT: Image */}
           <div className="product-media">
             <div className="product-media__frame">
               <ProductImage
@@ -157,48 +206,63 @@ export default function ProductPage() {
             </div>
           </div>
 
-          {/* RIGHT: Info */}
           <div className="product-info">
-            {/* Organization eyebrow */}
             <p className="product-info__eyebrow">{product.organization}</p>
 
-            {/* Title */}
             <h1 className="product-info__title">{product.name}</h1>
 
-            {/* Price */}
             <p className="product-info__price">{formatPrice(product.price)}</p>
 
-            {/* Divider */}
             <div className="product-info__divider" />
 
-            {/* Description */}
             <p className="product-info__description">{product.description}</p>
 
-            {/* Divider */}
             <div className="product-info__divider" />
 
-            {/* Size picker */}
-            {availableSizes.length > 1 && (
+            {/* SIZE PICKER — may per-size stock */}
+            {availableSizes.length > 0 && availableSizes[0] !== 'N/A' && (
               <div className="product-info__group">
-                <label className="product-info__label">Select size / variant</label>
+                <label className="product-info__label">
+                  Select size / variant
+                </label>
                 <div className="product-info__variants">
-                  {availableSizes.map((size) => (
-                    <button
-                      key={size}
-                      type="button"
-                      className={`product-variant ${
-                        selectedSize === size ? 'is-selected' : ''
-                      }`}
-                      onClick={() => setSelectedSize(size)}
-                    >
-                      {size}
-                    </button>
-                  ))}
+                  {availableSizes.map((size) => {
+                    const sizeStock = Number(sizeStocks[size] ?? 0);
+                    const isOut = sizeStock <= 0;
+                    const isSelected = selectedSize === size;
+
+                    return (
+                      <button
+                        key={size}
+                        type="button"
+                        className={`product-variant ${
+                          isSelected ? 'is-selected' : ''
+                        } ${isOut ? 'is-out' : ''}`}
+                        onClick={() => !isOut && setSelectedSize(size)}
+                        disabled={isOut}
+                        title={
+                          isOut
+                            ? `${size} — Out of stock`
+                            : `${size} — ${sizeStock} available`
+                        }
+                        style={
+                          isOut
+                            ? {
+                                opacity: 0.4,
+                                cursor: 'not-allowed',
+                                textDecoration: 'line-through',
+                              }
+                            : undefined
+                        }
+                      >
+                        {size}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
 
-            {/* Quantity + Stock */}
             <div className="product-info__row">
               <div className="product-info__field">
                 <label className="product-info__label">Quantity</label>
@@ -216,8 +280,10 @@ export default function ProductPage() {
                   <button
                     type="button"
                     className="product-qty__btn"
-                    onClick={() => setQty(Math.min(currentStock, qty + 1))}
-                    disabled={qty >= currentStock}
+                    onClick={() =>
+                      setQty(Math.min(availableForUser, qty + 1))
+                    }
+                    disabled={qty >= availableForUser || isSizeOutOfStock}
                     aria-label="Increase quantity"
                   >
                     <Plus className="react-icon" aria-hidden="true" />
@@ -226,27 +292,67 @@ export default function ProductPage() {
               </div>
 
               <div className="product-info__field">
-                <label className="product-info__label">Inventory availability</label>
-                <p className={`product-info__stock ${isOutOfStock ? 'is-out' : ''}`}>
-                  {isOutOfStock
-                    ? 'Out of stock'
-                    : `${currentStock} item${currentStock === 1 ? '' : 's'} remaining`}
+                <label className="product-info__label">
+                  Inventory availability
+                </label>
+                <p
+                  className={`product-info__stock ${
+                    isSizeOutOfStock ? 'is-out' : ''
+                  }`}
+                >
+                  {isAllInCart
+                    ? `All ${selectedSizeStock} in your cart`
+                    : isSizeOutOfStock
+                    ? `Size ${selectedSize} out of stock`
+                    : `${availableForUser} item${
+                        availableForUser === 1 ? '' : 's'
+                      } remaining (Size ${selectedSize})`}
                 </p>
               </div>
             </div>
 
-            {/* Add to cart */}
+            {qtyInCartForSize > 0 && !isAllInCart && (
+              <p
+                style={{
+                  fontSize: '0.78rem',
+                  color: 'var(--sjcm-gold)',
+                  marginTop: '0.25rem',
+                }}
+              >
+                ⚠️ You already have {qtyInCartForSize} of size {selectedSize} in
+                cart. Only {availableForUser} more available.
+              </p>
+            )}
+
+            {isAllInCart && (
+              <p
+                style={{
+                  fontSize: '0.78rem',
+                  color: 'var(--sjcm-success, #3c7a54)',
+                  marginTop: '0.25rem',
+                  fontWeight: 600,
+                }}
+              >
+                ✅ You've added all available stock for size {selectedSize}.
+              </p>
+            )}
+
             <button
               type="button"
               className="product-info__cta"
               onClick={handleAddToCart}
-              disabled={isOutOfStock}
+              disabled={isSizeOutOfStock || availableForUser <= 0}
             >
               <ShoppingCart className="react-icon" aria-hidden="true" />
-              <span>{isOutOfStock ? 'Out of Stock' : 'Add to cart'}</span>
+              <span>
+                {isSizeOutOfStock
+                  ? 'Out of Stock'
+                  : isAllInCart
+                  ? 'Max Quantity in Cart'
+                  : 'Add to cart'}
+              </span>
             </button>
 
-            {/* Trust badges */}
             <div className="product-info__trust">
               <div className="product-trust">
                 <span className="product-trust__icon">
@@ -263,14 +369,15 @@ export default function ProductPage() {
                 </span>
                 <span className="product-trust__copy">
                   <span className="product-trust__title">Verified Stock</span>
-                  <span className="product-trust__note">Authorized merchandise</span>
+                  <span className="product-trust__note">
+                    Authorized merchandise
+                  </span>
                 </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* RELATED PRODUCTS */}
         {relatedProducts.length > 0 && (
           <section className="product-related">
             <header className="product-related__header">
@@ -300,13 +407,17 @@ export default function ProductPage() {
                         width={300}
                         height={300}
                       />
-                      <span className={`product-related__badge ${relatedBadge.className}`}>
+                      <span
+                        className={`product-related__badge ${relatedBadge.className}`}
+                      >
                         {relatedBadge.text}
                       </span>
                     </div>
                     <div className="product-related__body">
                       <p className="product-related__name">{item.name}</p>
-                      <p className="product-related__price">{formatPrice(item.price)}</p>
+                      <p className="product-related__price">
+                        {formatPrice(item.price)}
+                      </p>
                     </div>
                   </Link>
                 );

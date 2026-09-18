@@ -35,7 +35,7 @@ export default function AuthHeader({
         <span className="auth-brand__copy">
           <span className="auth-brand__name">Saint Jude College Manila</span>
           <span className="auth-brand__divider" aria-hidden="true" />
-          <span className="auth-brand__tagline">Faith &bull; Excellence &bull; Service</span>
+          <span className="auth-brand__tagline"> &bull; Visit Dashboard Here &bull; </span>
         </span>
       </Link>
 

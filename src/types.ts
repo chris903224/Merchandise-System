@@ -8,6 +8,7 @@ export interface Product {
   price: number;
   stock: number;
   sizes: string[];
+  sizeStocks?: Record<string, number>; // 👈 IDAGDAG: { S: 100, M: 100, L: 100, ... }
   image: string;
   /** Alt text including photographer attribution for the stock image. */
   imageAlt: string;
@@ -57,7 +58,7 @@ export interface SessionUser {
   role: UserRole;
   organization: string;
   idNumber: string;
-  profilePicture?: string; // 👈 IDAGDAG ITO (optional)
+  profilePicture?: string;
 }
 
 export interface UserRecord extends SessionUser {
