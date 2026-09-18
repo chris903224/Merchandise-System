@@ -122,7 +122,7 @@
   gap: 0.55rem;
   padding-right: 1.5rem;
   margin-right: 1.5rem;
-  color: var(--hero-text-muted);
+  color: black;
   font-size: 0.78rem;
   transition: color 0.3s ease;
 }
@@ -144,7 +144,7 @@
   height: 1.85rem;
   flex: 0 0 auto;
   place-items: center;
-  border-color: transparent;
+  border-color: white;
   border-radius: 50%;
   background: transparent;
   color: var(--hero-primary);
@@ -164,7 +164,7 @@
   gap: 0.5rem;
   border: 1px solid rgba(60, 122, 84, 0.3);
   border-radius: 999px;
-  background: rgba(60, 122, 84, 0.12);
+  background: rgba(202, 209, 205, 0.68);
   color: #3c7a54;
   font-size: 0.68rem;
   font-weight: 700;
