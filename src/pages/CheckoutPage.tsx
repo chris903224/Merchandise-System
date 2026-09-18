@@ -21,13 +21,15 @@ import {
 import { useApp } from '../store';
 import { useToast } from '../toast';
 import { formatPrice, isStaffRole, sumCartItems } from '../services';
+import { placeOrder as placeOrderService } from '../services/orders';
+import type { Order } from '../types';
 
 type PaymentMethod = 'ewallet' | 'cod' | 'cash_pickup' | 'bank';
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
   const toast = useToast();
-  const { session, cart, placeOrder } = useApp();
+  const { session, cart, setCart } = useApp();
 
   // Form state
   const [fullName, setFullName] = useState(session?.name || '');
@@ -96,47 +98,55 @@ export default function CheckoutPage() {
     try {
       const orderId = `SJCM-${Date.now()}`;
 
-      // Buuin yung Order object — i-adjust kung iba yung Order type mo
-      const newOrder = {
+      const paymentMethodLabel =
+        payment === 'ewallet'
+          ? 'GCash / E-Wallet'
+          : payment === 'cod'
+          ? 'Cash on Delivery'
+          : payment === 'bank'
+          ? 'Bank Transfer'
+          : 'Over the Counter (Cash)';
+
+      // Buuin ang Order object — dapat tugma sa Order type
+      const newOrder: Order = {
         id: orderId,
         userId: session.id,
+        customerName: fullName,
+        studentId: studentId,
+        email: email,
+        phone: phone,
         items: cart.map((item) => ({
           id: item.id,
           name: item.name,
+          organization: item.organization || 'General',
           price: Number(item.price) || 0,
           qty: Number(item.qty) || 0,
           size: item.size || 'N/A',
-          organization: item.organization || '',
         })),
-        total: subtotal,
+        totalAmount: subtotal,
+        paymentMethod: paymentMethodLabel,
+        paymentRef: null,
+        paymentStatus: payment === 'cash_pickup' || payment === 'cod' ? 'Unpaid (OTC)' : 'Verification Pending',
         orderStatus: 'Pending',
+        claimLocation: 'SJCM Supply Office (Main Campus)',
+        claimDate: pickupDate || new Date(Date.now() + 86400000).toISOString().split('T')[0],
         createdAt: new Date().toISOString(),
-        paymentMethod:
-          payment === 'ewallet'
-            ? 'E-Wallet'
-            : payment === 'cod'
-            ? 'Cash on Delivery'
-            : payment === 'bank'
-            ? 'Bank Transfer'
-            : 'Cash on Pickup',
-        customerName: fullName,
-        customerEmail: email,
-        customerPhone: phone,
-        studentId,
-        organization,
-        notes,
-        pickupDate,
-        pickupTime,
-      } as const;
+      };
 
-      // placeOrder handles: append to orders, decrement stock, clear cart
-      placeOrder(newOrder as any);
+      // ✅ ITO ANG FIX: Gamitin ang placeOrderService (Supabase) imbes na useApp().placeOrder
+      await placeOrderService(newOrder);
+
+      // Clear ang cart (client-side)
+      setCart([]);
 
       toast('Order placed successfully!', 'success');
-      navigate('/confirmation', { state: { order: newOrder } });
-    } catch (error) {
+      navigate('/dashboard');
+    } catch (error: any) {
       console.error('Checkout error:', error);
-      toast('Checkout failed. Please try again.', 'danger');
+      toast(
+        error?.message || 'Checkout failed. Please try again.',
+        'danger'
+      );
     } finally {
       setIsSubmitting(false);
     }

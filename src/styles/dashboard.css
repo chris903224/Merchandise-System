@@ -1223,3 +1223,292 @@
     transform: translateY(-50%) translateX(0);
   }
 }
+/* ============================================
+   ORDER CARD — modern layout with image thumbnail
+   ============================================ */
+
+.order-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.order-card {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: #fffcf4;
+  border: 1px solid rgba(35, 26, 12, 0.08);
+  border-radius: 0.85rem;
+  transition: all 200ms ease;
+}
+
+.order-card:hover {
+  border-color: rgba(90, 17, 25, 0.2);
+  box-shadow: 0 8px 24px rgba(35, 26, 12, 0.06);
+  transform: translateY(-1px);
+}
+
+/* THUMB — product image */
+.order-card__thumb {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  border-radius: 0.65rem;
+  overflow: hidden;
+  background: #f2ecdc;
+  border: 1px solid rgba(35, 26, 12, 0.08);
+  display: grid;
+  place-items: center;
+}
+
+.order-card__thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.order-card__thumb .react-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: rgba(35, 26, 12, 0.3);
+}
+
+/* BODY — order info */
+.order-card__body {
+  min-width: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.order-card__head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.order-card__id {
+  color: #221a10;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.order-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  border: 1px solid;
+}
+
+.order-card__badge.is-completed {
+  background: rgba(60, 122, 84, 0.1);
+  color: #3c7a54;
+  border-color: rgba(60, 122, 84, 0.25);
+}
+
+.order-card__badge.is-processing {
+  background: rgba(156, 98, 30, 0.1);
+  color: #9c621e;
+  border-color: rgba(156, 98, 30, 0.25);
+}
+
+.order-card__badge.is-shipped {
+  background: rgba(52, 120, 200, 0.1);
+  color: #3478c8;
+  border-color: rgba(52, 120, 200, 0.25);
+}
+
+.order-card__badge.is-cancelled {
+  background: rgba(163, 40, 58, 0.1);
+  color: #a3283a;
+  border-color: rgba(163, 40, 58, 0.25);
+}
+
+.order-card__badge.is-pending {
+  background: rgba(35, 26, 12, 0.06);
+  color: #6f6156;
+  border-color: rgba(35, 26, 12, 0.15);
+}
+
+.order-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #6f6156;
+  font-size: 0.76rem;
+  flex-wrap: wrap;
+}
+
+.order-card__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.order-card__meta-item .react-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.order-card__meta-divider {
+  opacity: 0.5;
+}
+
+/* PROGRESS — steps */
+.order-card__progress {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.order-progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  min-width: 4rem;
+  font-size: 0.65rem;
+  color: #6f6156;
+}
+
+.order-progress-step__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(35, 26, 12, 0.15);
+  margin-bottom: 0.25rem;
+  transition: all 200ms ease;
+}
+
+.order-progress-step.is-done .order-progress-step__dot {
+  background: #3c7a54;
+  box-shadow: 0 0 0 3px rgba(60, 122, 84, 0.15);
+}
+
+.order-progress-step__label {
+  font-weight: 600;
+  color: #6f6156;
+  transition: color 200ms ease;
+}
+
+.order-progress-step.is-done .order-progress-step__label {
+  color: #221a10;
+}
+
+.order-progress-step__date {
+  font-size: 0.6rem;
+  color: #6f6156;
+  opacity: 0.8;
+  margin-top: 0.1rem;
+}
+
+/* Line between steps */
+.order-progress-step + .order-progress-step::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: -0.5rem;
+  width: 1rem;
+  height: 1px;
+  background: rgba(35, 26, 12, 0.15);
+}
+
+.order-progress-step.is-done + .order-progress-step::before {
+  background: rgba(60, 122, 84, 0.5);
+}
+
+/* RIGHT — price + button */
+.order-card__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  text-align: right;
+  min-width: 9rem;
+}
+
+.order-card__price {
+  color: #221a10;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.order-card__payment {
+  color: #6f6156;
+  font-size: 0.68rem;
+}
+
+.order-card__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.3rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid rgba(35, 26, 12, 0.15);
+  border-radius: 999px;
+  background: #fffcf4;
+  color: #5a1119;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 150ms ease;
+}
+
+.order-card__btn:hover {
+  background: #f2ecdc;
+  border-color: #5a1119;
+}
+
+.order-card__btn .react-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 720px) {
+  .order-card {
+    grid-template-columns: 60px minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .order-card__thumb {
+    width: 60px;
+    height: 60px;
+  }
+
+  .order-card__right {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding-top: 0.65rem;
+    border-top: 1px solid rgba(35, 26, 12, 0.08);
+    min-width: 0;
+    text-align: left;
+  }
+
+  .order-card__progress {
+    gap: 0.35rem;
+  }
+
+  .order-progress-step {
+    min-width: 3rem;
+    font-size: 0.58rem;
+  }
+}

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
+import ProductImage from '../components/ProductImage';
 import { formatPrice, isStaffRole, sumCartItems } from '../services';
 
 export default function CartPage() {
@@ -90,9 +91,20 @@ export default function CartPage() {
     }
 
     const product = products.find((candidate) => candidate.id === item.id);
-    if (product && newQty > product.stock) {
-      toast(`Stock limit reached. Only ${product.stock} available.`, 'warning');
-      return;
+    if (product) {
+      // Check per-size stock
+      const sizeStocks = (product as any).sizeStocks ?? {};
+      const sizeStock = item.size && sizeStocks[item.size] !== undefined
+        ? Number(sizeStocks[item.size])
+        : Number(product.stock);
+
+      if (newQty > sizeStock) {
+        toast(
+          `Stock limit reached for size ${item.size}. Only ${sizeStock} available.`,
+          'warning'
+        );
+        return;
+      }
     }
 
     const nextCart = [...cart];
@@ -220,6 +232,10 @@ export default function CartPage() {
                   const itemTotal =
                     (Number(item.price) || 0) * (Number(item.qty) || 0);
                   const isSelected = selectedKeys.has(itemKey);
+
+                  // Kunin ang product details para sa image
+                  const product = products.find((p) => p.id === item.id);
+
                   return (
                     <li
                       className={`cart-item ${isSelected ? 'is-selected' : ''}`}
@@ -233,14 +249,33 @@ export default function CartPage() {
                         />
                       </label>
 
-                      <div className="cart-item__media" aria-hidden="true">
-                        <Package className="react-icon" aria-hidden="true" />
-                      </div>
+                      {/* ITO ANG BINAGO: Image na imbes na Package icon */}
+                      <Link
+                        to={`/products/${encodeURIComponent(item.id)}`}
+                        className="cart-item__media"
+                        aria-label={`View ${item.name}`}
+                      >
+                        {product ? (
+                          <ProductImage
+                            product={product}
+                            className="cart-item__image"
+                            width={120}
+                            height={120}
+                          />
+                        ) : (
+                          <Package className="react-icon" aria-hidden="true" />
+                        )}
+                      </Link>
 
                       <div className="cart-item__details">
-                        <p className="cart-item__name" title={item.name}>
-                          {item.name}
-                        </p>
+                        <Link
+                          to={`/products/${encodeURIComponent(item.id)}`}
+                          className="cart-item__name-link"
+                        >
+                          <p className="cart-item__name" title={item.name}>
+                            {item.name}
+                          </p>
+                        </Link>
                         <p className="cart-item__org">
                           {item.organization || 'General'}
                         </p>

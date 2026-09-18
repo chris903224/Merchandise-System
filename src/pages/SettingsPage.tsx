@@ -1,32 +1,12 @@
+// src/pages/SettingsPage.tsx
+
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  User,
-  Shield,
-  Bell,
-  Palette,
-  Lock as LockIcon,
-  Mail,
-  CreditCard,
-  Calendar,
-  MapPin,
-  Home,
-  Globe,
-  Trash2,
-  AlertTriangle,
-  Save,
-  Camera,
-  Pencil,
-  ChevronRight,
-  LifeBuoy,
-  Eye,
-  EyeOff,
-  Menu,
-  X,
-  Store,
-  Package,
-  ShoppingCart,
-  Check,
+  User, Shield, Bell, Palette, Lock as LockIcon, Mail, CreditCard,
+  Calendar, MapPin, Home, Globe, Trash2, AlertTriangle, Save, Camera,
+  Pencil, ChevronRight, LifeBuoy, Eye, EyeOff, Menu, X, Store, Package,
+  ShoppingCart, Check,
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
@@ -67,7 +47,6 @@ export default function SettingsPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarPinned, setIsSidebarPinned] = useState(false);
 
-  // ✅ Initialize with session.profilePicture — walang flash
   const [profilePicture, setProfilePicture] = useState<string | null>(
     session?.profilePicture ?? null
   );
@@ -104,9 +83,7 @@ export default function SettingsPage() {
 
   const [language, setLanguage] = useState('en-US');
 
-  const [shippingAddress, setShippingAddress] = useState<string>(
-   ''
-  );
+  const [shippingAddress, setShippingAddress] = useState<string>('');
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [draftAddress, setDraftAddress] = useState(shippingAddress);
   const [draftLabel, setDraftLabel] = useState('Default');
@@ -122,7 +99,6 @@ export default function SettingsPage() {
     setStudentId(session.idNumber || '');
     setProfilePicture(session.profilePicture || null);
 
-    // ✅ Fetch avatar mula sa Supabase
     const loadAvatar = async () => {
       try {
         const { avatar_url } = await fetchProfileImages(session.id);
@@ -304,6 +280,8 @@ export default function SettingsPage() {
     }
   };
 
+  const currentThemeOption = themeOptions.find((t) => t.id === theme);
+
   return (
     <div className={`settings-shell ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
       <div
@@ -349,6 +327,7 @@ export default function SettingsPage() {
                   to={item.to}
                   className={`settings-sidebar__item ${isActive ? 'is-active' : ''}`}
                   onClick={() => setIsSidebarOpen(false)}
+                  data-label={item.label}
                 >
                   <Icon className="react-icon" aria-hidden="true" />
                   <span>{item.label}</span>
@@ -858,23 +837,46 @@ export default function SettingsPage() {
               )}
 
               {activeTab === 'appearance' && (
-                <section className="settings-panel">
-                  <header className="settings-panel__header">
-                    <div className="settings-panel__heading">
-                      <span className="settings-panel__icon">
-                        <Palette className="react-icon" aria-hidden="true" />
-                      </span>
-                      <div>
-                        <h2 className="settings-panel__title">Appearance</h2>
-                        <p className="settings-panel__subtitle">Customize your app experience.</p>
+                <>
+                  <section className="settings-panel">
+                    <header className="settings-panel__header">
+                      <div className="settings-panel__heading">
+                        <span className="settings-panel__icon">
+                          <Palette className="react-icon" aria-hidden="true" />
+                        </span>
+                        <div>
+                          <h2 className="settings-panel__title">Theme &amp; Colors</h2>
+                          <p className="settings-panel__subtitle">
+                            Customize your app experience with your preferred theme and color style.
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </header>
+                    </header>
 
-                  <div className="settings-panel__body">
-                    <div className="settings-form">
-                      <div className="settings-field">
-                        <label className="settings-field__label">Theme</label>
+                    <div className="settings-panel__body">
+                      {/* Sub-tabs */}
+                      <div className="appearance-tabs">
+                        <button
+                          type="button"
+                          className="appearance-tab is-active"
+                          aria-selected="true"
+                        >
+                          <Palette className="react-icon" aria-hidden="true" />
+                          <span>Color Theme</span>
+                        </button>
+                        <button type="button" className="appearance-tab">
+                          <span>☀️</span>
+                          <span>Light / Dark Mode</span>
+                        </button>
+                      </div>
+
+                      {/* Color Themes */}
+                      <div className="appearance-section">
+                        <h3 className="appearance-section__title">Color Themes</h3>
+                        <p className="appearance-section__subtitle">
+                          Choose a color theme that matches your style.
+                        </p>
+
                         <div className="theme-grid">
                           {themeOptions.map((option) => (
                             <button
@@ -882,17 +884,31 @@ export default function SettingsPage() {
                               type="button"
                               data-theme-id={option.id}
                               className={`theme-card ${theme === option.id ? 'is-active' : ''}`}
-                              style={{ background: option.gradient } as React.CSSProperties}
                               onClick={() => setTheme(option.id)}
                               aria-pressed={theme === option.id}
                             >
-                              <span className="theme-card__emoji">{option.emoji}</span>
-                              <span className="theme-card__label">{option.label}</span>
-                              {theme === option.id && (
-                                <span className="theme-card__check">
-                                  <Check className="react-icon" aria-hidden="true" />
+                              <div
+                                className="theme-card__preview"
+                                style={{ background: option.gradient } as React.CSSProperties}
+                              >
+                                <span className="theme-card__emoji">{option.emoji}</span>
+                              </div>
+                              <div className="theme-card__body">
+                                <div className="theme-card__dots" aria-hidden="true">
+                                  <span className="theme-card__dot theme-card__dot--1" />
+                                  <span className="theme-card__dot theme-card__dot--2" />
+                                  <span className="theme-card__dot theme-card__dot--3" />
+                                </div>
+                                <span className="theme-card__label">
+                                  {option.label}
+                                  {option.id === 'green-glass' && (
+                                    <span className="theme-card__default"> (Default)</span>
+                                  )}
                                 </span>
-                              )}
+                                <span className="theme-card__radio" aria-hidden="true">
+                                  {theme === option.id && <Check className="react-icon" />}
+                                </span>
+                              </div>
                             </button>
                           ))}
                         </div>
@@ -907,8 +923,29 @@ export default function SettingsPage() {
                         <span>Save Preferences</span>
                       </button>
                     </div>
-                  </div>
-                </section>
+                  </section>
+
+                  {/* Current Theme card */}
+                  <section className="appearance-current-theme">
+                    <div className="appearance-current-theme__head">
+                      <span className="appearance-current-theme__icon">
+                        <Palette className="react-icon" aria-hidden="true" />
+                      </span>
+                      <div>
+                        <p className="appearance-current-theme__label">Current Theme</p>
+                        <p className="appearance-current-theme__name">
+                          {currentThemeOption?.label || 'SJ Green'}
+                        </p>
+                      </div>
+                      <span className="appearance-current-theme__badge">Active</span>
+                    </div>
+                    <div className="appearance-current-theme__preview" aria-hidden="true">
+                      <span className="appearance-current-theme__dot" />
+                      <span className="appearance-current-theme__dot" />
+                      <span className="appearance-current-theme__dot" />
+                    </div>
+                  </section>
+                </>
               )}
 
               {activeTab === 'privacy' && (

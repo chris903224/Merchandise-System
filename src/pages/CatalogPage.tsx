@@ -1,6 +1,6 @@
 // src/pages/CatalogPage.tsx
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   PackageX,
@@ -14,6 +14,7 @@ import {
   Store,
   ChevronLeft,
   ChevronRight,
+  X,
 } from 'lucide-react';
 import { useProducts } from '../store';
 import ProductImage from '../components/ProductImage';
@@ -36,11 +37,31 @@ export default function CatalogPage() {
   const products = useProducts();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [query, setQuery] = useState('');
+
+  // ============================================
+  // STATE — naka-sync sa URL
+  // ============================================
+  const [query, setQuery] = useState(searchParams.get('q') ?? '');
   const [category, setCategory] = useState(searchParams.get('category') ?? 'ALL');
   const [stock, setStock] = useState<StockFilter>('ALL');
   const [sort, setSort] = useState<SortOption>('featured');
 
+  // ============================================
+  // ✅ CRITICAL: SYNC QUERY MULA URL
+  // Ito ang nag-a-apply ng ?q= sa search results
+  // Kapag nag-type ka sa navbar search, dito dumadaan
+  // ============================================
+  useEffect(() => {
+    const urlQuery = searchParams.get('q') ?? '';
+    setQuery(urlQuery);
+
+    const urlCategory = searchParams.get('category') ?? 'ALL';
+    setCategory(urlCategory);
+  }, [searchParams]);
+
+  // ============================================
+  // HANDLERS — nag-u-update ng URL
+  // ============================================
   const handleCategoryChange = (value: string) => {
     setCategory(value);
     if (value === 'ALL') {
@@ -51,15 +72,29 @@ export default function CatalogPage() {
     setSearchParams(searchParams, { replace: true });
   };
 
-  // ============================================
-  // CLICK "Add to Cart" → redirect sa ProductPage
-  // Para pumili muna ng size bago mag-add sa cart
-  // ============================================
+  const handleSearchChange = (value: string) => {
+    setQuery(value);
+    if (value) {
+      searchParams.set('q', value);
+    } else {
+      searchParams.delete('q');
+    }
+    setSearchParams(searchParams, { replace: true });
+  };
+
+  const handleClearSearch = () => {
+    setQuery('');
+    searchParams.delete('q');
+    setSearchParams(searchParams, { replace: true });
+  };
+
   const goToProduct = (product: Product) => {
     navigate(`/products/${encodeURIComponent(product.id)}`);
   };
 
-  // Categories list + count
+  // ============================================
+  // CATEGORIES LIST
+  // ============================================
   const categoryList = useMemo(() => {
     const map = new Map<string, number>();
     products.forEach((p) => {
@@ -74,20 +109,28 @@ export default function CatalogPage() {
     return [{ label: 'All Items', value: 'ALL', count: products.length }, ...list];
   }, [products]);
 
-  // Filtered + sorted
+  // ============================================
+  // FILTERED + SORTED
+  // ============================================
   const filtered = useMemo(() => {
     const normalizedQuery = query.toLowerCase().trim();
     const result = products.filter((product) => {
       const matchesSearch =
+        !normalizedQuery ||
         product.name.toLowerCase().includes(normalizedQuery) ||
-        product.organization.toLowerCase().includes(normalizedQuery);
+        product.organization.toLowerCase().includes(normalizedQuery) ||
+        product.category.toLowerCase().includes(normalizedQuery) ||
+        (product.description?.toLowerCase().includes(normalizedQuery) ?? false);
+
       const matchesCategory = category === 'ALL' || product.category === category;
+
       const stockCount = Number(product.stock) || 0;
       const matchesStock =
         stock === 'ALL' ||
         (stock === 'IN_STOCK' && stockCount > 0) ||
         (stock === 'LOW_STOCK' && stockCount > 0 && stockCount <= 10) ||
         (stock === 'OUT_OF_STOCK' && stockCount <= 0);
+
       return matchesSearch && matchesCategory && matchesStock;
     });
 
@@ -124,8 +167,18 @@ export default function CatalogPage() {
               placeholder="Search products, categories, or organization..."
               aria-label="Search products"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
             />
+            {query && (
+              <button
+                type="button"
+                className="catalog-toolbar__clear"
+                onClick={handleClearSearch}
+                aria-label="Clear search"
+              >
+                <X className="react-icon" aria-hidden="true" />
+              </button>
+            )}
           </div>
           <select
             className="catalog-toolbar__select"
@@ -166,7 +219,25 @@ export default function CatalogPage() {
           </select>
         </div>
 
-        {/* BODY: categories card + product grid */}
+        {/* SEARCH SUMMARY */}
+        {query && (
+          <div className="catalog-search-summary">
+            <span>
+              <strong>{filtered.length}</strong>{' '}
+              {filtered.length === 1 ? 'result' : 'results'} for "{query}"
+            </span>
+            <button
+              type="button"
+              className="catalog-search-summary__clear"
+              onClick={handleClearSearch}
+            >
+              <X className="react-icon" aria-hidden="true" />
+              <span>Clear</span>
+            </button>
+          </div>
+        )}
+
+        {/* BODY */}
         <div className="catalog-body">
           <aside className="catalog-categories">
             <div className="catalog-categories__card">
@@ -206,7 +277,11 @@ export default function CatalogPage() {
           <section className="catalog-grid-section">
             <div className="catalog-results-meta">
               <span>
-                Showing 1–{filtered.length} of {filtered.length} items
+                {filtered.length === 0
+                  ? 'No results'
+                  : `Showing 1–${filtered.length} of ${filtered.length} item${
+                      filtered.length === 1 ? '' : 's'
+                    }`}
               </span>
               <span className="catalog-results-meta__view">
                 <Grid2x2 className="react-icon" aria-hidden="true" />
@@ -216,10 +291,24 @@ export default function CatalogPage() {
             {filtered.length === 0 ? (
               <div className="catalog-empty">
                 <PackageX className="react-icon" aria-hidden="true" />
-                <h2 className="catalog-empty__title">No merchandise found</h2>
+                <h2 className="catalog-empty__title">
+                  {query ? `No results for "${query}"` : 'No merchandise found'}
+                </h2>
                 <p className="catalog-empty__description">
-                  Try another search term or adjust the availability filters.
+                  {query
+                    ? 'Try a different search term or clear the search.'
+                    : 'Try another search term or adjust the availability filters.'}
                 </p>
+                {query && (
+                  <button
+                    type="button"
+                    className="catalog-empty__cta"
+                    onClick={handleClearSearch}
+                  >
+                    <X className="react-icon" aria-hidden="true" />
+                    <span>Clear search</span>
+                  </button>
+                )}
               </div>
             ) : (
               <div className="catalog-grid">
@@ -241,8 +330,6 @@ export default function CatalogPage() {
                 <button type="button" className="catalog-pagination__btn is-active">
                   1
                 </button>
-                <button type="button" className="catalog-pagination__btn">2</button>
-                <button type="button" className="catalog-pagination__btn">3</button>
                 <button type="button" className="catalog-pagination__btn">
                   <ChevronRight className="react-icon" aria-hidden="true" />
                 </button>
@@ -270,7 +357,6 @@ function ProductCard({
 
   return (
     <article className="catalog-card">
-      {/* Media — clickable to ProductPage */}
       <div
         className="catalog-card__media"
         role="button"
@@ -311,7 +397,6 @@ function ProductCard({
         <p className="catalog-card__category">{product.category}</p>
         <p className="catalog-card__price">{formatPrice(product.price)}</p>
 
-        {/* Add to Cart → go to ProductPage (para pumili ng size) */}
         <button
           type="button"
           className="catalog-card__cta"

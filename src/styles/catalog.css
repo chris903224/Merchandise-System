@@ -1165,3 +1165,100 @@
     grid-template-columns: 1fr;
   }
 }
+.catalog-search-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(var(--theme-primary-rgb, 90, 17, 25), 0.06);
+  border: 1px solid rgba(var(--theme-primary-rgb, 90, 17, 25), 0.12);
+  border-radius: 0.6rem;
+  color: var(--sjcm-ink, #221a10);
+  font-size: 0.82rem;
+}
+
+.catalog-search-summary strong {
+  color: var(--sjcm-maroon, #5a1119);
+  font-weight: 800;
+}
+
+.catalog-search-summary__clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--sjcm-maroon, #5a1119);
+  border-radius: 999px;
+  background: var(--sjcm-white, #fffcf4);
+  color: var(--sjcm-maroon, #5a1119);
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.catalog-search-summary__clear:hover {
+  background: var(--sjcm-maroon, #5a1119);
+  color: #fffdf9;
+}
+
+.catalog-search-summary__clear .react-icon {
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+.catalog-toolbar__clear {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--sjcm-ink-soft, #6f6156);
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.catalog-toolbar__clear:hover {
+  background: rgba(var(--theme-primary-rgb, 90, 17, 25), 0.08);
+  color: var(--sjcm-maroon, #5a1119);
+}
+
+.catalog-toolbar__clear .react-icon {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.catalog-empty__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.85rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--sjcm-maroon, #5a1119);
+  border-radius: 0.5rem;
+  background: var(--sjcm-maroon, #5a1119);
+  color: #fffdf9;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.catalog-empty__cta:hover {
+  background: var(--sjcm-maroon-dark, #3d0b12);
+}
+
+.catalog-empty__cta .react-icon {
+  width: 0.8rem;
+  height: 0.8rem;
+}
