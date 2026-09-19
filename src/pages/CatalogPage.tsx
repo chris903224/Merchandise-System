@@ -16,9 +16,13 @@ import {
   ChevronRight,
   X,
 } from 'lucide-react';
-import { useProducts } from '../store';
+import { useProducts, useApp } from '../store';
+import { useToast } from '../toast';
+import { useNotificationStore } from '../store/notificationStore';
 import ProductImage from '../components/ProductImage';
 import { formatPrice, getStockBadge } from '../services';
+import { toggleFavorite, fetchFavorites } from '../services/favorites';
+import { createNotification } from '../services/notifications';
 import type { Product } from '../types';
 
 type StockFilter = 'ALL' | 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK';
@@ -48,8 +52,6 @@ export default function CatalogPage() {
 
   // ============================================
   // ✅ CRITICAL: SYNC QUERY MULA URL
-  // Ito ang nag-a-apply ng ?q= sa search results
-  // Kapag nag-type ka sa navbar search, dito dumadaan
   // ============================================
   useEffect(() => {
     const urlQuery = searchParams.get('q') ?? '';
@@ -352,8 +354,118 @@ function ProductCard({
   product: Product;
   onSelectProduct: (product: Product) => void;
 }) {
+  const { session } = useApp();
+  const toast = useToast();
+  const addNotification = useNotificationStore((s) => s.addNotification);
+  const [isFav, setIsFav] = useState(false);
+  const [isToggling, setIsToggling] = useState(false);
+
   const badge = getStockBadge(product.stock);
   const isOutOfStock = (Number(product.stock) || 0) <= 0;
+
+  // ============================================
+  // ✅ LOAD FAVORITE STATE ON MOUNT
+  // ============================================
+  useEffect(() => {
+    if (!session?.id) return;
+
+    let cancelled = false;
+
+    const checkFav = async () => {
+      try {
+        const favorites = await fetchFavorites(session.id);
+        if (!cancelled) {
+          setIsFav(favorites.some((f) => f.product_id === product.id));
+        }
+      } catch (error) {
+        console.warn('[Catalog] Failed to check favorite:', error);
+      }
+    };
+
+    void checkFav();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [session?.id, product.id]);
+
+  // ============================================
+  // ✅ TOGGLE FAVORITE — with optimistic notification
+  // ============================================
+  const handleToggleFavorite = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!session?.id) {
+      toast('Please sign in to add favorites.', 'warning');
+      return;
+    }
+
+    if (isToggling) return;
+
+    setIsToggling(true);
+    const wasFav = isFav;
+
+    // Optimistic UI update
+    setIsFav(!wasFav);
+
+    try {
+      const nowFav = await toggleFavorite(session.id, product.id, wasFav);
+      setIsFav(nowFav);
+
+      // ✅ Kapag nag-add (hindi kapag nag-remove)
+      if (nowFav) {
+        // 1️⃣ INSTANT — optimistic add sa notification store
+        const notificationId =
+          typeof crypto !== 'undefined' && crypto.randomUUID
+            ? crypto.randomUUID()
+            : `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+
+        const optimisticNotification = {
+          id: notificationId,
+          userId: session.id,
+          type: 'info' as const,
+          title: 'Added to Favorites ❤️',
+          message: `${product.name} has been added to your favorites.`,
+          link: '/favorites',
+          actionLabel: 'View Favorites',
+          read: false,
+          metadata: { productId: product.id },
+          createdAt: new Date().toISOString(),
+        };
+
+        // Instant bell update
+        addNotification(optimisticNotification);
+
+        // 2️⃣ Save sa Supabase (background)
+        try {
+          await createNotification(session.id, {
+            type: 'info',
+            title: 'Added to Favorites ❤️',
+            message: `${product.name} has been added to your favorites.`,
+            link: '/favorites',
+            actionLabel: 'View Favorites',
+            metadata: { productId: product.id },
+          });
+        } catch (error) {
+          console.error('[Catalog] Failed to save notification:', error);
+          // Hindi na natin i-remove ang optimistic notification
+          // — kasi realtime subscription ay mag-sync ulit
+        }
+
+        toast(`${product.name} added to favorites!`, 'success');
+      } else {
+        toast('Removed from favorites', 'info');
+      }
+    } catch (error) {
+      console.error('[Catalog] Favorite toggle failed:', error);
+      // Revert on error
+      setIsFav(wasFav);
+      toast('Failed to update favorites.', 'danger');
+    } finally {
+      setIsToggling(false);
+    }
+  };
 
   return (
     <article className="catalog-card">
@@ -377,16 +489,20 @@ function ProductCard({
           height={400}
         />
         <span className={`catalog-card__badge ${badge.className}`}>{badge.text}</span>
+
+        {/* ✅ HEART BUTTON — functional na */}
         <button
           type="button"
-          className="catalog-card__wish"
-          aria-label="Add to wishlist"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
+          className={`catalog-card__wish ${isFav ? 'is-active' : ''}`}
+          aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
+          onClick={handleToggleFavorite}
+          disabled={isToggling}
         >
-          <Heart className="react-icon" aria-hidden="true" />
+          <Heart
+            className="react-icon"
+            fill={isFav ? 'currentColor' : 'none'}
+            aria-hidden="true"
+          />
         </button>
       </div>
 

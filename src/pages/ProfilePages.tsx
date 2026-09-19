@@ -3,35 +3,19 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  User,
-  Mail,
-  Phone,
-  Camera,
-  ImagePlus,
-  ShieldCheck,
-  CircleCheck,
-  Pencil,
-  LifeBuoy,
-  ChevronRight,
-  Clock,
-  MapPin,
-  Home,
-  GraduationCap,
-  Calendar,
-  CalendarRange,
-  Package,
-  Lock,
-  Building2,
-  Menu,
-  X,
-  Store,
-  ShoppingCart,
-  Shield,
+  User, Mail, Phone, Camera, ImagePlus, ShieldCheck, CircleCheck, Pencil,
+  LifeBuoy, ChevronRight, Clock, MapPin, Home, GraduationCap, Calendar,
+  CalendarRange, Package, Lock, Building2, Menu, X, Store, ShoppingCart, Shield,
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
 import ProfilePicture from '../components/ProfilePicture';
-import { uploadAvatar, uploadCover, fetchProfileImages } from '../data/storage';
+import {
+  uploadAvatar,
+  uploadCover,
+  fetchProfileImages,
+  fetchUserProfile,   // ✅ IDAGDAG
+} from '../data/storage';
 import './ProfilePage.css';
 
 type ProfileTab = 'info' | 'security' | 'school';
@@ -79,9 +63,10 @@ export default function ProfilePage() {
   const hoverZoneRef = useRef<HTMLDivElement>(null);
   const closeTimerRef = useRef<number | null>(null);
 
-  const [courseStrand] = useState('');
-  const [yearLevel] = useState('');
-  const [dob] = useState('');
+  // ✅ FIX — may setter na
+  const [courseStrand, setCourseStrand] = useState('');
+  const [yearLevel, setYearLevel] = useState('');
+  const [dob, setDob] = useState('');
   const [schoolYear] = useState('');
   const [phone] = useState('');
   const [campus] = useState('');
@@ -100,23 +85,36 @@ export default function ProfilePage() {
     setIdNumber(session.idNumber || '');
     setProfilePicture(session.profilePicture || null);
 
-    // Fetch avatar + cover mula sa Supabase
-    const loadImages = async () => {
+    // ✅ Fetch buong profile — kasama course, year, DOB
+    const loadProfile = async () => {
       try {
+        // Fetch avatar + cover (existing)
         const { avatar_url, cover_url } = await fetchProfileImages(session.id);
         if (avatar_url) setProfilePicture(avatar_url);
         if (cover_url) {
           setCoverPhoto(cover_url);
           console.log('[Profile] Cover loaded:', cover_url);
-        } else {
-          console.log('[Profile] No cover_url sa database');
+        }
+
+        // ✅ Fetch course, year, DOB (bago)
+        const profile = await fetchUserProfile(session.id);
+        if (profile) {
+          if (profile.course_strand) setCourseStrand(profile.course_strand);
+          if (profile.year_level) setYearLevel(profile.year_level);
+          if (profile.date_of_birth) {
+            const dobStr =
+              typeof profile.date_of_birth === 'string'
+                ? profile.date_of_birth.slice(0, 10)
+                : new Date(profile.date_of_birth).toISOString().slice(0, 10);
+            setDob(dobStr);
+          }
         }
       } catch (error) {
-        console.error('[Profile] Failed to load images:', error);
+        console.error('[Profile] Failed to load profile:', error);
       }
     };
 
-    void loadImages();
+    void loadProfile();
   }, [session, navigate]);
 
   // Hover-to-open sidebar (desktop only)
@@ -280,7 +278,6 @@ export default function ProfilePage() {
     },
   ];
 
-  // Cover style — direct inline backgroundImage
   const coverStyle: React.CSSProperties | undefined = coverPhoto
     ? {
         backgroundImage: `url("${coverPhoto}")`,
@@ -293,16 +290,9 @@ export default function ProfilePage() {
 
   return (
     <div className={`profile-shell ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
-      <div
-        ref={hoverZoneRef}
-        className="profile-hover-zone"
-        aria-hidden="true"
-      />
+      <div ref={hoverZoneRef} className="profile-hover-zone" aria-hidden="true" />
 
-      <aside
-        ref={sidebarRef}
-        className={`profile-sidebar ${isSidebarOpen ? 'is-open' : ''}`}
-      >
+      <aside ref={sidebarRef} className={`profile-sidebar ${isSidebarOpen ? 'is-open' : ''}`}>
         <div className="profile-sidebar__top">
           <button
             type="button"
@@ -311,11 +301,7 @@ export default function ProfilePage() {
             aria-label={isSidebarPinned ? 'Unpin sidebar' : 'Pin sidebar'}
             title={isSidebarPinned ? 'Unpin sidebar' : 'Pin sidebar'}
           >
-            {isSidebarPinned ? (
-              <X className="react-icon" />
-            ) : (
-              <ChevronRight className="react-icon" />
-            )}
+            {isSidebarPinned ? <X className="react-icon" /> : <ChevronRight className="react-icon" />}
           </button>
 
           <Link to="/" className="profile-sidebar__brand" onClick={() => setIsSidebarOpen(false)}>
@@ -354,11 +340,7 @@ export default function ProfilePage() {
       </aside>
 
       {isSidebarOpen ? (
-        <div
-          className="profile-backdrop"
-          onClick={() => setIsSidebarOpen(false)}
-          aria-hidden="true"
-        />
+        <div className="profile-backdrop" onClick={() => setIsSidebarOpen(false)} aria-hidden="true" />
       ) : null}
 
       <div className="profile-main-wrap">
@@ -368,11 +350,7 @@ export default function ProfilePage() {
           aria-label="Toggle navigation"
           onClick={() => setIsSidebarOpen((p) => !p)}
         >
-          {isSidebarOpen ? (
-            <X className="react-icon" aria-hidden="true" />
-          ) : (
-            <Menu className="react-icon" aria-hidden="true" />
-          )}
+          {isSidebarOpen ? <X className="react-icon" /> : <Menu className="react-icon" />}
         </button>
 
         <main className="profile-page">
@@ -382,7 +360,6 @@ export default function ProfilePage() {
                 {/* COVER */}
                 <div className="profile-cover" style={coverStyle}>
                   <div className="profile-cover-overlay" />
-
                   <button
                     type="button"
                     className="profile-cover-edit"
@@ -729,11 +706,7 @@ export default function ProfilePage() {
                           {content}
                         </a>
                       ) : (
-                        <Link
-                          key={action.key}
-                          to={action.to as string}
-                          className="profile-quick-action"
-                        >
+                        <Link key={action.key} to={action.to as string} className="profile-quick-action">
                           {content}
                         </Link>
                       );

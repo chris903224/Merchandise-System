@@ -13,6 +13,7 @@ import {
   Settings,
   ChevronDown,
   X,
+  Heart,          // ✅ IDAGDAG
 } from 'lucide-react';
 import { useApp } from '../store';
 import { countCartItems, getConsolePath, isStaffRole } from '../services';
@@ -30,6 +31,7 @@ const ROUTES = {
   DASHBOARD: '/dashboard',
   PROFILE: '/profile',
   SETTINGS: '/settings',
+  FAVORITES: '/favorites',    // ✅ IDAGDAG
 } as const;
 
 export default function Navbar() {
@@ -55,10 +57,8 @@ export default function Navbar() {
 
   // ============================================
   // SYNC SEARCH QUERY SA URL
-  // Kapag nasa /catalog page, i-sync ang navbar search sa ?q=
   // ============================================
   useEffect(() => {
-    // I-sync lang kung nasa catalog page
     if (location.pathname === ROUTES.CATALOG) {
       const urlQuery = new URLSearchParams(location.search).get('q') ?? '';
       setSearchQuery(urlQuery);
@@ -66,15 +66,13 @@ export default function Navbar() {
   }, [location.pathname, location.search]);
 
   // ============================================
-  // LIVE SEARCH — habang nag-type, i-update agad ang URL
-  // Same behavior ng catalog search bar
+  // LIVE SEARCH
   // ============================================
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
 
     const trimmed = value.trim();
 
-    // Kung nasa catalog page na, i-update lang ang URL
     if (location.pathname === ROUTES.CATALOG) {
       const params = new URLSearchParams(location.search);
       if (trimmed) {
@@ -84,7 +82,6 @@ export default function Navbar() {
       }
       navigate(`${ROUTES.CATALOG}?${params.toString()}`, { replace: true });
     } else if (trimmed) {
-      // Kung wala pa sa catalog, i-redirect sa catalog with query
       navigate(`${ROUTES.CATALOG}?q=${encodeURIComponent(trimmed)}`, {
         replace: false,
       });
@@ -92,8 +89,7 @@ export default function Navbar() {
   };
 
   // ============================================
-  // ENTER — i-submit ang search (kung ayaw mag-live)
-  // Optional: retain para sa users na gusto mag-Enter
+  // ENTER — submit search
   // ============================================
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -115,7 +111,7 @@ export default function Navbar() {
   };
 
   // ============================================
-  // KEYBOARD SHORTCUT: Ctrl+K / Cmd+K
+  // KEYBOARD SHORTCUT: Ctrl+K
   // ============================================
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -142,7 +138,7 @@ export default function Navbar() {
   }, [closeDropdown]);
 
   // ============================================
-  // CLOSE DROPDOWN — Escape key
+  // CLOSE DROPDOWN — Escape
   // ============================================
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -339,6 +335,17 @@ export default function Navbar() {
                     >
                       <User className="react-icon" aria-hidden="true" />
                       <span>My Profile</span>
+                    </Link>
+
+                    {/* ✅ IDAGDAG — My Favorites */}
+                    <Link
+                      to={ROUTES.FAVORITES}
+                      className="nav-dropdown-item"
+                      role="menuitem"
+                      onClick={closeDropdown}
+                    >
+                      <Heart className="react-icon" aria-hidden="true" />
+                      <span>My Favorites</span>
                     </Link>
 
                     <Link

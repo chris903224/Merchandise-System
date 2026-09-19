@@ -1262,3 +1262,19 @@
   width: 0.8rem;
   height: 0.8rem;
 }
+/* Sa catalog.css — idagdag */
+
+.catalog-card__wish.is-active {
+  color: #dc2626;
+  border-color: #dc2626;
+  background: rgba(220, 38, 38, 0.08);
+}
+
+.catalog-card__wish.is-active:hover {
+  background: rgba(220, 38, 38, 0.15);
+}
+
+.catalog-card__wish:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

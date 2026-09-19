@@ -16,7 +16,11 @@ import {
   themeOptions,
   type ThemeId,
 } from '../theme';
-import { fetchProfileImages } from '../data/storage';
+import {
+  fetchProfileImages,
+  fetchUserProfile,
+  updateUserProfile,
+} from '../data/storage';
 import './SettingsPage.css';
 
 type SettingsTab = 'account' | 'security' | 'notifications' | 'appearance' | 'privacy';
@@ -62,6 +66,7 @@ export default function SettingsPage() {
   const [yearLevel, setYearLevel] = useState('');
   const [dob, setDob] = useState('');
   const [isSavingAccount, setIsSavingAccount] = useState(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -89,6 +94,9 @@ export default function SettingsPage() {
   const [draftLabel, setDraftLabel] = useState('Default');
   const [isSavingAddress, setIsSavingAddress] = useState(false);
 
+  // ============================================
+  // LOAD PROFILE — kasama course, year, DOB
+  // ============================================
   useEffect(() => {
     if (!session) {
       navigate('/dashboard');
@@ -99,18 +107,41 @@ export default function SettingsPage() {
     setStudentId(session.idNumber || '');
     setProfilePicture(session.profilePicture || null);
 
-    const loadAvatar = async () => {
+    const loadProfile = async () => {
+      setIsLoadingProfile(true);
       try {
+        // Fetch avatar (existing)
         const { avatar_url } = await fetchProfileImages(session.id);
         if (avatar_url) {
           setProfilePicture(avatar_url);
         }
+
+        // ✅ Fetch buong profile — kasama course, year, DOB
+        const profile = await fetchUserProfile(session.id);
+        if (profile) {
+          if (profile.course_strand) {
+            setCourseStrand(profile.course_strand);
+          }
+          if (profile.year_level) {
+            setYearLevel(profile.year_level);
+          }
+          if (profile.date_of_birth) {
+            // Convert date to YYYY-MM-DD for input[type="date"]
+            const dobStr =
+              typeof profile.date_of_birth === 'string'
+                ? profile.date_of_birth.slice(0, 10)
+                : new Date(profile.date_of_birth).toISOString().slice(0, 10);
+            setDob(dobStr);
+          }
+        }
       } catch (error) {
-        console.warn('[Settings] Failed to fetch avatar:', error);
+        console.warn('[Settings] Failed to load profile:', error);
+      } finally {
+        setIsLoadingProfile(false);
       }
     };
 
-    void loadAvatar();
+    void loadProfile();
   }, [session, navigate]);
 
   useEffect(() => {
@@ -207,11 +238,22 @@ export default function SettingsPage() {
     input.click();
   };
 
+  // ============================================
+  // SAVE ACCOUNT — course, year, DOB → Supabase
+  // ============================================
   const handleSaveAccount = async () => {
     setIsSavingAccount(true);
     try {
-      await new Promise((r) => setTimeout(r, 600));
+      await updateUserProfile(session.id, {
+        course_strand: courseStrand || null,
+        year_level: yearLevel || null,
+        date_of_birth: dob || null,
+      });
+
       toast('Account details saved!', 'success');
+    } catch (error) {
+      console.error('[Settings] Failed to save account:', error);
+      toast('Failed to save account details. Please try again.', 'danger');
     } finally {
       setIsSavingAccount(false);
     }
@@ -422,10 +464,16 @@ export default function SettingsPage() {
                         type="button"
                         className="settings-btn settings-btn--primary"
                         onClick={handleSaveAccount}
-                        disabled={isSavingAccount}
+                        disabled={isSavingAccount || isLoadingProfile}
                       >
                         <Save className="react-icon" aria-hidden="true" />
-                        <span>{isSavingAccount ? 'Saving...' : 'Save Changes'}</span>
+                        <span>
+                          {isSavingAccount
+                            ? 'Saving...'
+                            : isLoadingProfile
+                            ? 'Loading...'
+                            : 'Save Changes'}
+                        </span>
                       </button>
                     </header>
 
@@ -495,11 +543,18 @@ export default function SettingsPage() {
                             className="settings-field__select"
                             value={courseStrand}
                             onChange={(e) => setCourseStrand(e.target.value)}
+                            disabled={isLoadingProfile}
                           >
-                            <option value="">BS Information Technology</option>
+                            <option value="">Select course / strand</option>
                             <option value="BSIT">BS Information Technology</option>
                             <option value="BSA">BS Accountancy</option>
                             <option value="BSN">BS Nursing</option>
+                            <option value="BSBA">BS Business Administration</option>
+                            <option value="BSED">Bachelor of Secondary Education</option>
+                            <option value="BEED">Bachelor of Elementary Education</option>
+                            <option value="BSCRIM">BS Criminology</option>
+                            <option value="BSHM">BS Hospitality Management</option>
+                            <option value="BSTM">BS Tourism Management</option>
                           </select>
                         </div>
 
@@ -509,12 +564,14 @@ export default function SettingsPage() {
                             className="settings-field__select"
                             value={yearLevel}
                             onChange={(e) => setYearLevel(e.target.value)}
+                            disabled={isLoadingProfile}
                           >
-                            <option value="">2nd Year</option>
+                            <option value="">Select year level</option>
                             <option value="1st Year">1st Year</option>
                             <option value="2nd Year">2nd Year</option>
                             <option value="3rd Year">3rd Year</option>
                             <option value="4th Year">4th Year</option>
+                            <option value="5th Year">5th Year</option>
                           </select>
                         </div>
 
@@ -527,6 +584,7 @@ export default function SettingsPage() {
                               className="settings-field__input settings-field__input--icon"
                               value={dob}
                               onChange={(e) => setDob(e.target.value)}
+                              disabled={isLoadingProfile}
                             />
                           </div>
                         </div>
@@ -854,7 +912,6 @@ export default function SettingsPage() {
                     </header>
 
                     <div className="settings-panel__body">
-                      {/* Sub-tabs */}
                       <div className="appearance-tabs">
                         <button
                           type="button"
@@ -870,7 +927,6 @@ export default function SettingsPage() {
                         </button>
                       </div>
 
-                      {/* Color Themes */}
                       <div className="appearance-section">
                         <h3 className="appearance-section__title">Color Themes</h3>
                         <p className="appearance-section__subtitle">
@@ -925,7 +981,6 @@ export default function SettingsPage() {
                     </div>
                   </section>
 
-                  {/* Current Theme card */}
                   <section className="appearance-current-theme">
                     <div className="appearance-current-theme__head">
                       <span className="appearance-current-theme__icon">

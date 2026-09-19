@@ -59,7 +59,12 @@ export interface SessionUser {
   role: UserRole;
   organization: string;
   idNumber: string;
-  profilePicture?: string | null; // 👈 IDAGDAG ITO
+  profilePicture?: string | null;
+  
+  // ✅ BAGO — profile fields
+  courseStrand?: string | null;
+  yearLevel?: string | null;
+  dateOfBirth?: string | null;
 }
 
 export interface UserRecord extends SessionUser {

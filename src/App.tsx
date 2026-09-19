@@ -16,6 +16,7 @@ import AdminPage from './pages/AdminPage';
 import ProfilePage from './pages/ProfilePages';
 import SettingsPage from './pages/SettingsPage';
 import NotificationsPage from './pages/NotificationsPage';
+import FavoritesPage from './pages/FavoritesPage';   // ✅ IDAGDAG
 
 export default function App() {
   return (
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/favorites" element={<FavoritesPage />} />   {/* ✅ IDAGDAG */}
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

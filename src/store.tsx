@@ -14,6 +14,7 @@ import { STORAGE_KEYS, readStorage, writeStorage } from './data/storage';
 import { supabase } from './lib/supabaseClient';
 import { fetchProducts } from './services/products';
 import { placeOrder as placeOrderService, fetchAllOrders } from './services/orders';
+import { createNotification } from './services/notifications';
 
 interface AppState {
   session: SessionUser | null;
@@ -225,7 +226,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // ============================================
-  // ORDERS
+  // ORDERS — with auto-notifications
   // ============================================
   const setOrderStatus = useCallback(
     async (orderId: string, orderStatus: string) => {
@@ -237,8 +238,55 @@ export function AppProvider({ children }: { children: ReactNode }) {
         .from('orders')
         .update({ order_status: orderStatus })
         .eq('id', orderId);
+
+      // ✅ Auto-create notification
+      const order = orders.find((o) => o.id === orderId);
+      if (order) {
+        const statusMessages: Record<
+          string,
+          { title: string; message: string; type: 'order' | 'pickup' | 'system' | 'info' | 'promo' }
+        > = {
+          Pending: {
+            title: 'Order Placed',
+            message: `Your order #${orderId} has been placed and is pending review.`,
+            type: 'order',
+          },
+          Processing: {
+            title: 'Order Processing',
+            message: `Your order #${orderId} is now being prepared.`,
+            type: 'order',
+          },
+          'Ready for Pickup': {
+            title: 'Ready for Pickup! 🎉',
+            message: `Your order #${orderId} is ready for pickup at SJCM Campus.`,
+            type: 'pickup',
+          },
+          Claimed: {
+            title: 'Order Claimed',
+            message: `Your order #${orderId} has been successfully claimed. Thank you!`,
+            type: 'order',
+          },
+          Cancelled: {
+            title: 'Order Cancelled',
+            message: `Your order #${orderId} has been cancelled.`,
+            type: 'system',
+          },
+        };
+
+        const statusInfo = statusMessages[orderStatus];
+        if (statusInfo) {
+          await createNotification(order.userId, {
+            type: statusInfo.type,
+            title: statusInfo.title,
+            message: statusInfo.message,
+            link: `/orders/${orderId}`,
+            actionLabel: 'View Order',
+            metadata: { orderId, status: orderStatus },
+          });
+        }
+      }
     },
-    []
+    [orders]
   );
 
   const placeOrder = useCallback(async (order: Order) => {
@@ -259,6 +307,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     // Insert sa Supabase — automatic mag-run ang trigger
     await placeOrderService(order);
+
+    // ✅ Auto-create notification for new order
+    await createNotification(order.userId, {
+      type: 'order',
+      title: 'Order Confirmed ✅',
+      message: `Your order #${order.id} has been successfully placed! Total: ₱${order.totalAmount.toFixed(2)}.`,
+      link: `/orders/${order.id}`,
+      actionLabel: 'View Order',
+      metadata: { orderId: order.id, totalAmount: order.totalAmount },
+    });
   }, []);
 
   const value = useMemo<AppContextValue>(
