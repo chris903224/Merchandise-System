@@ -12,9 +12,14 @@ import {
 import type { CartItem, Order, Product, SessionUser } from './types';
 import { STORAGE_KEYS, readStorage, writeStorage } from './data/storage';
 import { supabase } from './lib/supabaseClient';
-import { fetchProducts } from './services/products';
-import { placeOrder as placeOrderService, fetchAllOrders } from './services/orders';
+import { fetchProducts, refreshProducts } from './services/products';
+import {
+  placeOrder as placeOrderService,
+  fetchAllOrders,
+  updateOrderStatus as updateOrderStatusService,
+} from './services/orders';
 import { createNotification } from './services/notifications';
+import { invalidateCache } from './utils/cache';
 
 interface AppState {
   session: SessionUser | null;
@@ -34,6 +39,7 @@ interface AppContextValue extends AppState {
   updateProduct: (product: Product) => Promise<void>;
   deleteProduct: (productId: string) => Promise<void>;
   updateProfilePicture: (imageUrl: string | null) => void;
+  refreshProducts: () => Promise<void>;
   isLoading: boolean;
 }
 
@@ -58,15 +64,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   // ============================================
-  // INITIAL LOAD
+  // INITIAL LOAD (with cache)
   // ============================================
   useEffect(() => {
     const loadInitialData = async () => {
       setIsLoading(true);
 
       const [productsData, ordersData] = await Promise.all([
-        fetchProducts(),
-        fetchAllOrders(),
+        fetchProducts(),   // ✅ Cached
+        fetchAllOrders(),  // ✅ Cached
       ]);
 
       setProducts(productsData);
@@ -87,6 +93,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'products' },
         (payload) => {
+          // ✅ Invalidate cache sa real-time update
+          invalidateCache('products');
+
           if (payload.eventType === 'INSERT') {
             setProducts((prev) => [...prev, mapProductRow(payload.new)]);
           } else if (payload.eventType === 'UPDATE') {
@@ -110,6 +119,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'orders' },
         (payload) => {
+          invalidateCache('orders_all');
+          invalidateCache('orders');
+
           if (payload.eventType === 'INSERT') {
             setOrders((prev) => [mapOrderRow(payload.new), ...prev]);
           } else if (payload.eventType === 'UPDATE') {
@@ -132,7 +144,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // ============================================
-  // SESSION (localStorage)
+  // SESSION
   // ============================================
   const signIn = useCallback((user: SessionUser) => {
     writeStorage(STORAGE_KEYS.session, user);
@@ -154,7 +166,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // ============================================
-  // CART (localStorage)
+  // CART
   // ============================================
   const setCart = useCallback((items: CartItem[]) => {
     writeStorage(STORAGE_KEYS.cart, items);
@@ -176,6 +188,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         .from('products')
         .update({ stock: safeStock })
         .eq('id', productId);
+
+      invalidateCache('products');
     },
     []
   );
@@ -197,6 +211,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         description: product.description,
       },
     ]);
+
+    invalidateCache('products');
   }, []);
 
   const updateProduct = useCallback(async (product: Product) => {
@@ -218,15 +234,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
         description: product.description,
       })
       .eq('id', product.id);
+
+    invalidateCache('products');
   }, []);
 
   const deleteProduct = useCallback(async (productId: string) => {
     setProducts((prev) => prev.filter((p) => p.id !== productId));
     await supabase.from('products').delete().eq('id', productId);
+    invalidateCache('products');
   }, []);
 
   // ============================================
-  // ORDERS — with auto-notifications
+  // ORDERS
   // ============================================
   const setOrderStatus = useCallback(
     async (orderId: string, orderStatus: string) => {
@@ -234,12 +253,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         prev.map((o) => (o.id === orderId ? { ...o, orderStatus } : o))
       );
 
-      await supabase
-        .from('orders')
-        .update({ order_status: orderStatus })
-        .eq('id', orderId);
+      await updateOrderStatusService(orderId, orderStatus);
 
-      // ✅ Auto-create notification
+      // Auto-create notification
       const order = orders.find((o) => o.id === orderId);
       if (order) {
         const statusMessages: Record<
@@ -281,7 +297,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
             message: statusInfo.message,
             link: `/orders/${orderId}`,
             actionLabel: 'View Order',
-            metadata: { orderId, status: orderStatus },
+            metadata: {
+              orderId,
+              status: orderStatus,
+              productId: order.items[0]?.id,
+            },
           });
         }
       }
@@ -290,7 +310,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
 
   const placeOrder = useCallback(async (order: Order) => {
-    // Optimistic update
     setOrders((prev) => [order, ...prev]);
     setProducts((prev) =>
       prev.map((product) => {
@@ -305,10 +324,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setCartState([]);
     writeStorage(STORAGE_KEYS.cart, []);
 
-    // Insert sa Supabase — automatic mag-run ang trigger
     await placeOrderService(order);
 
-    // ✅ Auto-create notification for new order
     await createNotification(order.userId, {
       type: 'order',
       title: 'Order Confirmed ✅',
@@ -317,6 +334,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
       actionLabel: 'View Order',
       metadata: { orderId: order.id, totalAmount: order.totalAmount },
     });
+  }, []);
+
+  // ============================================
+  // REFRESH PRODUCTS (bypass cache)
+  // ============================================
+  const refreshProductsData = useCallback(async () => {
+    const data = await refreshProducts();
+    setProducts(data);
   }, []);
 
   const value = useMemo<AppContextValue>(
@@ -336,6 +361,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       updateProduct,
       deleteProduct,
       updateProfilePicture,
+      refreshProducts: refreshProductsData,
     }),
     [
       session,
@@ -353,6 +379,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       updateProduct,
       deleteProduct,
       updateProfilePicture,
+      refreshProductsData,
     ]
   );
 
@@ -387,6 +414,7 @@ function mapProductRow(row: any): Product {
     price: Number(row.price),
     stock: row.stock,
     sizes: row.sizes ?? [],
+    sizeStocks: row.size_stocks ?? {},
     image: row.image,
     imageAlt: row.image_alt ?? '',
     description: row.description ?? '',

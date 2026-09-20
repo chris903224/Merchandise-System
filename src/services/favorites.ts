@@ -1,6 +1,7 @@
 // src/services/favorites.ts
 
 import { supabase } from '../lib/supabaseClient';
+import { getCachedData, invalidateCache } from '../utils/cache';
 
 export type Favorite = {
   id: string;
@@ -10,31 +11,37 @@ export type Favorite = {
 };
 
 /**
- * Fetch lahat ng favorites ng user
+ * Fetch favorites — with cache (10 min TTL)
+ * ONE fetch for ALL favorites (imbes per-product)
  */
 export async function fetchFavorites(userId: string): Promise<Favorite[]> {
-  const { data, error } = await supabase
-    .from('favorites')
-    .select('*')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false });
+  return getCachedData(
+    `favorites_${userId}`,
+    async () => {
+      const { data, error } = await supabase
+        .from('favorites')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('[Favorites] Failed to fetch:', error);
-    return [];
-  }
+      if (error) {
+        console.error('[Favorites] Failed to fetch:', error);
+        return [];
+      }
 
-  return data ?? [];
+      return data ?? [];
+    },
+    10 * 60 * 1000 // 10 minutes
+  );
 }
 
 /**
- * Add favorite (kung wala pa)
+ * Add favorite — invalidate cache
  */
 export async function addFavorite(
   userId: string,
   productId: string
 ): Promise<boolean> {
-  // ✅ I-check muna kung existing na
   const { data: existing } = await supabase
     .from('favorites')
     .select('id')
@@ -42,27 +49,24 @@ export async function addFavorite(
     .eq('product_id', productId)
     .maybeSingle();
 
-  if (existing) {
-    // Nasa favorites na — walang gagawin
-    return true;
-  }
+  if (existing) return true;
 
   const { error } = await supabase
     .from('favorites')
     .insert({ user_id: userId, product_id: productId });
 
   if (error) {
-    // Ignore duplicate errors (race condition)
     if (error.code === '23505') return true;
     console.error('[Favorites] Failed to add:', error);
     throw new Error(error.message);
   }
 
+  invalidateCache(`favorites_${userId}`);
   return true;
 }
 
 /**
- * Remove favorite
+ * Remove favorite — invalidate cache
  */
 export async function removeFavorite(
   userId: string,
@@ -79,11 +83,12 @@ export async function removeFavorite(
     throw new Error(error.message);
   }
 
+  invalidateCache(`favorites_${userId}`);
   return true;
 }
 
 /**
- * Toggle favorite (add o remove)
+ * Toggle favorite
  */
 export async function toggleFavorite(
   userId: string,

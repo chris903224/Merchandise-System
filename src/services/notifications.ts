@@ -2,21 +2,31 @@
 
 import { supabase } from '../lib/supabaseClient';
 import type { Notification, NotificationType } from '../types/notification';
+import { getCachedData, invalidateCache } from '../utils/cache';
 
+/**
+ * Fetch notifications — with cache (2 min TTL)
+ */
 export async function fetchNotifications(userId: string): Promise<Notification[]> {
-  const { data, error } = await supabase
-    .from('notifications')
-    .select('*')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false })
-    .limit(100);
+  return getCachedData(
+    `notifications_${userId}`,
+    async () => {
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(100);
 
-  if (error) {
-    console.error('[Notifications] Failed to fetch:', error);
-    return [];
-  }
+      if (error) {
+        console.error('[Notifications] Failed to fetch:', error);
+        return [];
+      }
 
-  return (data ?? []).map(mapNotificationRow);
+      return (data ?? []).map(mapNotificationRow);
+    },
+    2 * 60 * 1000 // 2 minutes
+  );
 }
 
 export async function createNotification(
@@ -44,6 +54,8 @@ export async function createNotification(
     console.error('[Notifications] Failed to create:', error);
     throw new Error(error.message);
   }
+
+  invalidateCache(`notifications_${userId}`);
 }
 
 export async function markNotificationAsRead(notificationId: string): Promise<void> {
@@ -69,6 +81,8 @@ export async function markAllNotificationsAsRead(userId: string): Promise<void> 
     console.error('[Notifications] Failed to mark all as read:', error);
     throw new Error(error.message);
   }
+
+  invalidateCache(`notifications_${userId}`);
 }
 
 export async function deleteNotification(notificationId: string): Promise<void> {
@@ -83,7 +97,6 @@ export async function deleteNotification(notificationId: string): Promise<void> 
   }
 }
 
-// ✅ BAGO — Clear all
 export async function clearAllNotifications(userId: string): Promise<void> {
   const { error } = await supabase
     .from('notifications')
@@ -94,6 +107,8 @@ export async function clearAllNotifications(userId: string): Promise<void> {
     console.error('[Notifications] Failed to clear all:', error);
     throw new Error(error.message);
   }
+
+  invalidateCache(`notifications_${userId}`);
 }
 
 function mapNotificationRow(row: any): Notification {

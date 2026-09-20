@@ -10,6 +10,7 @@ import {
   deleteNotification as deleteNotificationService,
   clearAllNotifications,
 } from '../services/notifications';
+import { invalidateCache, setCache } from '../utils/cache';
 
 interface NotificationStore {
   notifications: Notification[];
@@ -20,7 +21,7 @@ interface NotificationStore {
   subscribeToRealtime: (userId: string) => void;
   unsubscribeFromRealtime: () => void;
   markAsRead: (id: string) => Promise<void>;
-  markAllAsRead: () => Promise<void>;
+  markAllAsRead: (userId: string) => Promise<void>;
   deleteNotification: (id: string) => Promise<void>;
   clearAll: (userId: string) => Promise<void>;
   addNotification: (notification: Notification) => void;
@@ -34,13 +35,16 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
   realtimeChannel: null,
 
   // ============================================
-  // LOAD NOTIFICATIONS FROM SUPABASE
+  // LOAD — with cache
   // ============================================
   loadNotifications: async (userId: string) => {
     set({ isLoading: true });
     const notifications = await fetchNotifications(userId);
     const unreadCount = notifications.filter((n) => !n.read).length;
     set({ notifications, unreadCount, isLoading: false });
+
+    // ✅ Also save to cache
+    setCache(`notifications_${userId}`, notifications, 2 * 60 * 1000);
   },
 
   // ============================================
@@ -63,7 +67,9 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {
-          console.log('[Notifications] Realtime INSERT:', payload.new);
+          // ✅ Invalidate cache sa real-time
+          invalidateCache(`notifications_${userId}`);
+
           const newNotification: Notification = {
             id: payload.new.id,
             userId: payload.new.user_id,
@@ -88,7 +94,8 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {
-          console.log('[Notifications] Realtime UPDATE:', payload.new);
+          invalidateCache(`notifications_${userId}`);
+
           set((state) => {
             const notifications = state.notifications.map((n) =>
               n.id === payload.new.id
@@ -114,7 +121,8 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {
-          console.log('[Notifications] Realtime DELETE:', payload.old);
+          invalidateCache(`notifications_${userId}`);
+
           set((state) => {
             const notifications = state.notifications.filter(
               (n) => n.id !== payload.old.id
@@ -124,9 +132,7 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
           });
         }
       )
-      .subscribe((status) => {
-        console.log('[Notifications] Realtime status:', status);
-      });
+      .subscribe();
 
     set({ realtimeChannel: channel });
   },
@@ -139,9 +145,6 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
 
-  // ============================================
-  // ADD NOTIFICATION (optimistic)
-  // ============================================
   addNotification: (notification: Notification) => {
     set((state) => {
       if (state.notifications.some((n) => n.id === notification.id)) {
@@ -153,9 +156,6 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
     });
   },
 
-  // ============================================
-  // MARK AS READ
-  // ============================================
   markAsRead: async (id: string) => {
     set((state) => {
       const notifications = state.notifications.map((n) =>
@@ -172,13 +172,7 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
 
-  // ============================================
-  // MARK ALL AS READ
-  // ============================================
-  markAllAsRead: async () => {
-    const userId = get().notifications[0]?.userId;
-    if (!userId) return;
-
+  markAllAsRead: async (userId: string) => {
     set((state) => ({
       notifications: state.notifications.map((n) => ({ ...n, read: true })),
       unreadCount: 0,
@@ -191,9 +185,6 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
 
-  // ============================================
-  // DELETE NOTIFICATION
-  // ============================================
   deleteNotification: async (id: string) => {
     set((state) => {
       const notifications = state.notifications.filter((n) => n.id !== id);
@@ -208,18 +199,13 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
 
-  // ============================================
-  // ✅ CLEAR ALL NOTIFICATIONS
-  // ============================================
   clearAll: async (userId: string) => {
-    // Optimistic update — instant UI clear
     set({ notifications: [], unreadCount: 0 });
 
     try {
       await clearAllNotifications(userId);
     } catch (error) {
       console.error('[Notifications] Failed to clear all:', error);
-      // Revert kung may error
       const notifications = await fetchNotifications(userId);
       const unreadCount = notifications.filter((n) => !n.read).length;
       set({ notifications, unreadCount });
@@ -227,9 +213,6 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
 
-  // ============================================
-  // RESET
-  // ============================================
   reset: () => {
     const channel = get().realtimeChannel;
     if (channel) {

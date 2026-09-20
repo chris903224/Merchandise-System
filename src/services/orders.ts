@@ -2,6 +2,7 @@
 
 import { supabase } from '../lib/supabaseClient';
 import type { Order, OrderItem } from '../types';
+import { getCachedData, invalidateCache } from '../utils/cache';
 
 export async function placeOrder(order: Order): Promise<void> {
   const { error } = await supabase.from('orders').insert([
@@ -28,37 +29,63 @@ export async function placeOrder(order: Order): Promise<void> {
     console.error('Error placing order:', error);
     throw new Error(error.message);
   }
+
+  // ✅ Invalidate caches
+  invalidateCache('orders');
+  invalidateCache('products');
+  invalidateCache(`orders_${order.userId}`);
 }
 
+/**
+ * Fetch orders for specific user — with cache (3 min TTL)
+ */
 export async function fetchOrders(userId: string): Promise<Order[]> {
-  const { data, error } = await supabase
-    .from('orders')
-    .select('*')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false });
+  return getCachedData(
+    `orders_${userId}`,
+    async () => {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('Error fetching orders:', error);
-    return [];
-  }
+      if (error) {
+        console.error('Error fetching orders:', error);
+        return [];
+      }
 
-  return (data ?? []).map(mapOrderRow);
+      return (data ?? []).map(mapOrderRow);
+    },
+    3 * 60 * 1000 // 3 minutes
+  );
 }
 
+/**
+ * Fetch all orders (admin) — with cache (3 min TTL)
+ */
 export async function fetchAllOrders(): Promise<Order[]> {
-  const { data, error } = await supabase
-    .from('orders')
-    .select('*')
-    .order('created_at', { ascending: false });
+  return getCachedData(
+    'orders_all',
+    async () => {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('Error fetching all orders:', error);
-    return [];
-  }
+      if (error) {
+        console.error('Error fetching all orders:', error);
+        return [];
+      }
 
-  return (data ?? []).map(mapOrderRow);
+      return (data ?? []).map(mapOrderRow);
+    },
+    3 * 60 * 1000 // 3 minutes
+  );
 }
 
+/**
+ * Update order status — invalidate cache
+ */
 export async function updateOrderStatus(
   orderId: string,
   status: string
@@ -72,6 +99,9 @@ export async function updateOrderStatus(
     console.error('Error updating order status:', error);
     throw new Error(error.message);
   }
+
+  invalidateCache('orders_all');
+  invalidateCache('orders');
 }
 
 export async function updatePaymentStatus(
@@ -86,6 +116,22 @@ export async function updatePaymentStatus(
   if (error) {
     console.error('Error updating payment status:', error);
     throw new Error(error.message);
+  }
+
+  invalidateCache('orders_all');
+  invalidateCache('orders');
+}
+
+/**
+ * Force refresh orders (bypass cache)
+ */
+export async function refreshOrders(userId?: string): Promise<Order[]> {
+  if (userId) {
+    invalidateCache(`orders_${userId}`);
+    return fetchOrders(userId);
+  } else {
+    invalidateCache('orders_all');
+    return fetchAllOrders();
   }
 }
 
