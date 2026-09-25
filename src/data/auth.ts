@@ -150,6 +150,83 @@ export async function getCurrentSession() {
 }
 
 // ============================================
+// ✅ PASSWORD RESET — STEP 1: Send reset code
+// ============================================
+
+/**
+ * Sends a 6-digit password reset OTP to the user's email.
+ * Uses Supabase's built-in "recovery" flow.
+ */
+export async function sendPasswordResetEmail(email: string): Promise<void> {
+  const { error } = await supabase.auth.resetPasswordForEmail(
+    email.trim().toLowerCase(),
+  );
+
+  if (error) throw new Error(error.message);
+}
+
+// ============================================
+// ✅ PASSWORD RESET — STEP 2: Verify reset OTP
+// ============================================
+
+/**
+ * Verifies the 6-digit reset OTP.
+ * On success, Supabase creates a temporary session which allows
+ * the user to update their password in step 3.
+ */
+export async function verifyPasswordResetOtp(
+  email: string,
+  token: string,
+): Promise<VerifyOtpResult> {
+  const { data, error } = await supabase.auth.verifyOtp({
+    email: email.trim().toLowerCase(),
+    token: token.trim(),
+    type: 'recovery',
+  });
+
+  if (error) throw new Error(error.message);
+  if (!data.user) {
+    throw new Error('Reset code is invalid or expired.');
+  }
+
+  return {
+    user: data.user,
+    session: data.session,
+  };
+}
+
+// ============================================
+// ✅ PASSWORD RESET — STEP 3: Update password
+// ============================================
+
+/**
+ * Updates the currently-authenticated user's password.
+ * Must be called right after verifyPasswordResetOtp() while
+ * the temporary recovery session is still active.
+ */
+export async function updatePassword(newPassword: string): Promise<void> {
+  const { error } = await supabase.auth.updateUser({
+    password: newPassword,
+  });
+
+  if (error) throw new Error(error.message);
+}
+
+// ============================================
+// ✅ PASSWORD RESET — Resend reset code
+// ============================================
+
+/**
+ * Resends a password reset OTP to the given email.
+ * Supabase's `resend` doesn't support `type: 'recovery'`,
+ * so we re-call `resetPasswordForEmail`.
+ */
+export async function resendPasswordResetEmail(email: string): Promise<void> {
+  // Same as the initial send — Supabase allows re-sending
+  await sendPasswordResetEmail(email);
+}
+
+// ============================================
 // MAP SUPABASE USER → APP USER
 // ============================================
 

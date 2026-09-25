@@ -1,6 +1,6 @@
 // src/pages/LoginPage.tsx
 
-import { useEffect, useState, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   AlertCircle,
@@ -14,21 +14,12 @@ import AuthCard from '../components/auth/AuthCard';
 import AuthHeader from '../components/auth/AuthHeader';
 import GuidelinesPanel from '../components/auth/GuidelinesPanel';
 import ImageMarquee from '../components/auth/ImageMarquee';
+import AuthBackground from '../components/auth/AuthBackground';
+import { useRateLimit } from '../components/auth/useRateLimit';
 import { useApp } from '../store';
 import { useToast } from '../toast';
-import {
-  clearRateLimit,
-  checkRateLimit,
-  formatLockoutTime,
-  RATE_LIMIT_CONFIG,
-  recordFailedAttempt,
-} from '../data/rateLimit';
 import { loginUser, mapSupabaseUser } from '../data/auth';
-
-const ROUTES = {
-  REGISTER: '/register',
-  HOME: '/',
-} as const;
+import '../styles/auth.css';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -39,60 +30,26 @@ export default function LoginPage() {
   const [loginPassword, setLoginPassword] = useState('');
   const [isLoginSubmitting, setIsLoginSubmitting] = useState(false);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
-  const [lockedUntil, setLockedUntil] = useState<number | null>(null);
-  const [secondsLeft, setSecondsLeft] = useState(0);
-  const [attemptsRemaining, setAttemptsRemaining] = useState(RATE_LIMIT_CONFIG.MAX_ATTEMPTS);
 
-  const isLocked = lockedUntil !== null && secondsLeft > 0;
-
-  // Lockout countdown
-  useEffect(() => {
-    if (!lockedUntil) return;
-
-    const tick = () => {
-      const remaining = Math.ceil((lockedUntil - Date.now()) / 1000);
-      if (remaining <= 0) {
-        setLockedUntil(null);
-        setSecondsLeft(0);
-        setAttemptsRemaining(RATE_LIMIT_CONFIG.MAX_ATTEMPTS);
-        clearRateLimit(loginIdentifier);
-        return;
-      }
-      setSecondsLeft(remaining);
-    };
-
-    tick();
-    const interval = window.setInterval(tick, 1000);
-    return () => window.clearInterval(interval);
-  }, [lockedUntil, loginIdentifier]);
-
-  // Check rate limit when identifier changes
-  useEffect(() => {
-    if (!loginIdentifier.trim()) {
-      setAttemptsRemaining(RATE_LIMIT_CONFIG.MAX_ATTEMPTS);
-      setLockedUntil(null);
-      setSecondsLeft(0);
-      return;
-    }
-
-    const status = checkRateLimit(loginIdentifier);
-    setAttemptsRemaining(status.attemptsRemaining);
-    if (!status.allowed && status.lockedUntil) {
-      setLockedUntil(status.lockedUntil);
-      setSecondsLeft(status.secondsUntilUnlock);
-    }
-  }, [loginIdentifier]);
+  const {
+    isLocked,
+    secondsLeft,
+    attemptsRemaining,
+    formatLockoutTime,
+    RATE_LIMIT_CONFIG,
+    guard,
+    recordFailure,
+    clear,
+  } = useRateLimit(loginIdentifier);
 
   const handleLoginSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const status = checkRateLimit(loginIdentifier);
+    const status = guard();
     if (!status.allowed) {
-      setLockedUntil(status.lockedUntil);
-      setSecondsLeft(status.secondsUntilUnlock);
       toast(
         `Too many failed attempts. Try again in ${formatLockoutTime(status.secondsUntilUnlock)}.`,
-        'danger',
+        'danger'
       );
       return;
     }
@@ -103,7 +60,7 @@ export default function LoginPage() {
       const user = mapSupabaseUser(result.user);
       const appRole = user.role === 'Staff' ? 'School Staff' : user.role;
 
-      clearRateLimit(loginIdentifier);
+      clear();
       signIn({
         id: user.id,
         name: user.name,
@@ -113,24 +70,21 @@ export default function LoginPage() {
         organization: 'SJCM General',
       });
       toast(`Welcome back, ${user.name}.`, 'success');
-      navigate(ROUTES.HOME, { replace: true });
+      navigate('/', { replace: true });
     } catch (error) {
-      const newStatus = recordFailedAttempt(loginIdentifier);
-      setAttemptsRemaining(newStatus.attemptsRemaining);
+      const newStatus = recordFailure();
 
-      if (!newStatus.allowed && newStatus.lockedUntil) {
-        setLockedUntil(newStatus.lockedUntil);
-        setSecondsLeft(newStatus.secondsUntilUnlock);
+      if (!newStatus.allowed) {
         toast(
           `Account locked for ${formatLockoutTime(newStatus.secondsUntilUnlock)} due to too many failed attempts.`,
-          'danger',
+          'danger'
         );
       } else {
         toast(
           error instanceof Error
             ? error.message
             : `Invalid credentials. ${newStatus.attemptsRemaining} attempt${newStatus.attemptsRemaining === 1 ? '' : 's'} remaining.`,
-          'danger',
+          'danger'
         );
       }
     } finally {
@@ -140,6 +94,8 @@ export default function LoginPage() {
 
   return (
     <main className="auth-experience">
+      <AuthBackground />
+
       <AuthHeader
         identifier={loginIdentifier}
         password={loginPassword}
@@ -171,7 +127,8 @@ export default function LoginPage() {
             <div className="auth-callout auth-callout--warning" role="status">
               <AlertCircle className="react-icon" aria-hidden="true" />
               <span>
-                {attemptsRemaining} login attempt{attemptsRemaining === 1 ? '' : 's'} remaining.
+                {attemptsRemaining} login attempt
+                {attemptsRemaining === 1 ? '' : 's'} remaining.
               </span>
             </div>
           ) : null}
@@ -180,6 +137,7 @@ export default function LoginPage() {
             className="auth-form auth-form--login"
             onSubmit={(event) => void handleLoginSubmit(event)}
           >
+            {/* USERNAME */}
             <div className="auth-field">
               <label htmlFor="login-username">Username</label>
               <div className="auth-input-wrap">
@@ -198,6 +156,7 @@ export default function LoginPage() {
               </div>
             </div>
 
+            {/* PASSWORD */}
             <div className="auth-field">
               <label htmlFor="login-password">Password</label>
               <div className="auth-input-wrap">
@@ -215,7 +174,7 @@ export default function LoginPage() {
                 <button
                   className="auth-password-toggle"
                   type="button"
-                  onClick={() => setShowLoginPassword((visible) => !visible)}
+                  onClick={() => setShowLoginPassword((v) => !v)}
                   aria-label={showLoginPassword ? 'Hide password' : 'Show password'}
                 >
                   {showLoginPassword ? (
@@ -227,6 +186,14 @@ export default function LoginPage() {
               </div>
             </div>
 
+            {/* ✅ FORGOT PASSWORD — bagong row */}
+            <div className="auth-forgot-row">
+              <Link to="/forgot-password" className="auth-forgot-link">
+                Forgot password?
+              </Link>
+            </div>
+
+            {/* SUBMIT */}
             <button
               className="auth-submit"
               type="submit"
@@ -239,7 +206,7 @@ export default function LoginPage() {
 
           <p className="auth-card__switch">
             Don&apos;t have an account?{' '}
-            <Link to={ROUTES.REGISTER}>Register here</Link>
+            <Link to="/register">Register here</Link>
           </p>
         </AuthCard>
       </div>

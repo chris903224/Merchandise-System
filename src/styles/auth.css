@@ -914,3 +914,188 @@ body:has(.auth-experience) {
   outline: 2px solid var(--gold-300);
   outline-offset: 2px;
 }
+/* ==========================================================================
+   FORGOT PASSWORD — additions
+   ========================================================================== */
+
+/* ✅ "Forgot password?" link na nasa ilalim ng password field */
+.auth-forgot-link {
+  display: block;
+  align-self: flex-end;
+  margin-top: -6px;
+  margin-bottom: 2px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--gold-300);
+  text-decoration: none;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.auth-forgot-link:hover {
+  color: var(--cream-100);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ✅ Text button variant na may icon (para sa "Back to Login" / "Change email") */
+.auth-text-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.auth-text-button .react-icon {
+  width: 13px;
+  height: 13px;
+}
+
+/* ✅ Resend cooldown hint (kapag naka-disable yung resend button) */
+.auth-otp-meta button:disabled + .auth-hint,
+.auth-otp-meta + .auth-hint {
+  display: block;
+  margin-top: 6px;
+  text-align: right;
+  font-size: 11.5px;
+  color: var(--sage-500);
+}
+
+/* ✅ Improve OTP input readability sa loob ng reset flow */
+.auth-input--otp:focus-visible {
+  border-color: var(--brand-400);
+  box-shadow: 0 0 0 3px rgba(47, 176, 114, 0.22);
+}
+
+/* ✅ Stage icon — slight pulse animation para sa reset flow */
+.auth-stage-icon {
+  animation: auth-stage-pulse 0.6s ease-out;
+}
+
+@keyframes auth-stage-pulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ✅ Smooth transition kapag nagbabago yung stage (email → otp → password) */
+.auth-form,
+.auth-success {
+  animation: auth-stage-fade-in 0.32s ease-out;
+}
+
+@keyframes auth-stage-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ✅ Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .auth-stage-icon,
+  .auth-form,
+  .auth-success {
+    animation: none;
+  }
+}
+/* ==========================================================================
+   FORGOT PASSWORD — LoginPage link + ForgotPasswordPage additions
+   ========================================================================== */
+
+/* ✅ Row container — right-aligned link sa ilalim ng password field */
+.auth-forgot-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -4px;
+  margin-bottom: -2px;
+}
+
+/* ✅ The link itself — gold color, subtle underline on hover */
+.auth-forgot-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--gold-300);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.auth-forgot-link:hover {
+  color: var(--cream-100);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ✅ Text button variant na may icon (para sa "Back to Login" / "Change email") */
+.auth-text-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.auth-text-button .react-icon {
+  width: 13px;
+  height: 13px;
+}
+
+/* ✅ Smooth fade-in kapag nagbabago yung stage sa ForgotPasswordPage */
+.auth-form,
+.auth-success {
+  animation: auth-stage-fade-in 0.32s ease-out;
+}
+
+@keyframes auth-stage-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ✅ Pulse animation sa stage icon (OTP shield) */
+.auth-stage-icon {
+  animation: auth-stage-pulse 0.6s ease-out;
+}
+
+@keyframes auth-stage-pulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ✅ Focus state para sa OTP input */
+.auth-input--otp:focus-visible {
+  border-color: var(--brand-400);
+  box-shadow: 0 0 0 3px rgba(47, 176, 114, 0.22);
+}
+
+/* ✅ Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .auth-stage-icon,
+  .auth-form,
+  .auth-success {
+    animation: none;
+  }
+}
