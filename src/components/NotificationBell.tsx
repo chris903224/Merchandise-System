@@ -38,7 +38,7 @@ export default function NotificationBell({ className = '' }: NotificationBellPro
   }, [session?.id, loadNotifications]);
 
   // ============================================
-  // ✅ REAL-TIME SUBSCRIPTION via store
+  // REAL-TIME SUBSCRIPTION via store
   // ============================================
   useEffect(() => {
     if (!session?.id) return;
@@ -80,8 +80,10 @@ export default function NotificationBell({ className = '' }: NotificationBellPro
     void markAsRead(id);
   };
 
+  // ✅ FIX: pass session.id to markAllAsRead
   const handleMarkAllAsRead = () => {
-    void markAllAsRead();
+    if (!session?.id) return;
+    void markAllAsRead(session.id);
   };
 
   const handleDelete = (id: string) => {
@@ -103,7 +105,7 @@ export default function NotificationBell({ className = '' }: NotificationBellPro
   };
 
   // ============================================
-  // ✅ FIND PRODUCT FROM NOTIFICATION METADATA
+  // FIND PRODUCT FROM NOTIFICATION METADATA
   // ============================================
   const getNotificationProduct = (notification: Notification) => {
     const productId = notification.metadata?.productId;
@@ -172,7 +174,6 @@ export default function NotificationBell({ className = '' }: NotificationBellPro
           ) : (
             <div className="notification-bell__list">
               {notifications.slice(0, 10).map((notification: Notification) => {
-                // ✅ Hanapin ang product (kung may productId)
                 const product = getNotificationProduct(notification);
 
                 return (
@@ -180,7 +181,6 @@ export default function NotificationBell({ className = '' }: NotificationBellPro
                     key={notification.id}
                     className={`notification-item ${!notification.read ? 'notification-item--unread' : ''}`}
                   >
-                    {/* ✅ LEFT SIDE — product image o emoji icon */}
                     <div className="notification-item__media">
                       {product ? (
                         <ProductImage

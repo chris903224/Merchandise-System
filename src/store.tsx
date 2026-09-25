@@ -12,7 +12,7 @@ import {
 import type { CartItem, Order, Product, SessionUser } from './types';
 import { STORAGE_KEYS, readStorage, writeStorage } from './data/storage';
 import { supabase } from './lib/supabaseClient';
-import { fetchProducts, refreshProducts } from './services/products';
+import { fetchProducts, refreshProducts as refreshProductsService } from './services/products';
 import {
   placeOrder as placeOrderService,
   fetchAllOrders,
@@ -340,7 +340,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   // REFRESH PRODUCTS (bypass cache)
   // ============================================
   const refreshProductsData = useCallback(async () => {
-    const data = await refreshProducts();
+    const data = await refreshProductsService();
     setProducts(data);
   }, []);
 

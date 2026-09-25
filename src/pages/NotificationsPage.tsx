@@ -15,7 +15,7 @@ import './NotificationsPage.css';
 
 type FilterTab = 'all' | 'unread' | 'read';
 
-// ✅ IDAGDAG — side nav items (same sa Settings)
+// ✅ side nav items (same sa Settings)
 const sideNavItems = [
   { to: '/', label: 'Home', icon: Home, end: true },
   { to: '/catalog', label: 'Shop', icon: Store },
@@ -31,7 +31,7 @@ export default function NotificationsPage() {
   const navigate = useNavigate();
   const toast = useToast();
 
-  // ✅ IDAGDAG — sidebar state
+  // ✅ sidebar state
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarPinned, setIsSidebarPinned] = useState(false);
 
@@ -72,7 +72,7 @@ export default function NotificationsPage() {
     };
   }, [session?.id, loadNotifications, subscribeToRealtime, unsubscribeFromRealtime, navigate]);
 
-  // ✅ IDAGDAG — hover-to-open sidebar (same sa Settings)
+  // ✅ hover-to-open sidebar (same sa Settings)
   useEffect(() => {
     const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
     if (!isDesktop()) return;
@@ -127,8 +127,10 @@ export default function NotificationsPage() {
     await markAsRead(id);
   };
 
+  // ✅ FIX: pass session.id to markAllAsRead
   const handleMarkAllAsRead = async () => {
-    await markAllAsRead();
+    if (!session?.id) return;
+    await markAllAsRead(session.id);
     toast('All notifications marked as read', 'success');
   };
 
