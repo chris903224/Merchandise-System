@@ -327,14 +327,14 @@
 .brand__logo {
   width: 48px;
   height: 48px;
-  border-radius: 50%;        /* ✅ BILOG — hindi rounded square */
-  object-fit: cover;         /* puno yung bilog */
+  border-radius: 50%;      
+  object-fit: cover;         
   display: block;
   flex-shrink: 0;
-  background: transparent;   /* ✅ walang background color */
-  box-shadow: none;          /* ✅ walang shadow */
-  padding: 0;                /* ✅ walang padding */
-  border: none;              /* ✅ walang border */
+  background: transparent;   
+  box-shadow: none;          
+  padding: 0;                
+  border: none;             
 }
 
 /* Responsive — mas maliit sa mobile */
