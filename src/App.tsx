@@ -10,20 +10,24 @@ import CheckoutPage from './pages/CheckoutPage';
 import ConfirmationPage from './pages/ConfirmationPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';   // ✅ BAGO
 import DashboardPage from './pages/DashboardPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
 import AdminPage from './pages/AdminPage';
 import ProfilePage from './pages/ProfilePages';
 import SettingsPage from './pages/SettingsPage';
 import NotificationsPage from './pages/NotificationsPage';
-import FavoritesPage from './pages/FavoritesPage';   // ✅ IDAGDAG
+import FavoritesPage from './pages/FavoritesPage';
 
 export default function App() {
   return (
     <Routes>
+      {/* ✅ AUTH ROUTES — standalone, walang SiteLayout */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />   {/* ✅ BAGO */}
 
+      {/* ✅ MAIN APP ROUTES — may SiteLayout */}
       <Route element={<SiteLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/catalog" element={<CatalogPage />} />
@@ -37,9 +41,10 @@ export default function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/notifications" element={<NotificationsPage />} />
-        <Route path="/favorites" element={<FavoritesPage />} />   {/* ✅ IDAGDAG */}
+        <Route path="/favorites" element={<FavoritesPage />} />
       </Route>
 
+      {/* ✅ FALLBACK */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

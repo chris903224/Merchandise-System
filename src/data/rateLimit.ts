@@ -12,8 +12,8 @@
 const STORAGE_KEY = 'sjcm:rate-limit:login';
 
 const MAX_ATTEMPTS = 5;
-const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
-const ATTEMPT_WINDOW_MS = 15 * 60 * 1000; // attempts tracked within 15 min window
+const LOCKOUT_DURATION_MS = 5 * 60 * 1000; // 15 minutes
+const ATTEMPT_WINDOW_MS = 5 * 60 * 1000; // attempts tracked within 15 min window
 
 export interface AttemptRecord {
   email: string;
