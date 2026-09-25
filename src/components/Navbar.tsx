@@ -13,7 +13,7 @@ import {
   Settings,
   ChevronDown,
   X,
-  Heart,          // ✅ IDAGDAG
+  Heart,
 } from 'lucide-react';
 import { useApp } from '../store';
 import { countCartItems, getConsolePath, isStaffRole } from '../services';
@@ -31,8 +31,11 @@ const ROUTES = {
   DASHBOARD: '/dashboard',
   PROFILE: '/profile',
   SETTINGS: '/settings',
-  FAVORITES: '/favorites',    // ✅ IDAGDAG
+  FAVORITES: '/favorites',
 } as const;
+
+// ✅ Path ng logo image — nasa public/ folder
+const LOGO_SRC = '/logo.png';
 
 export default function Navbar() {
   const { session, cart, signOut } = useApp();
@@ -192,9 +195,15 @@ export default function Navbar() {
   return (
     <nav className="site-nav" aria-label="Primary navigation">
       <div className="site-nav__inner">
-        {/* BRAND */}
+        {/* ✅ BRAND — LOGO IMAGE + STORE NAME + TAGLINE */}
         <Link to={ROUTES.HOME} className="brand" aria-label="SJCM Store home">
-          <span className="brand__mark">SJ</span>
+          <img
+            src={LOGO_SRC}
+            alt="SJCM Store logo"
+            className="brand__logo"
+            width={48}
+            height={48}
+          />
           <span className="brand__copy">
             <span className="brand__name">SJCM Store</span>
             <span className="brand__tagline">Campus merchandise pickup</span>
@@ -337,7 +346,6 @@ export default function Navbar() {
                       <span>My Profile</span>
                     </Link>
 
-                    {/* ✅ IDAGDAG — My Favorites */}
                     <Link
                       to={ROUTES.FAVORITES}
                       className="nav-dropdown-item"

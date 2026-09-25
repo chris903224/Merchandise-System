@@ -315,3 +315,32 @@
 .nav-sidebar-toggle:hover::after {
   opacity: 1;
 }
+/* Container ng brand */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.brand__logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;        /* ✅ BILOG — hindi rounded square */
+  object-fit: cover;         /* puno yung bilog */
+  display: block;
+  flex-shrink: 0;
+  background: transparent;   /* ✅ walang background color */
+  box-shadow: none;          /* ✅ walang shadow */
+  padding: 0;                /* ✅ walang padding */
+  border: none;              /* ✅ walang border */
+}
+
+/* Responsive — mas maliit sa mobile */
+@media (max-width: 640px) {
+  .brand__logo {
+    height: 36px;
+    max-width: 140px;
+  }
+} 
