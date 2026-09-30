@@ -1,19 +1,10 @@
 // src/data/rateLimit.ts
 
-/**
- * Simple client-side rate limiting for login attempts.
- * Tracks failed attempts per email + IP in localStorage.
- *
- * NOTE: Client-side rate limiting is NOT a substitute for
- * server-side rate limiting (which Supabase provides via
- * its built-in auth rate limits). This adds an extra UX layer.
- */
-
 const STORAGE_KEY = 'sjcm:rate-limit:login';
 
 const MAX_ATTEMPTS = 5;
-const LOCKOUT_DURATION_MS = 5 * 60 * 1000; // 15 minutes
-const ATTEMPT_WINDOW_MS = 5 * 60 * 1000; // attempts tracked within 15 min window
+const LOCKOUT_DURATION_MS = 5 * 60 * 1000; // ✅ 5 minutes (not 15)
+const ATTEMPT_WINDOW_MS = 5 * 60 * 1000;   // ✅ 5 minutes
 
 export interface AttemptRecord {
   email: string;
@@ -26,9 +17,22 @@ interface RateLimitStore {
   [email: string]: AttemptRecord;
 }
 
-// ============================================
-// HELPERS
-// ============================================
+/* ✅ NEW — helper to expose currently-locked emails (for UI on mount) */
+export function getActiveLock(): { email: string; lockedUntil: number } | null {
+  const store = readStore();
+  const now = Date.now();
+
+  let best: { email: string; lockedUntil: number } | null = null;
+  Object.values(store).forEach((r) => {
+    if (r.lockedUntil && r.lockedUntil > now) {
+      if (!best || r.lockedUntil > best.lockedUntil) {
+        best = { email: r.email, lockedUntil: r.lockedUntil };
+      }
+    }
+  });
+
+  return best;
+}
 
 function readStore(): RateLimitStore {
   try {
@@ -47,10 +51,6 @@ function writeStore(store: RateLimitStore): void {
   }
 }
 
-// ============================================
-// PUBLIC API
-// ============================================
-
 export interface RateLimitStatus {
   allowed: boolean;
   attemptsRemaining: number;
@@ -58,27 +58,17 @@ export interface RateLimitStatus {
   secondsUntilUnlock: number;
 }
 
-/**
- * Check if the given email is allowed to attempt login.
- */
 export function checkRateLimit(email: string): RateLimitStatus {
   const normalizedEmail = email.trim().toLowerCase();
   const store = readStore();
   const record = store[normalizedEmail];
 
-  // No record yet → allowed
   if (!record) {
-    return {
-      allowed: true,
-      attemptsRemaining: MAX_ATTEMPTS,
-      lockedUntil: null,
-      secondsUntilUnlock: 0,
-    };
+    return { allowed: true, attemptsRemaining: MAX_ATTEMPTS, lockedUntil: null, secondsUntilUnlock: 0 };
   }
 
   const now = Date.now();
 
-  // Currently locked out?
   if (record.lockedUntil && record.lockedUntil > now) {
     return {
       allowed: false,
@@ -88,32 +78,19 @@ export function checkRateLimit(email: string): RateLimitStatus {
     };
   }
 
-  // Lock expired → reset and allow
   if (record.lockedUntil && record.lockedUntil <= now) {
     delete store[normalizedEmail];
     writeStore(store);
-    return {
-      allowed: true,
-      attemptsRemaining: MAX_ATTEMPTS,
-      lockedUntil: null,
-      secondsUntilUnlock: 0,
-    };
+    return { allowed: true, attemptsRemaining: MAX_ATTEMPTS, lockedUntil: null, secondsUntilUnlock: 0 };
   }
 
-  // Outside attempt window → reset
   const windowExpired = now - record.firstAttemptAt > ATTEMPT_WINDOW_MS;
   if (windowExpired) {
     delete store[normalizedEmail];
     writeStore(store);
-    return {
-      allowed: true,
-      attemptsRemaining: MAX_ATTEMPTS,
-      lockedUntil: null,
-      secondsUntilUnlock: 0,
-    };
+    return { allowed: true, attemptsRemaining: MAX_ATTEMPTS, lockedUntil: null, secondsUntilUnlock: 0 };
   }
 
-  // Within window and attempts remaining
   return {
     allowed: record.attempts < MAX_ATTEMPTS,
     attemptsRemaining: Math.max(0, MAX_ATTEMPTS - record.attempts),
@@ -122,32 +99,18 @@ export function checkRateLimit(email: string): RateLimitStatus {
   };
 }
 
-/**
- * Record a failed login attempt.
- * After MAX_ATTEMPTS, lock the account for LOCKOUT_DURATION_MS.
- */
 export function recordFailedAttempt(email: string): RateLimitStatus {
   const normalizedEmail = email.trim().toLowerCase();
   const store = readStore();
   const now = Date.now();
 
   const existing = store[normalizedEmail];
-  const windowExpired =
-    existing && now - existing.firstAttemptAt > ATTEMPT_WINDOW_MS;
+  const windowExpired = existing && now - existing.firstAttemptAt > ATTEMPT_WINDOW_MS;
 
   const record: AttemptRecord = windowExpired || !existing
-    ? {
-        email: normalizedEmail,
-        attempts: 1,
-        firstAttemptAt: now,
-        lockedUntil: null,
-      }
-    : {
-        ...existing,
-        attempts: existing.attempts + 1,
-      };
+    ? { email: normalizedEmail, attempts: 1, firstAttemptAt: now, lockedUntil: null }
+    : { ...existing, attempts: existing.attempts + 1 };
 
-  // Lock if max attempts reached
   if (record.attempts >= MAX_ATTEMPTS) {
     record.lockedUntil = now + LOCKOUT_DURATION_MS;
   }
@@ -158,9 +121,6 @@ export function recordFailedAttempt(email: string): RateLimitStatus {
   return checkRateLimit(normalizedEmail);
 }
 
-/**
- * Clear the rate limit record after successful login.
- */
 export function clearRateLimit(email: string): void {
   const normalizedEmail = email.trim().toLowerCase();
   const store = readStore();
@@ -168,13 +128,8 @@ export function clearRateLimit(email: string): void {
   writeStore(store);
 }
 
-/**
- * Format seconds into MM:SS for display.
- */
 export function formatLockoutTime(seconds: number): string {
-  const m = Math.floor(seconds / 60)
-    .toString()
-    .padStart(2, '0');
+  const m = Math.floor(seconds / 60).toString().padStart(2, '0');
   const s = (seconds % 60).toString().padStart(2, '0');
   return `${m}:${s}`;
 }
