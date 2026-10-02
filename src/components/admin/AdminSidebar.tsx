@@ -17,22 +17,23 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { to: '/admin',           page: 'home',     label: 'Home',                     Icon: Home },
-  { to: '/admin/products',  page: 'products', label: 'Product Management',       Icon: Package },
-  { to: '/admin/orders',    page: 'orders',   label: 'Order Management',         Icon: FileText, badge: '8' },
-  { to: '/admin/payments',  page: 'payments', label: 'Payment Management',       Icon: CreditCard },
-  { to: '/admin/paymongo',  page: 'paymongo', label: 'PayMongo Management',      Icon: Smartphone },
-  { to: '/admin/orgs',      page: 'orgs',     label: 'Organization Accounts',    Icon: Building2 },
-  { to: '/admin/console',   page: 'console',  label: 'Admin Console',            Icon: ShieldCheck },
-  { to: '/admin/profile',   page: 'profile',  label: 'Profile',                  Icon: User },
-  { to: '/admin/settings',  page: 'settings', label: 'Settings',                 Icon: Settings },
+  { to: '/admin',           page: 'home',     label: 'Home',                  Icon: Home },
+  { to: '/admin/products',  page: 'products', label: 'Products',              Icon: Package },
+  { to: '/admin/orders',    page: 'orders',   label: 'Orders',                Icon: FileText, badge: '8' },
+  { to: '/admin/payments',  page: 'payments', label: 'Payments',              Icon: CreditCard },
+  { to: '/admin/paymongo',  page: 'paymongo', label: 'PayMongo',              Icon: Smartphone },
+  { to: '/admin/orgs',      page: 'orgs',     label: 'Organizations',         Icon: Building2 },
+  { to: '/admin/console',   page: 'console',  label: 'Console',               Icon: ShieldCheck },
+  { to: '/admin/profile',   page: 'profile',  label: 'Profile',               Icon: User },
+  { to: '/admin/settings',  page: 'settings', label: 'Settings',              Icon: Settings },
 ];
 
-const CLOSE_DELAY_MS = 200;
+const CLOSE_DELAY_MS = 250;
 
 export default function AdminSidebar() {
   const {
     isSidebarPinned,
+    isSidebarOpen,
     openSidebar,
     closeSidebar,
     togglePin,
@@ -70,10 +71,11 @@ export default function AdminSidebar() {
 
   return (
     <aside
-      className="admin-sidebar"
+      className={`admin-sidebar ${isSidebarOpen ? 'is-open' : ''}`}
       onMouseEnter={() => { cancelClose(); openSidebar(); }}
       onMouseLeave={scheduleClose}
     >
+      {/* ✅ Pin button */}
       <button
         type="button"
         className="admin-sidebar__pin"
@@ -84,6 +86,7 @@ export default function AdminSidebar() {
         <ChevronRight className="admin-sidebar__pin-icon" aria-hidden="true" />
       </button>
 
+      {/* ✅ Brand — SJ logo icon only when collapsed */}
       <div className="admin-sidebar__brand">
         <div className="admin-sidebar__logo">SJ</div>
         <div className="admin-sidebar__brand-text">
@@ -92,6 +95,7 @@ export default function AdminSidebar() {
         </div>
       </div>
 
+      {/* ✅ Nav — icons always visible, labels slide in on expand */}
       <nav className="admin-sidebar__nav">
         {NAV_ITEMS.map(({ to, label, Icon, badge }) => (
           <NavLink
@@ -102,16 +106,20 @@ export default function AdminSidebar() {
               `admin-sidebar__item ${isActive ? 'is-active' : ''}`
             }
             aria-label={label}
+            title={label}
           >
             <span className="admin-sidebar__icon">
-              <Icon className="react-icon" aria-hidden="true" />
+              <Icon aria-hidden="true" />
             </span>
             <span className="admin-sidebar__label">{label}</span>
-            {badge ? <span className="admin-sidebar__badge">{badge}</span> : null}
+            {badge ? (
+              <span className="admin-sidebar__badge">{badge}</span>
+            ) : null}
           </NavLink>
         ))}
       </nav>
 
+      {/* ✅ Footer */}
       <div className="admin-sidebar__footer">
         <p className="admin-sidebar__footer-title">SJCM Store</p>
         <p className="admin-sidebar__footer-sub">

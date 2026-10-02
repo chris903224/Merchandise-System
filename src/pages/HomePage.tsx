@@ -1,3 +1,5 @@
+// src/pages/HomePage.tsx
+
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -10,7 +12,6 @@ import {
   Clock,
   MapPin,
   MessageCircle,
-  Badge,
   Shirt,
   Package,
 } from 'lucide-react';
@@ -23,16 +24,16 @@ export default function HomePage() {
   const { session } = useApp();
   const products = useProducts();
 
-  // Featured product used only as the hero visual.
+  // ✅ Featured product — first product from Supabase
   const featuredProduct = products[0] ?? null;
 
-  // New arrivals — first 6 products.
+  // ✅ New arrivals — first 6 products from Supabase
   const newArrivals = useMemo(
     () => products.slice(0, 6),
     [products]
   );
 
-  // Best finds — lowest-stock items that are still available.
+  // ✅ Best finds — lowest-stock items that are still available
   const bestFinds = useMemo(() => {
     return [...products]
       .filter((product) => Number(product.stock) > 0)
@@ -44,7 +45,6 @@ export default function HomePage() {
     <>
       {/* =========================================================
           HERO SECTION
-          Split layout: content on the left / image on the right
       ========================================================== */}
       <main className="page-shell hero-shell">
         {/* LEFT — HERO CONTENT */}
@@ -99,12 +99,8 @@ export default function HomePage() {
           <ul className="hero-bullets">
             <li className="hero-bullet">
               <span className="hero-bullet__icon">
-                <PackageSearch
-                  className="react-icon"
-                  aria-hidden="true"
-                />
+                <PackageSearch className="react-icon" aria-hidden="true" />
               </span>
-
               <span>
                 <strong>Live stock</strong>
                 <small>Updated daily</small>
@@ -113,12 +109,8 @@ export default function HomePage() {
 
             <li className="hero-bullet">
               <span className="hero-bullet__icon">
-                <ShieldCheck
-                  className="react-icon"
-                  aria-hidden="true"
-                />
+                <ShieldCheck className="react-icon" aria-hidden="true" />
               </span>
-
               <span>
                 <strong>Verified inventory</strong>
                 <small>Trusted &amp; accurate</small>
@@ -127,12 +119,8 @@ export default function HomePage() {
 
             <li className="hero-bullet">
               <span className="hero-bullet__icon">
-                <Timer
-                  className="react-icon"
-                  aria-hidden="true"
-                />
+                <Timer className="react-icon" aria-hidden="true" />
               </span>
-
               <span>
                 <strong>Skip the queue</strong>
                 <small>Reserve online, pick up onsite</small>
@@ -141,13 +129,8 @@ export default function HomePage() {
           </ul>
         </div>
 
-        {/* =========================================================
-            RIGHT — HERO IMAGE
-        ========================================================== */}
-        <aside
-          className="hero-photo"
-          aria-label="Featured campus merchandise"
-        >
+        {/* RIGHT — HERO IMAGE */}
+        <aside className="hero-photo" aria-label="Featured campus merchandise">
           {featuredProduct ? (
             <div className="hero-photo__frame">
               <ProductImage
@@ -160,15 +143,10 @@ export default function HomePage() {
           ) : (
             <div className="hero-photo__empty">
               <div className="empty-state">
-                <PackageSearch
-                  className="react-icon"
-                  aria-hidden="true"
-                />
-
+                <PackageSearch className="react-icon" aria-hidden="true" />
                 <p className="empty-state__title">
                   Inventory is not available
                 </p>
-
                 <p className="empty-state__description">
                   Please check back once the store ledger is connected.
                 </p>
@@ -179,7 +157,7 @@ export default function HomePage() {
       </main>
 
       {/* =========================================================
-          FRESH STOCK
+          FRESH STOCK — dynamic from Supabase
       ========================================================== */}
       {newArrivals.length > 0 && (
         <section
@@ -189,14 +167,9 @@ export default function HomePage() {
           <div className="arrivals-section__header">
             <div>
               <p className="section-kicker">Fresh stock</p>
-
-              <h2
-                id="arrivals-title"
-                className="section-title"
-              >
+              <h2 id="arrivals-title" className="section-title">
                 Newest arrivals this week
               </h2>
-
               <p className="section-description">
                 Recently restocked uniforms, apparel, and laces —
                 ready to reserve today.
@@ -205,10 +178,7 @@ export default function HomePage() {
 
             <Link to="/catalog" className="text-link">
               View all
-              <ArrowUpRight
-                className="react-icon"
-                aria-hidden="true"
-              />
+              <ArrowUpRight className="react-icon" aria-hidden="true" />
             </Link>
           </div>
 
@@ -228,10 +198,7 @@ export default function HomePage() {
                   />
                 </div>
 
-                <p className="arrival-card__name">
-                  {product.name}
-                </p>
-
+                <p className="arrival-card__name">{product.name}</p>
                 <p className="arrival-card__price">
                   {formatPrice(product.price)}
                 </p>
@@ -242,7 +209,7 @@ export default function HomePage() {
       )}
 
       {/* =========================================================
-          CATEGORY SECTION
+          CATEGORY SECTION — static links (routing lang, hindi data)
       ========================================================== */}
       <section
         className="page-shell category-section"
@@ -251,14 +218,9 @@ export default function HomePage() {
         <div className="category-section__header">
           <div>
             <p className="section-kicker">Shop by need</p>
-
-            <h2
-              id="category-title"
-              className="section-title"
-            >
+            <h2 id="category-title" className="section-title">
               Official items, ready for pickup
             </h2>
-
             <p className="section-description">
               Find the right school or organization item without the
               campus queue.
@@ -267,37 +229,26 @@ export default function HomePage() {
 
           <Link to="/catalog" className="text-link">
             All merchandise
-            <ArrowUpRight
-              className="react-icon"
-              aria-hidden="true"
-            />
+            <ArrowUpRight className="react-icon" aria-hidden="true" />
           </Link>
         </div>
 
         <div className="category-grid">
+          {/* ✅ Same categories — these are LINKS, not data */}
           <Link
             to="/catalog?category=ID Lace"
             className="category-card glass-card-hover"
           >
             <div className="category-card__top">
               <span className="category-card__icon">
-                <Badge
-                  className="react-icon"
-                  aria-hidden="true"
-                />
+                <Package className="react-icon" aria-hidden="true" />
               </span>
-
-              <ArrowUpRight
-                className="react-icon"
-                aria-hidden="true"
-              />
+              <ArrowUpRight className="react-icon" aria-hidden="true" />
             </div>
-
             <div>
               <h3 className="category-card__title">
                 ID laces &amp; accessories
               </h3>
-
               <p className="category-card__description">
                 Official lanyards, card holders, and clips.
               </p>
@@ -310,23 +261,14 @@ export default function HomePage() {
           >
             <div className="category-card__top">
               <span className="category-card__icon">
-                <Shirt
-                  className="react-icon"
-                  aria-hidden="true"
-                />
+                <Shirt className="react-icon" aria-hidden="true" />
               </span>
-
-              <ArrowUpRight
-                className="react-icon"
-                aria-hidden="true"
-              />
+              <ArrowUpRight className="react-icon" aria-hidden="true" />
             </div>
-
             <div>
               <h3 className="category-card__title">
                 Organization uniforms
               </h3>
-
               <p className="category-card__description">
                 Department polos and council apparel.
               </p>
@@ -339,23 +281,14 @@ export default function HomePage() {
           >
             <div className="category-card__top">
               <span className="category-card__icon">
-                <Shirt
-                  className="react-icon"
-                  aria-hidden="true"
-                />
+                <Shirt className="react-icon" aria-hidden="true" />
               </span>
-
-              <ArrowUpRight
-                className="react-icon"
-                aria-hidden="true"
-              />
+              <ArrowUpRight className="react-icon" aria-hidden="true" />
             </div>
-
             <div>
               <h3 className="category-card__title">
                 School &amp; PE uniforms
               </h3>
-
               <p className="category-card__description">
                 Campus uniforms, PE shirts, and joggers.
               </p>
@@ -372,14 +305,11 @@ export default function HomePage() {
         aria-label="Best finds and store information"
       >
         <div className="home-highlights__grid">
-          {/* BEST FINDS */}
+          {/* BEST FINDS — dynamic from Supabase */}
           <div className="panel home-highlights__panel">
             <div className="panel-heading">
               <div>
-                <p className="section-kicker">
-                  Popular right now
-                </p>
-
+                <p className="section-kicker">Popular right now</p>
                 <h2 className="panel-heading__title">
                   Best finds right now
                 </h2>
@@ -387,10 +317,7 @@ export default function HomePage() {
 
               <Link to="/catalog" className="text-link">
                 See more
-                <ArrowUpRight
-                  className="react-icon"
-                  aria-hidden="true"
-                />
+                <ArrowUpRight className="react-icon" aria-hidden="true" />
               </Link>
             </div>
 
@@ -414,11 +341,9 @@ export default function HomePage() {
                     <p className="best-find-card__meta">
                       {product.category}
                     </p>
-
                     <p className="best-find-card__name">
                       {product.name}
                     </p>
-
                     <p className="best-find-card__price">
                       From {formatPrice(product.price)}
                     </p>
@@ -437,22 +362,15 @@ export default function HomePage() {
             <div className="panel-heading">
               <div>
                 <p className="section-kicker">Visit us</p>
-
-                <h2 className="panel-heading__title">
-                  SJCM Supply Office
-                </h2>
+                <h2 className="panel-heading__title">SJCM Supply Office</h2>
               </div>
             </div>
 
             <ul className="visit-panel__list">
               <li>
                 <span className="visit-panel__icon">
-                  <MapPin
-                    className="react-icon"
-                    aria-hidden="true"
-                  />
+                  <MapPin className="react-icon" aria-hidden="true" />
                 </span>
-
                 <span>
                   Ground Floor, Main Building, SJCM Campus
                 </span>
@@ -460,25 +378,15 @@ export default function HomePage() {
 
               <li>
                 <span className="visit-panel__icon">
-                  <Clock
-                    className="react-icon"
-                    aria-hidden="true"
-                  />
+                  <Clock className="react-icon" aria-hidden="true" />
                 </span>
-
-                <span>
-                  Mon–Fri, 8:00 AM – 5:00 PM
-                </span>
+                <span>Mon–Fri, 8:00 AM – 5:00 PM</span>
               </li>
 
               <li>
                 <span className="visit-panel__icon">
-                  <MessageCircle
-                    className="react-icon"
-                    aria-hidden="true"
-                  />
+                  <MessageCircle className="react-icon" aria-hidden="true" />
                 </span>
-
                 <span>
                   Questions? Message the supply office page.
                 </span>
@@ -489,11 +397,7 @@ export default function HomePage() {
               to="/catalog"
               className="button button--secondary button--block"
             >
-              <Store
-                className="react-icon"
-                aria-hidden="true"
-              />
-
+              <Store className="react-icon" aria-hidden="true" />
               <span>Browse catalog</span>
             </Link>
           </div>

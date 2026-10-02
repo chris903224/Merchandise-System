@@ -10,106 +10,154 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { AdminStatCard } from '../../components/admin';
-import { getOrderCounts } from '../../services/admin';
+import {
+  getOrderCounts,
+  getOrders,
+  getSalesChartData,
+  getTopSellingProducts,
+} from '../../services/admin';
 import type { AdminOrder } from '../../store/adminStore';
 
 /* ============================================
-   STATIC DATA (for recent orders display)
+   TYPES
    ============================================ */
 
-const RECENT_ORDERS: AdminOrder[] = [
-  {
-    id: '#SJCM-0087',
-    status: 'Processing',
-    customer: { name: 'Juan Dela Cruz', studentId: '', email: '', phone: '' },
-    shipping: { method: '', location: '', date: '' },
-    payment: { method: 'GCash', ref: '', status: 'Paid' },
-    items: [{ name: 'PE Uniform', qty: 2, price: 500 }],
-    date: 'Sep 21, 2025',
-    time: '10:42 AM',
-    img: '',
-  },
-  {
-    id: '#SJCM-0086',
-    status: 'Ready for Pickup',
-    customer: { name: 'Maria Santos', studentId: '', email: '', phone: '' },
-    shipping: { method: '', location: '', date: '' },
-    payment: { method: 'GCash', ref: '', status: 'Paid' },
-    items: [{ name: 'CITE Shirt', qty: 1, price: 350 }],
-    date: 'Sep 21, 2025',
-    time: '09:18 AM',
-    img: '',
-  },
-  {
-    id: '#SJCM-0085',
-    status: 'Pending',
-    customer: { name: 'Ralph Mendoza', studentId: '', email: '', phone: '' },
-    shipping: { method: '', location: '', date: '' },
-    payment: { method: 'OTC', ref: '', status: 'Unpaid' },
-    items: [{ name: 'ID Lace', qty: 3, price: 80 }],
-    date: 'Sep 20, 2025',
-    time: '04:27 PM',
-    img: '',
-  },
-  {
-    id: '#SJCM-0084',
-    status: 'Completed',
-    customer: { name: 'Angela Reyes', studentId: '', email: '', phone: '' },
-    shipping: { method: '', location: '', date: '' },
-    payment: { method: 'GCash', ref: '', status: 'Paid' },
-    items: [{ name: 'SHS PE Uniform', qty: 1, price: 300 }],
-    date: 'Sep 20, 2025',
-    time: '01:12 PM',
-    img: '',
-  },
-];
+interface OrderCounts {
+  pending: number;
+  processing: number;
+  ready: number;
+  completed: number;
+  cancelled: number;
+}
 
-const TOP_PRODUCTS = [
-  {
-    name: 'PE Uniform',
-    sales: '45 orders',
-    img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=70',
-  },
-  {
-    name: 'Org Shirt',
-    sales: '32 orders',
-    img: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=400&q=70',
-  },
-  {
-    name: 'ID Laces',
-    sales: '28 orders',
-    img: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=400&q=70',
-  },
-  {
-    name: 'Regular Uniform',
-    sales: '22 orders',
-    img: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=400&q=70',
-  },
-];
+interface SalesPoint {
+  label: string;
+  value: number;
+}
+
+interface TopProduct {
+  id: string;
+  name: string;
+  category: string;
+  image: string | null;
+  totalQty: number;
+  totalRevenue: number;
+}
+
+const EMPTY_COUNTS: OrderCounts = {
+  pending: 0,
+  processing: 0,
+  ready: 0,
+  completed: 0,
+  cancelled: 0,
+};
+
+/* ============================================
+   CHART HELPERS
+   ============================================ */
+
+const CHART_W = 600;
+const CHART_H = 220;
+const CHART_TOP = 30;
+const CHART_BOTTOM = 200;
+const CHART_LEFT = 40;
+const CHART_RIGHT = 590;
+
+function valueToY(value: number, maxValue: number): number {
+  if (maxValue <= 0) return CHART_BOTTOM;
+  const ratio = value / maxValue;
+  return CHART_BOTTOM - ratio * (CHART_BOTTOM - CHART_TOP);
+}
+
+function indexToX(index: number, total: number): number {
+  if (total <= 1) return CHART_LEFT;
+  return CHART_LEFT + (CHART_RIGHT - CHART_LEFT) * (index / (total - 1));
+}
+
+function buildLinePath(points: SalesPoint[], maxValue: number): string {
+  return points
+    .map((p, i) => {
+      const x = indexToX(i, points.length);
+      const y = valueToY(p.value, maxValue);
+      return `${i === 0 ? 'M' : 'L'} ${x.toFixed(2)} ${y.toFixed(2)}`;
+    })
+    .join(' ');
+}
+
+function buildAreaPath(points: SalesPoint[], maxValue: number): string {
+  if (points.length === 0) return '';
+  const line = buildLinePath(points, maxValue);
+  const lastX = indexToX(points.length - 1, points.length);
+  const firstX = indexToX(0, points.length);
+  return `${line} L ${lastX.toFixed(2)} ${CHART_BOTTOM} L ${firstX.toFixed(2)} ${CHART_BOTTOM} Z`;
+}
+
+function formatK(value: number): string {
+  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(0)}M`;
+  if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
+  return String(value);
+}
 
 /* ============================================
    COMPONENT
    ============================================ */
 
 export default function DashboardPage() {
-  const [counts, setCounts] = useState(getOrderCounts());
+  const [counts, setCounts] = useState<OrderCounts>(EMPTY_COUNTS);
+  const [recentOrders, setRecentOrders] = useState<AdminOrder[]>([]);
+  const [salesData, setSalesData] = useState<SalesPoint[]>([]);
+  const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [chartRange, setChartRange] = useState('Last 7 days');
 
+  /* ✅ Load lahat ng data from Supabase */
   useEffect(() => {
-    setCounts(getOrderCounts());
+    let cancelled = false;
+
+    async function load() {
+      setIsLoading(true);
+      try {
+        const [countsData, ordersData, salesChart, topSelling] = await Promise.all([
+          getOrderCounts(),
+          getOrders('all'),
+          getSalesChartData(7),
+          getTopSellingProducts(4),
+        ]);
+
+        if (!cancelled) {
+          setCounts(countsData);
+          setRecentOrders(ordersData.slice(0, 5));
+          setSalesData(salesChart);
+          setTopProducts(topSelling);
+        }
+      } catch (error) {
+        console.error('[Dashboard] Failed to load:', error);
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  /* ✅ Compute chart metrics */
+  const maxSales = Math.max(...salesData.map((p) => p.value), 1000);
+  const linePath = buildLinePath(salesData, maxSales);
+  const areaPath = buildAreaPath(salesData, maxSales);
 
   return (
     <>
-      {/* ============================================
-          HERO
-          ============================================ */}
+      {/* HERO */}
       <section className="admin-hero">
         <div className="admin-hero__copy">
           <span className="admin-hero__eyebrow">Admin Dashboard</span>
           <h1 className="admin-hero__title">Welcome back, Admin 👋</h1>
           <p className="admin-hero__desc">
-            Manage products, orders, payments, and organizations in the SJCM Store.
+            Manage products, orders, payments, and organizations in the SJCM
+            Store.
           </p>
         </div>
         <div className="admin-hero__script">
@@ -117,47 +165,42 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      {/* ============================================
-          STATS — 4 cards (uses counts)
-          ============================================ */}
+      {/* STATS */}
       <section className="admin-stats">
         <AdminStatCard
           label="Pending Orders"
-          value={String(counts.pending)}
+          value={isLoading ? '…' : String(counts.pending)}
           delta="+12%"
           icon={ShoppingBag}
           spark="0,18 10,14 20,16 30,10 40,12 50,6 60,8"
         />
         <AdminStatCard
           label="Processing"
-          value={String(counts.processing)}
+          value={isLoading ? '…' : String(counts.processing)}
           delta="+8%"
           icon={Package}
           spark="0,16 10,18 20,12 30,14 40,8 50,10 60,4"
         />
         <AdminStatCard
           label="Ready for Pickup"
-          value={String(counts.ready)}
+          value={isLoading ? '…' : String(counts.ready)}
           delta="+8%"
           icon={Users}
           spark="0,20 10,18 20,14 30,16 40,10 50,8 60,6"
         />
         <AdminStatCard
           label="Completed"
-          value={String(counts.completed)}
+          value={isLoading ? '…' : String(counts.completed)}
           delta="+15%"
           icon={TrendingUp}
           spark="0,22 10,18 20,20 30,12 40,14 50,8 60,4"
         />
       </section>
 
-      {/* ============================================
-          PANELS — chart + products | orders + actions
-          ============================================ */}
+      {/* PANELS */}
       <section className="admin-panels">
-        {/* LEFT COLUMN */}
         <div className="admin-panel-stack">
-          {/* Sales Chart */}
+          {/* ✅ SALES OVERVIEW — Dynamic */}
           <div className="admin-panel">
             <div className="admin-panel__header">
               <div>
@@ -177,49 +220,86 @@ export default function DashboardPage() {
               </select>
             </div>
 
-            <div className="admin-chart">
-              <svg viewBox="0 0 600 220" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#22915c" stopOpacity="0.28" />
-                    <stop offset="100%" stopColor="#22915c" stopOpacity="0" />
-                  </linearGradient>
-                </defs>
+            {isLoading ? (
+              <p className="admin-empty" style={{ padding: '60px 0', textAlign: 'center' }}>
+                Loading chart…
+              </p>
+            ) : salesData.length === 0 ? (
+              <p className="admin-empty" style={{ padding: '60px 0', textAlign: 'center' }}>
+                No sales data yet.
+              </p>
+            ) : (
+              <>
+                <div className="admin-chart">
+                  <svg viewBox={`0 0 ${CHART_W} ${CHART_H}`} preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#22915c" stopOpacity="0.28" />
+                        <stop offset="100%" stopColor="#22915c" stopOpacity="0" />
+                      </linearGradient>
+                    </defs>
 
-                <text className="admin-chart__axis-label" x="8" y="30">40K</text>
-                <text className="admin-chart__axis-label" x="8" y="80">30K</text>
-                <text className="admin-chart__axis-label" x="8" y="130">20K</text>
-                <text className="admin-chart__axis-label" x="8" y="180">10K</text>
-                <text className="admin-chart__axis-label" x="22" y="208">0</text>
+                    {/* Y-axis labels — dynamic */}
+                    {[0.25, 0.5, 0.75, 1].map((ratio) => (
+                      <text
+                        key={ratio}
+                        className="admin-chart__axis-label"
+                        x="8"
+                        y={valueToY(maxSales * ratio, maxSales) + 3}
+                      >
+                        {formatK(maxSales * ratio)}
+                      </text>
+                    ))}
+                    <text className="admin-chart__axis-label" x="22" y={CHART_BOTTOM + 3}>
+                      0
+                    </text>
 
-                <line className="admin-chart__grid" x1="40" y1="30" x2="590" y2="30" />
-                <line className="admin-chart__grid" x1="40" y1="80" x2="590" y2="80" />
-                <line className="admin-chart__grid" x1="40" y1="130" x2="590" y2="130" />
-                <line className="admin-chart__grid" x1="40" y1="180" x2="590" y2="180" />
+                    {/* Grid lines */}
+                    {[0.25, 0.5, 0.75, 1].map((ratio) => (
+                      <line
+                        key={ratio}
+                        className="admin-chart__grid"
+                        x1={CHART_LEFT}
+                        y1={valueToY(maxSales * ratio, maxSales)}
+                        x2={CHART_RIGHT}
+                        y2={valueToY(maxSales * ratio, maxSales)}
+                      />
+                    ))}
 
-                <path
-                  className="admin-chart__area"
-                  d="M 40 180 L 130 155 L 220 168 L 310 130 L 400 145 L 490 108 L 580 85 L 580 200 L 40 200 Z"
-                />
-                <path
-                  className="admin-chart__line"
-                  d="M 40 180 L 130 155 L 220 168 L 310 130 L 400 145 L 490 108 L 580 85"
-                />
-              </svg>
-            </div>
+                    {/* Area + Line — dynamic */}
+                    <path className="admin-chart__area" d={areaPath} />
+                    <path className="admin-chart__line" d={linePath} />
 
-            <div className="admin-chart__xaxis">
-              <span>Sep 15</span>
-              <span>Sep 16</span>
-              <span>Sep 17</span>
-              <span>Sep 18</span>
-              <span>Sep 19</span>
-              <span>Sep 20</span>
-              <span>Sep 21</span>
-            </div>
+                    {/* Points — dynamic */}
+                    {salesData.map((p, i) => (
+                      <circle
+                        key={i}
+                        className="admin-chart__point"
+                        cx={indexToX(i, salesData.length)}
+                        cy={valueToY(p.value, maxSales)}
+                        r="3.5"
+                      >
+                        <title>
+                          {p.label}: ₱{p.value.toLocaleString()}
+                        </title>
+                      </circle>
+                    ))}
+                  </svg>
+                </div>
+
+                <div
+                  className="admin-chart__xaxis"
+                  style={{ gridTemplateColumns: `repeat(${salesData.length}, 1fr)` }}
+                >
+                  {salesData.map((p) => (
+                    <span key={p.label}>{p.label}</span>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
-          {/* Top Selling Products */}
+          {/* ✅ TOP SELLING PRODUCTS — Dynamic */}
           <div className="admin-panel">
             <div className="admin-panel__header">
               <div>
@@ -231,25 +311,42 @@ export default function DashboardPage() {
               </Link>
             </div>
 
-            <div className="admin-products-grid">
-              {TOP_PRODUCTS.map((p) => (
-                <div key={p.name} className="admin-product-card">
-                  <div className="admin-product-card__image">
-                    <img src={p.img} alt={p.name} loading="lazy" />
+            {isLoading ? (
+              <p className="admin-empty" style={{ padding: '32px 0', textAlign: 'center' }}>
+                Loading products…
+              </p>
+            ) : topProducts.length === 0 ? (
+              <p className="admin-empty" style={{ padding: '32px 0', textAlign: 'center' }}>
+                No products sold yet.
+              </p>
+            ) : (
+              <div className="admin-products-grid">
+                {topProducts.map((p) => (
+                  <div key={p.id} className="admin-product-card">
+                    <div className="admin-product-card__image">
+                      {p.image ? (
+                        <img src={p.image} alt={p.name} loading="lazy" />
+                      ) : (
+                        <div className="admin-product-card__placeholder">
+                          <Package className="react-icon" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="admin-product-card__body">
+                      <p className="admin-product-card__name">{p.name}</p>
+                      <p className="admin-product-card__sales">
+                        {p.totalQty} order{p.totalQty === 1 ? '' : 's'}
+                      </p>
+                    </div>
                   </div>
-                  <div className="admin-product-card__body">
-                    <p className="admin-product-card__name">{p.name}</p>
-                    <p className="admin-product-card__sales">{p.sales}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
-        {/* RIGHT COLUMN */}
         <div className="admin-panel-stack">
-          {/* Recent Orders */}
+          {/* RECENT ORDERS */}
           <div className="admin-panel">
             <div className="admin-panel__header">
               <h2 className="admin-panel__title">Recent Orders</h2>
@@ -269,35 +366,51 @@ export default function DashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {RECENT_ORDERS.map((o) => (
-                  <tr key={o.id}>
-                    <td>
-                      <span className="admin-order-id">{o.id}</span>
-                    </td>
-                    <td>
-                      <span className="admin-order-customer">{o.customer.name}</span>
-                    </td>
-                    <td>{o.items.length}</td>
-                    <td>
-                      <span
-                        className={`admin-badge admin-badge--${o.status
-                          .toLowerCase()
-                          .replace(/\s+/g, '-')}`}
-                      >
-                        {o.status}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="admin-order-date">{o.date}</div>
-                      <div className="admin-order-date">{o.time}</div>
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={5} className="admin-empty">
+                      Loading orders…
                     </td>
                   </tr>
-                ))}
+                ) : recentOrders.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="admin-empty">
+                      No orders yet.
+                    </td>
+                  </tr>
+                ) : (
+                  recentOrders.map((o) => (
+                    <tr key={o.id}>
+                      <td>
+                        <span className="admin-order-id">{o.id}</span>
+                      </td>
+                      <td>
+                        <span className="admin-order-customer">
+                          {o.customer.name}
+                        </span>
+                      </td>
+                      <td>{o.items.length}</td>
+                      <td>
+                        <span
+                          className={`admin-badge admin-badge--${o.status
+                            .toLowerCase()
+                            .replace(/\s+/g, '-')}`}
+                        >
+                          {o.status}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="admin-order-date">{o.date}</div>
+                        <div className="admin-order-date">{o.time}</div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
 
-          {/* Quick Actions */}
+          {/* QUICK ACTIONS */}
           <div className="admin-panel">
             <div className="admin-panel__header">
               <h2 className="admin-panel__title">Quick Actions</h2>

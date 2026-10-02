@@ -4,6 +4,10 @@ import { supabase } from '../lib/supabaseClient';
 import type { Order, OrderItem } from '../types';
 import { getCachedData, invalidateCache } from '../utils/cache';
 
+/* ============================================
+   PLACE ORDER
+   ============================================ */
+
 export async function placeOrder(order: Order): Promise<void> {
   const { error } = await supabase.from('orders').insert([
     {
@@ -32,13 +36,15 @@ export async function placeOrder(order: Order): Promise<void> {
 
   // ✅ Invalidate caches
   invalidateCache('orders');
+  invalidateCache('orders_all');
   invalidateCache('products');
   invalidateCache(`orders_${order.userId}`);
 }
 
-/**
- * Fetch orders for specific user — with cache (3 min TTL)
- */
+/* ============================================
+   FETCH — user-specific
+   ============================================ */
+
 export async function fetchOrders(userId: string): Promise<Order[]> {
   return getCachedData(
     `orders_${userId}`,
@@ -56,13 +62,14 @@ export async function fetchOrders(userId: string): Promise<Order[]> {
 
       return (data ?? []).map(mapOrderRow);
     },
-    3 * 60 * 1000 // 3 minutes
+    3 * 60 * 1000
   );
 }
 
-/**
- * Fetch all orders (admin) — with cache (3 min TTL)
- */
+/* ============================================
+   FETCH — all orders (admin)
+   ============================================ */
+
 export async function fetchAllOrders(): Promise<Order[]> {
   return getCachedData(
     'orders_all',
@@ -79,17 +86,25 @@ export async function fetchAllOrders(): Promise<Order[]> {
 
       return (data ?? []).map(mapOrderRow);
     },
-    3 * 60 * 1000 // 3 minutes
+    3 * 60 * 1000
   );
 }
 
-/**
- * Update order status — invalidate cache
- */
+/* ============================================
+   UPDATE ORDER STATUS — with FULL cache invalidation
+   ============================================ */
+
 export async function updateOrderStatus(
   orderId: string,
   status: string
 ): Promise<void> {
+  // ✅ Kunin yung user_id BEFORE update para ma-invalidate yung user cache
+  const { data: existing } = await supabase
+    .from('orders')
+    .select('user_id')
+    .eq('id', orderId)
+    .maybeSingle();
+
   const { error } = await supabase
     .from('orders')
     .update({ order_status: status })
@@ -100,14 +115,29 @@ export async function updateOrderStatus(
     throw new Error(error.message);
   }
 
+  // ✅ Invalidate LAHAT ng caches
   invalidateCache('orders_all');
   invalidateCache('orders');
+
+  if (existing?.user_id) {
+    invalidateCache(`orders_${existing.user_id}`);
+  }
 }
+
+/* ============================================
+   UPDATE PAYMENT STATUS — with FULL cache invalidation
+   ============================================ */
 
 export async function updatePaymentStatus(
   orderId: string,
   paymentStatus: string
 ): Promise<void> {
+  const { data: existing } = await supabase
+    .from('orders')
+    .select('user_id')
+    .eq('id', orderId)
+    .maybeSingle();
+
   const { error } = await supabase
     .from('orders')
     .update({ payment_status: paymentStatus })
@@ -120,11 +150,16 @@ export async function updatePaymentStatus(
 
   invalidateCache('orders_all');
   invalidateCache('orders');
+
+  if (existing?.user_id) {
+    invalidateCache(`orders_${existing.user_id}`);
+  }
 }
 
-/**
- * Force refresh orders (bypass cache)
- */
+/* ============================================
+   REFRESH — bypass cache
+   ============================================ */
+
 export async function refreshOrders(userId?: string): Promise<Order[]> {
   if (userId) {
     invalidateCache(`orders_${userId}`);
@@ -134,6 +169,59 @@ export async function refreshOrders(userId?: string): Promise<Order[]> {
     return fetchAllOrders();
   }
 }
+
+/* ============================================
+   ✅ BAGO — DATE/TIME FORMATTERS
+   ============================================ */
+
+/**
+ * Format date — e.g. "Oct 2, 2026"
+ */
+export function formatDate(iso: string): string {
+  if (!iso) return '—';
+
+  try {
+    const date = new Date(iso);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  } catch {
+    return iso;
+  }
+}
+
+/**
+ * Format date + time — e.g. "Oct 2, 2026 · 8:24 AM"
+ */
+export function formatDateTime(iso: string): string {
+  if (!iso) return '—';
+
+  try {
+    const date = new Date(iso);
+
+    const datePart = date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+
+    const timePart = date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+
+    return `${datePart} · ${timePart}`;
+  } catch {
+    return iso;
+  }
+}
+
+/* ============================================
+   MAPPER
+   ============================================ */
 
 function mapOrderRow(row: any): Order {
   return {

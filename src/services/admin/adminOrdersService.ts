@@ -1,153 +1,226 @@
 // src/services/admin/adminOrdersService.ts
 
-import type { AdminOrder } from '../../store/adminStore';
+import {
+  fetchAllOrders,
+  updateOrderStatus,
+  updatePaymentStatus,
+  refreshOrders,
+} from '../orders';
+import { fetchProducts } from '../products';
+import type { Order, OrderItem, Product } from '../../types';
+import type { AdminOrder, AdminOrderStatus } from '../../store/adminStore';
 
 /* ============================================
-   MOCK DATA
+   HELPERS
    ============================================ */
 
-let ORDERS: AdminOrder[] = [
-  {
-    id: '#SJCM-0087',
-    status: 'Processing',
-    customer: {
-      name: 'Juan Dela Cruz',
-      studentId: '2024-00123',
-      email: 'juan.delacruz@phinmaed.com',
-      phone: '0917 555 0123',
-    },
-    shipping: {
-      method: 'Campus Pickup',
-      location: 'SJCM Supply Office (Main Campus)',
-      date: '2026-08-14',
-    },
-    payment: { method: 'GCash', ref: '1002938481', status: 'Paid' },
-    items: [
-      { name: 'College PE Uniform (M)', qty: 1, price: 1000 },
-      { name: 'SJC ID Lace', qty: 2, price: 80 },
-    ],
-    date: 'Sep 21, 2025',
-    time: '10:42 AM',
-    img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=200&q=70',
-  },
-  {
-    id: '#SJCM-0086',
-    status: 'Ready for Pickup',
-    customer: {
-      name: 'Maria Santos',
-      studentId: '2024-00456',
-      email: 'maria.santos@phinmaed.com',
-      phone: '0917 555 0456',
-    },
-    shipping: {
-      method: 'Campus Pickup',
-      location: 'School Cashier Counter B',
-      date: '2026-08-13',
-    },
-    payment: { method: 'GCash', ref: '1002938482', status: 'Paid' },
-    items: [{ name: 'CITE Shirt (L)', qty: 2, price: 350 }],
-    date: 'Sep 21, 2025',
-    time: '09:18 AM',
-    img: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=200&q=70',
-  },
-  {
-    id: '#SJCM-0085',
-    status: 'Pending',
-    customer: {
-      name: 'Ralph Mendoza',
-      studentId: '2024-00789',
-      email: 'ralph.mendoza@phinmaed.com',
-      phone: '0917 555 0789',
-    },
-    shipping: {
-      method: 'Campus Pickup',
-      location: 'SJCM Supply Office (Main Campus)',
-      date: '2026-08-15',
-    },
-    payment: { method: 'Over-the-Counter', ref: '—', status: 'Unpaid' },
-    items: [{ name: 'SJC ID Lace', qty: 3, price: 80 }],
-    date: 'Sep 20, 2025',
-    time: '04:27 PM',
-    img: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=200&q=70',
-  },
-  {
-    id: '#SJCM-0084',
-    status: 'Completed',
-    customer: {
-      name: 'Angela Reyes',
-      studentId: '2024-00321',
-      email: 'angela.reyes@phinmaed.com',
-      phone: '0917 555 0321',
-    },
-    shipping: {
-      method: 'Campus Pickup',
-      location: 'SJHS Lobby',
-      date: '2026-08-12',
-    },
-    payment: { method: 'GCash', ref: '1002938484', status: 'Paid' },
-    items: [{ name: 'SHS PE Uniform (S)', qty: 1, price: 300 }],
-    date: 'Sep 20, 2025',
-    time: '01:12 PM',
-    img: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=200&q=70',
-  },
-  {
-    id: '#SJCM-0083',
-    status: 'Cancelled',
-    customer: {
-      name: 'Lance Cruz',
-      studentId: '2024-00654',
-      email: 'lance.cruz@phinmaed.com',
-      phone: '0917 555 0654',
-    },
-    shipping: {
-      method: 'Campus Pickup',
-      location: 'SJCM Supply Office (Main Campus)',
-      date: '2026-08-11',
-    },
-    payment: { method: 'GCash', ref: '1002938485', status: 'Refunded' },
-    items: [{ name: 'MASID Uniform (L)', qty: 1, price: 500 }],
-    date: 'Sep 20, 2025',
-    time: '11:03 AM',
-    img: 'https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?w=200&q=70',
-  },
-];
-
-/* ============================================
-   CONSTANTS
-   ============================================ */
-
-export const ORDER_FLOW: AdminOrder['status'][] = [
+export const ORDER_FLOW: AdminOrderStatus[] = [
   'Pending',
   'Processing',
   'Ready for Pickup',
   'Completed',
 ];
 
+function formatDate(iso: string): { date: string; time: string } {
+  try {
+    const d = new Date(iso);
+    return {
+      date: d.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }),
+      time: d.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+      }),
+    };
+  } catch {
+    return { date: iso, time: '' };
+  }
+}
+
+function findProductImage(order: Order, products: Product[]): string | null {
+  const firstItem = order.items[0];
+  if (!firstItem) return null;
+  const productId = (firstItem as any).id;
+  if (!productId) return null;
+  const product = products.find((p) => p.id === productId);
+  return product?.image ?? null;
+}
+
+function mapOrderToAdmin(o: Order, products: Product[]): AdminOrder {
+  const { date, time } = formatDate(o.createdAt);
+  const image = findProductImage(o, products);
+
+  return {
+    id: o.id,
+    status: o.orderStatus as AdminOrderStatus,
+    customer: {
+      name: o.customerName,
+      studentId: o.studentId,
+      email: o.email,
+      phone: o.phone,
+    },
+    shipping: {
+      method: 'Campus Pickup',
+      location: o.claimLocation,
+      date: o.claimDate,
+    },
+    payment: {
+      method: o.paymentMethod,
+      ref: o.paymentRef ?? '—',
+      status: o.paymentStatus,
+    },
+    items: o.items.map((it: OrderItem) => ({
+      name: it.name,
+      qty: it.qty,
+      price: it.price,
+    })),
+    date,
+    time,
+    img: image,
+  };
+}
+
 /* ============================================
    READ
    ============================================ */
 
-export function getOrders(filter: string = 'all'): AdminOrder[] {
-  if (filter === 'all') return [...ORDERS];
-  return ORDERS.filter((o) => o.status === filter);
+export async function getOrders(filter: string = 'all'): Promise<AdminOrder[]> {
+  const [orders, products] = await Promise.all([
+    fetchAllOrders(),
+    fetchProducts(),
+  ]);
+  const mapped = orders.map((o) => mapOrderToAdmin(o, products));
+  if (filter === 'all') return mapped;
+  return mapped.filter((o) => o.status === filter);
 }
 
-export function getAllOrders(): AdminOrder[] {
-  return [...ORDERS];
+export async function getAllOrders(): Promise<AdminOrder[]> {
+  const [orders, products] = await Promise.all([
+    fetchAllOrders(),
+    fetchProducts(),
+  ]);
+  return orders.map((o) => mapOrderToAdmin(o, products));
 }
 
-export function getOrderById(id: string): AdminOrder | undefined {
-  return ORDERS.find((o) => o.id === id);
+export async function getOrderById(id: string): Promise<AdminOrder | null> {
+  const [orders, products] = await Promise.all([
+    fetchAllOrders(),
+    fetchProducts(),
+  ]);
+  const found = orders.find((o) => o.id === id);
+  return found ? mapOrderToAdmin(found, products) : null;
 }
 
-export function getOrderCounts() {
+export async function getOrderCounts() {
+  const orders = await fetchAllOrders();
   return {
-    pending:    ORDERS.filter((o) => o.status === 'Pending').length,
-    processing: ORDERS.filter((o) => o.status === 'Processing').length,
-    ready:      ORDERS.filter((o) => o.status === 'Ready for Pickup').length,
-    completed:  ORDERS.filter((o) => o.status === 'Completed').length,
-    cancelled:  ORDERS.filter((o) => o.status === 'Cancelled').length,
+    pending:    orders.filter((o) => o.orderStatus === 'Pending').length,
+    processing: orders.filter((o) => o.orderStatus === 'Processing').length,
+    ready:      orders.filter((o) => o.orderStatus === 'Ready for Pickup').length,
+    completed:  orders.filter((o) => o.orderStatus === 'Completed').length,
+    cancelled:  orders.filter((o) => o.orderStatus === 'Cancelled').length,
   };
+}
+
+/* ============================================
+   ✅ SALES CHART DATA — last 7 days
+   ============================================ */
+
+export interface SalesChartPoint {
+  label: string;
+  value: number;
+}
+
+export async function getSalesChartData(
+  days: number = 7
+): Promise<SalesChartPoint[]> {
+  const orders = await fetchAllOrders();
+  const now = new Date();
+  const points: SalesChartPoint[] = [];
+
+  for (let i = days - 1; i >= 0; i--) {
+    const date = new Date(now);
+    date.setDate(date.getDate() - i);
+    date.setHours(0, 0, 0, 0);
+
+    const dayLabel = date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    });
+
+    const nextDay = new Date(date);
+    nextDay.setDate(nextDay.getDate() + 1);
+
+    const dayTotal = orders
+      .filter((o) => {
+        const orderDate = new Date(o.createdAt);
+        return orderDate >= date && orderDate < nextDay;
+      })
+      .reduce((sum, o) => sum + Number(o.totalAmount ?? 0), 0);
+
+    points.push({
+      label: dayLabel,
+      value: dayTotal,
+    });
+  }
+
+  return points;
+}
+
+/* ============================================
+   ✅ TOP SELLING PRODUCTS
+   ============================================ */
+
+export interface TopSellingProduct {
+  id: string;
+  name: string;
+  category: string;
+  image: string | null;
+  totalQty: number;
+  totalRevenue: number;
+}
+
+export async function getTopSellingProducts(
+  limit: number = 4
+): Promise<TopSellingProduct[]> {
+  const [orders, products] = await Promise.all([
+    fetchAllOrders(),
+    fetchProducts(),
+  ]);
+
+  const tally = new Map<string, { qty: number; revenue: number }>();
+
+  orders.forEach((order) => {
+    order.items.forEach((item: any) => {
+      const productId = item.id;
+      if (!productId) return;
+
+      const existing = tally.get(productId) ?? { qty: 0, revenue: 0 };
+      existing.qty += Number(item.qty) || 0;
+      existing.revenue += (Number(item.qty) || 0) * (Number(item.price) || 0);
+      tally.set(productId, existing);
+    });
+  });
+
+  const sorted = Array.from(tally.entries())
+    .map(([id, stats]) => {
+      const product = products.find((p) => p.id === id);
+      return {
+        id,
+        name: product?.name ?? 'Unknown Product',
+        category: product?.category ?? '—',
+        image: product?.image ?? null,
+        totalQty: stats.qty,
+        totalRevenue: stats.revenue,
+      };
+    })
+    .sort((a, b) => b.totalQty - a.totalQty)
+    .slice(0, limit);
+
+  return sorted;
 }
 
 /* ============================================
@@ -166,27 +239,44 @@ export function orderItemCount(order: AdminOrder): number {
    WRITE
    ============================================ */
 
-export function advanceOrder(id: string): AdminOrder | null {
-  const order = ORDERS.find((o) => o.id === id);
-  if (!order) return null;
+export async function advanceOrder(id: string): Promise<void> {
+  const orders = await fetchAllOrders();
+  const order = orders.find((o) => o.id === id);
+  if (!order) throw new Error(`Order ${id} not found.`);
 
-  const idx = ORDER_FLOW.indexOf(order.status);
-  if (idx === -1 || idx >= ORDER_FLOW.length - 1) {
-    // Hindi na pwede i-advance (Completed na o Cancelled)
-    return order;
-  }
+  const idx = ORDER_FLOW.indexOf(order.orderStatus as AdminOrderStatus);
+  if (idx === -1 || idx >= ORDER_FLOW.length - 1) return;
 
-  order.status = ORDER_FLOW[idx + 1];
-  return order;
+  const next = ORDER_FLOW[idx + 1];
+  await updateOrderStatus(id, next);
 }
 
-export function setOrderStatus(id: string, status: AdminOrder['status']): AdminOrder | null {
-  const order = ORDERS.find((o) => o.id === id);
-  if (!order) return null;
-  order.status = status;
-  return order;
+export async function setOrderStatus(
+  id: string,
+  status: AdminOrderStatus
+): Promise<void> {
+  await updateOrderStatus(id, status);
 }
 
-export function cancelOrder(id: string): AdminOrder | null {
-  return setOrderStatus(id, 'Cancelled');
+export async function cancelOrder(id: string): Promise<void> {
+  await setOrderStatus(id, 'Cancelled');
+}
+
+export async function updateOrderPaymentStatus(
+  id: string,
+  paymentStatus: string
+): Promise<void> {
+  await updatePaymentStatus(id, paymentStatus);
+}
+
+/* ============================================
+   FORCE REFRESH
+   ============================================ */
+
+export async function forceRefreshOrders(): Promise<AdminOrder[]> {
+  const [orders, products] = await Promise.all([
+    refreshOrders(),
+    fetchProducts(),
+  ]);
+  return orders.map((o) => mapOrderToAdmin(o, products));
 }

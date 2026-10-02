@@ -1,3 +1,5 @@
+// src/services.ts
+
 import type { BadgeInfo, CartItem, Order, Product, SessionUser, UserRecord, UserRole } from './types';
 import { STORAGE_KEYS, readStorage, writeStorage } from './data/storage';
 import { createPasswordSalt, hashPassword, verifyPassword } from './data/password';
@@ -22,6 +24,26 @@ export function formatDate(value: string | undefined): string {
     month: 'short',
     day: 'numeric',
   }).format(date);
+}
+
+/* ✅ BAGO — date + time formatter */
+export function formatDateTime(value: string | undefined): string {
+  const date = new Date(value ?? '');
+  if (Number.isNaN(date.getTime())) return '—';
+
+  const datePart = new Intl.DateTimeFormat('en-PH', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  }).format(date);
+
+  const timePart = new Intl.DateTimeFormat('en-PH', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  }).format(date);
+
+  return `${datePart} · ${timePart}`;
 }
 
 /* ---- Order accessors (mirrors original getOrder*) ---- */

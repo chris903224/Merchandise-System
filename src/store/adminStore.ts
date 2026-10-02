@@ -18,12 +18,16 @@ export interface AdminSession {
   remember: boolean;
 }
 
+/* ✅ UPDATED — may link + actionLabel na */
 export interface AdminNotification {
-  id: number;
+  id: string;
   title: string;
   desc: string;
   time: string;
   read: boolean;
+  type?: 'order' | 'payment' | 'stock' | 'info';
+  link?: string;
+  actionLabel?: string;
 }
 
 export interface AdminProduct {
@@ -70,11 +74,20 @@ export interface AdminOrder {
   }[];
   date: string;
   time: string;
-  img: string;
+  img: string | null;
 }
 
-export type AdminPaymentMethod = 'GCash' | 'Bank' | 'OTC';
-export type AdminPaymentStatus = 'Verified' | 'Pending' | 'Refunded';
+/* ============================================
+   PAYMENTS — GCash + COD only
+   ============================================ */
+
+export type AdminPaymentMethod = 'GCash' | 'COD';
+
+export type AdminPaymentStatus =
+  | 'Pending'
+  | 'Verified'
+  | 'Paid'
+  | 'Refunded';
 
 export interface AdminPayment {
   ref: string;
@@ -84,7 +97,12 @@ export interface AdminPayment {
   amount: number;
   status: AdminPaymentStatus;
   date: string;
+  orderId?: string;
 }
+
+/* ============================================
+   PAYMONGO (keep as-is for now)
+   ============================================ */
 
 export type AdminPayMongoChannel = 'QR Ph' | 'GCash' | 'Maya' | 'Card';
 export type AdminPayMongoStatus = 'Paid' | 'Pending' | 'Failed' | 'Expired';
@@ -98,15 +116,29 @@ export interface AdminPayMongoTxn {
   date: string;
 }
 
+/* ============================================
+   ORGANIZATIONS
+   ============================================ */
+
 export type AdminOrgType = 'College' | 'SHS' | 'Interest-Based';
 
 export interface AdminOrg {
+  id?: string;
   name: string;
   type: AdminOrgType;
   members: number;
   products: number;
   revenue: string;
+  revenueRaw?: number;
+  description?: string;
+  email?: string;
+  adviser?: string;
+  createdAt?: string;
 }
+
+/* ============================================
+   PAGES
+   ============================================ */
 
 export type AdminPage =
   | 'home'
@@ -120,7 +152,7 @@ export type AdminPage =
   | 'settings';
 
 /* ============================================
-   STORE
+   STORE INTERFACE
    ============================================ */
 
 interface AdminStore {
@@ -129,10 +161,12 @@ interface AdminStore {
   setSession: (s: AdminSession | null) => void;
   clearSession: () => void;
 
-  // Notifications
+  // Notifications — dynamic na
   notifications: AdminNotification[];
-  markNotificationRead: (id: number) => void;
+  setNotifications: (n: AdminNotification[]) => void;
+  markNotificationRead: (id: string) => void;
   markAllNotificationsRead: () => void;
+  clearNotifications: () => void;
 
   // Sidebar
   isSidebarOpen: boolean;
@@ -142,10 +176,14 @@ interface AdminStore {
   togglePin: () => void;
   toggleSidebar: () => void;
 
-  // Current page (fallback — router usually handles this)
+  // Current page
   currentPage: AdminPage;
   setCurrentPage: (p: AdminPage) => void;
 }
+
+/* ============================================
+   SESSION HELPERS
+   ============================================ */
 
 const SESSION_KEY = 'sjcm_admin_auth';
 
@@ -161,16 +199,14 @@ function loadSession(): AdminSession | null {
   }
 }
 
-const INITIAL_NOTIFICATIONS: AdminNotification[] = [
-  { id: 1, title: 'New order placed', desc: 'Juan Dela Cruz — ₱1,000 PE Uniform', time: '2 min ago', read: false },
-  { id: 2, title: 'Payment pending', desc: 'GCash #TXN-0450 awaiting verification', time: '32 min ago', read: false },
-  { id: 3, title: 'Low stock', desc: 'CITE Windbreaker is out of stock', time: '1 hr ago', read: false },
-  { id: 4, title: 'Weekly report ready', desc: 'Sales summary for Sep 14–20', time: '5 hrs ago', read: true },
-];
+/* ============================================
+   STORE
+   ============================================ */
 
 export const useAdminStore = create<AdminStore>((set, get) => ({
-  // Session
+  /* ---------- SESSION ---------- */
   session: loadSession(),
+
   setSession: (s) => {
     try {
       if (s) localStorage.setItem(SESSION_KEY, JSON.stringify(s));
@@ -180,6 +216,7 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
     }
     set({ session: s });
   },
+
   clearSession: () => {
     try {
       localStorage.removeItem(SESSION_KEY);
@@ -190,36 +227,45 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
     set({ session: null });
   },
 
-  // Notifications
-  notifications: INITIAL_NOTIFICATIONS,
-  markNotificationRead: (id) => {
+  /* ---------- NOTIFICATIONS (dynamic) ---------- */
+  notifications: [],
+
+  setNotifications: (n) => set({ notifications: n }),
+
+  markNotificationRead: (id) =>
     set((state) => ({
       notifications: state.notifications.map((n) =>
         n.id === id ? { ...n, read: true } : n
       ),
-    }));
-  },
-  markAllNotificationsRead: () => {
+    })),
+
+  markAllNotificationsRead: () =>
     set((state) => ({
       notifications: state.notifications.map((n) => ({ ...n, read: true })),
-    }));
-  },
+    })),
 
-  // Sidebar
+  clearNotifications: () => set({ notifications: [] }),
+
+  /* ---------- SIDEBAR ---------- */
   isSidebarOpen: false,
   isSidebarPinned: false,
+
   openSidebar: () => set({ isSidebarOpen: true }),
+
   closeSidebar: () => {
     if (!get().isSidebarPinned) set({ isSidebarOpen: false });
   },
-  toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
+
+  toggleSidebar: () =>
+    set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
+
   togglePin: () =>
     set((state) => ({
       isSidebarPinned: !state.isSidebarPinned,
       isSidebarOpen: !state.isSidebarPinned ? true : state.isSidebarOpen,
     })),
 
-  // Current page
+  /* ---------- CURRENT PAGE ---------- */
   currentPage: 'home',
   setCurrentPage: (p) => set({ currentPage: p }),
 }));

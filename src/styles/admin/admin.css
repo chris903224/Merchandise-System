@@ -70,18 +70,32 @@
    LAYOUT — SIDEBAR
    ============================================ */
 
+/* ============================================================
+   SIDEBAR — Instagram-style
+   Collapsed: icons only, 76px
+   Expanded: icons + labels, 260px
+   ============================================================ */
+
 .admin-sidebar {
   position: relative;
+  width: 76px;                             /* ✅ Collapsed width */
   background: linear-gradient(180deg, #0f2f21 0%, #0a2118 100%);
   color: #f6f3ea;
-  padding: 24px 14px;
+  padding: 24px 0;
   display: flex;
   flex-direction: column;
   overflow: visible;
   z-index: 10;
-  transition: padding 0.32s ease;
+
+  /* ✅ Smooth expand animation */
+  transition: width 0.32s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.admin-sidebar.is-open {
+  width: 260px;                            /* ✅ Expanded width */
+}
+
+/* Campus background */
 .admin-sidebar::after {
   content: '';
   position: absolute;
@@ -102,6 +116,7 @@
   z-index: 1;
 }
 
+/* ✅ PIN button — naka-position sa right edge */
 .admin-sidebar__pin {
   position: absolute;
   top: 26px;
@@ -132,27 +147,24 @@
   transition: transform 0.3s ease;
 }
 
-.admin-shell:has(.admin-sidebar.is-pinned) .admin-sidebar__pin-icon,
-.admin-sidebar:hover .admin-sidebar__pin-icon {
+/* ✅ Rotate arrow kapag expanded */
+.admin-sidebar.is-open .admin-sidebar__pin-icon {
   transform: rotate(180deg);
 }
+
+/* ============================================
+   BRAND
+   ============================================ */
 
 .admin-sidebar__brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 4px 24px;
+  padding: 0 18px 24px;                    /* ✅ Symmetric padding */
   border-bottom: 1px solid rgba(246, 243, 234, 0.08);
   margin-bottom: 20px;
-  justify-content: center;
-  transition: padding 0.3s ease, justify-content 0.3s ease, gap 0.3s ease;
-}
-
-.admin-sidebar:hover .admin-sidebar__brand,
-.admin-shell:has(.admin-sidebar.is-pinned) .admin-sidebar__brand {
-  padding: 0 6px 24px;
-  justify-content: flex-start;
-  gap: 12px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .admin-sidebar__logo {
@@ -174,16 +186,13 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  overflow: hidden;
   opacity: 0;
   transform: translateX(-8px);
   transition: opacity 0.24s ease, transform 0.28s ease;
   pointer-events: none;
-  white-space: nowrap;
 }
 
-.admin-sidebar:hover .admin-sidebar__brand-text,
-.admin-shell:has(.admin-sidebar.is-pinned) .admin-sidebar__brand-text {
+.admin-sidebar.is-open .admin-sidebar__brand-text {
   opacity: 1;
   transform: translateX(0);
   pointer-events: auto;
@@ -203,33 +212,33 @@
   letter-spacing: 0.02em;
 }
 
+/* ============================================
+   NAV — icons centered when collapsed
+   ============================================ */
+
 .admin-sidebar__nav {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   flex: 1;
+  padding: 0 12px;                         /* ✅ Symmetric side padding */
 }
 
 .admin-sidebar__item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 11px 0;
+  gap: 14px;
+  height: 44px;                            /* ✅ Fixed height */
+  padding: 0 14px;                         /* ✅ Left/right padding for icon */
   border-radius: 10px;
   color: #c9d3cb;
   font-size: 14px;
   font-weight: 500;
   text-decoration: none;
-  transition: background 0.15s ease, color 0.15s ease, padding 0.28s ease;
-  justify-content: center;
   overflow: hidden;
   white-space: nowrap;
-}
-
-.admin-sidebar:hover .admin-sidebar__item,
-.admin-shell:has(.admin-sidebar.is-pinned) .admin-sidebar__item {
-  justify-content: flex-start;
-  padding: 11px 14px;
+  position: relative;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .admin-sidebar__item:hover {
@@ -247,6 +256,7 @@
   color: #5ccf93;
 }
 
+/* ✅ Icon — always visible, same size */
 .admin-sidebar__icon {
   display: grid;
   place-items: center;
@@ -258,24 +268,27 @@
 }
 
 .admin-sidebar__icon svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
 }
 
+/* ✅ Label — slides in when expanded */
 .admin-sidebar__label {
   opacity: 0;
-  transform: translateX(-8px);
+  transform: translateX(-12px);
   transition: opacity 0.24s ease, transform 0.28s ease;
   pointer-events: none;
+  font-size: 14px;
 }
 
-.admin-sidebar:hover .admin-sidebar__label,
-.admin-shell:has(.admin-sidebar.is-pinned) .admin-sidebar__label {
+.admin-sidebar.is-open .admin-sidebar__label {
   opacity: 1;
   transform: translateX(0);
   pointer-events: auto;
 }
 
+/* ✅ Badge — slides in when expanded */
 .admin-sidebar__badge {
   margin-left: auto;
   min-width: 20px;
@@ -288,19 +301,36 @@
   font-weight: 800;
   display: grid;
   place-items: center;
+
   opacity: 0;
   transform: translateX(-8px);
   transition: opacity 0.24s ease, transform 0.28s ease;
 }
 
-.admin-sidebar:hover .admin-sidebar__badge,
-.admin-shell:has(.admin-sidebar.is-pinned) .admin-sidebar__badge {
+.admin-sidebar.is-open .admin-sidebar__badge {
   opacity: 1;
   transform: translateX(0);
 }
 
+/* ✅ Badge dot kapag collapsed (optional) */
+.admin-sidebar:not(.is-open) .admin-sidebar__item:has(.admin-sidebar__badge)::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d8b978;
+  border: 2px solid #0a2118;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+
 .admin-sidebar__footer {
-  padding: 20px 8px 8px;
+  padding: 20px 18px 8px;
   border-top: 1px solid rgba(246, 243, 234, 0.08);
   opacity: 0;
   transform: translateX(-8px);
@@ -309,8 +339,7 @@
   white-space: nowrap;
 }
 
-.admin-sidebar:hover .admin-sidebar__footer,
-.admin-shell:has(.admin-sidebar.is-pinned) .admin-sidebar__footer {
+.admin-sidebar.is-open .admin-sidebar__footer {
   opacity: 1;
   transform: translateX(0);
   pointer-events: auto;
@@ -331,6 +360,23 @@
   line-height: 1.5;
 }
 
+/* ============================================
+   SHELL — sidebar width management
+   ============================================ */
+
+.admin-shell {
+  display: grid;
+  grid-template-columns: 76px 1fr;         /* ✅ Collapsed default */
+  min-height: 100vh;
+  background: #fafbf9;
+  font-family: var(--admin-font-ui);
+  color: var(--admin-ink-900);
+  transition: grid-template-columns 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-shell:has(.admin-sidebar.is-open) {
+  grid-template-columns: 260px 1fr;        /* ✅ Expanded */
+}
 /* ============================================
    LAYOUT — MAIN + TOPBAR
    ============================================ */
@@ -2912,4 +2958,141 @@
   .admin-login__title {
     font-size: 24px;
   }
+}
+/* ============================================================
+   STATUS MENU — for order status adjustment
+   ============================================================ */
+
+.admin-status-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.admin-status-menu__trigger {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--admin-line);
+  background: #fff;
+  color: var(--admin-ink-500);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.admin-status-menu__trigger:hover:not(:disabled) {
+  background: var(--admin-brand-500);
+  border-color: var(--admin-brand-500);
+  color: #fff;
+}
+
+.admin-status-menu__trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-status-menu__trigger svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Dropdown */
+.admin-status-menu__dropdown {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: #fff;
+  border: 1px solid var(--admin-line);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px -8px rgba(10, 31, 21, 0.22);
+  z-index: 50;
+  overflow: hidden;
+  animation: adminStatusMenuIn 0.18s ease-out;
+  padding: 4px;
+}
+
+@keyframes adminStatusMenuIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.admin-status-menu__header {
+  padding: 8px 12px 6px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--admin-ink-400);
+}
+
+.admin-status-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--admin-ink-700);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.admin-status-menu__item:hover:not(:disabled):not(.is-current) {
+  background: var(--admin-cream-100);
+  color: var(--admin-ink-900);
+}
+
+.admin-status-menu__item.is-current {
+  background: var(--admin-brand-100);
+  color: var(--admin-brand-500);
+  cursor: default;
+}
+
+.admin-status-menu__item:disabled:not(.is-current) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Status dot indicator */
+.admin-status-menu__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.admin-status-menu__dot--pending {
+  background: var(--admin-warning);
+}
+
+.admin-status-menu__dot--processing {
+  background: var(--admin-info);
+}
+
+.admin-status-menu__dot--ready-for-pickup {
+  background: var(--admin-info);
+}
+
+.admin-status-menu__dot--completed {
+  background: var(--admin-success);
+}
+
+.admin-status-menu__dot--cancelled {
+  background: var(--admin-danger);
+}
+
+.admin-status-menu__check {
+  margin-left: auto;
+  width: 14px;
+  height: 14px;
+  color: var(--admin-brand-500);
 }

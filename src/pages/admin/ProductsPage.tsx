@@ -1,9 +1,13 @@
 // src/pages/admin/ProductsPage.tsx
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Plus } from 'lucide-react';
 import { AdminPageHeader, AdminChip, AdminModal } from '../../components/admin';
-import { getProducts, stockStateFromCount, stockLabelFromCount, updateProduct, addProduct } from '../../services/admin';
+import {
+  getProducts,
+  updateProduct,
+  addProduct,
+} from '../../services/admin';
 import type { AdminProduct } from '../../store/adminStore';
 
 const FILTERS = [
@@ -17,39 +21,99 @@ const FILTERS = [
 export default function ProductsPage() {
   const [filter, setFilter] = useState('all');
   const [refreshKey, setRefreshKey] = useState(0);
+
+  // Data state
+  const [products, setProducts] = useState<AdminProduct[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Modal state
   const [editingProduct, setEditingProduct] = useState<AdminProduct | null>(null);
   const [stockProduct, setStockProduct] = useState<AdminProduct | null>(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
 
-  const products = useMemo(() => getProducts(filter), [filter, refreshKey]);
+  /* ============================================
+     LOAD PRODUCTS (async)
+     ============================================ */
+  useEffect(() => {
+    let cancelled = false;
 
-  const handleSaveEdit = (updates: Partial<AdminProduct>) => {
-    if (!editingProduct) return;
-    updateProduct(editingProduct.id, updates);
-    setEditingProduct(null);
-    setRefreshKey((k) => k + 1);
-  };
+    async function load() {
+      setIsLoading(true);
+      try {
+        const data = await getProducts(filter);
+        if (!cancelled) setProducts(data);
+      } catch (error) {
+        console.error('[ProductsPage] Failed to load:', error);
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    }
 
-  const handleSaveStock = (stock: number) => {
-    if (!stockProduct) return;
-    updateProduct(stockProduct.id, {
-      stock,
-      stockState: stockStateFromCount(stock),
-      stockLabel: stockLabelFromCount(stock),
-    });
-    setStockProduct(null);
-    setRefreshKey((k) => k + 1);
-  };
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [filter, refreshKey]);
 
-  const handleAdd = (data: Omit<AdminProduct, 'id' | 'stockState' | 'stockLabel'>) => {
-    addProduct({
-      ...data,
-      stockState: stockStateFromCount(data.stock),
-      stockLabel: stockLabelFromCount(data.stock),
-    });
-    setIsAddOpen(false);
-    setRefreshKey((k) => k + 1);
-  };
+  /* ============================================
+     HANDLERS
+     ============================================ */
+
+  const handleSaveEdit = useCallback(
+    async (updates: Partial<AdminProduct>) => {
+      if (!editingProduct) return;
+
+      setIsSubmitting(true);
+      try {
+        await updateProduct(editingProduct.id, updates);
+        setEditingProduct(null);
+        setRefreshKey((k) => k + 1);
+      } catch (error) {
+        console.error('[ProductsPage] Failed to update product:', error);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [editingProduct]
+  );
+
+  const handleSaveStock = useCallback(
+    async (stock: number) => {
+      if (!stockProduct) return;
+
+      setIsSubmitting(true);
+      try {
+        const safeStock = Math.max(0, stock);
+        // ✅ Alisin yung stockState at stockLabel — automatic na sa service
+        await updateProduct(stockProduct.id, { stock: safeStock });
+        setStockProduct(null);
+        setRefreshKey((k) => k + 1);
+      } catch (error) {
+        console.error('[ProductsPage] Failed to update stock:', error);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [stockProduct]
+  );
+
+  const handleAdd = useCallback(
+    async (data: Omit<AdminProduct, 'id' | 'stockState' | 'stockLabel'>) => {
+      setIsSubmitting(true);
+      try {
+        // ✅ Alisin yung stockState at stockLabel — automatic na sa service
+        await addProduct(data);
+        setIsAddOpen(false);
+        setRefreshKey((k) => k + 1);
+      } catch (error) {
+        console.error('[ProductsPage] Failed to add product:', error);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    []
+  );
 
   return (
     <>
@@ -58,13 +122,17 @@ export default function ProductsPage() {
         title="Product Management"
         description="Add, edit, and manage all products in the SJCM Store."
         actions={
-          <button className="admin-btn admin-btn--primary" onClick={() => setIsAddOpen(true)}>
+          <button
+            className="admin-btn admin-btn--primary"
+            onClick={() => setIsAddOpen(true)}
+          >
             <Plus className="react-icon" />
             Add Product
           </button>
         }
       />
 
+      {/* Filters */}
       <div className="admin-filter-row">
         {FILTERS.map((f) => (
           <AdminChip
@@ -76,8 +144,11 @@ export default function ProductsPage() {
         ))}
       </div>
 
+      {/* Products grid */}
       <div className="admin-shop-grid">
-        {products.length === 0 ? (
+        {isLoading ? (
+          <p className="admin-empty">Loading products…</p>
+        ) : products.length === 0 ? (
           <p className="admin-empty">No products in this category.</p>
         ) : (
           products.map((p) => (
@@ -87,12 +158,18 @@ export default function ProductsPage() {
               </div>
               <div className="admin-shop-card__body">
                 <span className={`admin-badge admin-badge--${p.stockState}`}>
-                  {p.stockState === 'in-stock' ? 'In Stock' : p.stockState === 'low-stock' ? 'Low Stock' : 'Out of Stock'}
+                  {p.stockState === 'in-stock'
+                    ? 'In Stock'
+                    : p.stockState === 'low-stock'
+                      ? 'Low Stock'
+                      : 'Out of Stock'}
                 </span>
                 <h3 className="admin-shop-card__name">{p.name}</h3>
                 <p className="admin-shop-card__category">{p.category}</p>
                 <div className="admin-shop-card__row">
-                  <span className="admin-shop-card__price">₱ {p.price.toLocaleString()}</span>
+                  <span className="admin-shop-card__price">
+                    ₱ {p.price.toLocaleString()}
+                  </span>
                   <span className="admin-shop-card__stock">{p.stockLabel}</span>
                 </div>
                 <div className="admin-shop-card__actions">
@@ -109,14 +186,23 @@ export default function ProductsPage() {
       <AdminModal
         open={Boolean(editingProduct)}
         title="Edit Product"
-        onClose={() => setEditingProduct(null)}
+        onClose={() => !isSubmitting && setEditingProduct(null)}
         footer={
           <>
-            <button className="admin-btn admin-btn--ghost" onClick={() => setEditingProduct(null)}>Cancel</button>
+            <button
+              className="admin-btn admin-btn--ghost"
+              onClick={() => setEditingProduct(null)}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </button>
             <button
               className="admin-btn admin-btn--primary"
+              disabled={isSubmitting}
               onClick={() => {
-                const form = document.getElementById('editProductForm') as HTMLFormElement;
+                const form = document.getElementById(
+                  'editProductForm'
+                ) as HTMLFormElement;
                 if (!form) return;
                 const fd = new FormData(form);
                 handleSaveEdit({
@@ -126,7 +212,7 @@ export default function ProductsPage() {
                 });
               }}
             >
-              Save Changes
+              {isSubmitting ? 'Saving…' : 'Save Changes'}
             </button>
           </>
         }
@@ -141,12 +227,18 @@ export default function ProductsPage() {
               <div className="admin-modal__field">
                 <label>Category</label>
                 <select name="category" defaultValue={editingProduct.category}>
-                  <option>Uniforms</option><option>Shirts</option><option>ID Laces</option>
+                  <option>Uniforms</option>
+                  <option>Shirts</option>
+                  <option>ID Laces</option>
                 </select>
               </div>
               <div className="admin-modal__field">
                 <label>Price (₱)</label>
-                <input name="price" type="number" defaultValue={editingProduct.price} />
+                <input
+                  name="price"
+                  type="number"
+                  defaultValue={editingProduct.price}
+                />
               </div>
             </div>
           </form>
@@ -157,26 +249,42 @@ export default function ProductsPage() {
       <AdminModal
         open={Boolean(stockProduct)}
         title="Update Stock"
-        onClose={() => setStockProduct(null)}
+        onClose={() => !isSubmitting && setStockProduct(null)}
         footer={
           <>
-            <button className="admin-btn admin-btn--ghost" onClick={() => setStockProduct(null)}>Cancel</button>
+            <button
+              className="admin-btn admin-btn--ghost"
+              onClick={() => setStockProduct(null)}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </button>
             <button
               className="admin-btn admin-btn--primary"
+              disabled={isSubmitting}
               onClick={() => {
-                const input = document.getElementById('stockInput') as HTMLInputElement;
+                const input = document.getElementById(
+                  'stockInput'
+                ) as HTMLInputElement;
                 handleSaveStock(Math.max(0, Number(input?.value) || 0));
               }}
             >
-              Save Stock
+              {isSubmitting ? 'Saving…' : 'Save Stock'}
             </button>
           </>
         }
       >
         {stockProduct && (
           <div className="admin-modal__field">
-            <label>Stock count — <strong>{stockProduct.name}</strong></label>
-            <input id="stockInput" type="number" min="0" defaultValue={stockProduct.stock} />
+            <label>
+              Stock count — <strong>{stockProduct.name}</strong>
+            </label>
+            <input
+              id="stockInput"
+              type="number"
+              min="0"
+              defaultValue={stockProduct.stock}
+            />
           </div>
         )}
       </AdminModal>
@@ -185,14 +293,23 @@ export default function ProductsPage() {
       <AdminModal
         open={isAddOpen}
         title="Add New Product"
-        onClose={() => setIsAddOpen(false)}
+        onClose={() => !isSubmitting && setIsAddOpen(false)}
         footer={
           <>
-            <button className="admin-btn admin-btn--ghost" onClick={() => setIsAddOpen(false)}>Cancel</button>
+            <button
+              className="admin-btn admin-btn--ghost"
+              onClick={() => setIsAddOpen(false)}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </button>
             <button
               className="admin-btn admin-btn--primary"
+              disabled={isSubmitting}
               onClick={() => {
-                const form = document.getElementById('addProductForm') as HTMLFormElement;
+                const form = document.getElementById(
+                  'addProductForm'
+                ) as HTMLFormElement;
                 if (!form) return;
                 const fd = new FormData(form);
                 const name = String(fd.get('name')).trim();
@@ -207,7 +324,7 @@ export default function ProductsPage() {
                 });
               }}
             >
-              Add Product
+              {isSubmitting ? 'Adding…' : 'Add Product'}
             </button>
           </>
         }
@@ -220,7 +337,11 @@ export default function ProductsPage() {
           <div className="admin-modal__grid-2">
             <div className="admin-modal__field">
               <label>Category</label>
-              <select name="category"><option>Uniforms</option><option>Shirts</option><option>ID Laces</option></select>
+              <select name="category">
+                <option>Uniforms</option>
+                <option>Shirts</option>
+                <option>ID Laces</option>
+              </select>
             </div>
             <div className="admin-modal__field">
               <label>Price (₱)</label>

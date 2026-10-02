@@ -4,9 +4,10 @@ import { supabase } from '../lib/supabaseClient';
 import type { Notification, NotificationType } from '../types/notification';
 import { getCachedData, invalidateCache } from '../utils/cache';
 
-/**
- * Fetch notifications — with cache (2 min TTL)
- */
+/* ============================================
+   FETCH — user notifications
+   ============================================ */
+
 export async function fetchNotifications(userId: string): Promise<Notification[]> {
   return getCachedData(
     `notifications_${userId}`,
@@ -25,9 +26,13 @@ export async function fetchNotifications(userId: string): Promise<Notification[]
 
       return (data ?? []).map(mapNotificationRow);
     },
-    2 * 60 * 1000 // 2 minutes
+    2 * 60 * 1000
   );
 }
+
+/* ============================================
+   CREATE
+   ============================================ */
 
 export async function createNotification(
   userId: string,
@@ -58,7 +63,18 @@ export async function createNotification(
   invalidateCache(`notifications_${userId}`);
 }
 
+/* ============================================
+   ✅ MARK AS READ — with cache invalidation
+   ============================================ */
+
 export async function markNotificationAsRead(notificationId: string): Promise<void> {
+  // ✅ Kunin muna yung user_id
+  const { data: existing } = await supabase
+    .from('notifications')
+    .select('user_id')
+    .eq('id', notificationId)
+    .maybeSingle();
+
   const { error } = await supabase
     .from('notifications')
     .update({ read: true })
@@ -68,7 +84,16 @@ export async function markNotificationAsRead(notificationId: string): Promise<vo
     console.error('[Notifications] Failed to mark as read:', error);
     throw new Error(error.message);
   }
+
+  // ✅ Invalidate user cache
+  if (existing?.user_id) {
+    invalidateCache(`notifications_${existing.user_id}`);
+  }
 }
+
+/* ============================================
+   ✅ MARK ALL AS READ
+   ============================================ */
 
 export async function markAllNotificationsAsRead(userId: string): Promise<void> {
   const { error } = await supabase
@@ -85,7 +110,18 @@ export async function markAllNotificationsAsRead(userId: string): Promise<void> 
   invalidateCache(`notifications_${userId}`);
 }
 
+/* ============================================
+   ✅ DELETE — with cache invalidation
+   ============================================ */
+
 export async function deleteNotification(notificationId: string): Promise<void> {
+  // ✅ Kunin muna yung user_id
+  const { data: existing } = await supabase
+    .from('notifications')
+    .select('user_id')
+    .eq('id', notificationId)
+    .maybeSingle();
+
   const { error } = await supabase
     .from('notifications')
     .delete()
@@ -95,7 +131,16 @@ export async function deleteNotification(notificationId: string): Promise<void> 
     console.error('[Notifications] Failed to delete:', error);
     throw new Error(error.message);
   }
+
+  // ✅ Invalidate user cache
+  if (existing?.user_id) {
+    invalidateCache(`notifications_${existing.user_id}`);
+  }
 }
+
+/* ============================================
+   CLEAR ALL
+   ============================================ */
 
 export async function clearAllNotifications(userId: string): Promise<void> {
   const { error } = await supabase
@@ -110,6 +155,10 @@ export async function clearAllNotifications(userId: string): Promise<void> {
 
   invalidateCache(`notifications_${userId}`);
 }
+
+/* ============================================
+   MAPPER
+   ============================================ */
 
 function mapNotificationRow(row: any): Notification {
   return {

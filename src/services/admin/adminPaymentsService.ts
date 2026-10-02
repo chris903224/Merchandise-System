@@ -1,67 +1,29 @@
 // src/services/admin/adminPaymentsService.ts
 
+import { supabase } from '../../lib/supabaseClient';
 import type { AdminPayment } from '../../store/adminStore';
 
 /* ============================================
-   MOCK DATA
+   MAPPER — Supabase row → AdminPayment
    ============================================ */
 
-let PAYMENTS: AdminPayment[] = [
-  {
-    ref: 'REF-1002938481',
-    customer: 'Juan Dela Cruz',
-    method: 'GCash',
-    account: '0917 555 0123',
-    amount: 1000,
-    status: 'Verified',
-    date: 'Sep 21, 10:42 AM',
-  },
-  {
-    ref: 'REF-1002938482',
-    customer: 'Maria Santos',
-    method: 'GCash',
-    account: '0917 555 0456',
-    amount: 700,
-    status: 'Pending',
-    date: 'Sep 21, 09:18 AM',
-  },
-  {
-    ref: 'REF-1002938483',
-    customer: 'Ralph Mendoza',
-    method: 'OTC',
-    account: '—',
-    amount: 240,
-    status: 'Verified',
-    date: 'Sep 20, 04:27 PM',
-  },
-  {
-    ref: 'REF-1002938484',
-    customer: 'Angela Reyes',
-    method: 'GCash',
-    account: '0917 555 0321',
-    amount: 300,
-    status: 'Verified',
-    date: 'Sep 20, 01:12 PM',
-  },
-  {
-    ref: 'REF-1002938485',
-    customer: 'Lance Cruz',
-    method: 'Bank',
-    account: '0045 6789 1234',
-    amount: 500,
-    status: 'Refunded',
-    date: 'Sep 20, 11:03 AM',
-  },
-  {
-    ref: 'REF-1002938486',
-    customer: 'Bea Aquino',
-    method: 'GCash',
-    account: '0917 555 0999',
-    amount: 1000,
-    status: 'Pending',
-    date: 'Sep 19, 08:14 PM',
-  },
-];
+function mapPaymentRow(row: any): AdminPayment {
+  return {
+    ref: row.ref,
+    customer: row.customer,
+    method: row.method as AdminPayment['method'],
+    account: row.account ?? '—',
+    amount: Number(row.amount),
+    status: row.status as AdminPayment['status'],
+    date: new Date(row.created_at).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+    }),
+    orderId: row.order_id ?? undefined,
+  };
+}
 
 /* ============================================
    READ
@@ -69,49 +31,104 @@ let PAYMENTS: AdminPayment[] = [
 
 /**
  * Get all payments, optionally filtered by status.
- * @param filter 'all' | 'Pending' | 'Verified' | 'Refunded'
+ * @param filter 'all' | 'Pending' | 'Verified' | 'Paid' | 'Refunded'
  */
-export function getPayments(filter: string = 'all'): AdminPayment[] {
-  if (filter === 'all') return [...PAYMENTS];
-  return PAYMENTS.filter((p) => p.status === filter);
+export async function getPayments(filter: string = 'all'): Promise<AdminPayment[]> {
+  let query = supabase
+    .from('payments')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (filter !== 'all') {
+    query = query.eq('status', filter);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error('[Payments] Failed to fetch:', error);
+    return [];
+  }
+
+  return (data ?? []).map(mapPaymentRow);
 }
 
-export function getAllPayments(): AdminPayment[] {
-  return [...PAYMENTS];
+export async function getAllPayments(): Promise<AdminPayment[]> {
+  const { data, error } = await supabase
+    .from('payments')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('[Payments] Failed to fetch all:', error);
+    return [];
+  }
+
+  return (data ?? []).map(mapPaymentRow);
 }
 
 /**
  * Find a single payment by reference number.
  * Used by AdminPaymentDetailModal.
  */
-export function getPaymentByRef(ref: string): AdminPayment | undefined {
-  return PAYMENTS.find((p) => p.ref === ref);
+export async function getPaymentByRef(ref: string): Promise<AdminPayment | undefined> {
+  const { data, error } = await supabase
+    .from('payments')
+    .select('*')
+    .eq('ref', ref)
+    .maybeSingle();
+
+  if (error) {
+    console.error('[Payments] Failed to fetch by ref:', error);
+    return undefined;
+  }
+
+  return data ? mapPaymentRow(data) : undefined;
 }
 
 /**
- * Aggregated summary for the Payment Management page cards.
+ * Aggregated summary — GCash vs COD breakdown.
  */
-export function getPaymentSummary() {
-  const sumBy = (status: AdminPayment['status']) =>
-    PAYMENTS.filter((p) => p.status === status).reduce(
-      (sum, p) => sum + p.amount,
-      0
-    );
+export async function getPaymentSummary() {
+  const { data, error } = await supabase
+    .from('payments')
+    .select('amount, status, method');
 
-  const countBy = (status: AdminPayment['status']) =>
-    PAYMENTS.filter((p) => p.status === status).length;
+  if (error) {
+    console.error('[Payments] Failed to fetch summary:', error);
+    return {
+      verified: 0,
+      verifiedCount: 0,
+      pending: 0,
+      pendingCount: 0,
+      cod: 0,
+      codCount: 0,
+      refunded: 0,
+      refundedCount: 0,
+    };
+  }
 
-  const otcPayments = PAYMENTS.filter((p) => p.method === 'OTC');
+  const rows = data ?? [];
+
+  const sumBy = (status: string) =>
+    rows
+      .filter((r) => r.status === status)
+      .reduce((sum, r) => sum + Number(r.amount), 0);
+
+  const countBy = (status: string) =>
+    rows.filter((r) => r.status === status).length;
+
+  const codRows = rows.filter((r) => r.method === 'COD');
 
   return {
     verified: sumBy('Verified'),
     verifiedCount: countBy('Verified'),
     pending: sumBy('Pending'),
     pendingCount: countBy('Pending'),
+    cod: codRows.reduce((sum, r) => sum + Number(r.amount), 0),
+    codCount: codRows.length,
     refunded: sumBy('Refunded'),
     refundedCount: countBy('Refunded'),
-    otc: otcPayments.reduce((sum, p) => sum + p.amount, 0),
-    otcCount: otcPayments.length,
   };
 }
 
@@ -120,41 +137,83 @@ export function getPaymentSummary() {
    ============================================ */
 
 /**
- * Update a payment's status. Returns the updated record, or null if not found.
+ * Update a payment's status. Returns updated record, or null if not found.
  */
-export function setPaymentStatus(
+export async function setPaymentStatus(
   ref: string,
   status: AdminPayment['status']
-): AdminPayment | null {
-  const payment = PAYMENTS.find((p) => p.ref === ref);
-  if (!payment) return null;
-  payment.status = status;
-  return payment;
+): Promise<AdminPayment | null> {
+  const { data, error } = await supabase
+    .from('payments')
+    .update({
+      status,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('ref', ref)
+    .select()
+    .maybeSingle();
+
+  if (error) {
+    console.error('[Payments] Failed to update:', error);
+    throw new Error(error.message);
+  }
+
+  return data ? mapPaymentRow(data) : null;
 }
 
-/** Shorthand: mark payment as verified */
-export function verifyPayment(ref: string): AdminPayment | null {
+/** Shorthand: mark GCash payment as verified */
+export async function verifyPayment(ref: string): Promise<AdminPayment | null> {
   return setPaymentStatus(ref, 'Verified');
 }
 
 /** Shorthand: mark payment as refunded/rejected */
-export function rejectPayment(ref: string): AdminPayment | null {
+export async function rejectPayment(ref: string): Promise<AdminPayment | null> {
   return setPaymentStatus(ref, 'Refunded');
 }
 
+/** Shorthand: mark COD payment as paid */
+export async function markCodAsPaid(ref: string): Promise<AdminPayment | null> {
+  return setPaymentStatus(ref, 'Paid');
+}
+
 /**
- * Add a new payment (e.g., from user submission).
+ * Add a new payment (e.g., from user checkout submission).
  */
-export function addPayment(payment: AdminPayment): AdminPayment {
-  PAYMENTS = [payment, ...PAYMENTS];
-  return payment;
+export async function addPayment(payment: AdminPayment): Promise<AdminPayment> {
+  const { data, error } = await supabase
+    .from('payments')
+    .insert([
+      {
+        ref: payment.ref,
+        customer: payment.customer,
+        method: payment.method,
+        account: payment.account === '—' ? null : payment.account,
+        amount: payment.amount,
+        status: payment.status,
+        order_id: payment.orderId ?? null,
+      },
+    ])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('[Payments] Failed to add:', error);
+    throw new Error(error.message);
+  }
+
+  return mapPaymentRow(data);
 }
 
 /**
  * Delete a payment by reference.
  */
-export function deletePayment(ref: string): boolean {
-  const before = PAYMENTS.length;
-  PAYMENTS = PAYMENTS.filter((p) => p.ref !== ref);
-  return PAYMENTS.length < before;
+export async function deletePayment(ref: string): Promise<boolean> {
+  const { error } = await supabase.from('payments').delete().eq('ref', ref);
+
+  if (error) {
+    console.error('[Payments] Failed to delete:', error);
+    return false;
+  }
+
+  return true;
 }
