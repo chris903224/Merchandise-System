@@ -1,24 +1,59 @@
 // src/pages/OrderDetailsPage.tsx
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
-  AlertCircle, ArrowLeft, MapPin, Printer, Package, Home, Store,
-  BookOpen, ShoppingCart, User, Shield, ChevronRight, Clock, Check,
-  Mail, CreditCard, Calendar, Building2, GraduationCap, LifeBuoy,
-  Menu, X, Pencil,
+  AlertCircle,
+  ArrowLeft,
+  MapPin,
+  Printer,
+  Package,
+  Home,
+  Store,
+  BookOpen,
+  ShoppingCart,
+  User,
+  Shield,
+  ChevronRight,
+  Clock,
+  Check,
+  Mail,
+  CreditCard,
+  Calendar,
+  Building2,
+  GraduationCap,
+  LifeBuoy,
+  Menu,
+  X,
+  Pencil,
+  DoorOpen,
+  Lock,
+  Phone,
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
 import ProductImage from '../components/ProductImage';
+import { supabase } from '../lib/supabaseClient';
+import { COURSE_OPTIONS, YEAR_LEVELS, getCourseLabel } from '../data/constants';
 import {
-  formatDate, formatPrice, getOrderCustomerName, getOrderDate,
-  getOrderEmail, getOrderId, getOrderStatus, getOrderStatusBadge,
-  getOrderStudentId, getOrderTotal,
+  formatDateTime,
+  formatPrice,
+  getOrderCustomerName,
+  getOrderDate,
+  getOrderEmail,
+  getOrderId,
+  getOrderStatus,
+  getOrderStatusBadge,
+  getOrderStudentId,
+  getOrderTotal,
 } from '../services';
 import { fetchOrders } from '../services/orders';
 import { fetchProducts } from '../services/products';
 import type { Order, Product } from '../types';
+
+/* ============================================
+   SIDE NAV ITEMS
+   ============================================ */
 
 const sideNavItems = [
   { to: '/', label: 'Home', icon: Home, end: true },
@@ -29,35 +64,151 @@ const sideNavItems = [
   { to: '/settings', label: 'Settings', icon: Shield },
 ];
 
+/* ============================================
+   SIDEBAR COMPONENT
+   ============================================ */
+
+interface SidebarProps {
+  isSidebarOpen: boolean;
+  isSidebarPinned: boolean;
+  onTogglePin: () => void;
+  onCloseSidebar: () => void;
+  sidebarRef: RefObject<HTMLElement | null>;
+  hoverZoneRef: RefObject<HTMLDivElement | null>;
+}
+
+function Sidebar({
+  isSidebarOpen,
+  isSidebarPinned,
+  onTogglePin,
+  onCloseSidebar,
+  sidebarRef,
+  hoverZoneRef,
+}: SidebarProps) {
+  return (
+    <>
+      <div ref={hoverZoneRef} className="order-hover-zone" aria-hidden="true" />
+      <aside
+        ref={sidebarRef}
+        className={`order-sidebar-nav ${isSidebarOpen ? 'is-open' : ''}`}
+      >
+        <div className="order-sidebar-nav__top">
+          <button
+            type="button"
+            className="order-sidebar-nav__pin"
+            onClick={onTogglePin}
+            aria-label={isSidebarPinned ? 'Unpin sidebar' : 'Pin sidebar'}
+          >
+            {isSidebarPinned ? (
+              <X className="react-icon" />
+            ) : (
+              <ChevronRight className="react-icon" />
+            )}
+          </button>
+
+          <Link
+            to="/"
+            className="order-sidebar-nav__brand"
+            onClick={onCloseSidebar}
+          >
+            <span className="order-sidebar-nav__brand-mark">SJ</span>
+            <span className="order-sidebar-nav__brand-copy">
+              <span className="order-sidebar-nav__brand-name">SJCM STORE</span>
+              <span className="order-sidebar-nav__brand-tag">
+                Official School Merchandise
+              </span>
+            </span>
+          </Link>
+
+          <nav className="order-sidebar-nav__list">
+            {sideNavItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = item.active || item.to === '/dashboard';
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={`order-sidebar-nav__item ${isActive ? 'is-active' : ''}`}
+                  onClick={onCloseSidebar}
+                  data-label={item.label}
+                >
+                  <Icon className="react-icon" aria-hidden="true" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        <div className="order-sidebar-nav__bottom">
+          <p className="order-sidebar-nav__brand-label">SJCM STORE</p>
+          <p className="order-sidebar-nav__brand-quote">
+            "Wear your
+            <br />
+            Saint Jude Pride"
+          </p>
+        </div>
+      </aside>
+
+      {isSidebarOpen && (
+        <div
+          className="order-backdrop"
+          onClick={onCloseSidebar}
+          aria-hidden="true"
+        />
+      )}
+    </>
+  );
+}
+
+/* ============================================
+   ORDER DETAILS PAGE
+   ============================================ */
+
 export default function OrderDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const toast = useToast();
-  const { session } = useApp();
+  const { session, signIn } = useApp();
+
   const [order, setOrder] = useState<Order | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarPinned, setIsSidebarPinned] = useState(false);
 
+  /* ✅ Edit modal state */
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [editCourse, setEditCourse] = useState('');
+  const [editYearLevel, setEditYearLevel] = useState('');
+  const [editDateOfBirth, setEditDateOfBirth] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+
   const sidebarRef = useRef<HTMLElement>(null);
   const hoverZoneRef = useRef<HTMLDivElement>(null);
   const closeTimerRef = useRef<number | null>(null);
 
+  /* Redirect kapag walang session */
   useEffect(() => {
     if (!session) {
       toast('Please sign in to view order details.', 'warning');
-      const timer = window.setTimeout(() => navigate('/login', { replace: true }), 500);
+      const timer = window.setTimeout(
+        () => navigate('/login', { replace: true }),
+        500
+      );
       return () => window.clearTimeout(timer);
     }
   }, [session, navigate, toast]);
 
+  /* Load order + products */
   useEffect(() => {
     if (!session || !id) {
       setIsLoading(false);
       return;
     }
     let cancelled = false;
+
     const loadData = async () => {
       setIsLoading(true);
       const [ordersData, productsData] = await Promise.all([
@@ -73,13 +224,18 @@ export default function OrderDetailsPage() {
         setIsLoading(false);
       }
     };
+
     loadData();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [session, id]);
 
+  /* Hover-to-open sidebar */
   useEffect(() => {
     const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
     if (!isDesktop()) return;
+
     const openSidebar = () => {
       if (closeTimerRef.current) {
         window.clearTimeout(closeTimerRef.current);
@@ -87,18 +243,25 @@ export default function OrderDetailsPage() {
       }
       setIsSidebarOpen(true);
     };
+
     const scheduleClose = () => {
       if (isSidebarPinned) return;
       if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
-      closeTimerRef.current = window.setTimeout(() => setIsSidebarOpen(false), 150);
+      closeTimerRef.current = window.setTimeout(
+        () => setIsSidebarOpen(false),
+        150
+      );
     };
+
     const zone = hoverZoneRef.current;
     const sidebar = sidebarRef.current;
     if (!zone || !sidebar) return;
+
     zone.addEventListener('mouseenter', openSidebar);
     sidebar.addEventListener('mouseenter', openSidebar);
     sidebar.addEventListener('mouseleave', scheduleClose);
     zone.addEventListener('mouseleave', scheduleClose);
+
     return () => {
       zone.removeEventListener('mouseenter', openSidebar);
       sidebar.removeEventListener('mouseenter', openSidebar);
@@ -108,68 +271,97 @@ export default function OrderDetailsPage() {
     };
   }, [isSidebarPinned, session]);
 
+  /* Populate edit form kapag binuksan yung modal */
+  useEffect(() => {
+    if (isEditModalOpen && session) {
+      setEditCourse((session as any)?.course || '');
+      setEditYearLevel((session as any)?.yearLevel || '');
+      setEditDateOfBirth((session as any)?.dateOfBirth || '');
+      setEditPhone((session as any)?.phone || '');
+    }
+  }, [isEditModalOpen, session]);
+
+  /* Close modal on Escape + lock body scroll */
+  useEffect(() => {
+    if (!isEditModalOpen) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsEditModalOpen(false);
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = '';
+    };
+  }, [isEditModalOpen]);
+
+  /* ✅ Save profile — kasama phone na */
+  const handleSaveProfile = async () => {
+    if (!session?.id) return;
+
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          course_strand: editCourse || null,
+          year_level: editYearLevel || null,
+          date_of_birth: editDateOfBirth || null,
+          phone: editPhone || null,
+        })
+        .eq('id', session.id);
+
+      if (error) throw error;
+
+      const updatedSession = {
+        ...session,
+        course: editCourse,
+        yearLevel: editYearLevel,
+        dateOfBirth: editDateOfBirth,
+        phone: editPhone,
+      } as any;
+
+      signIn(updatedSession);
+
+      toast('Profile updated successfully!', 'success');
+      setIsEditModalOpen(false);
+    } catch (error: any) {
+      console.error('[OrderDetails] Failed to save profile:', error);
+      toast(error?.message || 'Failed to save profile', 'danger');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   if (!session) return null;
 
   const getInitials = () => {
     const name = session.name || '';
-    return name.split(' ').filter(Boolean).slice(0, 2)
-      .map((p) => p[0]?.toUpperCase()).join('') || 'U';
+    return (
+      name
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((p) => p[0]?.toUpperCase())
+        .join('') || 'U'
+    );
   };
 
-  const Sidebar = () => (
-    <>
-      <div ref={hoverZoneRef} className="order-hover-zone" aria-hidden="true" />
-      <aside ref={sidebarRef} className={`order-sidebar-nav ${isSidebarOpen ? 'is-open' : ''}`}>
-        <div className="order-sidebar-nav__top">
-          <button
-            type="button"
-            className="order-sidebar-nav__pin"
-            onClick={() => setIsSidebarPinned((p) => !p)}
-            aria-label={isSidebarPinned ? 'Unpin sidebar' : 'Pin sidebar'}
-          >
-            {isSidebarPinned ? <X className="react-icon" /> : <ChevronRight className="react-icon" />}
-          </button>
-          <Link to="/" className="order-sidebar-nav__brand" onClick={() => setIsSidebarOpen(false)}>
-            <span className="order-sidebar-nav__brand-mark">SJ</span>
-            <span className="order-sidebar-nav__brand-copy">
-              <span className="order-sidebar-nav__brand-name">SJCM STORE</span>
-              <span className="order-sidebar-nav__brand-tag">Official School Merchandise</span>
-            </span>
-          </Link>
-          <nav className="order-sidebar-nav__list">
-            {sideNavItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = item.active || item.to === '/dashboard';
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className={`order-sidebar-nav__item ${isActive ? 'is-active' : ''}`}
-                  onClick={() => setIsSidebarOpen(false)}
-                  data-label={item.label}
-                >
-                  <Icon className="react-icon" aria-hidden="true" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-        <div className="order-sidebar-nav__bottom">
-          <p className="order-sidebar-nav__brand-label">SJCM STORE</p>
-          <p className="order-sidebar-nav__brand-quote">"Wear your<br />Saint Jude Pride"</p>
-        </div>
-      </aside>
-      {isSidebarOpen && (
-        <div className="order-backdrop" onClick={() => setIsSidebarOpen(false)} aria-hidden="true" />
-      )}
-    </>
-  );
-
+  /* Loading state */
   if (isLoading) {
     return (
       <div className={`order-page ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
-        <Sidebar />
+        <Sidebar
+          isSidebarOpen={isSidebarOpen}
+          isSidebarPinned={isSidebarPinned}
+          onTogglePin={() => setIsSidebarPinned((p) => !p)}
+          onCloseSidebar={() => setIsSidebarOpen(false)}
+          sidebarRef={sidebarRef}
+          hoverZoneRef={hoverZoneRef}
+        />
         <div className="order-main-wrap">
           <main className="order-container">
             <Link to="/dashboard" className="order-back">
@@ -186,10 +378,18 @@ export default function OrderDetailsPage() {
     );
   }
 
+  /* Not found state */
   if (!order) {
     return (
       <div className={`order-page ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
-        <Sidebar />
+        <Sidebar
+          isSidebarOpen={isSidebarOpen}
+          isSidebarPinned={isSidebarPinned}
+          onTogglePin={() => setIsSidebarPinned((p) => !p)}
+          onCloseSidebar={() => setIsSidebarOpen(false)}
+          sidebarRef={sidebarRef}
+          hoverZoneRef={hoverZoneRef}
+        />
         <div className="order-main-wrap">
           <main className="order-container">
             <Link to="/dashboard" className="order-back">
@@ -200,7 +400,8 @@ export default function OrderDetailsPage() {
               <AlertCircle className="react-icon" aria-hidden="true" />
               <h2 className="order-not-found__title">Order not found</h2>
               <p className="order-not-found__description">
-                The specified reservation does not exist or is not part of your account.
+                The specified reservation does not exist or is not part of your
+                account.
               </p>
               <Link to="/dashboard" className="button button--primary">
                 Return to My Orders
@@ -212,9 +413,13 @@ export default function OrderDetailsPage() {
     );
   }
 
+  /* Data preparation */
   const badge = getOrderStatusBadge(getOrderStatus(order));
   const items = order.items ?? [];
-  const totalItems = items.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
+  const totalItems = items.reduce(
+    (sum, item) => sum + (Number(item.qty) || 0),
+    0
+  );
   const status = getOrderStatus(order);
 
   const steps = [
@@ -226,9 +431,21 @@ export default function OrderDetailsPage() {
   const statusOrder = ['Pending', 'Processing', 'Ready for Pickup', 'Claimed'];
   const currentIndex = Math.max(0, statusOrder.indexOf(status));
 
+  /* Dynamic pickup location */
+  const locationParts = (order.claimLocation || '').split(' — ');
+  const pickupBuilding = locationParts[0]?.trim() || 'SJCM Main Campus';
+  const pickupRoom = locationParts[1]?.trim() || 'Supply Office';
+
   return (
     <div className={`order-page ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
-      <Sidebar />
+      <Sidebar
+        isSidebarOpen={isSidebarOpen}
+        isSidebarPinned={isSidebarPinned}
+        onTogglePin={() => setIsSidebarPinned((p) => !p)}
+        onCloseSidebar={() => setIsSidebarOpen(false)}
+        sidebarRef={sidebarRef}
+        hoverZoneRef={hoverZoneRef}
+      />
 
       <div className="order-main-wrap">
         <button
@@ -237,7 +454,11 @@ export default function OrderDetailsPage() {
           aria-label="Toggle navigation"
           onClick={() => setIsSidebarOpen((p) => !p)}
         >
-          {isSidebarOpen ? <X className="react-icon" /> : <Menu className="react-icon" />}
+          {isSidebarOpen ? (
+            <X className="react-icon" />
+          ) : (
+            <Menu className="react-icon" />
+          )}
         </button>
 
         <main className="order-container">
@@ -247,9 +468,7 @@ export default function OrderDetailsPage() {
           </Link>
 
           <div className="od-layout">
-            {/* ============================================
-                LEFT COLUMN
-                ============================================ */}
+            {/* LEFT COLUMN */}
             <div className="od-main">
               {/* HERO */}
               <section className="od-hero">
@@ -261,7 +480,7 @@ export default function OrderDetailsPage() {
                   </span>
                   <h1 className="od-hero__id">{getOrderId(order)}</h1>
                   <p className="od-hero__date">
-                    Placed on {formatDate(getOrderDate(order))} · 8:24 AM
+                    Placed on {formatDateTime(getOrderDate(order))}
                   </p>
                 </div>
                 <button
@@ -311,17 +530,25 @@ export default function OrderDetailsPage() {
                           <p className="od-item__meta">
                             {item.size && <>Size: {item.size}</>}
                             {item.size && item.organization && <> · </>}
-                            {item.organization && <>Color: <strong>Maroon</strong></>}
+                            {item.organization && (
+                              <>
+                                Color: <strong>Maroon</strong>
+                              </>
+                            )}
                           </p>
                         </div>
 
                         <div className="od-item__qty">
                           <span className="od-item__qty-label">Qty</span>
-                          <span className="od-item__qty-value">{Number(item.qty) || 0}</span>
+                          <span className="od-item__qty-value">
+                            {Number(item.qty) || 0}
+                          </span>
                         </div>
 
                         <div className="od-item__price">
-                          {formatPrice((Number(item.price) || 0) * (Number(item.qty) || 0))}
+                          {formatPrice(
+                            (Number(item.price) || 0) * (Number(item.qty) || 0)
+                          )}
                         </div>
                       </li>
                     );
@@ -334,7 +561,9 @@ export default function OrderDetailsPage() {
                       <Package className="react-icon" aria-hidden="true" />
                       Total Items
                     </span>
-                    <strong className="od-items-footer__value">{totalItems}</strong>
+                    <strong className="od-items-footer__value">
+                      {totalItems}
+                    </strong>
                   </div>
                   <div className="od-items-footer__right">
                     <span className="od-items-footer__label">Order Total</span>
@@ -360,16 +589,40 @@ export default function OrderDetailsPage() {
                       <Building2 className="react-icon" aria-hidden="true" />
                     </span>
                     <div className="od-pickup__location-info">
-                      <p className="od-pickup__location-title">SJCM Main Campus</p>
-                      <p className="od-pickup__location-text">Finance &amp; Property Office</p>
-                      <p className="od-pickup__location-text">Monday – Friday · 8:00 AM – 4:00 PM</p>
+                      <p className="od-pickup__location-label">Building</p>
+                      <p className="od-pickup__location-title">
+                        {pickupBuilding}
+                      </p>
+
+                      <p className="od-pickup__location-label">
+                        Room / Office
+                      </p>
+                      <p className="od-pickup__location-text">
+                        <DoorOpen
+                          className="react-icon"
+                          aria-hidden="true"
+                          style={{
+                            width: 14,
+                            height: 14,
+                            display: 'inline-block',
+                            verticalAlign: 'middle',
+                            marginRight: 6,
+                          }}
+                        />
+                        {pickupRoom}
+                      </p>
+
+                      <p className="od-pickup__location-label">Hours</p>
+                      <p className="od-pickup__location-text">
+                        Monday – Friday · 8:00 AM – 4:00 PM
+                      </p>
                     </div>
                   </div>
                   <div className="od-pickup__note">
                     <Shield className="react-icon" aria-hidden="true" />
                     <span>
-                      Please present this receipt together with your Student ID at the
-                      campus merchandise counter.
+                      Please present this receipt together with your Student ID
+                      at the campus merchandise counter.
                     </span>
                   </div>
                 </div>
@@ -382,7 +635,11 @@ export default function OrderDetailsPage() {
                     <User className="react-icon" aria-hidden="true" />
                   </span>
                   <h2 className="od-card__head-title">Customer Information</h2>
-                  <button type="button" className="od-card__edit">
+                  <button
+                    type="button"
+                    className="od-card__edit"
+                    onClick={() => setIsEditModalOpen(true)}
+                  >
                     <Pencil className="react-icon" aria-hidden="true" />
                     <span>Edit</span>
                   </button>
@@ -394,14 +651,16 @@ export default function OrderDetailsPage() {
                       {session.profilePicture ? (
                         <img src={session.profilePicture} alt={session.name} />
                       ) : (
-                        <span className="od-customer__initials">{getInitials()}</span>
+                        <span className="od-customer__initials">
+                          {getInitials()}
+                        </span>
                       )}
                     </span>
                     <div className="od-customer__info">
-                      <p className="od-customer__name">{getOrderCustomerName(order)}</p>
-                      <p className="od-customer__meta">
-                        {session.role} · BS Information Technology
+                      <p className="od-customer__name">
+                        {getOrderCustomerName(order)}
                       </p>
+                      <p className="od-customer__meta">{session.role}</p>
                       <p className="od-customer__meta">
                         ID Number: {getOrderStudentId(order) || '—'}
                       </p>
@@ -414,35 +673,53 @@ export default function OrderDetailsPage() {
                   <ul className="od-customer__details">
                     <li>
                       <span className="od-customer__details-label">
-                        <GraduationCap className="react-icon" aria-hidden="true" />
+                        <GraduationCap
+                          className="react-icon"
+                          aria-hidden="true"
+                        />
                         Year Level
                       </span>
-                      <span className="od-customer__details-value">2nd Year</span>
+                      <span className="od-customer__details-value">
+                        {(session as any).yearLevel || '—'}
+                      </span>
                     </li>
                     <li>
                       <span className="od-customer__details-label">
                         <BookOpen className="react-icon" aria-hidden="true" />
                         Course / Strand
                       </span>
-                      <span className="od-customer__details-value">BS Information Technology</span>
+                      <span className="od-customer__details-value">
+                        {(session as any).course
+                          ? getCourseLabel((session as any).course)
+                          : '—'}
+                      </span>
                     </li>
                     <li>
                       <span className="od-customer__details-label">
                         <Calendar className="react-icon" aria-hidden="true" />
                         Date of Birth
                       </span>
-                      <span className="od-customer__details-value">—</span>
+                      <span className="od-customer__details-value">
+                        {(session as any).dateOfBirth || '—'}
+                      </span>
+                    </li>
+                    {/* ✅ BAGO — Contact Number */}
+                    <li>
+                      <span className="od-customer__details-label">
+                        <Phone className="react-icon" aria-hidden="true" />
+                        Contact Number
+                      </span>
+                      <span className="od-customer__details-value">
+                        {(session as any).phone || '—'}
+                      </span>
                     </li>
                   </ul>
                 </div>
               </section>
             </div>
 
-            {/* ============================================
-                RIGHT RAIL
-                ============================================ */}
+            {/* RIGHT RAIL */}
             <aside className="od-rail">
-              {/* SUMMARY */}
               <section className="od-rail-card">
                 <h2 className="od-rail-card__title">
                   <CreditCard className="react-icon" aria-hidden="true" />
@@ -464,7 +741,6 @@ export default function OrderDetailsPage() {
                 </div>
               </section>
 
-              {/* STATUS */}
               <section className="od-rail-card">
                 <h2 className="od-rail-card__title">
                   <Clock className="react-icon" aria-hidden="true" />
@@ -477,17 +753,21 @@ export default function OrderDetailsPage() {
                     return (
                       <li
                         key={step.key}
-                        className={`od-timeline__step ${isDone ? 'is-done' : ''} ${isActive ? 'is-active' : ''}`}
+                        className={`od-timeline__step ${isDone ? 'is-done' : ''} ${
+                          isActive ? 'is-active' : ''
+                        }`}
                       >
                         <span className="od-timeline__marker">
-                          {isDone ? <Check className="react-icon" aria-hidden="true" /> : null}
+                          {isDone ? (
+                            <Check className="react-icon" aria-hidden="true" />
+                          ) : null}
                         </span>
                         <div className="od-timeline__content">
                           <p className="od-timeline__label">{step.label}</p>
                           <p className="od-timeline__desc">{step.desc}</p>
                           {isActive && (
                             <p className="od-timeline__time">
-                              {formatDate(getOrderDate(order))} · 8:24 AM
+                              {formatDateTime(getOrderDate(order))}
                             </p>
                           )}
                         </div>
@@ -497,7 +777,6 @@ export default function OrderDetailsPage() {
                 </ol>
               </section>
 
-              {/* HELP */}
               <section className="od-rail-card">
                 <h2 className="od-rail-card__title">
                   <LifeBuoy className="react-icon" aria-hidden="true" />
@@ -506,7 +785,10 @@ export default function OrderDetailsPage() {
                 <p className="od-rail-card__text">
                   Have questions about your order? We're here to help.
                 </p>
-                <a href="mailto:suppliesjc@gmail.com" className="od-rail-card__cta">
+                <a
+                  href="mailto:suppliesjc@gmail.com"
+                  className="od-rail-card__cta"
+                >
                   <Mail className="react-icon" aria-hidden="true" />
                   <span>Contact Support</span>
                   <ChevronRight className="react-icon" aria-hidden="true" />
@@ -516,6 +798,152 @@ export default function OrderDetailsPage() {
           </div>
         </main>
       </div>
+
+      {/* ============================================
+          EDIT PROFILE MODAL
+          ============================================ */}
+      {isEditModalOpen && (
+        <div
+          className="od-modal-backdrop"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isSaving)
+              setIsEditModalOpen(false);
+          }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Edit profile"
+        >
+          <div className="od-modal">
+            {/* Header */}
+            <div className="od-modal__header">
+              <div className="od-modal__header-copy">
+                <span className="od-modal__header-icon">
+                  <Pencil className="react-icon" aria-hidden="true" />
+                </span>
+                <div>
+                  <h2 className="od-modal__title">Edit Profile</h2>
+                  <p className="od-modal__subtitle">
+                    Update your personal information
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="od-modal__close"
+                onClick={() => setIsEditModalOpen(false)}
+                disabled={isSaving}
+                aria-label="Close"
+              >
+                <X className="react-icon" aria-hidden="true" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="od-modal__body">
+              <div className="od-modal__locked-info">
+                <Lock className="react-icon" aria-hidden="true" />
+                <span>
+                  Full Name, Student ID, and Email are locked. Contact support
+                  to change them.
+                </span>
+              </div>
+
+              {/* Phone Number */}
+              <div className="field">
+                <label className="field__label" htmlFor="edit-phone">
+                  Phone Number
+                </label>
+                <input
+                  id="edit-phone"
+                  className="field__input"
+                  type="tel"
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                  placeholder="09XX XXX XXXX"
+                  disabled={isSaving}
+                />
+              </div>
+
+              {/* Course / Strand — DROPDOWN */}
+              <div className="field">
+                <label className="field__label" htmlFor="edit-course">
+                  Course / Strand
+                </label>
+                <select
+                  id="edit-course"
+                  className="field__input"
+                  value={editCourse}
+                  onChange={(e) => setEditCourse(e.target.value)}
+                  disabled={isSaving}
+                >
+                  <option value="">Select course / strand</option>
+                  {COURSE_OPTIONS.map((course) => (
+                    <option key={course.value} value={course.value}>
+                      {course.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Year Level — DROPDOWN */}
+              <div className="field">
+                <label className="field__label" htmlFor="edit-year">
+                  Year Level
+                </label>
+                <select
+                  id="edit-year"
+                  className="field__input"
+                  value={editYearLevel}
+                  onChange={(e) => setEditYearLevel(e.target.value)}
+                  disabled={isSaving}
+                >
+                  <option value="">Select year level</option>
+                  {YEAR_LEVELS.map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Date of Birth */}
+              <div className="field">
+                <label className="field__label" htmlFor="edit-dob">
+                  Date of Birth
+                </label>
+                <input
+                  id="edit-dob"
+                  className="field__input"
+                  type="date"
+                  value={editDateOfBirth}
+                  onChange={(e) => setEditDateOfBirth(e.target.value)}
+                  disabled={isSaving}
+                />
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="od-modal__footer">
+              <button
+                type="button"
+                className="button button--secondary"
+                onClick={() => setIsEditModalOpen(false)}
+                disabled={isSaving}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="button button--primary"
+                onClick={handleSaveProfile}
+                disabled={isSaving}
+              >
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

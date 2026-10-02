@@ -3,9 +3,30 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  User, Mail, Phone, Camera, ImagePlus, ShieldCheck, CircleCheck, Pencil,
-  LifeBuoy, ChevronRight, Clock, MapPin, Home, GraduationCap, Calendar,
-  CalendarRange, Package, Lock, Building2, Menu, X, Store, ShoppingCart, Shield,
+  User,
+  Mail,
+  Phone,
+  Camera,
+  ImagePlus,
+  ShieldCheck,
+  CircleCheck,
+  Pencil,
+  LifeBuoy,
+  ChevronRight,
+  Clock,
+  MapPin,
+  Home,
+  GraduationCap,
+  Calendar,
+  CalendarRange,
+  Package,
+  Lock,
+  Building2,
+  Menu,
+  X,
+  Store,
+  ShoppingCart,
+  Shield,
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
@@ -14,8 +35,9 @@ import {
   uploadAvatar,
   uploadCover,
   fetchProfileImages,
-  fetchUserProfile,   // ✅ IDAGDAG
+  fetchUserProfile,
 } from '../data/storage';
+import { getCourseLabel } from '../data/constants';
 import './ProfilePage.css';
 
 type ProfileTab = 'info' | 'security' | 'school';
@@ -63,44 +85,56 @@ export default function ProfilePage() {
   const hoverZoneRef = useRef<HTMLDivElement>(null);
   const closeTimerRef = useRef<number | null>(null);
 
-  // ✅ FIX — may setter na
+  // Profile fields — may setters
   const [courseStrand, setCourseStrand] = useState('');
   const [yearLevel, setYearLevel] = useState('');
   const [dob, setDob] = useState('');
+  const [phone, setPhone] = useState('');
   const [schoolYear] = useState('');
-  const [phone] = useState('');
   const [campus] = useState('');
   const [program] = useState('');
   const [adviser] = useState('');
   const [shippingAddress] = useState<string | null>(null);
 
+  /* ============================================
+     LOAD PROFILE — fresh from Supabase every mount
+     ============================================ */
   useEffect(() => {
     if (!session) {
       navigate('/dashboard');
       return;
     }
+
+    /* ✅ Set from session FIRST (instant display) */
     setName(session.name || '');
     setEmail(session.email || '');
     setOrganization(session.organization || '');
     setIdNumber(session.idNumber || '');
     setProfilePicture(session.profilePicture || null);
 
-    // ✅ Fetch buong profile — kasama course, year, DOB
+    // Prefill from session kung meron na
+    if ((session as any).course) setCourseStrand((session as any).course);
+    if ((session as any).yearLevel) setYearLevel((session as any).yearLevel);
+    if ((session as any).dateOfBirth) setDob((session as any).dateOfBirth);
+    if ((session as any).phone) setPhone((session as any).phone);
+
+    /* ✅ Fetch FRESH from Supabase */
     const loadProfile = async () => {
       try {
-        // Fetch avatar + cover (existing)
+        // Fetch avatar + cover
         const { avatar_url, cover_url } = await fetchProfileImages(session.id);
         if (avatar_url) setProfilePicture(avatar_url);
         if (cover_url) {
           setCoverPhoto(cover_url);
-          console.log('[Profile] Cover loaded:', cover_url);
         }
 
-        // ✅ Fetch course, year, DOB (bago)
+        // Fetch course, year, DOB, phone
         const profile = await fetchUserProfile(session.id);
         if (profile) {
           if (profile.course_strand) setCourseStrand(profile.course_strand);
           if (profile.year_level) setYearLevel(profile.year_level);
+          if (profile.phone) setPhone(profile.phone);
+
           if (profile.date_of_birth) {
             const dobStr =
               typeof profile.date_of_birth === 'string'
@@ -117,7 +151,7 @@ export default function ProfilePage() {
     void loadProfile();
   }, [session, navigate]);
 
-  // Hover-to-open sidebar (desktop only)
+  /* Hover-to-open sidebar */
   useEffect(() => {
     const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
     if (!isDesktop()) return;
@@ -158,9 +192,9 @@ export default function ProfilePage() {
 
   if (!session) return null;
 
-  // ============================================
-  // HANDLERS — Supabase upload
-  // ============================================
+  /* ============================================
+     HANDLERS — Supabase upload
+     ============================================ */
 
   const validateFile = (file: File): boolean => {
     if (file.size > 5 * 1024 * 1024) {
@@ -194,7 +228,7 @@ export default function ProfilePage() {
           error instanceof Error
             ? error.message
             : 'Failed to upload profile picture. Please try again.',
-          'danger',
+          'danger'
         );
       } finally {
         setIsUploading(false);
@@ -222,7 +256,7 @@ export default function ProfilePage() {
           error instanceof Error
             ? error.message
             : 'Failed to upload cover photo. Please try again.',
-          'danger',
+          'danger'
         );
       } finally {
         setIsUploading(false);
@@ -246,7 +280,7 @@ export default function ProfilePage() {
   const quickActions = [
     {
       key: 'orders',
-      to: '/my-orders',
+      to: '/dashboard',
       icon: Package,
       tone: 'teal' as const,
       label: 'View My Orders',
@@ -270,7 +304,7 @@ export default function ProfilePage() {
     },
     {
       key: 'help',
-      href: 'mailto:support@example.com',
+      href: 'mailto:suppliesjc@gmail.com',
       icon: LifeBuoy,
       tone: 'blue' as const,
       label: 'Help & Support',
@@ -292,7 +326,10 @@ export default function ProfilePage() {
     <div className={`profile-shell ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
       <div ref={hoverZoneRef} className="profile-hover-zone" aria-hidden="true" />
 
-      <aside ref={sidebarRef} className={`profile-sidebar ${isSidebarOpen ? 'is-open' : ''}`}>
+      <aside
+        ref={sidebarRef}
+        className={`profile-sidebar ${isSidebarOpen ? 'is-open' : ''}`}
+      >
         <div className="profile-sidebar__top">
           <button
             type="button"
@@ -301,14 +338,24 @@ export default function ProfilePage() {
             aria-label={isSidebarPinned ? 'Unpin sidebar' : 'Pin sidebar'}
             title={isSidebarPinned ? 'Unpin sidebar' : 'Pin sidebar'}
           >
-            {isSidebarPinned ? <X className="react-icon" /> : <ChevronRight className="react-icon" />}
+            {isSidebarPinned ? (
+              <X className="react-icon" />
+            ) : (
+              <ChevronRight className="react-icon" />
+            )}
           </button>
 
-          <Link to="/" className="profile-sidebar__brand" onClick={() => setIsSidebarOpen(false)}>
+          <Link
+            to="/"
+            className="profile-sidebar__brand"
+            onClick={() => setIsSidebarOpen(false)}
+          >
             <span className="profile-sidebar__brand-mark">SJ</span>
             <span className="profile-sidebar__brand-copy">
               <span className="profile-sidebar__brand-name">SJCM STORE</span>
-              <span className="profile-sidebar__brand-tag">Official School Merchandise</span>
+              <span className="profile-sidebar__brand-tag">
+                Official School Merchandise
+              </span>
             </span>
           </Link>
 
@@ -340,7 +387,11 @@ export default function ProfilePage() {
       </aside>
 
       {isSidebarOpen ? (
-        <div className="profile-backdrop" onClick={() => setIsSidebarOpen(false)} aria-hidden="true" />
+        <div
+          className="profile-backdrop"
+          onClick={() => setIsSidebarOpen(false)}
+          aria-hidden="true"
+        />
       ) : null}
 
       <div className="profile-main-wrap">
@@ -350,7 +401,11 @@ export default function ProfilePage() {
           aria-label="Toggle navigation"
           onClick={() => setIsSidebarOpen((p) => !p)}
         >
-          {isSidebarOpen ? <X className="react-icon" /> : <Menu className="react-icon" />}
+          {isSidebarOpen ? (
+            <X className="react-icon" />
+          ) : (
+            <Menu className="react-icon" />
+          )}
         </button>
 
         <main className="profile-page">
@@ -401,7 +456,10 @@ export default function ProfilePage() {
                         <span>{session.role}</span>
                         {organization && (
                           <>
-                            <span className="profile-meta-dot" aria-hidden="true" />
+                            <span
+                              className="profile-meta-dot"
+                              aria-hidden="true"
+                            />
                             <span>{organization}</span>
                           </>
                         )}
@@ -412,7 +470,11 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                <nav className="profile-tabs" role="tablist" aria-label="Profile sections">
+                <nav
+                  className="profile-tabs"
+                  role="tablist"
+                  aria-label="Profile sections"
+                >
                   <button
                     type="button"
                     role="tab"
@@ -504,8 +566,12 @@ export default function ProfilePage() {
                           </div>
 
                           <div className="profile-form-group">
-                            <label className="profile-form-label">Course / Strand</label>
-                            <p className="profile-form-value">{courseStrand || 'N/A'}</p>
+                            <label className="profile-form-label">
+                              Course / Strand
+                            </label>
+                            <p className="profile-form-value">
+                              {courseStrand ? getCourseLabel(courseStrand) : 'N/A'}
+                            </p>
                           </div>
 
                           <div className="profile-form-group">
@@ -514,17 +580,23 @@ export default function ProfilePage() {
                           </div>
 
                           <div className="profile-form-group">
-                            <label className="profile-form-label">Date of Birth</label>
+                            <label className="profile-form-label">
+                              Date of Birth
+                            </label>
                             <p className="profile-form-value">{dob || 'N/A'}</p>
                           </div>
 
                           <div className="profile-form-group">
                             <label className="profile-form-label">School Year</label>
-                            <p className="profile-form-value">{schoolYear || 'N/A'}</p>
+                            <p className="profile-form-value">
+                              {schoolYear || 'N/A'}
+                            </p>
                           </div>
 
                           <div className="profile-form-group">
-                            <label className="profile-form-label">Email Address</label>
+                            <label className="profile-form-label">
+                              Email Address
+                            </label>
                             <div className="profile-form-field">
                               <Mail className="react-icon" aria-hidden="true" />
                               <span>{email}</span>
@@ -532,7 +604,9 @@ export default function ProfilePage() {
                           </div>
 
                           <div className="profile-form-group">
-                            <label className="profile-form-label">Phone Number</label>
+                            <label className="profile-form-label">
+                              Phone Number
+                            </label>
                             <div className="profile-form-field">
                               <Phone className="react-icon" aria-hidden="true" />
                               <span>{phone || 'N/A'}</span>
@@ -580,7 +654,10 @@ export default function ProfilePage() {
                     <div className="profile-card-header">
                       <div>
                         <h2 className="profile-card-title">
-                          <ShieldCheck className="react-icon" aria-hidden="true" />
+                          <ShieldCheck
+                            className="react-icon"
+                            aria-hidden="true"
+                          />
                           Account Security
                         </h2>
                         <p className="profile-card-subtitle">
@@ -588,13 +665,16 @@ export default function ProfilePage() {
                         </p>
                       </div>
                       <Link to="/settings#security" className="profile-edit-btn">
-                        <ChevronRight className="react-icon" aria-hidden="true" />
+                        <ChevronRight
+                          className="react-icon"
+                          aria-hidden="true"
+                        />
                         Go to Settings
                       </Link>
                     </div>
                     <p className="profile-empty-note">
-                      Nothing to show here yet — connect this tab to your auth/security data
-                      when it's ready.
+                      Nothing to show here yet — connect this tab to your
+                      auth/security data when it's ready.
                     </p>
                   </div>
                 )}
@@ -604,7 +684,10 @@ export default function ProfilePage() {
                     <div className="profile-card-header">
                       <div>
                         <h2 className="profile-card-title">
-                          <GraduationCap className="react-icon" aria-hidden="true" />
+                          <GraduationCap
+                            className="react-icon"
+                            aria-hidden="true"
+                          />
                           School Information
                         </h2>
                         <p className="profile-card-subtitle">
@@ -629,8 +712,13 @@ export default function ProfilePage() {
                       <div className="profile-form-group">
                         <label className="profile-form-label">Program</label>
                         <div className="profile-form-field">
-                          <GraduationCap className="react-icon" aria-hidden="true" />
-                          <span>{program || courseStrand || 'N/A'}</span>
+                          <GraduationCap
+                            className="react-icon"
+                            aria-hidden="true"
+                          />
+                          <span>
+                            {program || (courseStrand ? getCourseLabel(courseStrand) : 'N/A')}
+                          </span>
                         </div>
                       </div>
 
@@ -645,13 +733,18 @@ export default function ProfilePage() {
                       <div className="profile-form-group">
                         <label className="profile-form-label">School Year</label>
                         <div className="profile-form-field">
-                          <CalendarRange className="react-icon" aria-hidden="true" />
+                          <CalendarRange
+                            className="react-icon"
+                            aria-hidden="true"
+                          />
                           <span>{schoolYear || 'N/A'}</span>
                         </div>
                       </div>
 
                       <div className="profile-form-group">
-                        <label className="profile-form-label">Academic Adviser</label>
+                        <label className="profile-form-label">
+                          Academic Adviser
+                        </label>
                         <div className="profile-form-field">
                           <User className="react-icon" aria-hidden="true" />
                           <span>{adviser || 'N/A'}</span>
@@ -669,7 +762,9 @@ export default function ProfilePage() {
                       <ShieldCheck className="react-icon" aria-hidden="true" />
                       Account Status
                     </div>
-                    {allVerified && <span className="profile-side__pill">Verified</span>}
+                    {allVerified && (
+                      <span className="profile-side__pill">Verified</span>
+                    )}
                   </div>
                   <ul className="profile-status-list">
                     {statusChecks.map((check) => (
@@ -691,22 +786,39 @@ export default function ProfilePage() {
                       const Icon = action.icon;
                       const content = (
                         <>
-                          <span className={`profile-quick-action__icon profile-quick-action__icon--${action.tone}`}>
+                          <span
+                            className={`profile-quick-action__icon profile-quick-action__icon--${action.tone}`}
+                          >
                             <Icon className="react-icon" aria-hidden="true" />
                           </span>
                           <span className="profile-quick-action__text">
-                            <span className="profile-quick-action__label">{action.label}</span>
-                            <span className="profile-quick-action__desc">{action.desc}</span>
+                            <span className="profile-quick-action__label">
+                              {action.label}
+                            </span>
+                            <span className="profile-quick-action__desc">
+                              {action.desc}
+                            </span>
                           </span>
-                          <ChevronRight className="react-icon profile-quick-action__chev" aria-hidden="true" />
+                          <ChevronRight
+                            className="react-icon profile-quick-action__chev"
+                            aria-hidden="true"
+                          />
                         </>
                       );
                       return action.href ? (
-                        <a key={action.key} href={action.href} className="profile-quick-action">
+                        <a
+                          key={action.key}
+                          href={action.href}
+                          className="profile-quick-action"
+                        >
                           {content}
                         </a>
                       ) : (
-                        <Link key={action.key} to={action.to as string} className="profile-quick-action">
+                        <Link
+                          key={action.key}
+                          to={action.to as string}
+                          className="profile-quick-action"
+                        >
                           {content}
                         </Link>
                       );
@@ -734,14 +846,23 @@ export default function ProfilePage() {
                         const Icon = activityIcon[item.kind];
                         return (
                           <li key={item.id} className="profile-activity-item">
-                            <span className={`profile-activity-icon profile-activity-icon--${item.kind}`}>
+                            <span
+                              className={`profile-activity-icon profile-activity-icon--${item.kind}`}
+                            >
                               <Icon className="react-icon" aria-hidden="true" />
                             </span>
                             <span className="profile-activity-text">
-                              <span className="profile-activity-label">{item.label}</span>
-                              <span className="profile-activity-time">{item.timestamp}</span>
+                              <span className="profile-activity-label">
+                                {item.label}
+                              </span>
+                              <span className="profile-activity-time">
+                                {item.timestamp}
+                              </span>
                             </span>
-                            <ChevronRight className="react-icon profile-activity-chevron" aria-hidden="true" />
+                            <ChevronRight
+                              className="react-icon profile-activity-chevron"
+                              aria-hidden="true"
+                            />
                           </li>
                         );
                       })}

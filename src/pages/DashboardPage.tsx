@@ -31,8 +31,13 @@ import {
   getOrderTotal,
 } from '../services';
 import { fetchOrders } from '../services/orders';
+import {
+  fetchNotifications,
+  markNotificationAsRead,
+} from '../services/notifications';
 import ProductImage from '../components/ProductImage';
 import type { Order, Product } from '../types';
+import type { Notification } from '../types/notification';
 
 type StatusFilter = 'ALL' | 'Pending' | 'Processing' | 'Ready for Pickup' | 'Claimed' | 'Cancelled';
 
@@ -45,9 +50,9 @@ const sideNavItems = [
   { to: '/settings', label: 'Settings', icon: Shield },
 ];
 
-// ============================================
-// ORDER CARD — modern layout with product image
-// ============================================
+/* ============================================
+   ORDER CARD
+   ============================================ */
 function OrderCard({
   order,
   products,
@@ -60,13 +65,11 @@ function OrderCard({
   const itemCount = items.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
   const status = getOrderStatus(order);
 
-  // Progress steps
   const isOrdered = true;
   const isProcessing = ['Processing', 'Ready for Pickup', 'Claimed'].includes(status);
   const isReady = ['Ready for Pickup', 'Claimed'].includes(status);
   const isClaimed = status === 'Claimed';
 
-  // First item image para sa thumbnail
   const firstItem = items[0];
   const firstProduct = firstItem
     ? products.find((p) => p.id === firstItem.id)
@@ -85,7 +88,6 @@ function OrderCard({
 
   return (
     <li className="order-card">
-      {/* LEFT: Product image thumbnail */}
       <div className="order-card__thumb">
         {firstProduct ? (
           <ProductImage
@@ -99,7 +101,6 @@ function OrderCard({
         )}
       </div>
 
-      {/* MIDDLE: Order info + progress */}
       <div className="order-card__body">
         <div className="order-card__head">
           <span className="order-card__id">Order #{getOrderId(order)}</span>
@@ -120,7 +121,6 @@ function OrderCard({
           </span>
         </div>
 
-        {/* Progress steps */}
         <div className="order-card__progress">
           <span className={`order-progress-step ${isOrdered ? 'is-done' : ''}`}>
             <span className="order-progress-step__dot" />
@@ -142,7 +142,6 @@ function OrderCard({
         </div>
       </div>
 
-      {/* RIGHT: Price + View details */}
       <div className="order-card__right">
         <div className="order-card__price">{formatPrice(getOrderTotal(order))}</div>
         <div className="order-card__payment">
@@ -160,23 +159,29 @@ function OrderCard({
   );
 }
 
+/* ============================================
+   DASHBOARD PAGE
+   ============================================ */
 export default function DashboardPage() {
   const { session } = useApp();
   const toast = useToast();
   const navigate = useNavigate();
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoadingOrders, setIsLoadingOrders] = useState(true);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
-  const [noticeDismissed, setNoticeDismissed] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarPinned, setIsSidebarPinned] = useState(false);
+
+  /* ✅ BANNER — galing sa Supabase notifications */
+  const [pickupNotification, setPickupNotification] = useState<Notification | null>(null);
 
   const sidebarRef = useRef<HTMLElement>(null);
   const hoverZoneRef = useRef<HTMLDivElement>(null);
   const closeTimerRef = useRef<number | null>(null);
 
-  // Redirect kapag walang session
+  /* Redirect kapag walang session */
   useEffect(() => {
     if (!session) {
       toast('Please sign in to view your dashboard.', 'warning');
@@ -185,7 +190,7 @@ export default function DashboardPage() {
     }
   }, [session, navigate, toast]);
 
-  // Fetch orders + products
+  /* Fetch orders + products */
   useEffect(() => {
     if (!session) {
       setOrders([]);
@@ -217,7 +222,49 @@ export default function DashboardPage() {
     };
   }, [session]);
 
-  // Hover-to-open sidebar
+  /* ✅ BANNER — fetch latest unread pickup notification */
+  useEffect(() => {
+    if (!session?.id) {
+      setPickupNotification(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadPickupNotification = async () => {
+      try {
+        const notifications = await fetchNotifications(session.id);
+        const latestPickup = notifications.find(
+          (n) => n.type === 'pickup' && !n.read
+        );
+        if (!cancelled) {
+          setPickupNotification(latestPickup ?? null);
+        }
+      } catch (error) {
+        console.error('[Dashboard] Failed to fetch pickup notification:', error);
+        if (!cancelled) setPickupNotification(null);
+      }
+    };
+
+    loadPickupNotification();
+
+    // ✅ Listen sa real-time updates
+    const handleUpdate = (e: CustomEvent) => {
+      const { userId } = e.detail;
+      if (!userId || userId === session.id) {
+        loadPickupNotification();
+      }
+    };
+
+    window.addEventListener('notifications-updated', handleUpdate as EventListener);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener('notifications-updated', handleUpdate as EventListener);
+    };
+  }, [session?.id]);
+
+  /* Hover-to-open sidebar */
   useEffect(() => {
     const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
     if (!isDesktop()) return;
@@ -281,10 +328,21 @@ export default function DashboardPage() {
     [userOrders]
   );
 
-  const readyOrder = useMemo(
-    () => userOrders.find((order) => getOrderStatus(order) === 'Ready for Pickup'),
-    [userOrders]
-  );
+  /* ✅ Dismiss banner — mark notification as read sa Supabase */
+  const handleDismissBanner = async () => {
+    if (!pickupNotification) return;
+
+    // Optimistic update — hide agad
+    setPickupNotification(null);
+
+    try {
+      await markNotificationAsRead(pickupNotification.id);
+    } catch (error) {
+      console.error('[Dashboard] Failed to dismiss banner:', error);
+      // Revert kung nag-fail
+      setPickupNotification(pickupNotification);
+    }
+  };
 
   if (!session) {
     return (
@@ -380,28 +438,33 @@ export default function DashboardPage() {
         </button>
 
         <div className="dashboard-scroll">
-          {readyOrder && !noticeDismissed ? (
+          {/* ✅ BANNER — from Supabase notifications */}
+          {pickupNotification ? (
             <div className="notice-banner" role="status">
               <span className="notice-banner__icon">
                 <Bell className="react-icon" aria-hidden="true" />
               </span>
               <div className="notice-banner__body">
-                <p className="notice-banner__title">You have 1 order ready for pickup!</p>
+                <p className="notice-banner__title">{pickupNotification.title}</p>
                 <p className="notice-banner__description">
-                  Your order #{getOrderId(readyOrder)} is ready at {session.organization || 'SJCM Main Campus'}.
+                  {pickupNotification.message}
                 </p>
               </div>
-              <Link
-                to={`/orders/${encodeURIComponent(getOrderId(readyOrder))}`}
-                className="notice-banner__action"
-              >
-                View order <ArrowUpRight className="react-icon" aria-hidden="true" />
-              </Link>
+              {pickupNotification.link && (
+                <Link
+                  to={pickupNotification.link}
+                  className="notice-banner__action"
+                  onClick={handleDismissBanner}
+                >
+                  {pickupNotification.actionLabel || 'View order'}
+                  <ArrowUpRight className="react-icon" aria-hidden="true" />
+                </Link>
+              )}
               <button
                 type="button"
                 className="notice-banner__dismiss"
                 aria-label="Dismiss notification"
-                onClick={() => setNoticeDismissed(true)}
+                onClick={handleDismissBanner}
               >
                 <X className="react-icon" aria-hidden="true" />
               </button>

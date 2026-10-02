@@ -5,6 +5,7 @@ import {
   clearRateLimit,
   checkRateLimit,
   formatLockoutTime,
+  getActiveLock,
   RATE_LIMIT_CONFIG,
   recordFailedAttempt,
 } from '../../data/rateLimit';
@@ -18,7 +19,23 @@ export function useRateLimit(identifier: string) {
 
   const isLocked = lockedUntil !== null && secondsLeft > 0;
 
-  // Countdown tick
+  /* ============================================
+     ✅ FIX #1 — Sa MOUNT, i-restore yung active lock
+     kahit walang laman yung email input
+     ============================================ */
+  useEffect(() => {
+    const active = getActiveLock();
+    if (active) {
+      setLockedUntil(active.lockedUntil);
+      setSecondsLeft(Math.ceil((active.lockedUntil - Date.now()) / 1000));
+      setAttemptsRemaining(0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /* ============================================
+     Countdown tick
+     ============================================ */
   useEffect(() => {
     if (!lockedUntil) return;
 
@@ -28,7 +45,7 @@ export function useRateLimit(identifier: string) {
         setLockedUntil(null);
         setSecondsLeft(0);
         setAttemptsRemaining(RATE_LIMIT_CONFIG.MAX_ATTEMPTS);
-        clearRateLimit(identifier);
+        if (identifier) clearRateLimit(identifier);
         return;
       }
       setSecondsLeft(remaining);
@@ -39,9 +56,20 @@ export function useRateLimit(identifier: string) {
     return () => window.clearInterval(interval);
   }, [lockedUntil, identifier]);
 
-  // Sync state kapag nagbago ang identifier
+  /* ============================================
+     ✅ FIX #2 — Sync state kapag nagbago ang identifier
+     HUWAG i-reset kung may active lock pa
+     ============================================ */
   useEffect(() => {
     if (!identifier.trim()) {
+      // ✅ Check muna kung may active lock bago mag-reset
+      const active = getActiveLock();
+      if (active) {
+        setLockedUntil(active.lockedUntil);
+        setSecondsLeft(Math.ceil((active.lockedUntil - Date.now()) / 1000));
+        setAttemptsRemaining(0);
+        return;
+      }
       setAttemptsRemaining(RATE_LIMIT_CONFIG.MAX_ATTEMPTS);
       setLockedUntil(null);
       setSecondsLeft(0);
@@ -53,10 +81,13 @@ export function useRateLimit(identifier: string) {
     if (!status.allowed && status.lockedUntil) {
       setLockedUntil(status.lockedUntil);
       setSecondsLeft(status.secondsUntilUnlock);
+    } else if (status.allowed) {
+      // ✅ Clear lock state kung allowed na (lock expired)
+      setLockedUntil(null);
+      setSecondsLeft(0);
     }
   }, [identifier]);
 
-  // Helper functions para sa LoginPage
   const guard = () => checkRateLimit(identifier);
 
   const recordFailure = () => {

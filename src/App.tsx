@@ -10,24 +10,48 @@ import CheckoutPage from './pages/CheckoutPage';
 import ConfirmationPage from './pages/ConfirmationPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';   // ✅ BAGO
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import DashboardPage from './pages/DashboardPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
-import AdminPage from './pages/AdminPage';
 import ProfilePage from './pages/ProfilePages';
 import SettingsPage from './pages/SettingsPage';
 import NotificationsPage from './pages/NotificationsPage';
 import FavoritesPage from './pages/FavoritesPage';
 
+// ✅ ADMIN PAGES
+import {
+  AdminLayout,
+  AdminLoginPage,                              // ✅ BAGO
+  DashboardPage as AdminDashboardPage,
+  ProductsPage as AdminProductsPage,
+  OrdersPage as AdminOrdersPage,
+  PaymentsPage as AdminPaymentsPage,
+  PayMongoPage as AdminPayMongoPage,
+  OrganizationsPage as AdminOrganizationsPage,
+  ConsolePage as AdminConsolePage,
+  ProfilePage as AdminProfilePage,
+  SettingsPage as AdminSettingsPage,
+} from './pages/admin';
+
 export default function App() {
   return (
     <Routes>
-      {/* ✅ AUTH ROUTES — standalone, walang SiteLayout */}
+      {/* ============================================
+          AUTH ROUTES (public)
+          ============================================ */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/forgot-password" element={<ForgotPasswordPage />} />   {/* ✅ BAGO */}
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-      {/* ✅ MAIN APP ROUTES — may SiteLayout */}
+      {/* ============================================
+          ADMIN LOGIN (standalone — walang sidebar/topbar)
+          ✅ IMPORTANT: Dapat nasa TAAS ng /admin/* routes
+          ============================================ */}
+      <Route path="/admin/login" element={<AdminLoginPage />} />
+
+      {/* ============================================
+          MAIN APP ROUTES — may SiteLayout
+          ============================================ */}
       <Route element={<SiteLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/catalog" element={<CatalogPage />} />
@@ -35,7 +59,6 @@ export default function App() {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/confirmation" element={<ConfirmationPage />} />
-        <Route path="/admin" element={<AdminPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/orders/:id" element={<OrderDetailsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
@@ -44,7 +67,25 @@ export default function App() {
         <Route path="/favorites" element={<FavoritesPage />} />
       </Route>
 
-      {/* ✅ FALLBACK */}
+      {/* ============================================
+          ADMIN DASHBOARD (protected — may sidebar + topbar)
+          ============================================ */}
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<AdminDashboardPage />} />
+        <Route path="products" element={<AdminProductsPage />} />
+        <Route path="orders" element={<AdminOrdersPage />} />
+        <Route path="payments" element={<AdminPaymentsPage />} />
+        <Route path="paymongo" element={<AdminPayMongoPage />} />
+        <Route path="orgs" element={<AdminOrganizationsPage />} />
+        <Route path="console" element={<AdminConsolePage />} />
+        <Route path="profile" element={<AdminProfilePage />} />
+        <Route path="settings" element={<AdminSettingsPage />} />
+        <Route path="*" element={<Navigate to="/admin" replace />} />
+      </Route>
+
+      {/* ============================================
+          FALLBACK
+          ============================================ */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

@@ -2,9 +2,9 @@
 
 import { supabase } from '../lib/supabaseClient';
 
-// ============================================
-// LOCALSTORAGE HELPERS
-// ============================================
+/* ============================================
+   LOCALSTORAGE HELPERS
+   ============================================ */
 
 export const STORAGE_KEYS = {
   products: 'products_db',
@@ -28,18 +28,15 @@ export function writeStorage(key: string, value: unknown): void {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
-// ============================================
-// SUPABASE STORAGE — avatar at cover uploads
-// ============================================
+/* ============================================
+   SUPABASE STORAGE — avatar at cover uploads
+   ============================================ */
 
 export type UploadResult = {
   url: string;
   path: string;
 };
 
-/**
- * Upload a profile picture (avatar) to Supabase Storage
- */
 export async function uploadAvatar(
   userId: string,
   file: File
@@ -77,9 +74,6 @@ export async function uploadAvatar(
   return { url: publicUrl, path: filePath };
 }
 
-/**
- * Upload a cover photo to Supabase Storage
- */
 export async function uploadCover(
   userId: string,
   file: File
@@ -117,9 +111,10 @@ export async function uploadCover(
   return { url: publicUrl, path: filePath };
 }
 
-/**
- * Fetch avatar and cover URLs from profiles table
- */
+/* ============================================
+   FETCH PROFILE IMAGES
+   ============================================ */
+
 export async function fetchProfileImages(userId: string): Promise<{
   avatar_url: string | null;
   cover_url: string | null;
@@ -128,10 +123,10 @@ export async function fetchProfileImages(userId: string): Promise<{
     .from('profiles')
     .select('avatar_url, cover_url')
     .eq('id', userId)
-    .single();
+    .maybeSingle();
 
   if (error) {
-    console.warn('Could not fetch profile images:', error);
+    console.warn('[Storage] Could not fetch profile images:', error.message);
     return { avatar_url: null, cover_url: null };
   }
 
@@ -141,13 +136,12 @@ export async function fetchProfileImages(userId: string): Promise<{
   };
 }
 
-/**
- * Delete old avatar files (cleanup — optional)
- */
+/* ============================================
+   DELETE AVATAR / COVER
+   ============================================ */
+
 export async function deleteAvatar(userId: string): Promise<void> {
-  const { data, error } = await supabase.storage
-    .from('avatars')
-    .list(userId);
+  const { data, error } = await supabase.storage.from('avatars').list(userId);
 
   if (error) throw new Error(error.message);
 
@@ -157,13 +151,8 @@ export async function deleteAvatar(userId: string): Promise<void> {
   }
 }
 
-/**
- * Delete old cover files (cleanup — optional)
- */
 export async function deleteCover(userId: string): Promise<void> {
-  const { data, error } = await supabase.storage
-    .from('covers')
-    .list(userId);
+  const { data, error } = await supabase.storage.from('covers').list(userId);
 
   if (error) throw new Error(error.message);
 
@@ -173,49 +162,54 @@ export async function deleteCover(userId: string): Promise<void> {
   }
 }
 
-// ============================================
-// ✅ BAGO — PROFILE FIELDS (course, year, DOB)
-// ============================================
+/* ============================================
+   PROFILE FIELDS — kasama phone
+   ============================================ */
 
-/**
- * Fetch buong user profile — avatar, cover, course, year, DOB
- */
-export async function fetchUserProfile(userId: string): Promise<{
+export interface UserProfileData {
   avatar_url: string | null;
   cover_url: string | null;
   course_strand: string | null;
   year_level: string | null;
   date_of_birth: string | null;
-} | null> {
+  phone: string | null;
+}
+
+export async function fetchUserProfile(
+  userId: string
+): Promise<UserProfileData | null> {
   const { data, error } = await supabase
     .from('profiles')
-    .select('avatar_url, cover_url, course_strand, year_level, date_of_birth')
+    .select(
+      'avatar_url, cover_url, course_strand, year_level, date_of_birth, phone'
+    )
     .eq('id', userId)
     .maybeSingle();
 
   if (error) {
-    console.warn('[Storage] Failed to fetch user profile:', error);
+    console.warn('[Storage] Failed to fetch user profile:', error.message);
     return null;
   }
 
+  if (!data) return null;
+
   return {
-    avatar_url: data?.avatar_url ?? null,
-    cover_url: data?.cover_url ?? null,
-    course_strand: data?.course_strand ?? null,
-    year_level: data?.year_level ?? null,
-    date_of_birth: data?.date_of_birth ?? null,
+    avatar_url: data.avatar_url ?? null,
+    cover_url: data.cover_url ?? null,
+    course_strand: data.course_strand ?? null,
+    year_level: data.year_level ?? null,
+    date_of_birth: data.date_of_birth ?? null,
+    phone: data.phone ?? null,
   };
 }
 
-/**
- * Save o update ang profile fields (course, year, DOB)
- */
 export async function updateUserProfile(
   userId: string,
   updates: {
     course_strand?: string | null;
     year_level?: string | null;
     date_of_birth?: string | null;
+    phone?: string | null;
   }
 ): Promise<boolean> {
   const { error } = await supabase

@@ -21,6 +21,10 @@ import {
 import { createNotification } from './services/notifications';
 import { invalidateCache } from './utils/cache';
 
+/* ============================================
+   TYPES
+   ============================================ */
+
 interface AppState {
   session: SessionUser | null;
   cart: CartItem[];
@@ -52,6 +56,10 @@ function readClientState(): Pick<AppState, 'session' | 'cart'> {
   };
 }
 
+/* ============================================
+   PROVIDER
+   ============================================ */
+
 export function AppProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<SessionUser | null>(
     () => readClientState().session
@@ -63,16 +71,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // ============================================
-  // INITIAL LOAD (with cache)
-  // ============================================
+  /* ============================================
+     INITIAL LOAD
+     ============================================ */
   useEffect(() => {
     const loadInitialData = async () => {
       setIsLoading(true);
 
       const [productsData, ordersData] = await Promise.all([
-        fetchProducts(),   // ✅ Cached
-        fetchAllOrders(),  // ✅ Cached
+        fetchProducts(),
+        fetchAllOrders(),
       ]);
 
       setProducts(productsData);
@@ -83,17 +91,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
     loadInitialData();
   }, []);
 
-  // ============================================
-  // REAL-TIME SUBSCRIPTIONS
-  // ============================================
+  /* ============================================
+     REAL-TIME SUBSCRIPTIONS
+     ============================================ */
   useEffect(() => {
+    /* ---------- PRODUCTS ---------- */
     const productsChannel = supabase
       .channel('products-realtime')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'products' },
         (payload) => {
-          // ✅ Invalidate cache sa real-time update
           invalidateCache('products');
 
           if (payload.eventType === 'INSERT') {
@@ -105,23 +113,34 @@ export function AppProvider({ children }: { children: ReactNode }) {
               )
             );
           } else if (payload.eventType === 'DELETE') {
-            setProducts((prev) =>
-              prev.filter((p) => p.id !== payload.old.id)
-            );
+            setProducts((prev) => prev.filter((p) => p.id !== payload.old.id));
           }
         }
       )
       .subscribe();
 
+    /* ---------- ORDERS ---------- */
     const ordersChannel = supabase
       .channel('orders-realtime')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'orders' },
         (payload) => {
+          // ✅ Invalidate LAHAT ng caches
           invalidateCache('orders_all');
           invalidateCache('orders');
 
+          // ✅ Invalidate user-specific cache
+          const userId =
+            payload.eventType === 'DELETE'
+              ? (payload.old as any)?.user_id
+              : (payload.new as any)?.user_id;
+
+          if (userId) {
+            invalidateCache(`orders_${userId}`);
+          }
+
+          // Update React state (live UI)
           if (payload.eventType === 'INSERT') {
             setOrders((prev) => [mapOrderRow(payload.new), ...prev]);
           } else if (payload.eventType === 'UPDATE') {
@@ -137,15 +156,47 @@ export function AppProvider({ children }: { children: ReactNode }) {
       )
       .subscribe();
 
+    /* ---------- NOTIFICATIONS ---------- */
+    const notificationsChannel = supabase
+      .channel('notifications-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'notifications' },
+        (payload) => {
+          // ✅ Invalidate user-specific notification cache
+          const userId =
+            payload.eventType === 'DELETE'
+              ? (payload.old as any)?.user_id
+              : (payload.new as any)?.user_id;
+
+          if (userId) {
+            invalidateCache(`notifications_${userId}`);
+          }
+
+          // ✅ Broadcast custom event para sa UI components
+          window.dispatchEvent(
+            new CustomEvent('notifications-updated', {
+              detail: {
+                userId,
+                eventType: payload.eventType,
+                notification: payload.new,
+              },
+            })
+          );
+        }
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(productsChannel);
       supabase.removeChannel(ordersChannel);
+      supabase.removeChannel(notificationsChannel);
     };
   }, []);
 
-  // ============================================
-  // SESSION
-  // ============================================
+  /* ============================================
+     SESSION
+     ============================================ */
   const signIn = useCallback((user: SessionUser) => {
     writeStorage(STORAGE_KEYS.session, user);
     setSession(user);
@@ -165,17 +216,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  // ============================================
-  // CART
-  // ============================================
+  /* ============================================
+     CART
+     ============================================ */
   const setCart = useCallback((items: CartItem[]) => {
     writeStorage(STORAGE_KEYS.cart, items);
     setCartState(items);
   }, []);
 
-  // ============================================
-  // PRODUCTS CRUD
-  // ============================================
+  /* ============================================
+     PRODUCTS CRUD
+     ============================================ */
   const setProductStock = useCallback(
     async (productId: string, stock: number) => {
       const safeStock = Math.max(0, stock);
@@ -244,9 +295,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     invalidateCache('products');
   }, []);
 
-  // ============================================
-  // ORDERS
-  // ============================================
+  /* ============================================
+     ORDERS
+     ============================================ */
   const setOrderStatus = useCallback(
     async (orderId: string, orderStatus: string) => {
       setOrders((prev) =>
@@ -255,12 +306,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
       await updateOrderStatusService(orderId, orderStatus);
 
-      // Auto-create notification
+      // Auto-create notification para sa user
       const order = orders.find((o) => o.id === orderId);
       if (order) {
         const statusMessages: Record<
           string,
-          { title: string; message: string; type: 'order' | 'pickup' | 'system' | 'info' | 'promo' }
+          {
+            title: string;
+            message: string;
+            type: 'order' | 'pickup' | 'system' | 'info' | 'promo';
+          }
         > = {
           Pending: {
             title: 'Order Placed',
@@ -280,6 +335,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
           Claimed: {
             title: 'Order Claimed',
             message: `Your order #${orderId} has been successfully claimed. Thank you!`,
+            type: 'order',
+          },
+          Completed: {
+            title: 'Order Completed',
+            message: `Your order #${orderId} has been completed. Thank you!`,
             type: 'order',
           },
           Cancelled: {
@@ -336,14 +396,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  // ============================================
-  // REFRESH PRODUCTS (bypass cache)
-  // ============================================
+  /* ============================================
+     REFRESH PRODUCTS
+     ============================================ */
   const refreshProductsData = useCallback(async () => {
     const data = await refreshProductsService();
     setProducts(data);
   }, []);
 
+  /* ============================================
+     CONTEXT VALUE
+     ============================================ */
   const value = useMemo<AppContextValue>(
     () => ({
       session,
@@ -386,6 +449,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 
+/* ============================================
+   HOOKS
+   ============================================ */
+
 export function useApp(): AppContextValue {
   const context = useContext(AppContext);
   if (!context) {
@@ -402,9 +469,10 @@ export function useOrders(): Order[] {
   return useApp().orders;
 }
 
-// ============================================
-// MAPPERS
-// ============================================
+/* ============================================
+   MAPPERS
+   ============================================ */
+
 function mapProductRow(row: any): Product {
   return {
     id: row.id,
