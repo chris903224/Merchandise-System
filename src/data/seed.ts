@@ -22,9 +22,6 @@ const slugify = (text: string): string =>
     .replace(/\s+/g, '-')          // spaces → hyphens
     .replace(/-+/g, '-');          // collapse multiple hyphens
 
-/* ✅ Default placeholder kung walang image */
-const PLACEHOLDER_IMAGE = '/product-pictures/placeholder.jpg';
-
 /* ✅ Dynamic image path — walang hardcoded per product */
 const resolveImage = (productName: string): string => {
   const slug = slugify(productName);
