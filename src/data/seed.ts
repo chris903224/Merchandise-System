@@ -4,506 +4,497 @@ import type { Order, Product, UserRecord } from '../types';
 import { STORAGE_KEYS, readStorage, writeStorage } from './storage';
 import { createPasswordSalt, hashPassword } from './password';
 
-const SEED_VERSION = 'v5-real-filenames';
+const SEED_VERSION = 'v6-dynamic-images';
 const SEED_VERSION_KEY = 'sjcm_seed_version';
 
-const IMG = (filename: string) =>
-  `/product%20pictures/${encodeURIComponent(filename)}`;
+/* ============================================================
+   ✅ DYNAMIC IMAGE RESOLVER
+   - Walang hardcoded image paths
+   - Kukunin sa /product-pictures/{slug}.jpg
+   - Automatic na mag-ge-generate ng slug from product name
+============================================================ */
+
+const slugify = (text: string): string =>
+  text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')     // remove special chars
+    .replace(/\s+/g, '-')          // spaces → hyphens
+    .replace(/-+/g, '-');          // collapse multiple hyphens
+
+/* ✅ Dynamic image path — walang hardcoded per product */
+const resolveImage = (productName: string): string => {
+  const slug = slugify(productName);
+  return `/product-pictures/${slug}.jpg`;
+};
+
+/* ✅ Helper: create product with auto-generated image */
+const createProduct = (
+  id: string,
+  name: string,
+  category: string,
+  organization: string,
+  price: number,
+  stock: number,
+  sizes: string[],
+  description: string,
+  customImage?: string
+): Product => ({
+  id,
+  name,
+  category,
+  organization,
+  price,
+  stock,
+  sizes,
+  image: customImage ?? resolveImage(name),
+  imageAlt: name,
+  description,
+});
+
+/* ============================================================
+   PRODUCTS — dynamic images
+============================================================ */
 
 export const MOCK_PRODUCTS: Product[] = [
-  {
-    id: 'prod-gen-001',
-    name: 'SJC ID Lace',
-    category: 'General',
-    organization: 'Institutional',
-    price: 80.0,
-    stock: 100,
-    sizes: ['N/A'],
-    image: IMG('SJC ID LACE.jpg'),
-    imageAlt: 'Official SJC ID lace',
-    description: 'Official Saint Jude College ID lace with safety clip.',
-  },
-  {
-    id: 'prod-gen-002',
-    name: 'SJC Foundation Week Shirt',
-    category: 'General',
-    organization: 'Institutional',
-    price: 350.0,
-    stock: 50,
-    sizes: ['S', 'M', 'L', 'XL', '2XL'],
-    image: IMG('SJC FOUNDATION SHIRT.jpg'),
-    imageAlt: 'SJC Foundation Week shirt',
-    description: 'Commemorative Foundation Week shirt.',
-  },
-  {
-    id: 'prod-gen-003',
-    name: 'SJC Educational Tour Shirt',
-    category: 'General',
-    organization: 'Institutional',
-    price: 350.0,
-    stock: 50,
-    sizes: ['S', 'M', 'L', 'XL', '2XL'],
-    image: IMG('SJC EDUCATIONAL TOUR SHIRT.jpg'),
-    imageAlt: 'SJC Educational Tour shirt',
-    description: 'Official Educational Tour shirt.',
-  },
-  {
-    id: 'prod-gen-004',
-    name: 'CSDL/CSG Uniform',
-    category: 'General',
-    organization: 'CSDL/CSG',
-    price: 500.0,
-    stock: 30,
-    sizes: ['S', 'M', 'L', 'XL'],
-    image: IMG('CSDL CSG UNIFORM.jpg'),
-    imageAlt: 'CSDL/CSG uniform polo',
-    description: 'Official CSDL/CSG organization uniform.',
-  },
-  {
-    id: 'prod-col-001',
-    name: 'College General Uniform Set',
-    category: 'College',
-    organization: 'Institutional',
-    price: 1000.0,
-    stock: 40,
-    sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
-    image: IMG('COLLEGE GENERAL UNIFORM.jpg'),
-    imageAlt: 'College general uniform set',
-    description: 'College general uniform set (Top P500 / Bottom P500).',
-  },
-  {
-    id: 'prod-col-002',
-    name: 'College Specialized Uniform',
-    category: 'College',
-    organization: 'Institutional',
-    price: 1000.0,
-    stock: 40,
-    sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
-    image: IMG('SPECIALIZED UNIFORM .jpg'),
-    imageAlt: 'College specialized uniform',
-    description: 'College specialized uniform (Top P500 / Bottom P500).',
-  },
-  {
-    id: 'prod-col-003',
-    name: 'PE Uniform Set',
-    category: 'College',
-    organization: 'Athletic Department',
-    price: 1000.0,
-    stock: 35,
-    sizes: ['S', 'M', 'L', 'XL', '2XL'],
-    image: IMG('PE UNIFORM.jpg'),
-    imageAlt: 'College PE uniform set',
-    description: 'Official PE uniform set.',
-  },
-  {
-    id: 'prod-shs-001',
-    name: 'SHS General Uniform Set',
-    category: 'SHS',
-    organization: 'Institutional',
-    price: 1000.0,
-    stock: 40,
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: IMG('SHS GENERAL UNIFORM.jpg'),
-    imageAlt: 'SHS general uniform set',
-    description: 'SHS general uniform set (Top P500 / Bottom P500).',
-  },
-  {
-    id: 'prod-shs-002',
-    name: 'SHS Specialized Uniform Set',
-    category: 'SHS',
-    organization: 'Institutional',
-    price: 1000.0,
-    stock: 40,
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: IMG('SPECIALIZED UNIFORM (1).jpg'),
-    imageAlt: 'SHS specialized uniform set',
-    description: 'SHS specialized uniform set (Top P500 / Bottom P500).',
-  },
-  {
-    id: 'prod-shs-003',
-    name: 'SHS SC Uniform',
-    category: 'SHS',
-    organization: 'SHS Student Council',
-    price: 500.0,
-    stock: 25,
-    sizes: ['S', 'M', 'L', 'XL'],
-    image: IMG('SHS SC UNIFORM.jpg'),
-    imageAlt: 'SHS Student Council uniform',
-    description: 'SHS Student Council uniform.',
-  },
-  {
-    id: 'prod-shs-004',
-    name: 'SHS PE Uniform Top',
-    category: 'SHS',
-    organization: 'Athletic Department',
-    price: 300.0,
-    stock: 50,
-    sizes: ['S', 'M', 'L', 'XL'],
-    image: IMG('SHS PE UNIFORM TOP.jpg'),
-    imageAlt: 'SHS PE uniform top',
-    description: 'SHS PE uniform top.',
-  },
-  {
-    id: 'prod-cas-001',
-    name: 'NSTP Uniform',
-    category: 'CAS',
-    organization: 'NSTP',
-    price: 500.0,
-    stock: 30,
-    sizes: ['S', 'M', 'L', 'XL'],
-    image: IMG('NSTP UNIFORM.jpg'),
-    imageAlt: 'NSTP uniform',
-    description: 'Official NSTP uniform.',
-  },
-  {
-    id: 'prod-cite-001',
-    name: 'CITE Shirt',
-    category: 'CITE',
-    organization: 'CITE Department',
-    price: 350.0,
-    stock: 40,
-    sizes: ['S', 'M', 'L', 'XL', '2XL'],
-    image: IMG('CITE SHIRT.jpg'),
-    imageAlt: 'CITE shirt',
-    description: 'Official CITE department shirt.',
-  },
-  {
-    id: 'prod-cite-002',
-    name: 'CITE Internship Uniform',
-    category: 'CITE',
-    organization: 'CITE Department',
-    price: 1000.0,
-    stock: 20,
-    sizes: ['S', 'M', 'L', 'XL'],
-    image: IMG('CITE INTERNSHIP UNIFORM.jpg'),
-    imageAlt: 'CITE internship uniform',
-    description: 'CITE internship uniform.',
-  },
-  {
-    id: 'prod-cite-003',
-    name: 'SSITE Org Shirt',
-    category: 'CITE',
-    organization: 'SSITE',
-    price: 350.0,
-    stock: 40,
-    sizes: ['S', 'M', 'L', 'XL'],
-    image: IMG('SSITE ORG SHIRT.jpg'),
-    imageAlt: 'SSITE org shirt',
-    description: 'SSITE organization shirt.',
-  },
-  {
-    id: 'prod-cite-004',
-    name: 'SSITE Windbreaker',
-    category: 'CITE',
-    organization: 'SSITE',
-    price: 1000.0,
-    stock: 15,
-    sizes: ['S', 'M', 'L', 'XL', '2XL'],
-    image: IMG('SSITE WINDBREAKER.jpg'),
-    imageAlt: 'SSITE windbreaker',
-    description: 'SSITE organization windbreaker.',
-  },
-  {
-    id: 'prod-cite-005',
-    name: 'CITE ID Lace',
-    category: 'CITE',
-    organization: 'CITE Department',
-    price: 80.0,
-    stock: 100,
-    sizes: ['N/A'],
-    image: IMG('CITE ID LACE.jpg'),
-    imageAlt: 'CITE ID lace',
-    description: 'Official CITE ID lace.',
-  },
-  {
-    id: 'prod-cis-001',
-    name: 'CISE Shirt',
-    category: 'CITE',
-    organization: 'CISE',
-    price: 350.0,
-    stock: 40,
-    sizes: ['S', 'M', 'L', 'XL'],
-    image: IMG('CISE SHIRT.jpg'),
-    imageAlt: 'CISE shirt',
-    description: 'Official CISE organization shirt.',
-  },
-  {
-    id: 'prod-coed-001',
-    name: 'BSED Specialized Uniform',
-    category: 'COED',
-    organization: 'COED',
-    price: 1000.0,
-    stock: 30,
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: IMG('BSED SPECIALIZED UNIF.jpg'),
-    imageAlt: 'BSED specialized uniform',
-    description: 'BSED specialized uniform (Top P500 / Bottom P500).',
-  },
-  {
-    id: 'prod-ccje-001',
-    name: 'BSCRIM Type A Specialized Uniform',
-    category: 'CCJE',
-    organization: 'CCJE',
-    price: 1000.0,
-    stock: 25,
-    sizes: ['S', 'M', 'L', 'XL'],
-    image: IMG('BSCRIM UNIF TYPE 1.jpg'),
-    imageAlt: 'BSCRIM Type A specialized uniform',
-    description: 'BSCRIM Type A specialized uniform.',
-  },
-  {
-    id: 'prod-ccje-002',
-    name: 'BSCRIM Type B Specialized Uniform',
-    category: 'CCJE',
-    organization: 'CCJE',
-    price: 1000.0,
-    stock: 25,
-    sizes: ['S', 'M', 'L', 'XL'],
-    image: IMG('BSCRIM UNIF TYPE 2.jpg'),
-    imageAlt: 'BSCRIM Type B specialized uniform',
-    description: 'BSCRIM Type B specialized uniform.',
-  },
-  {
-    id: 'prod-ccje-003',
-    name: 'Criminal Justice SC Uniform',
-    category: 'CCJE',
-    organization: 'Criminal Justice Student Council',
-    price: 500.0,
-    stock: 25,
-    sizes: ['S', 'M', 'L', 'XL'],
-    image: IMG('CRIMINAL JUSTICE SC UNIFORM.jpg'),
-    imageAlt: 'Criminal Justice Student Council uniform',
-    description: 'Criminal Justice Student Council uniform.',
-  },
-  {
-    id: 'prod-cma-001',
-    name: 'BSTM Specialized Uniform',
-    category: 'CMA',
-    organization: 'BSTM',
-    price: 1000.0,
-    stock: 25,
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: IMG('BSTM.jpg'),
-    imageAlt: 'BSTM specialized uniform',
-    description: 'BSTM specialized uniform (Top P500 / Bottom P500).',
-  },
-  {
-    id: 'prod-cma-002',
-    name: 'BSHM Specialized Uniform',
-    category: 'CMA',
-    organization: 'BSHM',
-    price: 1000.0,
-    stock: 25,
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: IMG('BSHM.jpg'),
-    imageAlt: 'BSHM specialized uniform',
-    description: 'BSHM specialized uniform (Top P500 / Bottom P500).',
-  },
-  {
-    id: 'prod-bsa-001',
-    name: 'BSA Specialized Uniform',
-    category: 'BSA',
-    organization: 'BSA',
-    price: 1000.0,
-    stock: 25,
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: IMG('BSA SPECIALIZED UNIF.jpg'),
-    imageAlt: 'BSA specialized uniform',
-    description: 'BSA specialized uniform (Top P500 / Bottom P500).',
-  },
-  {
-    id: 'prod-bsa-002',
-    name: 'Junior Philippine Institution of Accountancy Shirt',
-    category: 'BSA',
-    organization: 'JPIA',
-    price: 350.0,
-    stock: 40,
-    sizes: ['S', 'M', 'L', 'XL'],
-    image: IMG('JPIA ORG SHIRT.jpg'),
-    imageAlt: 'JPIA shirt',
-    description: 'Junior Philippine Institution of Accountancy shirt.',
-  },
-  {
-    id: 'prod-bsba-001',
-    name: 'BSBA Specialized Uniform',
-    category: 'BSBA',
-    organization: 'BSBA',
-    price: 1000.0,
-    stock: 25,
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: IMG('BSBA UNIF.jpg'),
-    imageAlt: 'BSBA specialized uniform',
-    description: 'BSBA specialized uniform (Top P500 / Bottom P500).',
-  },
-  {
-    id: 'prod-cahs-001',
-    name: 'CAHS Scrub',
-    category: 'CAHS',
-    organization: 'CAHS',
-    price: 1000.0,
-    stock: 30,
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: IMG('CAHS SCRUB.jpg'),
-    imageAlt: 'CAHS scrub',
-    description: 'CAHS scrub (Top P500 / Bottom P500).',
-  },
-  {
-    id: 'prod-cahs-002',
-    name: 'Vanguards Shirt',
-    category: 'CAHS',
-    organization: 'Vanguards',
-    price: 600.0,
-    stock: 30,
-    sizes: ['S', 'M', 'L', 'XL'],
-    image: IMG('VANGUARDS SHIRT.jpg'),
-    imageAlt: 'Vanguards shirt',
-    description: 'Vanguards organization shirt.',
-  },
-  {
-    id: 'prod-cahs-003',
-    name: 'CAHS Classroom Uniform',
-    category: 'CAHS',
-    organization: 'CAHS',
-    price: 1000.0,
-    stock: 30,
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: IMG('CLASSROOM UNIFORM.jpg'),
-    imageAlt: 'CAHS classroom uniform',
-    description: 'CAHS classroom uniform (Top P500 / Bottom P500).',
-  },
-  {
-    id: 'prod-cahs-004',
-    name: 'CAHS Clinical Internship Uniform',
-    category: 'CAHS',
-    organization: 'CAHS',
-    price: 1000.0,
-    stock: 20,
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: IMG('CLINICAL INTERNSHIP UNIF.jpg'),
-    imageAlt: 'CAHS clinical internship uniform',
-    description: 'CAHS clinical internship uniform (Top P500 / Bottom P500).',
-  },
-  {
-    id: 'prod-bsn-001',
-    name: 'BSN Specialized Uniform',
-    category: 'CAHS',
-    organization: 'BSN',
-    price: 1000.0,
-    stock: 25,
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: IMG('BSN SPECIALIZED UNIFORM.jpg'),
-    imageAlt: 'BSN specialized uniform',
-    description: 'BSN specialized uniform (Top P500 / Bottom P500).',
-  },
-  {
-    id: 'prod-bsn-002',
-    name: 'Nursing Type B Uniform',
-    category: 'CAHS',
-    organization: 'BSN',
-    price: 1000.0,
-    stock: 25,
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: IMG('TYPE B UNIF.jpg'),
-    imageAlt: 'Nursing Type B uniform',
-    description: 'Nursing Type B uniform.',
-  },
-  {
-    id: 'prod-bsn-003',
-    name: 'Nursing Jersey',
-    category: 'CAHS',
-    organization: 'BSN',
-    price: 700.0,
-    stock: 30,
-    sizes: ['S', 'M', 'L', 'XL'],
-    image: IMG('NURSING JERSEY.jpg'),
-    imageAlt: 'Nursing jersey',
-    description: 'Official Nursing jersey.',
-  },
-  {
-    id: 'prod-bsrt-001',
-    name: 'BSRT Type B Uniform',
-    category: 'CAHS',
-    organization: 'BSRT',
-    price: 1000.0,
-    stock: 25,
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: IMG('TYPE B UNIF (1).jpg'),
-    imageAlt: 'BSRT Type B uniform',
-    description: 'BSRT Type B uniform.',
-  },
-  {
-    id: 'prod-bsmt-001',
-    name: 'MLS Type B Uniform',
-    category: 'CAHS',
-    organization: 'BSMT',
-    price: 1000.0,
-    stock: 25,
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    image: IMG('MED LAB TYPE B.jpg'),
-    imageAlt: 'MLS Type B uniform',
-    description: 'MLS Type B uniform.',
-  },
-  {
-    id: 'prod-org-llh-001',
-    name: 'La Liga Historia Uniform',
-    category: 'Interest Based Organizations',
-    organization: 'La Liga Historia',
-    price: 500.0,
-    stock: 25,
-    sizes: ['S', 'M', 'L', 'XL'],
-    image: IMG('LA LIGA HISTORIA UNIFORM.jpg'),
-    imageAlt: 'La Liga Historia uniform',
-    description: 'La Liga Historia organization uniform.',
-  },
-  {
-    id: 'prod-org-llh-002',
-    name: 'La Liga Historia ID Lace',
-    category: 'Interest Based Organizations',
-    organization: 'La Liga Historia',
-    price: 80.0,
-    stock: 100,
-    sizes: ['N/A'],
-    image: IMG('LA LIGA HISTORIA ID LACE.jpg'),
-    imageAlt: 'La Liga Historia ID lace',
-    description: 'La Liga Historia ID lace.',
-  },
-  {
-    id: 'prod-org-masid-001',
-    name: 'MASID Uniform',
-    category: 'Interest Based Organizations',
-    organization: 'MASID',
-    price: 500.0,
-    stock: 25,
-    sizes: ['S', 'M', 'L', 'XL'],
-    image: IMG('MASID UNIFORM.jpg'),
-    imageAlt: 'MASID uniform',
-    description: 'MASID organization uniform.',
-  },
-  {
-    id: 'prod-org-masid-002',
-    name: 'MASID ID Lace',
-    category: 'Interest Based Organizations',
-    organization: 'MASID',
-    price: 80.0,
-    stock: 100,
-    sizes: ['N/A'],
-    image: IMG('MASID ID LACE.jpg'),
-    imageAlt: 'MASID ID lace',
-    description: 'MASID ID lace.',
-  },
-  {
-    id: 'prod-org-btl-001',
-    name: 'Behind The Lens Uniform',
-    category: 'Interest Based Organizations',
-    organization: 'Behind The Lens',
-    price: 350.0,
-    stock: 25,
-    sizes: ['S', 'M', 'L', 'XL'],
-    image: IMG('BEHIND THE LENS UNIFORM.jpg'),
-    imageAlt: 'Behind The Lens uniform',
-    description: 'Behind The Lens organization uniform.',
-  },
+  /* ===== GENERAL ===== */
+  createProduct(
+    'prod-gen-001',
+    'SJC ID Lace',
+    'General',
+    'Institutional',
+    80,
+    100,
+    ['N/A'],
+    'Official Saint Jude College ID lace with safety clip.'
+  ),
+  createProduct(
+    'prod-gen-002',
+    'SJC Foundation Week Shirt',
+    'General',
+    'Institutional',
+    350,
+    50,
+    ['S', 'M', 'L', 'XL', '2XL'],
+    'Commemorative Foundation Week shirt.'
+  ),
+  createProduct(
+    'prod-gen-003',
+    'SJC Educational Tour Shirt',
+    'General',
+    'Institutional',
+    350,
+    50,
+    ['S', 'M', 'L', 'XL', '2XL'],
+    'Official Educational Tour shirt.'
+  ),
+  createProduct(
+    'prod-gen-004',
+    'CSDL/CSG Uniform',
+    'General',
+    'CSDL/CSG',
+    500,
+    30,
+    ['S', 'M', 'L', 'XL'],
+    'Official CSDL/CSG organization uniform.'
+  ),
+
+  /* ===== COLLEGE ===== */
+  createProduct(
+    'prod-col-001',
+    'College General Uniform Set',
+    'College',
+    'Institutional',
+    1000,
+    40,
+    ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+    'College general uniform set (Top P500 / Bottom P500).'
+  ),
+  createProduct(
+    'prod-col-002',
+    'College Specialized Uniform',
+    'College',
+    'Institutional',
+    1000,
+    40,
+    ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+    'College specialized uniform (Top P500 / Bottom P500).'
+  ),
+  createProduct(
+    'prod-col-003',
+    'PE Uniform Set',
+    'College',
+    'Athletic Department',
+    1000,
+    35,
+    ['S', 'M', 'L', 'XL', '2XL'],
+    'Official PE uniform set.'
+  ),
+
+  /* ===== SHS ===== */
+  createProduct(
+    'prod-shs-001',
+    'SHS General Uniform Set',
+    'SHS',
+    'Institutional',
+    1000,
+    40,
+    ['XS', 'S', 'M', 'L', 'XL'],
+    'SHS general uniform set (Top P500 / Bottom P500).'
+  ),
+  createProduct(
+    'prod-shs-002',
+    'SHS Specialized Uniform Set',
+    'SHS',
+    'Institutional',
+    1000,
+    40,
+    ['XS', 'S', 'M', 'L', 'XL'],
+    'SHS specialized uniform set (Top P500 / Bottom P500).'
+  ),
+  createProduct(
+    'prod-shs-003',
+    'SHS SC Uniform',
+    'SHS',
+    'SHS Student Council',
+    500,
+    25,
+    ['S', 'M', 'L', 'XL'],
+    'SHS Student Council uniform.'
+  ),
+  createProduct(
+    'prod-shs-004',
+    'SHS PE Uniform Top',
+    'SHS',
+    'Athletic Department',
+    300,
+    50,
+    ['S', 'M', 'L', 'XL'],
+    'SHS PE uniform top.'
+  ),
+
+  /* ===== CAS ===== */
+  createProduct(
+    'prod-cas-001',
+    'NSTP Uniform',
+    'CAS',
+    'NSTP',
+    500,
+    30,
+    ['S', 'M', 'L', 'XL'],
+    'Official NSTP uniform.'
+  ),
+
+  /* ===== CITE ===== */
+  createProduct(
+    'prod-cite-001',
+    'CITE Shirt',
+    'CITE',
+    'CITE Department',
+    350,
+    40,
+    ['S', 'M', 'L', 'XL', '2XL'],
+    'Official CITE department shirt.'
+  ),
+  createProduct(
+    'prod-cite-002',
+    'CITE Internship Uniform',
+    'CITE',
+    'CITE Department',
+    1000,
+    20,
+    ['S', 'M', 'L', 'XL'],
+    'CITE internship uniform.'
+  ),
+  createProduct(
+    'prod-cite-003',
+    'SSITE Org Shirt',
+    'CITE',
+    'SSITE',
+    350,
+    40,
+    ['S', 'M', 'L', 'XL'],
+    'SSITE organization shirt.'
+  ),
+  createProduct(
+    'prod-cite-004',
+    'SSITE Windbreaker',
+    'CITE',
+    'SSITE',
+    1000,
+    15,
+    ['S', 'M', 'L', 'XL', '2XL'],
+    'SSITE organization windbreaker.'
+  ),
+  createProduct(
+    'prod-cite-005',
+    'CITE ID Lace',
+    'CITE',
+    'CITE Department',
+    80,
+    100,
+    ['N/A'],
+    'Official CITE ID lace.'
+  ),
+  createProduct(
+    'prod-cis-001',
+    'CISE Shirt',
+    'CITE',
+    'CISE',
+    350,
+    40,
+    ['S', 'M', 'L', 'XL'],
+    'Official CISE organization shirt.'
+  ),
+
+  /* ===== COED ===== */
+  createProduct(
+    'prod-coed-001',
+    'BSED Specialized Uniform',
+    'COED',
+    'COED',
+    1000,
+    30,
+    ['XS', 'S', 'M', 'L', 'XL'],
+    'BSED specialized uniform (Top P500 / Bottom P500).'
+  ),
+
+  /* ===== CCJE ===== */
+  createProduct(
+    'prod-ccje-001',
+    'BSCRIM Type A Specialized Uniform',
+    'CCJE',
+    'CCJE',
+    1000,
+    25,
+    ['S', 'M', 'L', 'XL'],
+    'BSCRIM Type A specialized uniform.'
+  ),
+  createProduct(
+    'prod-ccje-002',
+    'BSCRIM Type B Specialized Uniform',
+    'CCJE',
+    'CCJE',
+    1000,
+    25,
+    ['S', 'M', 'L', 'XL'],
+    'BSCRIM Type B specialized uniform.'
+  ),
+  createProduct(
+    'prod-ccje-003',
+    'Criminal Justice SC Uniform',
+    'CCJE',
+    'Criminal Justice Student Council',
+    500,
+    25,
+    ['S', 'M', 'L', 'XL'],
+    'Criminal Justice Student Council uniform.'
+  ),
+
+  /* ===== CMA ===== */
+  createProduct(
+    'prod-cma-001',
+    'BSTM Specialized Uniform',
+    'CMA',
+    'BSTM',
+    1000,
+    25,
+    ['XS', 'S', 'M', 'L', 'XL'],
+    'BSTM specialized uniform (Top P500 / Bottom P500).'
+  ),
+  createProduct(
+    'prod-cma-002',
+    'BSHM Specialized Uniform',
+    'CMA',
+    'BSHM',
+    1000,
+    25,
+    ['XS', 'S', 'M', 'L', 'XL'],
+    'BSHM specialized uniform (Top P500 / Bottom P500).'
+  ),
+
+  /* ===== BSA ===== */
+  createProduct(
+    'prod-bsa-001',
+    'BSA Specialized Uniform',
+    'BSA',
+    'BSA',
+    1000,
+    25,
+    ['XS', 'S', 'M', 'L', 'XL'],
+    'BSA specialized uniform (Top P500 / Bottom P500).'
+  ),
+  createProduct(
+    'prod-bsa-002',
+    'Junior Philippine Institution of Accountancy Shirt',
+    'BSA',
+    'JPIA',
+    350,
+    40,
+    ['S', 'M', 'L', 'XL'],
+    'Junior Philippine Institution of Accountancy shirt.'
+  ),
+
+  /* ===== BSBA ===== */
+  createProduct(
+    'prod-bsba-001',
+    'BSBA Specialized Uniform',
+    'BSBA',
+    'BSBA',
+    1000,
+    25,
+    ['XS', 'S', 'M', 'L', 'XL'],
+    'BSBA specialized uniform (Top P500 / Bottom P500).'
+  ),
+
+  /* ===== CAHS ===== */
+  createProduct(
+    'prod-cahs-001',
+    'CAHS Scrub',
+    'CAHS',
+    'CAHS',
+    1000,
+    30,
+    ['XS', 'S', 'M', 'L', 'XL'],
+    'CAHS scrub (Top P500 / Bottom P500).'
+  ),
+  createProduct(
+    'prod-cahs-002',
+    'Vanguards Shirt',
+    'CAHS',
+    'Vanguards',
+    600,
+    30,
+    ['S', 'M', 'L', 'XL'],
+    'Vanguards organization shirt.'
+  ),
+  createProduct(
+    'prod-cahs-003',
+    'CAHS Classroom Uniform',
+    'CAHS',
+    'CAHS',
+    1000,
+    30,
+    ['XS', 'S', 'M', 'L', 'XL'],
+    'CAHS classroom uniform (Top P500 / Bottom P500).'
+  ),
+  createProduct(
+    'prod-cahs-004',
+    'CAHS Clinical Internship Uniform',
+    'CAHS',
+    'CAHS',
+    1000,
+    20,
+    ['XS', 'S', 'M', 'L', 'XL'],
+    'CAHS clinical internship uniform (Top P500 / Bottom P500).'
+  ),
+  createProduct(
+    'prod-bsn-001',
+    'BSN Specialized Uniform',
+    'CAHS',
+    'BSN',
+    1000,
+    25,
+    ['XS', 'S', 'M', 'L', 'XL'],
+    'BSN specialized uniform (Top P500 / Bottom P500).'
+  ),
+  createProduct(
+    'prod-bsn-002',
+    'Nursing Type B Uniform',
+    'CAHS',
+    'BSN',
+    1000,
+    25,
+    ['XS', 'S', 'M', 'L', 'XL'],
+    'Nursing Type B uniform.'
+  ),
+  createProduct(
+    'prod-bsn-003',
+    'Nursing Jersey',
+    'CAHS',
+    'BSN',
+    700,
+    30,
+    ['S', 'M', 'L', 'XL'],
+    'Official Nursing jersey.'
+  ),
+  createProduct(
+    'prod-bsrt-001',
+    'BSRT Type B Uniform',
+    'CAHS',
+    'BSRT',
+    1000,
+    25,
+    ['XS', 'S', 'M', 'L', 'XL'],
+    'BSRT Type B uniform.'
+  ),
+  createProduct(
+    'prod-bsmt-001',
+    'MLS Type B Uniform',
+    'CAHS',
+    'BSMT',
+    1000,
+    25,
+    ['XS', 'S', 'M', 'L', 'XL'],
+    'MLS Type B uniform.'
+  ),
+
+  /* ===== INTEREST BASED ORGANIZATIONS ===== */
+  createProduct(
+    'prod-org-llh-001',
+    'La Liga Historia Uniform',
+    'Interest Based Organizations',
+    'La Liga Historia',
+    500,
+    25,
+    ['S', 'M', 'L', 'XL'],
+    'La Liga Historia organization uniform.'
+  ),
+  createProduct(
+    'prod-org-llh-002',
+    'La Liga Historia ID Lace',
+    'Interest Based Organizations',
+    'La Liga Historia',
+    80,
+    100,
+    ['N/A'],
+    'La Liga Historia ID lace.'
+  ),
+  createProduct(
+    'prod-org-masid-001',
+    'MASID Uniform',
+    'Interest Based Organizations',
+    'MASID',
+    500,
+    25,
+    ['S', 'M', 'L', 'XL'],
+    'MASID organization uniform.'
+  ),
+  createProduct(
+    'prod-org-masid-002',
+    'MASID ID Lace',
+    'Interest Based Organizations',
+    'MASID',
+    80,
+    100,
+    ['N/A'],
+    'MASID ID lace.'
+  ),
+  createProduct(
+    'prod-org-btl-001',
+    'Behind The Lens Uniform',
+    'Interest Based Organizations',
+    'Behind The Lens',
+    350,
+    25,
+    ['S', 'M', 'L', 'XL'],
+    'Behind The Lens organization uniform.'
+  ),
 ];
+
+/* ============================================================
+   SEED USERS
+============================================================ */
 
 type SeedUser = Omit<UserRecord, 'passwordHash' | 'passwordSalt' | 'password'> & {
   password: string;
@@ -556,6 +547,10 @@ const SEED_USERS: SeedUser[] = [
   },
 ];
 
+/* ============================================================
+   SEED ORDERS
+============================================================ */
+
 export const MOCK_ORDERS: Order[] = [
   {
     id: 'ORD-2026-1001',
@@ -565,7 +560,14 @@ export const MOCK_ORDERS: Order[] = [
     email: 'student@sjcm.edu.ph',
     phone: '0917 555 0123',
     items: [
-      { id: 'prod-gen-001', name: 'SJC ID Lace', organization: 'Institutional', price: 80.0, qty: 2, size: 'N/A' },
+      {
+        id: 'prod-gen-001',
+        name: 'SJC ID Lace',
+        organization: 'Institutional',
+        price: 80.0,
+        qty: 2,
+        size: 'N/A',
+      },
     ],
     totalAmount: 160.0,
     paymentMethod: 'Over the Counter (Cash)',
@@ -584,7 +586,14 @@ export const MOCK_ORDERS: Order[] = [
     email: 'student@sjcm.edu.ph',
     phone: '0917 555 0123',
     items: [
-      { id: 'prod-cite-001', name: 'CITE Shirt', organization: 'CITE Department', price: 350.0, qty: 1, size: 'L' },
+      {
+        id: 'prod-cite-001',
+        name: 'CITE Shirt',
+        organization: 'CITE Department',
+        price: 350.0,
+        qty: 1,
+        size: 'L',
+      },
     ],
     totalAmount: 350.0,
     paymentMethod: 'GCash / E-Wallet',
@@ -596,6 +605,10 @@ export const MOCK_ORDERS: Order[] = [
     createdAt: '2026-08-12T14:15:00.000Z',
   },
 ];
+
+/* ============================================================
+   SEEDING LOGIC
+============================================================ */
 
 async function toUserRecord(seed: SeedUser): Promise<UserRecord> {
   const { password, ...profile } = seed;
@@ -622,7 +635,7 @@ async function migrateLegacyPasswords(): Promise<void> {
         passwordSalt,
         passwordHash: await hashPassword(password, passwordSalt),
       } satisfies UserRecord;
-    }),
+    })
   );
 
   if (migratedAny) {
@@ -642,7 +655,10 @@ export async function ensureSeeded(): Promise<void> {
   }
 
   if (localStorage.getItem(STORAGE_KEYS.users) === null) {
-    writeStorage(STORAGE_KEYS.users, await Promise.all(SEED_USERS.map(toUserRecord)));
+    writeStorage(
+      STORAGE_KEYS.users,
+      await Promise.all(SEED_USERS.map(toUserRecord))
+    );
     localStorage.setItem(SEED_VERSION_KEY, SEED_VERSION);
     return;
   }

@@ -24,9 +24,18 @@
 
 /* ============================================================
    GLASSY BACKGROUND LAYER
-   Extra semi-transparent layer on top of existing solid theme bg
-   Hindi tinatakpan ang solid color — pinapatungan lang ng subtle image
+   ✅ Solid color dominant + subtle image hint
+   ✅ Yung solid color ay kitang-kita
    ============================================================ */
+
+body {
+  /* ✅ Solid color base — kitang-kita */
+  background: var(--theme-bg-solid);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--theme-text);
+  transition: background 0.5s ease, color 0.3s ease;
+}
 
 body::before {
   content: '';
@@ -38,8 +47,23 @@ body::before {
   background-position: center;
   background-attachment: fixed;
   background-repeat: no-repeat;
-  opacity: 0.34;
-  transition: background 0.5s ease, opacity 0.5s ease;
+
+  /* ✅ Very subtle — image hint lang */
+  opacity: 0.10;
+
+  /* ✅ Blend — i-mix subtly sa solid color */
+  mix-blend-mode: multiply;
+
+  transition:
+    background 0.5s ease,
+    opacity 0.5s ease,
+    mix-blend-mode 0.5s ease;
+}
+
+/* ✅ Dark themes — subtle glow */
+[data-theme-mode='dark'] body::before {
+  mix-blend-mode: screen;
+  opacity: 0.12;
 }
 
 #root,
@@ -49,115 +73,186 @@ body::before {
 }
 
 /* ============================================================
-   THEME-SPECIFIC GLASSY LAYERS — 10 Green Themes
+   THEME-SPECIFIC GLASSY LAYERS — 10 themes
+   ✅ Very subtle image hint (opacity 0.08–0.14)
    ============================================================ */
 
-[data-theme='forest-green'] body::before {
-  background-image:
-    linear-gradient(
-      135deg,
-      rgba(23, 107, 82, 0.35) 0%,
-      rgba(15, 76, 58, 0.25) 50%,
-      rgba(23, 107, 82, 0.4) 100%
-    ),
-    url('/campus.png');
+/* ============================================
+   LIGHT — WARM IVORY FAMILY
+   ============================================ */
+
+[data-theme='warm-ivory'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.10;
 }
 
-[data-theme='emerald-green'] body::before {
-  background-image:
-    linear-gradient(
-      135deg,
-      rgba(8, 127, 91, 0.35) 0%,
-      rgba(5, 102, 69, 0.25) 50%,
-      rgba(8, 127, 91, 0.4) 100%
-    ),
-    url('/campus.png');
+[data-theme='warm-cream'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.09;
 }
 
-[data-theme='dark-green'] body::before {
-  background-image:
-    linear-gradient(
-      135deg,
-      rgba(20, 83, 45, 0.4) 0%,
-      rgba(10, 61, 31, 0.3) 50%,
-      rgba(20, 83, 45, 0.45) 100%
-    ),
-    url('/campus.png');
+[data-theme='soft-almond'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.11;
 }
 
-[data-theme='hunter-green'] body::before {
-  background-image:
-    linear-gradient(
-      135deg,
-      rgba(53, 94, 59, 0.4) 0%,
-      rgba(38, 74, 44, 0.3) 50%,
-      rgba(53, 94, 59, 0.45) 100%
-    ),
-    url('/campus.png');
+[data-theme='pale-sand'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.12;
 }
 
-[data-theme='sage-green'] body::before {
-  background-image:
-    linear-gradient(
-      135deg,
-      rgba(107, 128, 104, 0.35) 0%,
-      rgba(88, 107, 86, 0.25) 50%,
-      rgba(107, 128, 104, 0.4) 100%
-    ),
-    url('/campus.png');
+[data-theme='ivory-mist'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.10;
 }
 
-[data-theme='olive-green'] body::before {
-  background-image:
-    linear-gradient(
-      135deg,
-      rgba(101, 116, 58, 0.4) 0%,
-      rgba(79, 92, 45, 0.3) 50%,
-      rgba(101, 116, 58, 0.45) 100%
-    ),
-    url('/campus.png');
+/* ============================================
+   DARK — MIDNIGHT NAVY FAMILY
+   ============================================ */
+
+[data-theme='midnight-navy'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.12;
+  mix-blend-mode: screen;
 }
 
-[data-theme='jade-green'] body::before {
-  background-image:
-    linear-gradient(
-      135deg,
-      rgba(39, 138, 104, 0.35) 0%,
-      rgba(29, 110, 82, 0.25) 50%,
-      rgba(39, 138, 104, 0.4) 100%
-    ),
-    url('/campus.png');
+[data-theme='deep-navy'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.10;
+  mix-blend-mode: screen;
 }
 
-[data-theme='pine-green'] body::before {
-  background-image:
-    linear-gradient(
-      135deg,
-      rgba(31, 95, 74, 0.35) 0%,
-      rgba(20, 71, 58, 0.25) 50%,
-      rgba(31, 95, 74, 0.4) 100%
-    ),
-    url('/campus.png');
+[data-theme='slate-navy'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.12;
+  mix-blend-mode: screen;
 }
 
-[data-theme='mint-green'] body::before {
-  background-image:
-    linear-gradient(
-      135deg,
-      rgba(76, 175, 131, 0.3) 0%,
-      rgba(61, 142, 105, 0.2) 50%,
-      rgba(76, 175, 131, 0.35) 100%
-    ),
-    url('/campus.png');
+[data-theme='steel-navy'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.11;
+  mix-blend-mode: screen;
 }
 
-[data-theme='sea-green'] body::before {
-  background-image:
-    linear-gradient(
-      135deg,
-      rgba(46, 139, 114, 0.35) 0%,
-      rgba(36, 112, 92, 0.25) 50%,
-      rgba(46, 139, 114, 0.4) 100%
-    ),
-    url('/campus.png');
+[data-theme='ink-navy'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.10;
+  mix-blend-mode: screen;
+}
+
+/* ============================================================
+   TRANSPARENT SHELLS — content wrappers
+   ✅ Solid color base visible sa lahat ng pages
+   ============================================================ */
+
+.dashboard-shell,
+.order-page,
+.catalog-page,
+.cart-page,
+.checkout-page,
+.product-page,
+.settings-shell,
+.profile-shell,
+.auth-shell,
+.register-page {
+  background: transparent !important;
+}
+
+/* ============================================================
+   ✅ SUBTLE GLASS COMPONENTS
+   - Solid color dominant
+   - Glass hint lang (light blur + high opacity)
+   ============================================================ */
+
+/* Panels, cards, modals — mostly solid */
+.settings-panel,
+.dashboard-sidebar,
+.dashboard-summary__card,
+.order-card,
+.od-card,
+.od-rail-card,
+.profile-card,
+.profile-side__card,
+.catalog-card,
+.product-card {
+  /* ✅ High opacity — almost solid */
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+}
+
+/* Dark mode — solid navy with subtle glass */
+[data-theme-mode='dark'] .settings-panel,
+[data-theme-mode='dark'] .dashboard-summary__card,
+[data-theme-mode='dark'] .order-card,
+[data-theme-mode='dark'] .od-card,
+[data-theme-mode='dark'] .od-rail-card,
+[data-theme-mode='dark'] .profile-card,
+[data-theme-mode='dark'] .profile-side__card {
+  background: rgba(22, 33, 58, 0.95);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+}
+
+/* Sidebar — solid with glass hint */
+.settings-sidebar,
+.profile-sidebar,
+.order-sidebar-nav {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+}
+
+[data-theme-mode='dark'] .settings-sidebar,
+[data-theme-mode='dark'] .profile-sidebar,
+[data-theme-mode='dark'] .order-sidebar-nav {
+  background: rgba(22, 33, 58, 0.97);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+}
+
+/* Panels with glass headers */
+.settings-panel__header,
+.od-card__head,
+.profile-card-header {
+  background: rgba(245, 241, 230, 0.6);
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+}
+
+[data-theme-mode='dark'] .settings-panel__header,
+[data-theme-mode='dark'] .od-card__head,
+[data-theme-mode='dark'] .profile-card-header {
+  background: rgba(27, 39, 66, 0.6);
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+}
+
+/* ============================================================
+   ✅ FALLBACK — kung walang backdrop-filter support
+   ============================================================ */
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .settings-panel,
+  .dashboard-sidebar,
+  .dashboard-summary__card,
+  .order-card,
+  .od-card,
+  .od-rail-card,
+  .profile-card,
+  .profile-side__card,
+  .catalog-card,
+  .product-card {
+    background: #ffffff;
+  }
+
+  [data-theme-mode='dark'] .settings-panel,
+  [data-theme-mode='dark'] .dashboard-summary__card,
+  [data-theme-mode='dark'] .order-card,
+  [data-theme-mode='dark'] .od-card,
+  [data-theme-mode='dark'] .od-rail-card,
+  [data-theme-mode='dark'] .profile-card,
+  [data-theme-mode='dark'] .profile-side__card {
+    background: #16213a;
+  }
 }
