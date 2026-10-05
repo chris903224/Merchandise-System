@@ -346,3 +346,89 @@
   height: 100%;
   background: var(--color-surface, #fffcf4);
 }
+/* ============================================================
+   ✅ NOTIFICATION DROPDOWN — solid, readable
+   ============================================================ */
+
+.notification-bell__dropdown {
+  /* ✅ Force solid white */
+  background: #ffffff !important;
+
+  /* ✅ Strong border */
+  border: 1px solid rgba(35, 26, 12, 0.12) !important;
+
+  /* ✅ Strong shadow — readable overlay */
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 16px 40px rgba(0, 0, 0, 0.12),
+    0 32px 64px rgba(0, 0, 0, 0.08) !important;
+
+  /* ✅ Subtle glass hint lang */
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+}
+
+/* ✅ Dark mode — solid navy */
+[data-theme-mode='dark'] .notification-bell__dropdown {
+  background: #1B2742 !important;
+  border-color: rgba(38, 51, 81, 0.6) !important;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 16px 40px rgba(0, 0, 0, 0.5),
+    0 32px 64px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ✅ Header, footer, items — solid backgrounds */
+.notification-bell__header,
+.notification-bell__footer {
+  background: #ffffff;
+}
+
+[data-theme-mode='dark'] .notification-bell__header,
+[data-theme-mode='dark'] .notification-bell__footer {
+  background: #1B2742;
+}
+
+.notification-bell__list {
+  background: #ffffff;
+}
+
+[data-theme-mode='dark'] .notification-bell__list {
+  background: #1B2742;
+}
+
+/* ✅ Notification items */
+.notification-item {
+  background: #ffffff;
+}
+
+[data-theme-mode='dark'] .notification-item {
+  background: #1B2742;
+}
+
+.notification-item:hover {
+  background: rgba(47, 107, 69, 0.04);
+}
+
+[data-theme-mode='dark'] .notification-item:hover {
+  background: rgba(95, 191, 138, 0.08);
+}
+
+.notification-item--unread {
+  background: rgba(63, 106, 134, 0.06);
+}
+
+[data-theme-mode='dark'] .notification-item--unread {
+  background: rgba(127, 168, 217, 0.12);
+}
+
+/* ✅ Notifications page container */
+.notifications-container {
+  background: #ffffff !important;
+  border: 1px solid rgba(35, 26, 12, 0.12) !important;
+}
+
+[data-theme-mode='dark'] .notifications-container {
+  background: #1B2742 !important;
+  border-color: rgba(38, 51, 81, 0.6) !important;
+}

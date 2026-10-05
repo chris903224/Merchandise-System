@@ -1,6 +1,7 @@
 /* ============================================================
    SETTINGS PAGE — full theme-aware layout
-   ============================================================ */
+   ✅ Clean — walang duplicate sidebar rules
+============================================================ */
 
 .settings-shell {
   --sjcm-maroon: var(--theme-primary);
@@ -26,25 +27,12 @@
 }
 
 /* ============================================
-   SIDEBAR
-   ============================================ */
+   SIDEBAR — base (mobile-first, minimal)
+   Desktop rules ay nasa @media (min-width: 1024px) sa dulo
+============================================ */
 .settings-sidebar {
   --sidebar-accent: var(--theme-accent);
   --sidebar-accent-rgb: var(--theme-accent-rgb);
-  --sidebar-bg-from: var(--theme-primary);
-  --sidebar-bg-to: var(--theme-primary-hover);
-
-  display: flex;
-  flex: 0 0 15.5rem;
-  width: 15.5rem;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 1.5rem 1rem;
-  background: linear-gradient(180deg, var(--sidebar-bg-from) 0%, var(--sidebar-bg-to) 100%);
-  color: #f8e9c9;
-  border-right: 1px solid rgba(var(--sidebar-accent-rgb), 0.15);
-  overflow-y: auto;
-  transition: background 0.4s ease, border-color 0.4s ease;
 }
 
 .settings-sidebar__top {
@@ -212,7 +200,7 @@
 
 /* ============================================
    MAIN AREA
-   ============================================ */
+============================================ */
 .settings-main {
   flex: 1 1 auto;
   min-width: 0;
@@ -1077,7 +1065,7 @@
 }
 
 /* ============================================
-   APPEARANCE — exact reference design
+   APPEARANCE
    ============================================ */
 
 .appearance-tabs {
@@ -1276,7 +1264,7 @@
   stroke-width: 3;
 }
 
-/* CURRENT THEME CARD */
+/* CURRENT THEME */
 .appearance-current-theme {
   background: var(--color-surface);
   border: 1px solid var(--color-line);
@@ -1615,126 +1603,551 @@
   }
 }
 
-/* ============================================
-   DESKTOP SIDEBAR — mini rail / hover push
-   ============================================ */
+/* ============================================================
+   DESKTOP SIDEBAR — PREMIUM GLASS
+   ✅ Isa lang ito — walang conflict
+============================================================ */
 
 @media (min-width: 1024px) {
   .settings-sidebar {
     position: fixed;
     top: 50%;
-    left: 1.5rem;
+    left: 1.25rem;
     transform: translateY(-50%);
-    height: auto;
-    width: 4rem;
-    padding: 0.85rem 0.5rem;
 
-    opacity: 1;
-    visibility: visible;
+    width: fit-content;
+    height: auto;
+    padding: 0.75rem 0.65rem;
+
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    align-items: stretch;
     gap: 0;
 
-    background: var(--theme-surface);
-    border: 1px solid var(--theme-border);
-    border-radius: 1.5rem;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 255, 255, 0.65) 50%,
+      rgba(255, 255, 255, 0.75) 100%
+    );
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 1.25rem;
+
     box-shadow:
-      0 4px 6px rgba(0, 0, 0, 0.04),
-      0 12px 32px rgba(0, 0, 0, 0.1);
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.04),
+      0 1px 3px rgba(0, 0, 0, 0.04),
+      0 4px 12px rgba(0, 0, 0, 0.06),
+      0 16px 40px rgba(0, 0, 0, 0.08),
+      0 32px 80px rgba(var(--theme-primary-rgb), 0.06);
 
     overflow: visible;
     z-index: 50;
+    contain: layout;
 
-    transition:
-      width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-      padding 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-      top 0.25s ease,
-      left 0.25s ease,
-      transform 0.25s ease,
-      border-radius 0.25s ease,
-      background 0.3s ease,
-      border-color 0.3s ease,
-      box-shadow 0.3s ease;
+    transition: box-shadow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+      background 0.5s ease, border-color 0.5s ease;
   }
 
-  .settings-sidebar:not(.is-open) .settings-sidebar__brand-copy,
-  .settings-sidebar:not(.is-open) .settings-sidebar__item span,
-  .settings-sidebar:not(.is-open) .settings-sidebar__motto,
-  .settings-sidebar:not(.is-open) .settings-sidebar__campus {
-    opacity: 0;
-    visibility: hidden;
-    width: 0;
-    overflow: hidden;
-    position: absolute;
-    pointer-events: none;
+  .settings-sidebar:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0.8) 50%,
+      rgba(255, 255, 255, 0.9) 100%
+    );
+    border-color: rgba(var(--theme-primary-rgb), 0.2);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.04),
+      0 1px 3px rgba(0, 0, 0, 0.04),
+      0 8px 20px rgba(0, 0, 0, 0.08),
+      0 24px 56px rgba(0, 0, 0, 0.1),
+      0 40px 100px rgba(var(--theme-primary-rgb), 0.1);
   }
 
-  .settings-sidebar:not(.is-open) .settings-sidebar__top {
+  .settings-sidebar .settings-sidebar__top {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
-    flex: 0 0 auto;
-    height: auto;
+    gap: 0.35rem;
     width: 100%;
-    align-items: center;
+    align-items: stretch;
+    contain: layout;
   }
 
-  .settings-sidebar:not(.is-open) .settings-sidebar__nav {
+  .settings-sidebar .settings-sidebar__nav {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.35rem;
     margin: 0;
     width: 100%;
-    align-items: center;
+    align-items: stretch;
+    contain: layout;
   }
 
-  .settings-sidebar:not(.is-open) .settings-sidebar__brand {
+  .settings-sidebar .settings-sidebar__brand,
+  .settings-sidebar .settings-sidebar__brand-copy,
+  .settings-sidebar .settings-sidebar__motto,
+  .settings-sidebar .settings-sidebar__campus,
+  .settings-sidebar .settings-sidebar__bottom,
+  .settings-sidebar .settings-sidebar__pin {
     display: none;
   }
 
-  .settings-sidebar:not(.is-open) .settings-sidebar__item {
+  .settings-sidebar .settings-sidebar__item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.65rem;
+
+    padding: 0.55rem 0.85rem;
+    position: relative;
+
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    height: auto;
+    min-height: 2.5rem;
+    flex: 0 0 auto;
+
+    border-radius: 0.85rem;
+    margin: 0;
+
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: var(--theme-text);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+
+    overflow: visible;
+    z-index: 1;
+
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+    transition: background 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+      color 0.3s ease, box-shadow 0.3s ease,
+      transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+      border-color 0.3s ease;
+  }
+
+  .settings-sidebar .settings-sidebar__item .react-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--theme-text-muted);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.06));
+    transition: color 0.3s ease,
+      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      filter 0.3s ease;
+  }
+
+  .settings-sidebar .settings-sidebar__item span {
+    display: inline-block;
+    max-width: none;
+    opacity: 1;
+    overflow: visible;
+    white-space: nowrap;
+    position: relative;
+    z-index: 2;
+    color: inherit;
+    font-weight: 500;
+    font-size: 0.85rem;
+    letter-spacing: 0.01em;
+    filter: blur(0);
+    transform: translateX(0);
+    pointer-events: auto;
+    transition: color 0.3s ease,
+      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      filter 0.3s ease;
+  }
+
+  .settings-sidebar .settings-sidebar__item:hover {
+    background: linear-gradient(
+      135deg,
+      var(--theme-primary) 0%,
+      var(--theme-primary-hover) 100%
+    );
+    border-color: transparent;
+    color: #ffffff;
+    transform: translateX(3px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.25),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.15),
+      0 4px 8px rgba(var(--theme-primary-rgb), 0.25),
+      0 12px 32px rgba(var(--theme-primary-rgb), 0.35);
+    z-index: 100;
+  }
+
+  .settings-sidebar .settings-sidebar__item:hover .react-icon {
+    color: #ffffff;
+    transform: scale(1.15) rotate(-6deg);
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
+  }
+
+  .settings-sidebar .settings-sidebar__item:hover span {
+    color: #ffffff;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    transform: translateX(1px);
+  }
+
+  .settings-sidebar:hover .settings-sidebar__item:not(:hover) {
+    background: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transform: none;
+  }
+
+  .settings-sidebar:hover .settings-sidebar__item:not(:hover) .react-icon {
+    color: var(--theme-text-muted);
+    transform: none;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.06));
+  }
+
+  .settings-sidebar:hover .settings-sidebar__item:not(:hover) span {
+    color: inherit;
+    font-weight: 500;
+    text-shadow: none;
+  }
+
+  .settings-sidebar .settings-sidebar__item.is-active {
+    background: linear-gradient(
+      135deg,
+      rgba(var(--theme-primary-rgb), 0.15) 0%,
+      rgba(var(--theme-primary-rgb), 0.08) 100%
+    );
+    color: var(--theme-primary);
+    border-color: rgba(var(--theme-primary-rgb), 0.2);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      0 2px 8px rgba(var(--theme-primary-rgb), 0.15);
+  }
+
+  .settings-sidebar .settings-sidebar__item.is-active .react-icon {
+    color: var(--theme-primary);
+    filter: drop-shadow(0 2px 4px rgba(var(--theme-primary-rgb), 0.3));
+  }
+
+  .settings-sidebar .settings-sidebar__item.is-active span {
+    color: var(--theme-primary);
+    font-weight: 700;
+  }
+
+  .settings-sidebar .settings-sidebar__item.is-active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 65%;
+    background: linear-gradient(
+      180deg,
+      var(--theme-accent) 0%,
+      var(--theme-primary) 100%
+    );
+    border-radius: 0 4px 4px 0;
+    z-index: 3;
+    box-shadow:
+      0 0 8px rgba(var(--theme-primary-rgb), 0.5),
+      0 0 16px rgba(var(--theme-primary-rgb), 0.3);
+    animation: settingsActiveBarGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes settingsActiveBarGlow {
+    0%, 100% {
+      box-shadow:
+        0 0 8px rgba(var(--theme-primary-rgb), 0.5),
+        0 0 16px rgba(var(--theme-primary-rgb), 0.3);
+    }
+    50% {
+      box-shadow:
+        0 0 12px rgba(var(--theme-primary-rgb), 0.7),
+        0 0 24px rgba(var(--theme-primary-rgb), 0.4);
+    }
+  }
+  /* ✅ Main offset — iiwas sa fixed sidebar */
+  .settings-main {
+    margin-left: 6rem;
+    transition: margin-left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .settings-shell.is-sidebar-open .settings-main {
+    margin-left: 6rem;
+  }
+
+  .settings-mobile-menu,
+  .settings-backdrop {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  /* ============================================
+     CONTAINER — compact pill, EXPAND sa hover
+  ============================================ */
+  .settings-sidebar {
+    position: fixed;
+    top: 50%;
+    left: 1.25rem;
+    transform: translateY(-50%);
+
+    /* ✅ Compact by default */
+    width: 4rem;
+    height: auto;
+    padding: 0.75rem 0.5rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0;
+
+    /* ✨ Frosted glass */
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 255, 255, 0.65) 50%,
+      rgba(255, 255, 255, 0.75) 100%
+    );
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 1.25rem;
+
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.04),
+      0 1px 3px rgba(0, 0, 0, 0.04),
+      0 4px 12px rgba(0, 0, 0, 0.06),
+      0 16px 40px rgba(0, 0, 0, 0.08),
+      0 32px 80px rgba(var(--theme-primary-rgb), 0.06);
+
+    overflow: visible;
+    z-index: 50;
+    contain: layout;
+
+    transition:
+      width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      padding 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+      background 0.5s ease,
+      border-color 0.5s ease;
+  }
+
+  /* ✅ EXPAND sa hover — lumalabas text */
+  .settings-sidebar:hover {
+    width: fit-content;
+    padding: 0.75rem 0.65rem;
+
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0.8) 50%,
+      rgba(255, 255, 255, 0.9) 100%
+    );
+    border-color: rgba(var(--theme-primary-rgb), 0.2);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.04),
+      0 1px 3px rgba(0, 0, 0, 0.04),
+      0 8px 20px rgba(0, 0, 0, 0.08),
+      0 24px 56px rgba(0, 0, 0, 0.1),
+      0 40px 100px rgba(var(--theme-primary-rgb), 0.1);
+  }
+
+  /* ===== Groups ===== */
+  .settings-sidebar .settings-sidebar__top {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    width: 100%;
+    align-items: center;
+    contain: layout;
+  }
+
+  .settings-sidebar .settings-sidebar__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin: 0;
+    width: 100%;
+    align-items: center;
+    contain: layout;
+  }
+
+  /* ✅ Sa hover ng container — align sa start (para text left-aligned) */
+  .settings-sidebar:hover .settings-sidebar__top,
+  .settings-sidebar:hover .settings-sidebar__nav {
+    align-items: stretch;
+  }
+
+  /* Hide brand at pin at bottom */
+  .settings-sidebar .settings-sidebar__brand,
+  .settings-sidebar .settings-sidebar__brand-copy,
+  .settings-sidebar .settings-sidebar__motto,
+  .settings-sidebar .settings-sidebar__campus,
+  .settings-sidebar .settings-sidebar__bottom,
+  .settings-sidebar .settings-sidebar__pin {
+    display: none;
+  }
+
+  /* ============================================
+     NAV ITEM — compact icon-only by default
+  ============================================ */
+  .settings-sidebar .settings-sidebar__item {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 0;
+
     padding: 0;
     position: relative;
-    border-radius: 0.75rem;
-    transition: all 0.15s ease;
-    margin: 0;
-    color: var(--theme-text-muted);
-    background: transparent;
+
     width: 2.75rem;
+    min-width: 2.75rem;
+    max-width: 2.75rem;
     height: 2.75rem;
-    flex-shrink: 0;
+    min-height: 2.75rem;
+    max-height: 2.75rem;
+    flex: 0 0 2.75rem;
+
+    border-radius: 0.75rem;
+    margin: 0;
+
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--theme-text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+
+    overflow: hidden;
+    z-index: 1;
+
+    transition:
+      background 0.25s ease,
+      color 0.25s ease,
+      width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+      padding 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+      transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  .settings-sidebar:not(.is-open) .settings-sidebar__item .react-icon {
+  /* Icon */
+  .settings-sidebar .settings-sidebar__item .react-icon {
     width: 1.15rem;
     height: 1.15rem;
     color: var(--theme-text-muted);
-    transition: all 0.15s ease;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+
+    transition: color 0.2s ease, transform 0.3s ease;
   }
 
-  .settings-sidebar:not(.is-open) .settings-sidebar__item:hover {
-    background: rgba(var(--theme-primary-rgb), 0.08);
-    color: var(--theme-primary);
+  /* ✅ Text — HIDDEN by default */
+  .settings-sidebar .settings-sidebar__item span {
+    display: inline-block;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+
+    color: inherit;
+    font-weight: 500;
+    font-size: 0.85rem;
+
+    transition:
+      max-width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.2s ease,
+      margin-left 0.3s ease;
   }
 
-  .settings-sidebar:not(.is-open) .settings-sidebar__item:hover .react-icon {
-    color: var(--theme-primary);
+  /* ============================================
+     HOVER sa CONTAINER — lahat lumalabas text
+  ============================================ */
+  .settings-sidebar:hover .settings-sidebar__item {
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    padding: 0.55rem 0.85rem;
+    justify-content: flex-start;
+    gap: 0.65rem;
+    background: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
   }
 
-  .settings-sidebar:not(.is-open) .settings-sidebar__item.is-active {
+  .settings-sidebar:hover .settings-sidebar__item span {
+    max-width: 200px;
+    opacity: 1;
+    margin-left: 0;
+  }
+
+  /* ============================================
+     HOVER sa INDIVIDUAL ITEM — glow + lift
+  ============================================ */
+  .settings-sidebar .settings-sidebar__item:hover {
+    background: linear-gradient(
+      135deg,
+      var(--theme-primary) 0%,
+      var(--theme-primary-hover) 100%
+    );
+    border-color: transparent;
+    color: #ffffff;
+    transform: translateX(3px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.25),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.15),
+      0 4px 8px rgba(var(--theme-primary-rgb), 0.25),
+      0 12px 32px rgba(var(--theme-primary-rgb), 0.35);
+    z-index: 100;
+  }
+
+  .settings-sidebar .settings-sidebar__item:hover .react-icon {
+    color: #ffffff;
+    transform: scale(1.15) rotate(-6deg);
+  }
+
+  .settings-sidebar .settings-sidebar__item:hover span {
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  /* ============================================
+     ACTIVE — green bar + glow
+  ============================================ */
+  .settings-sidebar .settings-sidebar__item.is-active {
     background: rgba(var(--theme-primary-rgb), 0.12);
     color: var(--theme-primary);
   }
 
-  .settings-sidebar:not(.is-open) .settings-sidebar__item.is-active .react-icon {
+  .settings-sidebar .settings-sidebar__item.is-active .react-icon {
     color: var(--theme-primary);
   }
 
-  .settings-sidebar:not(.is-open) .settings-sidebar__item.is-active::before {
+  .settings-sidebar .settings-sidebar__item.is-active span {
+    color: var(--theme-primary);
+    font-weight: 700;
+  }
+
+  /* ✅ Active bar sa loob (default) */
+  .settings-sidebar .settings-sidebar__item.is-active::before {
     content: '';
     position: absolute;
     left: -0.4rem;
@@ -1744,214 +2157,56 @@
     height: 60%;
     background: var(--theme-primary);
     border-radius: 0 3px 3px 0;
+    z-index: 3;
+    transition: left 0.3s ease;
   }
 
-  .settings-sidebar:not(.is-open) .settings-sidebar__bottom {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 0.6rem 0 0;
-    margin-top: 0.5rem;
-    border-top: 1px solid var(--theme-border);
-    width: 100%;
-  }
-
-  .settings-sidebar:not(.is-open) .settings-sidebar__pin {
-    display: none;
-  }
-
-  /* EXPANDED */
-  .settings-sidebar:hover,
-  .settings-sidebar.is-open {
-    top: 0;
+  /* ✅ Sa hover ng container — bar sa loob ng pill */
+  .settings-sidebar:hover .settings-sidebar__item.is-active::before {
     left: 0;
-    transform: translateY(0);
-    height: 100vh;
-    width: 15.5rem;
-    padding: 1.5rem 1rem;
-
+    height: 65%;
     background: linear-gradient(
       180deg,
-      var(--theme-primary) 0%,
-      var(--theme-primary-hover) 100%
+      var(--theme-accent) 0%,
+      var(--theme-primary) 100%
     );
-    border: none;
-    border-right: 1px solid rgba(var(--theme-accent-rgb), 0.15);
-    border-radius: 0;
-    box-shadow: 24px 0 60px rgba(var(--theme-primary-rgb), 0.25);
-
-    flex-direction: column;
-    justify-content: space-between;
+    border-radius: 0 4px 4px 0;
+    box-shadow:
+      0 0 8px rgba(var(--theme-primary-rgb), 0.5),
+      0 0 16px rgba(var(--theme-primary-rgb), 0.3);
+    animation: settingsActiveBarGlow 2s ease-in-out infinite;
   }
 
-  .settings-sidebar:hover .settings-sidebar__top,
-  .settings-sidebar.is-open .settings-sidebar__top {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    padding-bottom: 0;
-    align-items: flex-start;
+  @keyframes settingsActiveBarGlow {
+    0%, 100% {
+      box-shadow:
+        0 0 8px rgba(var(--theme-primary-rgb), 0.5),
+        0 0 16px rgba(var(--theme-primary-rgb), 0.3);
+    }
+    50% {
+      box-shadow:
+        0 0 12px rgba(var(--theme-primary-rgb), 0.7),
+        0 0 24px rgba(var(--theme-primary-rgb), 0.4);
+    }
   }
 
-  .settings-sidebar:hover .settings-sidebar__nav,
-  .settings-sidebar.is-open .settings-sidebar__nav {
-    display: grid;
-    gap: 0.25rem;
-    width: 100%;
-  }
-
-  .settings-sidebar:hover .settings-sidebar__brand,
-  .settings-sidebar.is-open .settings-sidebar__brand {
-    display: flex;
-    justify-content: flex-start;
-    padding: 0.35rem 0.4rem 1rem;
-    margin-top: 0;
-    border-top: none;
-    border-bottom: 1px solid rgba(var(--theme-accent-rgb), 0.2);
-    margin-bottom: 0;
-  }
-
-  .settings-sidebar:hover .settings-sidebar__brand-mark,
-  .settings-sidebar.is-open .settings-sidebar__brand-mark {
-    background: rgba(var(--theme-accent-rgb), 0.15);
-    color: var(--theme-accent);
-    border-color: rgba(var(--theme-accent-rgb), 0.4);
-  }
-
-  .settings-sidebar:hover .settings-sidebar__brand-copy,
-  .settings-sidebar:hover .settings-sidebar__item span,
-  .settings-sidebar:hover .settings-sidebar__motto,
-  .settings-sidebar:hover .settings-sidebar__campus,
-  .settings-sidebar.is-open .settings-sidebar__brand-copy,
-  .settings-sidebar.is-open .settings-sidebar__item span,
-  .settings-sidebar.is-open .settings-sidebar__motto,
-  .settings-sidebar.is-open .settings-sidebar__campus {
-    opacity: 1;
-    visibility: visible;
-    width: auto;
-    overflow: visible;
-    position: static;
-    pointer-events: auto;
-  }
-
-  .settings-sidebar:hover .settings-sidebar__item,
-  .settings-sidebar.is-open .settings-sidebar__item {
-    justify-content: flex-start;
-    padding: 0.65rem 0.75rem;
-    color: rgba(255, 255, 255, 0.75);
-    width: 100%;
-    height: auto;
-    border-radius: 0.5rem;
-  }
-
-  .settings-sidebar:hover .settings-sidebar__item .react-icon,
-  .settings-sidebar.is-open .settings-sidebar__item .react-icon {
-    width: 1rem;
-    height: 1rem;
-    color: rgba(255, 255, 255, 0.7);
-  }
-
-  .settings-sidebar:hover .settings-sidebar__item:hover,
-  .settings-sidebar.is-open .settings-sidebar__item:hover {
-    background: rgba(var(--theme-accent-rgb), 0.15);
-    color: #ffffff;
-  }
-
-  .settings-sidebar:hover .settings-sidebar__item.is-active,
-  .settings-sidebar.is-open .settings-sidebar__item.is-active {
-    background: rgba(var(--theme-accent-rgb), 0.22);
-    color: #ffffff;
-    box-shadow: inset 3px 0 0 var(--theme-accent);
-  }
-
-  .settings-sidebar:hover .settings-sidebar__item.is-active::before,
-  .settings-sidebar.is-open .settings-sidebar__item.is-active::before {
-    display: none;
-  }
-
-  .settings-sidebar:hover .settings-sidebar__pin,
-  .settings-sidebar.is-open .settings-sidebar__pin {
-    display: flex;
-  }
-
-  .settings-sidebar:hover .settings-sidebar__bottom,
-  .settings-sidebar.is-open .settings-sidebar__bottom {
-    display: grid;
-    border-top: 1px solid rgba(var(--theme-accent-rgb), 0.2);
-  }
-
+    /* ✅ Main offset — base offset sa compact sidebar */
   .settings-main {
-    margin-left: 6rem;
-    transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-left: 6rem;                       /* 4rem sidebar + 1.25rem left + gap */
+    transition: margin-left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
+  /* ✅ Kapag NAG-EXPAND ang sidebar (hover) — uurong ang content */
+  body:has(.settings-sidebar:hover) .settings-main {
+    margin-left: 16rem;                      /* Mas malayo — para sa expanded sidebar */
+  }
+
+  /* ✅ Kapag naka-pin/open ang sidebar */
   .settings-shell.is-sidebar-open .settings-main {
-    margin-left: 15.5rem;
-  }
-
+    margin-left: 16rem;
+  } 
   .settings-mobile-menu,
   .settings-backdrop {
-    display: none;
-  }
-
-  .settings-sidebar:not(.is-open) .settings-sidebar__item::after {
-    content: attr(data-label);
-    position: absolute;
-    left: calc(100% + 0.75rem);
-    top: 50%;
-    transform: translateY(-50%) translateX(-4px);
-    background: var(--theme-text);
-    color: var(--theme-surface);
-    padding: 0.5rem 0.85rem;
-    border-radius: 0.5rem;
-    font-size: 0.78rem;
-    font-weight: 600;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    z-index: 70;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  }
-
-  .settings-sidebar:not(.is-open) .settings-sidebar__item:hover::after {
-    opacity: 1;
-    transform: translateY(-50%) translateX(0);
-  }
-}
-
-/* MOBILE — below 1024px */
-@media (max-width: 1023px) {
-  .settings-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    z-index: 60;
-    transform: translateX(-100%);
-    transition: transform 0.22s ease;
-    box-shadow: 24px 0 60px rgba(var(--theme-primary-rgb), 0.25);
-  }
-
-  .settings-sidebar.is-open {
-    transform: translateX(0);
-  }
-
-  .settings-mobile-menu {
-    display: grid;
-  }
-
-  .settings-backdrop {
-    display: block;
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(2px);
-  }
-
-  .settings-hover-zone {
     display: none;
   }
 }

@@ -1,6 +1,6 @@
 // src/pages/DashboardPage.tsx
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowUpRight,
@@ -16,7 +16,6 @@ import {
   User,
   Shield,
   ShoppingCart,
-  Menu,
   ChevronRight,
 } from 'lucide-react';
 import { useApp } from '../store';
@@ -39,7 +38,13 @@ import ProductImage from '../components/ProductImage';
 import type { Order, Product } from '../types';
 import type { Notification } from '../types/notification';
 
-type StatusFilter = 'ALL' | 'Pending' | 'Processing' | 'Ready for Pickup' | 'Claimed' | 'Cancelled';
+type StatusFilter =
+  | 'ALL'
+  | 'Pending'
+  | 'Processing'
+  | 'Ready for Pickup'
+  | 'Claimed'
+  | 'Cancelled';
 
 const sideNavItems = [
   { to: '/', label: 'Home', icon: Home, end: true },
@@ -52,7 +57,7 @@ const sideNavItems = [
 
 /* ============================================
    ORDER CARD
-   ============================================ */
+============================================ */
 function OrderCard({
   order,
   products,
@@ -62,7 +67,10 @@ function OrderCard({
 }) {
   const badge = getOrderStatusBadge(getOrderStatus(order));
   const items = order.items ?? [];
-  const itemCount = items.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
+  const itemCount = items.reduce(
+    (sum, item) => sum + (Number(item.qty) || 0),
+    0
+  );
   const status = getOrderStatus(order);
 
   const isOrdered = true;
@@ -125,7 +133,11 @@ function OrderCard({
           <span className={`order-progress-step ${isOrdered ? 'is-done' : ''}`}>
             <span className="order-progress-step__dot" />
             <span className="order-progress-step__label">Ordered</span>
-            {isOrdered && <span className="order-progress-step__date">{formatDate(getOrderDate(order))}</span>}
+            {isOrdered && (
+              <span className="order-progress-step__date">
+                {formatDate(getOrderDate(order))}
+              </span>
+            )}
           </span>
           <span className={`order-progress-step ${isProcessing ? 'is-done' : ''}`}>
             <span className="order-progress-step__dot" />
@@ -143,7 +155,9 @@ function OrderCard({
       </div>
 
       <div className="order-card__right">
-        <div className="order-card__price">{formatPrice(getOrderTotal(order))}</div>
+        <div className="order-card__price">
+          {formatPrice(getOrderTotal(order))}
+        </div>
         <div className="order-card__payment">
           Payment: {order.paymentMethod || 'Cash on pickup'}
         </div>
@@ -161,7 +175,7 @@ function OrderCard({
 
 /* ============================================
    DASHBOARD PAGE
-   ============================================ */
+============================================ */
 export default function DashboardPage() {
   const { session } = useApp();
   const toast = useToast();
@@ -171,21 +185,19 @@ export default function DashboardPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoadingOrders, setIsLoadingOrders] = useState(true);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isSidebarPinned, setIsSidebarPinned] = useState(false);
 
   /* ✅ BANNER — galing sa Supabase notifications */
-  const [pickupNotification, setPickupNotification] = useState<Notification | null>(null);
-
-  const sidebarRef = useRef<HTMLElement>(null);
-  const hoverZoneRef = useRef<HTMLDivElement>(null);
-  const closeTimerRef = useRef<number | null>(null);
+  const [pickupNotification, setPickupNotification] =
+    useState<Notification | null>(null);
 
   /* Redirect kapag walang session */
   useEffect(() => {
     if (!session) {
       toast('Please sign in to view your dashboard.', 'warning');
-      const timer = window.setTimeout(() => navigate('/login', { replace: true }), 500);
+      const timer = window.setTimeout(
+        () => navigate('/login', { replace: true }),
+        500
+      );
       return () => window.clearTimeout(timer);
     }
   }, [session, navigate, toast]);
@@ -241,14 +253,17 @@ export default function DashboardPage() {
           setPickupNotification(latestPickup ?? null);
         }
       } catch (error) {
-        console.error('[Dashboard] Failed to fetch pickup notification:', error);
+        console.error(
+          '[Dashboard] Failed to fetch pickup notification:',
+          error
+        );
         if (!cancelled) setPickupNotification(null);
       }
     };
 
     loadPickupNotification();
 
-    // ✅ Listen sa real-time updates
+    /* ✅ Listen sa real-time updates */
     const handleUpdate = (e: CustomEvent) => {
       const { userId } = e.detail;
       if (!userId || userId === session.id) {
@@ -256,90 +271,67 @@ export default function DashboardPage() {
       }
     };
 
-    window.addEventListener('notifications-updated', handleUpdate as EventListener);
+    window.addEventListener(
+      'notifications-updated',
+      handleUpdate as EventListener
+    );
 
     return () => {
       cancelled = true;
-      window.removeEventListener('notifications-updated', handleUpdate as EventListener);
+      window.removeEventListener(
+        'notifications-updated',
+        handleUpdate as EventListener
+      );
     };
   }, [session?.id]);
 
-  /* Hover-to-open sidebar */
-  useEffect(() => {
-    const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
-    if (!isDesktop()) return;
-
-    const openSidebar = () => {
-      if (closeTimerRef.current) {
-        window.clearTimeout(closeTimerRef.current);
-        closeTimerRef.current = null;
-      }
-      setIsSidebarOpen(true);
-    };
-
-    const scheduleClose = () => {
-      if (isSidebarPinned) return;
-      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
-      closeTimerRef.current = window.setTimeout(() => {
-        setIsSidebarOpen(false);
-      }, 150);
-    };
-
-    const zone = hoverZoneRef.current;
-    const sidebar = sidebarRef.current;
-    if (!zone || !sidebar) return;
-
-    zone.addEventListener('mouseenter', openSidebar);
-    sidebar.addEventListener('mouseenter', openSidebar);
-    sidebar.addEventListener('mouseleave', scheduleClose);
-    zone.addEventListener('mouseleave', scheduleClose);
-
-    return () => {
-      zone.removeEventListener('mouseenter', openSidebar);
-      sidebar.removeEventListener('mouseenter', openSidebar);
-      sidebar.removeEventListener('mouseleave', scheduleClose);
-      zone.removeEventListener('mouseleave', scheduleClose);
-      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
-    };
-  }, [isSidebarPinned, session]);
-
   const userOrders = useMemo(
-    () => (session ? orders.filter((order) => order.userId === session.id) : []),
+    () =>
+      session ? orders.filter((order) => order.userId === session.id) : [],
     [orders, session]
   );
 
   const filteredOrders = useMemo(
     () =>
       userOrders.filter(
-        (order) => statusFilter === 'ALL' || getOrderStatus(order) === statusFilter
+        (order) =>
+          statusFilter === 'ALL' || getOrderStatus(order) === statusFilter
       ),
     [userOrders, statusFilter]
   );
 
-  const { pendingCount, totalSpent, completedCount, cancelledCount } = useMemo(
-    () => ({
-      pendingCount: userOrders.filter((order) =>
-        ['Pending', 'Processing'].includes(getOrderStatus(order))
-      ).length,
-      totalSpent: userOrders.reduce((sum, order) => sum + getOrderTotal(order), 0),
-      completedCount: userOrders.filter((order) => getOrderStatus(order) === 'Claimed').length,
-      cancelledCount: userOrders.filter((order) => getOrderStatus(order) === 'Cancelled').length,
-    }),
-    [userOrders]
-  );
+  const { pendingCount, totalSpent, completedCount, cancelledCount } =
+    useMemo(
+      () => ({
+        pendingCount: userOrders.filter((order) =>
+          ['Pending', 'Processing'].includes(getOrderStatus(order))
+        ).length,
+        totalSpent: userOrders.reduce(
+          (sum, order) => sum + getOrderTotal(order),
+          0
+        ),
+        completedCount: userOrders.filter(
+          (order) => getOrderStatus(order) === 'Claimed'
+        ).length,
+        cancelledCount: userOrders.filter(
+          (order) => getOrderStatus(order) === 'Cancelled'
+        ).length,
+      }),
+      [userOrders]
+    );
 
   /* ✅ Dismiss banner — mark notification as read sa Supabase */
   const handleDismissBanner = async () => {
     if (!pickupNotification) return;
 
-    // Optimistic update — hide agad
+    /* Optimistic update — hide agad */
     setPickupNotification(null);
 
     try {
       await markNotificationAsRead(pickupNotification.id);
     } catch (error) {
       console.error('[Dashboard] Failed to dismiss banner:', error);
-      // Revert kung nag-fail
+      /* Revert kung nag-fail */
       setPickupNotification(pickupNotification);
     }
   };
@@ -352,47 +344,13 @@ export default function DashboardPage() {
     );
   }
 
-  const getInitials = () => {
-    const name = session.name || '';
-    return (
-      name
-        .split(' ')
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((p) => p[0]?.toUpperCase())
-        .join('') || 'U'
-    );
-  };
-
   return (
-    <div className={`dashboard-shell ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
-      <div ref={hoverZoneRef} className="dashboard-hover-zone" aria-hidden="true" />
-
-      <aside ref={sidebarRef} className={`dashboard-sidebar ${isSidebarOpen ? 'is-open' : ''}`}>
+    <div className="dashboard-shell">
+      {/* ============================================
+          SIDEBAR — compact premium glass
+      ============================================ */}
+      <aside className="dashboard-sidebar">
         <div className="dashboard-sidebar__top">
-          <button
-            type="button"
-            className="dashboard-sidebar__pin"
-            onClick={() => setIsSidebarPinned((p) => !p)}
-            aria-label={isSidebarPinned ? 'Unpin sidebar' : 'Pin sidebar'}
-          >
-            {isSidebarPinned ? <X className="react-icon" /> : <ChevronRight className="react-icon" />}
-          </button>
-
-          <div className="dashboard-sidebar__user">
-            <span className="dashboard-sidebar__avatar">
-              {session.profilePicture ? (
-                <img src={session.profilePicture} alt={session.name} />
-              ) : (
-                <span className="dashboard-sidebar__initials">{getInitials()}</span>
-              )}
-            </span>
-            <span className="dashboard-sidebar__user-copy">
-              <span className="dashboard-sidebar__user-name">{session.name}</span>
-              <span className="dashboard-sidebar__user-role">{session.role}</span>
-            </span>
-          </div>
-
           <nav className="dashboard-sidebar__nav">
             {sideNavItems.map((item) => {
               const Icon = item.icon;
@@ -401,8 +359,9 @@ export default function DashboardPage() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`dashboard-sidebar__item ${isActive ? 'is-active' : ''}`}
-                  onClick={() => setIsSidebarOpen(false)}
+                  className={`dashboard-sidebar__item ${
+                    isActive ? 'is-active' : ''
+                  }`}
                   data-label={item.label}
                 >
                   <Icon className="react-icon" aria-hidden="true" />
@@ -412,31 +371,12 @@ export default function DashboardPage() {
             })}
           </nav>
         </div>
-
-        <div className="dashboard-sidebar__bottom">
-          <p className="dashboard-sidebar__brand">SJCM STORE</p>
-          <p className="dashboard-sidebar__motto">
-            "Official Merchandise
-            <br />
-            for a Stronger SJCM"
-          </p>
-        </div>
       </aside>
 
-      {isSidebarOpen ? (
-        <div className="dashboard-backdrop" onClick={() => setIsSidebarOpen(false)} aria-hidden="true" />
-      ) : null}
-
+      {/* ============================================
+          MAIN
+      ============================================ */}
       <div className="dashboard-main">
-        <button
-          type="button"
-          className="dashboard-mobile-menu"
-          aria-label="Toggle navigation"
-          onClick={() => setIsSidebarOpen((p) => !p)}
-        >
-          {isSidebarOpen ? <X className="react-icon" /> : <Menu className="react-icon" />}
-        </button>
-
         <div className="dashboard-scroll">
           {/* ✅ BANNER — from Supabase notifications */}
           {pickupNotification ? (
@@ -445,7 +385,9 @@ export default function DashboardPage() {
                 <Bell className="react-icon" aria-hidden="true" />
               </span>
               <div className="notice-banner__body">
-                <p className="notice-banner__title">{pickupNotification.title}</p>
+                <p className="notice-banner__title">
+                  {pickupNotification.title}
+                </p>
                 <p className="notice-banner__description">
                   {pickupNotification.message}
                 </p>
@@ -496,7 +438,9 @@ export default function DashboardPage() {
             <select
               className="dashboard-toolbar__select"
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+              onChange={(e) =>
+                setStatusFilter(e.target.value as StatusFilter)
+              }
               aria-label="Filter by status"
             >
               <option value="ALL">All statuses</option>
@@ -513,14 +457,19 @@ export default function DashboardPage() {
               {isLoadingOrders ? (
                 <div className="dashboard-orders-empty">
                   <Clock3 className="react-icon" aria-hidden="true" />
-                  <p className="dashboard-orders-empty__title">Loading orders...</p>
+                  <p className="dashboard-orders-empty__title">
+                    Loading orders...
+                  </p>
                 </div>
               ) : filteredOrders.length === 0 ? (
                 <div className="dashboard-orders-empty">
                   <PackageOpen className="react-icon" aria-hidden="true" />
-                  <p className="dashboard-orders-empty__title">No reservations found</p>
+                  <p className="dashboard-orders-empty__title">
+                    No reservations found
+                  </p>
                   <p className="dashboard-orders-empty__description">
-                    Your orders will appear here once you place a campus pickup reservation.
+                    Your orders will appear here once you place a campus
+                    pickup reservation.
                   </p>
                   <Link to="/catalog" className="button button--primary">
                     Browse catalog
@@ -529,7 +478,11 @@ export default function DashboardPage() {
               ) : (
                 <ul className="order-list">
                   {filteredOrders.map((order) => (
-                    <OrderCard key={getOrderId(order)} order={order} products={products} />
+                    <OrderCard
+                      key={getOrderId(order)}
+                      order={order}
+                      products={products}
+                    />
                   ))}
                 </ul>
               )}
@@ -537,16 +490,28 @@ export default function DashboardPage() {
               {filteredOrders.length > 0 ? (
                 <div className="order-pagination">
                   <span>
-                    Showing 1–{filteredOrders.length} of {filteredOrders.length} orders
+                    Showing 1–{filteredOrders.length} of{' '}
+                    {filteredOrders.length} orders
                   </span>
                   <div className="order-pagination__controls">
-                    <button type="button" className="order-pagination__btn" disabled>
+                    <button
+                      type="button"
+                      className="order-pagination__btn"
+                      disabled
+                    >
                       ‹
                     </button>
-                    <button type="button" className="order-pagination__btn is-active">
+                    <button
+                      type="button"
+                      className="order-pagination__btn is-active"
+                    >
                       1
                     </button>
-                    <button type="button" className="order-pagination__btn" disabled>
+                    <button
+                      type="button"
+                      className="order-pagination__btn"
+                      disabled
+                    >
                       ›
                     </button>
                   </div>
@@ -560,31 +525,46 @@ export default function DashboardPage() {
                 <ul className="dashboard-summary__list">
                   <li className="dashboard-summary__item">
                     <span className="dashboard-summary__icon">
-                      <ReceiptText className="react-icon" aria-hidden="true" />
+                      <ReceiptText
+                        className="react-icon"
+                        aria-hidden="true"
+                      />
                     </span>
-                    <span className="dashboard-summary__label">Total Orders</span>
-                    <strong className="dashboard-summary__value">{userOrders.length}</strong>
+                    <span className="dashboard-summary__label">
+                      Total Orders
+                    </span>
+                    <strong className="dashboard-summary__value">
+                      {userOrders.length}
+                    </strong>
                   </li>
                   <li className="dashboard-summary__item">
                     <span className="dashboard-summary__icon dashboard-summary__icon--success">
                       <Package className="react-icon" aria-hidden="true" />
                     </span>
                     <span className="dashboard-summary__label">Completed</span>
-                    <strong className="dashboard-summary__value">{completedCount}</strong>
+                    <strong className="dashboard-summary__value">
+                      {completedCount}
+                    </strong>
                   </li>
                   <li className="dashboard-summary__item">
                     <span className="dashboard-summary__icon dashboard-summary__icon--warning">
                       <Clock3 className="react-icon" aria-hidden="true" />
                     </span>
-                    <span className="dashboard-summary__label">Processing</span>
-                    <strong className="dashboard-summary__value">{pendingCount}</strong>
+                    <span className="dashboard-summary__label">
+                      Processing
+                    </span>
+                    <strong className="dashboard-summary__value">
+                      {pendingCount}
+                    </strong>
                   </li>
                   <li className="dashboard-summary__item">
                     <span className="dashboard-summary__icon dashboard-summary__icon--danger">
                       <X className="react-icon" aria-hidden="true" />
                     </span>
                     <span className="dashboard-summary__label">Cancelled</span>
-                    <strong className="dashboard-summary__value">{cancelledCount}</strong>
+                    <strong className="dashboard-summary__value">
+                      {cancelledCount}
+                    </strong>
                   </li>
                 </ul>
 

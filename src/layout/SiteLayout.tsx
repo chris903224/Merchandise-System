@@ -1,19 +1,17 @@
 // src/layout/SiteLayout.tsx
 
 import { Outlet } from 'react-router-dom';
-import Navbar from '../components/Navbar';   // ✅ tamang path (../components/)
-import Footer from '../components/Footer';   // ✅ kung nasa components/ din ang Footer
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 export default function SiteLayout() {
-  console.log('SiteLayout rendering');
-
   return (
-    <>
+    <div className="site-layout">      {/* ✅ IDINAGDAG — wrapper */}
       <Navbar />
       <main>
         <Outlet />
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

@@ -2,6 +2,40 @@
    LAYOUT — page shell, headers, buttons, panels, footer
    ============================================================ */
 
+/* ✅ CRITICAL — reset html/body/#root, walang min-height */
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+}
+
+/* ============================================================
+   SITE LAYOUT — para sa SiteLayout.tsx wrapper
+   ✅ Walang gap — natural height lang ang main
+============================================================ */
+
+.site-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.site-layout > main {
+  /* ✅ Hindi nag-e-expand — natural height lang */
+  flex: 0 1 auto;
+}
+
+.site-layout > .site-footer {
+  /* ✅ Footer naka-pin sa pinakababa */
+  margin-top: auto;
+}
+
+/* ============================================================
+   PAGE SHELL
+============================================================ */
+
 .page-shell {
   width: min(100% - 2.5rem, 78rem);
   margin: 0 auto;
@@ -52,6 +86,10 @@
   height: 32rem;
   background: radial-gradient(circle, var(--glow-info), transparent 72%);
 }
+
+/* ============================================================
+   PAGE HEADER
+============================================================ */
 
 .page-header {
   display: flex;
@@ -112,6 +150,10 @@
   content: '';
 }
 
+/* ============================================================
+   PANELS & CARDS
+============================================================ */
+
 .panel,
 .glass-card {
   border: 1px solid var(--color-line);
@@ -125,7 +167,10 @@
 }
 
 .glass-card-hover {
-  transition: border-color 200ms var(--ease-standard), background 200ms var(--ease-standard), box-shadow 200ms var(--ease-standard), transform 200ms var(--ease-standard);
+  transition: border-color 200ms var(--ease-standard),
+    background 200ms var(--ease-standard),
+    box-shadow 200ms var(--ease-standard),
+    transform 200ms var(--ease-standard);
 }
 
 .glass-card-hover:hover {
@@ -135,6 +180,10 @@
   transform: translateY(-3px);
 }
 
+/* ============================================================
+   GLASS NAV
+============================================================ */
+
 .glass-nav {
   position: sticky;
   top: 0;
@@ -143,6 +192,10 @@
   background: rgba(255, 252, 244, 0.92);
   backdrop-filter: blur(16px);
 }
+
+/* ============================================================
+   BUTTONS
+============================================================ */
 
 .button {
   display: inline-flex;
@@ -156,7 +209,11 @@
   font-size: 0.78rem;
   font-weight: 700;
   line-height: 1;
-  transition: border-color 180ms var(--ease-standard), background 180ms var(--ease-standard), color 180ms var(--ease-standard), transform 180ms var(--ease-standard), opacity 180ms var(--ease-standard);
+  transition: border-color 180ms var(--ease-standard),
+    background 180ms var(--ease-standard),
+    color 180ms var(--ease-standard),
+    transform 180ms var(--ease-standard),
+    opacity 180ms var(--ease-standard);
 }
 
 .button--primary {
@@ -214,6 +271,10 @@
   opacity: 0.68;
 }
 
+/* ============================================================
+   ICON BUTTON
+============================================================ */
+
 .icon-button {
   display: inline-grid;
   width: 2.35rem;
@@ -223,7 +284,10 @@
   border-radius: var(--radius-sm);
   background: var(--color-surface-raised);
   color: var(--color-text-muted);
-  transition: border-color 180ms var(--ease-standard), background 180ms var(--ease-standard), color 180ms var(--ease-standard), transform 180ms var(--ease-standard);
+  transition: border-color 180ms var(--ease-standard),
+    background 180ms var(--ease-standard),
+    color 180ms var(--ease-standard),
+    transform 180ms var(--ease-standard);
 }
 
 .icon-button:hover,
@@ -232,6 +296,10 @@
   background: var(--color-brand-soft);
   color: var(--color-brand);
 }
+
+/* ============================================================
+   TEXT LINK
+============================================================ */
 
 .text-link {
   display: inline-flex;
@@ -249,6 +317,11 @@
 .button--pill {
   border-radius: 999px;
 }
+
+/* ============================================================
+   SITE FOOTER — fallback (kung walang footer.css override)
+   ✅ Ang footer.css mo ang may full styling, ito lang backup
+============================================================ */
 
 .site-footer {
   margin-top: auto;
@@ -276,61 +349,202 @@
 .site-footer a:hover {
   color: var(--color-text);
 }
-/* ============================================
-   SIDEBAR PUSH — header at main content
-   Kapag bukas ang sidebar sa Profile, Settings,
-   Dashboard, o Order Details, nag-push sa kanan
-   yung navbar at main content
-   ============================================ */
 
-@media (min-width: 1024px) {
-  /* ============ PROFILE ============ */
-  body:has(.profile-sidebar.is-open) .site-nav {
-    padding-left: 15.5rem;
-    transition: padding-left 0.3s ease;
+/* ============================================================
+   ✅ EXPANDABLE NAV — base sa DevFlash reference
+   Compact horizontal pill na nag-e-expand on hover
+   Ito ang sumasalo sa lumang sidebar push rules
+============================================================ */
+
+.expandable-nav {
+  position: sticky;
+  top: 4.5rem;                          /* nasa ilalim ng topbar */
+  z-index: 30;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 1.25rem auto;
+  padding: 0.5rem;
+
+  width: fit-content;
+  max-width: calc(100% - 2rem);
+
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  border-radius: 1.25rem;
+
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.04),
+    0 12px 32px rgba(0, 0, 0, 0.08);
+
+  transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.expandable-nav:hover {
+  box-shadow:
+    0 6px 12px rgba(0, 0, 0, 0.06),
+    0 16px 40px rgba(0, 0, 0, 0.12);
+}
+
+.expandable-nav__inner {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* --- Individual link (compact pill) --- */
+.expandable-nav__link {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+
+  height: 3rem;
+  padding: 0 0.85rem;
+  min-width: 3rem;
+
+  border-radius: 1rem;
+  color: #6b7280;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.88rem;
+  white-space: nowrap;
+
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.expandable-nav__icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.expandable-nav__icon-wrap .react-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  color: currentColor;
+  transition: color 0.2s ease;
+}
+
+/* Label — hidden by default */
+.expandable-nav__label {
+  display: inline-block;
+  margin-left: 0;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+
+  transition:
+    max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s ease 0.08s;
+}
+
+/* --- Hover / active --- */
+.expandable-nav__link:hover {
+  background: rgba(107, 114, 128, 0.1);
+  color: #111827;
+}
+
+.expandable-nav__link:hover .react-icon {
+  color: #111827;
+}
+
+.expandable-nav__link.is-active {
+  background: linear-gradient(135deg, #c7d2fe 0%, #e0e7ff 100%);
+  color: #4338ca;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.18);
+}
+
+.expandable-nav__link.is-active .react-icon {
+  color: #4338ca;
+}
+
+/* --- ✅ EXPANDED STATE — hover yung container --- */
+.expandable-nav:hover .expandable-nav__label,
+.expandable-nav:focus-within .expandable-nav__label {
+  max-width: 200px;
+  margin-left: 0.6rem;
+  opacity: 1;
+}
+
+.expandable-nav:hover .expandable-nav__link,
+.expandable-nav:focus-within .expandable-nav__link {
+  padding-right: 1rem;
+}
+
+/* --- Mobile: horizontal scroll, walang expand --- */
+@media (max-width: 768px) {
+  .expandable-nav {
+    max-width: calc(100% - 2rem);
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 1rem auto;
   }
 
-  body:has(.profile-sidebar.is-open) main,
-  body:has(.profile-sidebar.is-open) .page-shell {
-    margin-left: 15.5rem;
-    transition: margin-left 0.3s ease;
+  .expandable-nav::-webkit-scrollbar {
+    display: none;
   }
 
-  /* ============ SETTINGS ============ */
-  body:has(.settings-sidebar.is-open) .site-nav {
-    padding-left: 15.5rem;
-    transition: padding-left 0.3s ease;
+  .expandable-nav__link {
+    height: 2.75rem;
+    padding: 0 0.75rem;
+    min-width: 2.75rem;
   }
 
-  body:has(.settings-sidebar.is-open) main,
-  body:has(.settings-sidebar.is-open) .page-shell {
-    margin-left: 15.5rem;
-    transition: margin-left 0.3s ease;
-  }
-
-  /* ============ DASHBOARD ============ */
-  body:has(.dashboard-sidebar.is-open) .site-nav {
-    padding-left: 15.5rem;
-    transition: padding-left 0.3s ease;
-  }
-
-  body:has(.dashboard-sidebar.is-open) main,
-  body:has(.dashboard-sidebar.is-open) .page-shell,
-  body:has(.dashboard-sidebar.is-open) .dashboard-main {
-    margin-left: 15.5rem;
-    transition: margin-left 0.3s ease;
-  }
-
-  /* ============ ORDER DETAILS ============ */
-  body:has(.order-sidebar-nav.is-open) .site-nav {
-    padding-left: 15.5rem;
-    transition: padding-left 0.3s ease;
-  }
-
-  body:has(.order-sidebar-nav.is-open) main,
-  body:has(.order-sidebar-nav.is-open) .page-shell,
-  body:has(.order-sidebar-nav.is-open) .order-main-wrap {
-    margin-left: 15.5rem;
-    transition: margin-left 0.3s ease;
+  .expandable-nav:hover .expandable-nav__label,
+  .expandable-nav:focus-within .expandable-nav__label {
+    max-width: 0;
+    margin-left: 0;
+    opacity: 0;
   }
 }
+
+/* --- Reduced motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .expandable-nav * {
+    transition: none !important;
+  }
+}
+
+/* ============================================================
+   ✅ APP SHELL — para sa SidebarLayout.tsx (kung ginagamit mo)
+   Walang sidebar push — nav ay sticky floating pill
+============================================================ */
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  min-height: 0;
+}
+
+.app-content {
+  flex: 1 0 auto;
+  min-height: 0;
+}
+
+/* ✅ Alisin ang luma — wala nang sidebar push rules */
+/* (Yung `body:has(.profile-sidebar.is-open) ...` etc. — tinanggal) */

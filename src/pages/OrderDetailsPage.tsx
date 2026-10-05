@@ -1,6 +1,6 @@
 // src/pages/OrderDetailsPage.tsx
 
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   AlertCircle,
@@ -23,7 +23,6 @@ import {
   Building2,
   GraduationCap,
   LifeBuoy,
-  Menu,
   X,
   Pencil,
   DoorOpen,
@@ -53,8 +52,7 @@ import type { Order, Product } from '../types';
 
 /* ============================================
    SIDE NAV ITEMS
-   ============================================ */
-
+============================================ */
 const sideNavItems = [
   { to: '/', label: 'Home', icon: Home, end: true },
   { to: '/catalog', label: 'Shop', icon: Store },
@@ -65,106 +63,25 @@ const sideNavItems = [
 ];
 
 /* ============================================
-   SIDEBAR COMPONENT
-   ============================================ */
-
-interface SidebarProps {
-  isSidebarOpen: boolean;
-  isSidebarPinned: boolean;
-  onTogglePin: () => void;
-  onCloseSidebar: () => void;
-  sidebarRef: RefObject<HTMLElement | null>;
-  hoverZoneRef: RefObject<HTMLDivElement | null>;
+   PROFILE SHAPE
+============================================ */
+interface CustomerProfile {
+  course: string;
+  yearLevel: string;
+  dateOfBirth: string;
+  phone: string;
 }
 
-function Sidebar({
-  isSidebarOpen,
-  isSidebarPinned,
-  onTogglePin,
-  onCloseSidebar,
-  sidebarRef,
-  hoverZoneRef,
-}: SidebarProps) {
-  return (
-    <>
-      <div ref={hoverZoneRef} className="order-hover-zone" aria-hidden="true" />
-      <aside
-        ref={sidebarRef}
-        className={`order-sidebar-nav ${isSidebarOpen ? 'is-open' : ''}`}
-      >
-        <div className="order-sidebar-nav__top">
-          <button
-            type="button"
-            className="order-sidebar-nav__pin"
-            onClick={onTogglePin}
-            aria-label={isSidebarPinned ? 'Unpin sidebar' : 'Pin sidebar'}
-          >
-            {isSidebarPinned ? (
-              <X className="react-icon" />
-            ) : (
-              <ChevronRight className="react-icon" />
-            )}
-          </button>
-
-          <Link
-            to="/"
-            className="order-sidebar-nav__brand"
-            onClick={onCloseSidebar}
-          >
-            <span className="order-sidebar-nav__brand-mark">SJ</span>
-            <span className="order-sidebar-nav__brand-copy">
-              <span className="order-sidebar-nav__brand-name">SJCM STORE</span>
-              <span className="order-sidebar-nav__brand-tag">
-                Official School Merchandise
-              </span>
-            </span>
-          </Link>
-
-          <nav className="order-sidebar-nav__list">
-            {sideNavItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = item.active || item.to === '/dashboard';
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className={`order-sidebar-nav__item ${isActive ? 'is-active' : ''}`}
-                  onClick={onCloseSidebar}
-                  data-label={item.label}
-                >
-                  <Icon className="react-icon" aria-hidden="true" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-
-        <div className="order-sidebar-nav__bottom">
-          <p className="order-sidebar-nav__brand-label">SJCM STORE</p>
-          <p className="order-sidebar-nav__brand-quote">
-            "Wear your
-            <br />
-            Saint Jude Pride"
-          </p>
-        </div>
-      </aside>
-
-      {isSidebarOpen && (
-        <div
-          className="order-backdrop"
-          onClick={onCloseSidebar}
-          aria-hidden="true"
-        />
-      )}
-    </>
-  );
-}
+const EMPTY_PROFILE: CustomerProfile = {
+  course: '',
+  yearLevel: '',
+  dateOfBirth: '',
+  phone: '',
+};
 
 /* ============================================
    ORDER DETAILS PAGE
-   ============================================ */
-
+============================================ */
 export default function OrderDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -173,21 +90,16 @@ export default function OrderDetailsPage() {
 
   const [order, setOrder] = useState<Order | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
+  const [profile, setProfile] = useState<CustomerProfile>(EMPTY_PROFILE);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isSidebarPinned, setIsSidebarPinned] = useState(false);
 
-  /* ✅ Edit modal state */
+  /* Edit modal state */
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [editCourse, setEditCourse] = useState('');
   const [editYearLevel, setEditYearLevel] = useState('');
   const [editDateOfBirth, setEditDateOfBirth] = useState('');
   const [editPhone, setEditPhone] = useState('');
-
-  const sidebarRef = useRef<HTMLElement>(null);
-  const hoverZoneRef = useRef<HTMLDivElement>(null);
-  const closeTimerRef = useRef<number | null>(null);
 
   /* Redirect kapag walang session */
   useEffect(() => {
@@ -201,7 +113,7 @@ export default function OrderDetailsPage() {
     }
   }, [session, navigate, toast]);
 
-  /* Load order + products */
+  /* ✅ Load order + products + PROFILE (galing sa Supabase) */
   useEffect(() => {
     if (!session || !id) {
       setIsLoading(false);
@@ -211,18 +123,37 @@ export default function OrderDetailsPage() {
 
     const loadData = async () => {
       setIsLoading(true);
-      const [ordersData, productsData] = await Promise.all([
+
+      const [ordersData, productsData, profileRes] = await Promise.all([
         fetchOrders(session.id),
         fetchProducts(),
+        supabase
+          .from('profiles')
+          .select('course_strand, year_level, date_of_birth, phone')
+          .eq('id', session.id)
+          .maybeSingle(),
       ]);
-      if (!cancelled) {
-        const foundOrder = ordersData.find(
-          (o) => getOrderId(o) === id && o.userId === session.id
-        );
-        setOrder(foundOrder ?? null);
-        setProducts(productsData);
-        setIsLoading(false);
+
+      if (cancelled) return;
+
+      const foundOrder = ordersData.find(
+        (o) => getOrderId(o) === id && o.userId === session.id
+      );
+      setOrder(foundOrder ?? null);
+      setProducts(productsData);
+
+      if (profileRes.data) {
+        setProfile({
+          course: profileRes.data.course_strand ?? '',
+          yearLevel: profileRes.data.year_level ?? '',
+          dateOfBirth: profileRes.data.date_of_birth ?? '',
+          phone: profileRes.data.phone ?? '',
+        });
+      } else {
+        setProfile(EMPTY_PROFILE);
       }
+
+      setIsLoading(false);
     };
 
     loadData();
@@ -231,55 +162,15 @@ export default function OrderDetailsPage() {
     };
   }, [session, id]);
 
-  /* Hover-to-open sidebar */
+  /* ✅ Populate edit form kapag binuksan yung modal */
   useEffect(() => {
-    const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
-    if (!isDesktop()) return;
-
-    const openSidebar = () => {
-      if (closeTimerRef.current) {
-        window.clearTimeout(closeTimerRef.current);
-        closeTimerRef.current = null;
-      }
-      setIsSidebarOpen(true);
-    };
-
-    const scheduleClose = () => {
-      if (isSidebarPinned) return;
-      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
-      closeTimerRef.current = window.setTimeout(
-        () => setIsSidebarOpen(false),
-        150
-      );
-    };
-
-    const zone = hoverZoneRef.current;
-    const sidebar = sidebarRef.current;
-    if (!zone || !sidebar) return;
-
-    zone.addEventListener('mouseenter', openSidebar);
-    sidebar.addEventListener('mouseenter', openSidebar);
-    sidebar.addEventListener('mouseleave', scheduleClose);
-    zone.addEventListener('mouseleave', scheduleClose);
-
-    return () => {
-      zone.removeEventListener('mouseenter', openSidebar);
-      sidebar.removeEventListener('mouseenter', openSidebar);
-      sidebar.removeEventListener('mouseleave', scheduleClose);
-      zone.removeEventListener('mouseleave', scheduleClose);
-      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
-    };
-  }, [isSidebarPinned, session]);
-
-  /* Populate edit form kapag binuksan yung modal */
-  useEffect(() => {
-    if (isEditModalOpen && session) {
-      setEditCourse((session as any)?.course || '');
-      setEditYearLevel((session as any)?.yearLevel || '');
-      setEditDateOfBirth((session as any)?.dateOfBirth || '');
-      setEditPhone((session as any)?.phone || '');
+    if (isEditModalOpen) {
+      setEditCourse(profile.course || '');
+      setEditYearLevel(profile.yearLevel || '');
+      setEditDateOfBirth(profile.dateOfBirth || '');
+      setEditPhone(profile.phone || '');
     }
-  }, [isEditModalOpen, session]);
+  }, [isEditModalOpen, profile]);
 
   /* Close modal on Escape + lock body scroll */
   useEffect(() => {
@@ -298,7 +189,7 @@ export default function OrderDetailsPage() {
     };
   }, [isEditModalOpen]);
 
-  /* ✅ Save profile — kasama phone na */
+  /* ✅ Save profile */
   const handleSaveProfile = async () => {
     if (!session?.id) return;
 
@@ -316,15 +207,20 @@ export default function OrderDetailsPage() {
 
       if (error) throw error;
 
-      const updatedSession = {
+      setProfile({
+        course: editCourse,
+        yearLevel: editYearLevel,
+        dateOfBirth: editDateOfBirth,
+        phone: editPhone,
+      });
+
+      signIn({
         ...session,
         course: editCourse,
         yearLevel: editYearLevel,
         dateOfBirth: editDateOfBirth,
         phone: editPhone,
-      } as any;
-
-      signIn(updatedSession);
+      } as any);
 
       toast('Profile updated successfully!', 'success');
       setIsEditModalOpen(false);
@@ -353,15 +249,31 @@ export default function OrderDetailsPage() {
   /* Loading state */
   if (isLoading) {
     return (
-      <div className={`order-page ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
-        <Sidebar
-          isSidebarOpen={isSidebarOpen}
-          isSidebarPinned={isSidebarPinned}
-          onTogglePin={() => setIsSidebarPinned((p) => !p)}
-          onCloseSidebar={() => setIsSidebarOpen(false)}
-          sidebarRef={sidebarRef}
-          hoverZoneRef={hoverZoneRef}
-        />
+      <div className="order-page">
+        <aside className="order-sidebar-nav">
+          <div className="order-sidebar-nav__top">
+            <nav className="order-sidebar-nav__list">
+              {sideNavItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = item.active || item.to === '/dashboard';
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className={`order-sidebar-nav__item ${
+                      isActive ? 'is-active' : ''
+                    }`}
+                    data-label={item.label}
+                  >
+                    <Icon className="react-icon" aria-hidden="true" />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+        </aside>
+
         <div className="order-main-wrap">
           <main className="order-container">
             <Link to="/dashboard" className="order-back">
@@ -381,15 +293,31 @@ export default function OrderDetailsPage() {
   /* Not found state */
   if (!order) {
     return (
-      <div className={`order-page ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
-        <Sidebar
-          isSidebarOpen={isSidebarOpen}
-          isSidebarPinned={isSidebarPinned}
-          onTogglePin={() => setIsSidebarPinned((p) => !p)}
-          onCloseSidebar={() => setIsSidebarOpen(false)}
-          sidebarRef={sidebarRef}
-          hoverZoneRef={hoverZoneRef}
-        />
+      <div className="order-page">
+        <aside className="order-sidebar-nav">
+          <div className="order-sidebar-nav__top">
+            <nav className="order-sidebar-nav__list">
+              {sideNavItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = item.active || item.to === '/dashboard';
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className={`order-sidebar-nav__item ${
+                      isActive ? 'is-active' : ''
+                    }`}
+                    data-label={item.label}
+                  >
+                    <Icon className="react-icon" aria-hidden="true" />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+        </aside>
+
         <div className="order-main-wrap">
           <main className="order-container">
             <Link to="/dashboard" className="order-back">
@@ -423,44 +351,64 @@ export default function OrderDetailsPage() {
   const status = getOrderStatus(order);
 
   const steps = [
-    { key: 'Pending', label: 'Pending', desc: 'Your order is being reviewed by the seller.' },
-    { key: 'Processing', label: 'Processing', desc: 'Admin is preparing your items.' },
-    { key: 'Ready for Pickup', label: 'For Pickup', desc: 'Your order is ready for pickup.' },
-    { key: 'Claimed', label: 'Completed', desc: 'Order has been successfully claimed.' },
+    {
+      key: 'Pending',
+      label: 'Pending',
+      desc: 'Your order is being reviewed by the seller.',
+    },
+    {
+      key: 'Processing',
+      label: 'Processing',
+      desc: 'Admin is preparing your items.',
+    },
+    {
+      key: 'Ready for Pickup',
+      label: 'For Pickup',
+      desc: 'Your order is ready for pickup.',
+    },
+    {
+      key: 'Claimed',
+      label: 'Completed',
+      desc: 'Order has been successfully claimed.',
+    },
   ];
   const statusOrder = ['Pending', 'Processing', 'Ready for Pickup', 'Claimed'];
   const currentIndex = Math.max(0, statusOrder.indexOf(status));
 
-  /* Dynamic pickup location */
   const locationParts = (order.claimLocation || '').split(' — ');
   const pickupBuilding = locationParts[0]?.trim() || 'SJCM Main Campus';
   const pickupRoom = locationParts[1]?.trim() || 'Supply Office';
 
   return (
-    <div className={`order-page ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
-      <Sidebar
-        isSidebarOpen={isSidebarOpen}
-        isSidebarPinned={isSidebarPinned}
-        onTogglePin={() => setIsSidebarPinned((p) => !p)}
-        onCloseSidebar={() => setIsSidebarOpen(false)}
-        sidebarRef={sidebarRef}
-        hoverZoneRef={hoverZoneRef}
-      />
+    <div className="order-page">
+      {/* ============================================
+          SIDEBAR — compact premium glass
+      ============================================ */}
+      <aside className="order-sidebar-nav">
+        <div className="order-sidebar-nav__top">
+          <nav className="order-sidebar-nav__list">
+            {sideNavItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = item.active || item.to === '/dashboard';
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={`order-sidebar-nav__item ${
+                    isActive ? 'is-active' : ''
+                  }`}
+                  data-label={item.label}
+                >
+                  <Icon className="react-icon" aria-hidden="true" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      </aside>
 
       <div className="order-main-wrap">
-        <button
-          type="button"
-          className="order-mobile-menu"
-          aria-label="Toggle navigation"
-          onClick={() => setIsSidebarOpen((p) => !p)}
-        >
-          {isSidebarOpen ? (
-            <X className="react-icon" />
-          ) : (
-            <Menu className="react-icon" />
-          )}
-        </button>
-
         <main className="order-container">
           <Link to="/dashboard" className="order-back">
             <ArrowLeft className="react-icon" aria-hidden="true" />
@@ -508,7 +456,10 @@ export default function OrderDetailsPage() {
                   {items.map((item) => {
                     const product = products.find((p) => p.id === item.id);
                     return (
-                      <li className="od-item" key={`${item.id}-${item.size}`}>
+                      <li
+                        className="od-item"
+                        key={`${item.id}-${item.size}`}
+                      >
                         <Link
                           to={`/products/${encodeURIComponent(item.id)}`}
                           className="od-item__thumb"
@@ -521,7 +472,10 @@ export default function OrderDetailsPage() {
                               height={120}
                             />
                           ) : (
-                            <Package className="react-icon" aria-hidden="true" />
+                            <Package
+                              className="react-icon"
+                              aria-hidden="true"
+                            />
                           )}
                         </Link>
 
@@ -547,7 +501,8 @@ export default function OrderDetailsPage() {
 
                         <div className="od-item__price">
                           {formatPrice(
-                            (Number(item.price) || 0) * (Number(item.qty) || 0)
+                            (Number(item.price) || 0) *
+                              (Number(item.qty) || 0)
                           )}
                         </div>
                       </li>
@@ -566,7 +521,9 @@ export default function OrderDetailsPage() {
                     </strong>
                   </div>
                   <div className="od-items-footer__right">
-                    <span className="od-items-footer__label">Order Total</span>
+                    <span className="od-items-footer__label">
+                      Order Total
+                    </span>
                     <strong className="od-items-footer__value od-items-footer__value--brand">
                       {formatPrice(getOrderTotal(order))}
                     </strong>
@@ -580,13 +537,18 @@ export default function OrderDetailsPage() {
                   <span className="od-card__head-icon">
                     <MapPin className="react-icon" aria-hidden="true" />
                   </span>
-                  <h2 className="od-card__head-title">Pickup Information</h2>
+                  <h2 className="od-card__head-title">
+                    Pickup Information
+                  </h2>
                 </header>
 
                 <div className="od-pickup">
                   <div className="od-pickup__location">
                     <span className="od-pickup__location-icon">
-                      <Building2 className="react-icon" aria-hidden="true" />
+                      <Building2
+                        className="react-icon"
+                        aria-hidden="true"
+                      />
                     </span>
                     <div className="od-pickup__location-info">
                       <p className="od-pickup__location-label">Building</p>
@@ -634,7 +596,9 @@ export default function OrderDetailsPage() {
                   <span className="od-card__head-icon">
                     <User className="react-icon" aria-hidden="true" />
                   </span>
-                  <h2 className="od-card__head-title">Customer Information</h2>
+                  <h2 className="od-card__head-title">
+                    Customer Information
+                  </h2>
                   <button
                     type="button"
                     className="od-card__edit"
@@ -649,7 +613,10 @@ export default function OrderDetailsPage() {
                   <div className="od-customer__identity">
                     <span className="od-customer__avatar">
                       {session.profilePicture ? (
-                        <img src={session.profilePicture} alt={session.name} />
+                        <img
+                          src={session.profilePicture}
+                          alt={session.name}
+                        />
                       ) : (
                         <span className="od-customer__initials">
                           {getInitials()}
@@ -680,37 +647,42 @@ export default function OrderDetailsPage() {
                         Year Level
                       </span>
                       <span className="od-customer__details-value">
-                        {(session as any).yearLevel || '—'}
+                        {profile.yearLevel || '—'}
                       </span>
                     </li>
                     <li>
                       <span className="od-customer__details-label">
-                        <BookOpen className="react-icon" aria-hidden="true" />
+                        <BookOpen
+                          className="react-icon"
+                          aria-hidden="true"
+                        />
                         Course / Strand
                       </span>
                       <span className="od-customer__details-value">
-                        {(session as any).course
-                          ? getCourseLabel((session as any).course)
+                        {profile.course
+                          ? getCourseLabel(profile.course)
                           : '—'}
                       </span>
                     </li>
                     <li>
                       <span className="od-customer__details-label">
-                        <Calendar className="react-icon" aria-hidden="true" />
+                        <Calendar
+                          className="react-icon"
+                          aria-hidden="true"
+                        />
                         Date of Birth
                       </span>
                       <span className="od-customer__details-value">
-                        {(session as any).dateOfBirth || '—'}
+                        {profile.dateOfBirth || '—'}
                       </span>
                     </li>
-                    {/* ✅ BAGO — Contact Number */}
                     <li>
                       <span className="od-customer__details-label">
                         <Phone className="react-icon" aria-hidden="true" />
                         Contact Number
                       </span>
                       <span className="od-customer__details-value">
-                        {(session as any).phone || '—'}
+                        {profile.phone || '—'}
                       </span>
                     </li>
                   </ul>
@@ -753,17 +725,22 @@ export default function OrderDetailsPage() {
                     return (
                       <li
                         key={step.key}
-                        className={`od-timeline__step ${isDone ? 'is-done' : ''} ${
-                          isActive ? 'is-active' : ''
-                        }`}
+                        className={`od-timeline__step ${
+                          isDone ? 'is-done' : ''
+                        } ${isActive ? 'is-active' : ''}`}
                       >
                         <span className="od-timeline__marker">
                           {isDone ? (
-                            <Check className="react-icon" aria-hidden="true" />
+                            <Check
+                              className="react-icon"
+                              aria-hidden="true"
+                            />
                           ) : null}
                         </span>
                         <div className="od-timeline__content">
-                          <p className="od-timeline__label">{step.label}</p>
+                          <p className="od-timeline__label">
+                            {step.label}
+                          </p>
                           <p className="od-timeline__desc">{step.desc}</p>
                           {isActive && (
                             <p className="od-timeline__time">
@@ -791,7 +768,10 @@ export default function OrderDetailsPage() {
                 >
                   <Mail className="react-icon" aria-hidden="true" />
                   <span>Contact Support</span>
-                  <ChevronRight className="react-icon" aria-hidden="true" />
+                  <ChevronRight
+                    className="react-icon"
+                    aria-hidden="true"
+                  />
                 </a>
               </section>
             </aside>
@@ -799,9 +779,7 @@ export default function OrderDetailsPage() {
         </main>
       </div>
 
-      {/* ============================================
-          EDIT PROFILE MODAL
-          ============================================ */}
+      {/* EDIT PROFILE MODAL */}
       {isEditModalOpen && (
         <div
           className="od-modal-backdrop"
@@ -814,7 +792,6 @@ export default function OrderDetailsPage() {
           aria-label="Edit profile"
         >
           <div className="od-modal">
-            {/* Header */}
             <div className="od-modal__header">
               <div className="od-modal__header-copy">
                 <span className="od-modal__header-icon">
@@ -838,7 +815,6 @@ export default function OrderDetailsPage() {
               </button>
             </div>
 
-            {/* Body */}
             <div className="od-modal__body">
               <div className="od-modal__locked-info">
                 <Lock className="react-icon" aria-hidden="true" />
@@ -848,7 +824,6 @@ export default function OrderDetailsPage() {
                 </span>
               </div>
 
-              {/* Phone Number */}
               <div className="field">
                 <label className="field__label" htmlFor="edit-phone">
                   Phone Number
@@ -864,7 +839,6 @@ export default function OrderDetailsPage() {
                 />
               </div>
 
-              {/* Course / Strand — DROPDOWN */}
               <div className="field">
                 <label className="field__label" htmlFor="edit-course">
                   Course / Strand
@@ -885,7 +859,6 @@ export default function OrderDetailsPage() {
                 </select>
               </div>
 
-              {/* Year Level — DROPDOWN */}
               <div className="field">
                 <label className="field__label" htmlFor="edit-year">
                   Year Level
@@ -906,7 +879,6 @@ export default function OrderDetailsPage() {
                 </select>
               </div>
 
-              {/* Date of Birth */}
               <div className="field">
                 <label className="field__label" htmlFor="edit-dob">
                   Date of Birth
@@ -922,7 +894,6 @@ export default function OrderDetailsPage() {
               </div>
             </div>
 
-            {/* Footer */}
             <div className="od-modal__footer">
               <button
                 type="button"

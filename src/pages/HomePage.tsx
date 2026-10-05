@@ -1,6 +1,6 @@
 // src/pages/HomePage.tsx
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowUpRight,
@@ -14,6 +14,8 @@ import {
   MessageCircle,
   Shirt,
   Package,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 
 import { useApp, useProducts } from '../store';
@@ -24,16 +26,38 @@ export default function HomePage() {
   const { session } = useApp();
   const products = useProducts();
 
-  // ✅ Featured product — first product from Supabase
-  const featuredProduct = products[0] ?? null;
+  /* =========================================================
+     HERO CAROUSEL — dynamic from products
+     ✅ Kukuha ng products na may image, tapos ipapakita sa carousel
+  ========================================================== */
+  const carouselProducts = useMemo(() => {
+    /* Filter: only products na may image at may stock */
+    return products
+      .filter((p) => p.image && p.image.trim() !== '')
+      .slice(0, 5); // ✅ Show max 5 slides
+  }, [products]);
 
-  // ✅ New arrivals — first 6 products from Supabase
-  const newArrivals = useMemo(
-    () => products.slice(0, 6),
-    [products]
-  );
+  const [currentSlide, setCurrentSlide] = useState(0);
 
-  // ✅ Best finds — lowest-stock items that are still available
+  /* Total slides */
+  const totalSlides = carouselProducts.length;
+  const featuredProduct = carouselProducts[currentSlide] ?? null;
+
+  /* Prev / Next handlers — wrap around */
+  const goNext = () => {
+    if (totalSlides === 0) return;
+    setCurrentSlide((prev) => (prev + 1) % totalSlides);
+  };
+
+  const goPrev = () => {
+    if (totalSlides === 0) return;
+    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+  };
+
+  /* New arrivals — first 6 products */
+  const newArrivals = useMemo(() => products.slice(0, 6), [products]);
+
+  /* Best finds — lowest-stock items that are still available */
   const bestFinds = useMemo(() => {
     return [...products]
       .filter((product) => Number(product.stock) > 0)
@@ -129,17 +153,85 @@ export default function HomePage() {
           </ul>
         </div>
 
-        {/* RIGHT — HERO IMAGE */}
-        <aside className="hero-photo" aria-label="Featured campus merchandise">
+        {/* =========================================================
+            RIGHT — HERO CAROUSEL
+        ========================================================== */}
+        <aside
+          className="hero-photo hero-carousel"
+          aria-label="Featured campus merchandise"
+        >
           {featuredProduct ? (
-            <div className="hero-photo__frame">
-              <ProductImage
-                product={featuredProduct}
-                className="hero-photo__image"
-                width={760}
-                height={760}
-              />
-            </div>
+            <>
+              <div className="hero-carousel__viewport">
+                <div className="hero-photo__frame hero-carousel__frame">
+                  <ProductImage
+                    key={featuredProduct.id}
+                    product={featuredProduct}
+                    className="hero-photo__image hero-carousel__image"
+                    width={760}
+                    height={760}
+                  />
+
+                  {/* ✅ Product info overlay */}
+                  <div className="hero-carousel__caption">
+                    <p className="hero-carousel__name">
+                      {featuredProduct.name}
+                    </p>
+                    {featuredProduct.category && (
+                      <p className="hero-carousel__meta">
+                        {featuredProduct.category}
+                        {featuredProduct.organization &&
+                          ` · ${featuredProduct.organization}`}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* ✅ Prev / Next buttons */}
+              {totalSlides > 1 && (
+                <>
+                  <button
+                    type="button"
+                    className="hero-carousel__btn hero-carousel__btn--prev"
+                    onClick={goPrev}
+                    aria-label="Previous product"
+                  >
+                    <ChevronLeft className="react-icon" aria-hidden="true" />
+                  </button>
+
+                  <button
+                    type="button"
+                    className="hero-carousel__btn hero-carousel__btn--next"
+                    onClick={goNext}
+                    aria-label="Next product"
+                  >
+                    <ChevronRight className="react-icon" aria-hidden="true" />
+                  </button>
+
+                  {/* ✅ Dots indicator */}
+                  <div
+                    className="hero-carousel__dots"
+                    role="tablist"
+                    aria-label="Carousel navigation"
+                  >
+                    {carouselProducts.map((p, index) => (
+                      <button
+                        key={p.id}
+                        type="button"
+                        role="tab"
+                        aria-selected={index === currentSlide}
+                        className={`hero-carousel__dot ${
+                          index === currentSlide ? 'is-active' : ''
+                        }`}
+                        onClick={() => setCurrentSlide(index)}
+                        aria-label={`Go to slide ${index + 1}: ${p.name}`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+            </>
           ) : (
             <div className="hero-photo__empty">
               <div className="empty-state">
@@ -156,9 +248,7 @@ export default function HomePage() {
         </aside>
       </main>
 
-      {/* =========================================================
-          FRESH STOCK — dynamic from Supabase
-      ========================================================== */}
+      {/* FRESH STOCK */}
       {newArrivals.length > 0 && (
         <section
           className="page-shell arrivals-section"
@@ -208,9 +298,7 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* =========================================================
-          CATEGORY SECTION — static links (routing lang, hindi data)
-      ========================================================== */}
+      {/* CATEGORY SECTION */}
       <section
         className="page-shell category-section"
         aria-labelledby="category-title"
@@ -234,7 +322,6 @@ export default function HomePage() {
         </div>
 
         <div className="category-grid">
-          {/* ✅ Same categories — these are LINKS, not data */}
           <Link
             to="/catalog?category=ID Lace"
             className="category-card glass-card-hover"
@@ -297,15 +384,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* =========================================================
-          BEST FINDS + VISIT US
-      ========================================================== */}
+      {/* BEST FINDS + VISIT US */}
       <section
         className="page-shell home-highlights"
         aria-label="Best finds and store information"
       >
         <div className="home-highlights__grid">
-          {/* BEST FINDS — dynamic from Supabase */}
           <div className="panel home-highlights__panel">
             <div className="panel-heading">
               <div>
@@ -357,7 +441,6 @@ export default function HomePage() {
             )}
           </div>
 
-          {/* VISIT US */}
           <div className="panel home-highlights__panel visit-panel">
             <div className="panel-heading">
               <div>

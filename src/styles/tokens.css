@@ -1,98 +1,409 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&display=swap');
+/* ============================================================
+   THEME VARIABLES — 10 themes
+   Light: Warm Ivory family (5 variants)
+   Dark: Midnight Navy family (5 variants)
+   ✅ Same accent, same primary — background shades lang nag-iiba
+============================================================ */
 
-:root {
-  /* ---- Surfaces: theme-driven background, fixed surfaces ---- */
-  --color-bg: var(--theme-bg-solid);
-  --color-surface: #fffcf4;
-  --color-surface-raised: #faf2e0;
-  --color-surface-soft: #eee0c2;
-  --color-line: rgba(35, 26, 12, 0.1);
-  --color-line-strong: rgba(35, 26, 12, 0.2);
+/* ============================================================
+   LIGHT — WARM IVORY FAMILY
+   Primary text: #14301F
+   Muted text: #5B6B60
+   Accent (CTA): #C9993A
+   Secondary (badges): #2F6B45
+   Surface border: #E8E2D2
+============================================================ */
 
-  /* ---- Text: warm ink ---- */
-  --color-text: #221a10;
-  --color-text-muted: #675a45;
-  --color-text-subtle: #94855f;
+/* ----- 1. WARM IVORY (default) ----- */
+:root,
+[data-theme='warm-ivory'] {
+  color-scheme: light;
 
-  /* ---- Brand: brass gold ---- */
-  --color-brand: #b3822c;
-  --color-brand-strong: #7c5a1d;
-  --color-brand-soft: rgba(179, 130, 44, 0.14);
+  --theme-primary: #2F6B45;
+  --theme-primary-hover: #245536;
+  --theme-primary-rgb: 47, 107, 69;
 
-  /* ---- Accent: oxblood ---- */
-  --color-accent: #7a2626;
-  --color-accent-strong: #5c1c1c;
-  --color-accent-soft: rgba(122, 38, 38, 0.1);
+  --theme-accent: #C9993A;
+  --theme-accent-hover: #B0852C;
+  --theme-accent-rgb: 201, 153, 58;
 
-  /* ---- Status colors ---- */
-  --color-info: #3f6a86;
-  --color-info-soft: rgba(63, 106, 134, 0.12);
-  --color-success: #3c7a54;
-  --color-success-soft: rgba(60, 122, 84, 0.12);
-  --color-warning: #9c621e;
-  --color-warning-soft: rgba(156, 98, 30, 0.12);
-  --color-danger: #9c3737;
-  --color-danger-soft: rgba(156, 55, 55, 0.12);
+  --theme-bg: #FAF7F0;
+  --theme-bg-solid: #FAF7F0;
+  --theme-surface: #FFFFFF;
+  --theme-surface-2: #F5F1E6;
 
-  --font-body: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-display: 'Fraunces', var(--font-body);
-  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  --theme-text: #14301F;
+  --theme-text-muted: #5B6B60;
 
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-10: 2.5rem;
-  --space-12: 3rem;
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.25rem;
+  --theme-border: #E8E2D2;
+  --theme-border-strong: rgba(47, 107, 69, 0.3);
 
-  --shadow-panel: 0 18px 42px rgba(35, 26, 12, 0.1);
-  --shadow-hover: 0 20px 40px rgba(35, 26, 12, 0.16);
-  --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+  --theme-success: #2F6B45;
+  --theme-success-rgb: 47, 107, 69;
+  --theme-warning: #C9993A;
+  --theme-warning-rgb: 201, 153, 58;
+  --theme-danger: #A93C3C;
+  --theme-danger-rgb: 169, 60, 60;
 
-  /* Glass surface system */
-  --glass-surface: linear-gradient(160deg, rgba(255, 252, 244, 0.86), rgba(250, 242, 224, 0.72));
-  --glass-border: rgba(35, 26, 12, 0.12);
-  --glass-border-strong: rgba(35, 26, 12, 0.22);
-  --glass-blur: blur(20px) saturate(150%);
-  --shadow-glass: 0 24px 60px rgba(35, 26, 12, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -1px 0 rgba(35, 26, 12, 0.06);
-  --glow-brand: rgba(179, 130, 44, 0.28);
-  --glow-info: rgba(63, 106, 134, 0.18);
+  --theme-glass-bg: rgba(255, 255, 255, 0.7);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(47, 107, 69, 0.15);
+  --glow-info: rgba(63, 106, 134, 0.12);
+}
 
-  /* Unified auth experience */
-  --auth-forest-950: #002b0b;
-  --auth-forest-900: #003f0e;
-  --auth-forest-800: #005b11;
-  --auth-green-500: #178126;
-  --auth-green-300: #8ac88f;
-  --auth-ink: #06130a;
-  --auth-white: #ffffff;
-  --auth-white-muted: rgba(255, 255, 255, 0.72);
-  --auth-glass: rgba(4, 39, 18, 0.76);
-  --auth-glass-soft: rgba(6, 58, 24, 0.52);
-  --auth-glass-border: rgba(201, 235, 201, 0.2);
-  --auth-input-fill: rgba(214, 232, 222, 0.2);
-  --auth-focus-ring: rgba(138, 200, 143, 0.28);
-  --auth-danger: #f68e93;
-  --auth-font-display: 'Outfit', var(--font-body);
-  --auth-radius-panel: 2.25rem;
-  --auth-radius-card: 1.8rem;
-  --auth-radius-control: 999px;
-  --auth-gap: clamp(0.65rem, 1.5vw, 1.15rem);
-  --auth-page-gutter: clamp(1rem, 3vw, 3rem);
-  --auth-panel-height: clamp(25rem, 64vh, 31rem);
-  --auth-card-height: clamp(27rem, 68vh, 33rem);
-  --auth-marquee-viewport: clamp(22rem, 62vh, 31rem);
-  --auth-marquee-gap: clamp(0.55rem, 1vw, 0.8rem);
-  --auth-marquee-card-height: calc((var(--auth-marquee-viewport) - (var(--auth-marquee-gap) * 2) - 1.9rem) / 3);
-  --auth-marquee-sequence: calc((var(--auth-marquee-card-height) * 3) + (var(--auth-marquee-gap) * 2));
-  --auth-marquee-duration: 18s;
-  --auth-shadow: 0 24px 60px rgba(0, 20, 6, 0.32);
-  --auth-glass-blur: blur(18px) saturate(130%);
+/* ----- 2. WARM CREAM ----- */
+[data-theme='warm-cream'] {
+  color-scheme: light;
+
+  --theme-primary: #2F6B45;
+  --theme-primary-hover: #245536;
+  --theme-primary-rgb: 47, 107, 69;
+
+  --theme-accent: #C9993A;
+  --theme-accent-hover: #B0852C;
+  --theme-accent-rgb: 201, 153, 58;
+
+  --theme-bg: #FBF5E8;
+  --theme-bg-solid: #FBF5E8;
+  --theme-surface: #FFFEF9;
+  --theme-surface-2: #F7EFDD;
+
+  --theme-text: #14301F;
+  --theme-text-muted: #5B6B60;
+
+  --theme-border: #EDE3CD;
+  --theme-border-strong: rgba(47, 107, 69, 0.3);
+
+  --theme-success: #2F6B45;
+  --theme-success-rgb: 47, 107, 69;
+  --theme-warning: #C9993A;
+  --theme-warning-rgb: 201, 153, 58;
+  --theme-danger: #A93C3C;
+  --theme-danger-rgb: 169, 60, 60;
+
+  --theme-glass-bg: rgba(255, 254, 249, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(47, 107, 69, 0.15);
+  --glow-info: rgba(63, 106, 134, 0.12);
+}
+
+/* ----- 3. SOFT ALMOND ----- */
+[data-theme='soft-almond'] {
+  color-scheme: light;
+
+  --theme-primary: #2F6B45;
+  --theme-primary-hover: #245536;
+  --theme-primary-rgb: 47, 107, 69;
+
+  --theme-accent: #C9993A;
+  --theme-accent-hover: #B0852C;
+  --theme-accent-rgb: 201, 153, 58;
+
+  --theme-bg: #F8F2E5;
+  --theme-bg-solid: #F8F2E5;
+  --theme-surface: #FDFAF4;
+  --theme-surface-2: #F3EBD9;
+
+  --theme-text: #14301F;
+  --theme-text-muted: #5B6B60;
+
+  --theme-border: #E9DFC5;
+  --theme-border-strong: rgba(47, 107, 69, 0.3);
+
+  --theme-success: #2F6B45;
+  --theme-success-rgb: 47, 107, 69;
+  --theme-warning: #C9993A;
+  --theme-warning-rgb: 201, 153, 58;
+  --theme-danger: #A93C3C;
+  --theme-danger-rgb: 169, 60, 60;
+
+  --theme-glass-bg: rgba(253, 250, 244, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(47, 107, 69, 0.15);
+  --glow-info: rgba(63, 106, 134, 0.12);
+}
+
+/* ----- 4. PALE SAND ----- */
+[data-theme='pale-sand'] {
+  color-scheme: light;
+
+  --theme-primary: #2F6B45;
+  --theme-primary-hover: #245536;
+  --theme-primary-rgb: 47, 107, 69;
+
+  --theme-accent: #C9993A;
+  --theme-accent-hover: #B0852C;
+  --theme-accent-rgb: 201, 153, 58;
+
+  --theme-bg: #F5EFE0;
+  --theme-bg-solid: #F5EFE0;
+  --theme-surface: #FCF8EE;
+  --theme-surface-2: #EFE6CE;
+
+  --theme-text: #14301F;
+  --theme-text-muted: #5B6B60;
+
+  --theme-border: #E4D9B8;
+  --theme-border-strong: rgba(47, 107, 69, 0.3);
+
+  --theme-success: #2F6B45;
+  --theme-success-rgb: 47, 107, 69;
+  --theme-warning: #C9993A;
+  --theme-warning-rgb: 201, 153, 58;
+  --theme-danger: #A93C3C;
+  --theme-danger-rgb: 169, 60, 60;
+
+  --theme-glass-bg: rgba(252, 248, 238, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(47, 107, 69, 0.15);
+  --glow-info: rgba(63, 106, 134, 0.12);
+}
+
+/* ----- 5. IVORY MIST ----- */
+[data-theme='ivory-mist'] {
+  color-scheme: light;
+
+  --theme-primary: #2F6B45;
+  --theme-primary-hover: #245536;
+  --theme-primary-rgb: 47, 107, 69;
+
+  --theme-accent: #C9993A;
+  --theme-accent-hover: #B0852C;
+  --theme-accent-rgb: 201, 153, 58;
+
+  --theme-bg: #F7F3EA;
+  --theme-bg-solid: #F7F3EA;
+  --theme-surface: #FDFBF5;
+  --theme-surface-2: #F1EBDD;
+
+  --theme-text: #14301F;
+  --theme-text-muted: #5B6B60;
+
+  --theme-border: #E6DDC9;
+  --theme-border-strong: rgba(47, 107, 69, 0.3);
+
+  --theme-success: #2F6B45;
+  --theme-success-rgb: 47, 107, 69;
+  --theme-warning: #C9993A;
+  --theme-warning-rgb: 201, 153, 58;
+  --theme-danger: #A93C3C;
+  --theme-danger-rgb: 169, 60, 60;
+
+  --theme-glass-bg: rgba(253, 251, 245, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(47, 107, 69, 0.15);
+  --glow-info: rgba(63, 106, 134, 0.12);
+}
+
+/* ============================================================
+   DARK — MIDNIGHT NAVY FAMILY
+   Primary text: #F1EEE4
+   Muted text: #9AA6BC
+   Accent (CTA): #E0B24D
+   Secondary (mint): #5FBF8A
+   Surface border: rgba(38, 51, 81, 0.6)
+============================================================ */
+
+/* ----- 6. MIDNIGHT NAVY (default dark) ----- */
+[data-theme='midnight-navy'] {
+  color-scheme: dark;
+
+  --theme-primary: #5FBF8A;
+  --theme-primary-hover: #4FA876;
+  --theme-primary-rgb: 95, 191, 138;
+
+  --theme-accent: #E0B24D;
+  --theme-accent-hover: #D2A03D;
+  --theme-accent-rgb: 224, 178, 77;
+
+  --theme-bg: #0E1626;
+  --theme-bg-solid: #0E1626;
+  --theme-surface: #16213A;
+  --theme-surface-2: #1B2742;
+
+  --theme-text: #F1EEE4;
+  --theme-text-muted: #9AA6BC;
+
+  --theme-border: rgba(38, 51, 81, 0.6);
+  --theme-border-strong: rgba(95, 191, 138, 0.4);
+
+  --theme-success: #5FBF8A;
+  --theme-success-rgb: 95, 191, 138;
+  --theme-warning: #E0B24D;
+  --theme-warning-rgb: 224, 178, 77;
+  --theme-danger: #E57575;
+  --theme-danger-rgb: 229, 117, 117;
+
+  --theme-glass-bg: rgba(22, 33, 58, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.08);
+  --glow-brand: rgba(95, 191, 138, 0.25);
+  --glow-info: rgba(127, 168, 217, 0.2);
+}
+
+/* ----- 7. DEEP NAVY ----- */
+[data-theme='deep-navy'] {
+  color-scheme: dark;
+
+  --theme-primary: #5FBF8A;
+  --theme-primary-hover: #4FA876;
+  --theme-primary-rgb: 95, 191, 138;
+
+  --theme-accent: #E0B24D;
+  --theme-accent-hover: #D2A03D;
+  --theme-accent-rgb: 224, 178, 77;
+
+  --theme-bg: #0A1220;
+  --theme-bg-solid: #0A1220;
+  --theme-surface: #15203A;
+  --theme-surface-2: #1A2645;
+
+  --theme-text: #F1EEE4;
+  --theme-text-muted: #9AA6BC;
+
+  --theme-border: rgba(32, 45, 75, 0.6);
+  --theme-border-strong: rgba(95, 191, 138, 0.4);
+
+  --theme-success: #5FBF8A;
+  --theme-success-rgb: 95, 191, 138;
+  --theme-warning: #E0B24D;
+  --theme-warning-rgb: 224, 178, 77;
+  --theme-danger: #E57575;
+  --theme-danger-rgb: 229, 117, 117;
+
+  --theme-glass-bg: rgba(21, 32, 58, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.08);
+  --glow-brand: rgba(95, 191, 138, 0.25);
+  --glow-info: rgba(127, 168, 217, 0.2);
+}
+
+/* ----- 8. SLATE NAVY ----- */
+[data-theme='slate-navy'] {
+  color-scheme: dark;
+
+  --theme-primary: #5FBF8A;
+  --theme-primary-hover: #4FA876;
+  --theme-primary-rgb: 95, 191, 138;
+
+  --theme-accent: #E0B24D;
+  --theme-accent-hover: #D2A03D;
+  --theme-accent-rgb: 224, 178, 77;
+
+  --theme-bg: #101B2E;
+  --theme-bg-solid: #101B2E;
+  --theme-surface: #1A2942;
+  --theme-surface-2: #20304D;
+
+  --theme-text: #F1EEE4;
+  --theme-text-muted: #9AA6BC;
+
+  --theme-border: rgba(36, 51, 82, 0.6);
+  --theme-border-strong: rgba(95, 191, 138, 0.4);
+
+  --theme-success: #5FBF8A;
+  --theme-success-rgb: 95, 191, 138;
+  --theme-warning: #E0B24D;
+  --theme-warning-rgb: 224, 178, 77;
+  --theme-danger: #E57575;
+  --theme-danger-rgb: 229, 117, 117;
+
+  --theme-glass-bg: rgba(26, 41, 66, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.08);
+  --glow-brand: rgba(95, 191, 138, 0.25);
+  --glow-info: rgba(127, 168, 217, 0.2);
+}
+
+/* ----- 9. STEEL NAVY ----- */
+[data-theme='steel-navy'] {
+  color-scheme: dark;
+
+  --theme-primary: #5FBF8A;
+  --theme-primary-hover: #4FA876;
+  --theme-primary-rgb: 95, 191, 138;
+
+  --theme-accent: #E0B24D;
+  --theme-accent-hover: #D2A03D;
+  --theme-accent-rgb: 224, 178, 77;
+
+  --theme-bg: #0C1A28;
+  --theme-bg-solid: #0C1A28;
+  --theme-surface: #172740;
+  --theme-surface-2: #1D2E4B;
+
+  --theme-text: #F1EEE4;
+  --theme-text-muted: #9AA6BC;
+
+  --theme-border: rgba(33, 48, 80, 0.6);
+  --theme-border-strong: rgba(95, 191, 138, 0.4);
+
+  --theme-success: #5FBF8A;
+  --theme-success-rgb: 95, 191, 138;
+  --theme-warning: #E0B24D;
+  --theme-warning-rgb: 224, 178, 77;
+  --theme-danger: #E57575;
+  --theme-danger-rgb: 229, 117, 117;
+
+  --theme-glass-bg: rgba(23, 39, 64, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.08);
+  --glow-brand: rgba(95, 191, 138, 0.25);
+  --glow-info: rgba(127, 168, 217, 0.2);
+}
+
+/* ----- 10. INK NAVY ----- */
+[data-theme='ink-navy'] {
+  color-scheme: dark;
+
+  --theme-primary: #5FBF8A;
+  --theme-primary-hover: #4FA876;
+  --theme-primary-rgb: 95, 191, 138;
+
+  --theme-accent: #E0B24D;
+  --theme-accent-hover: #D2A03D;
+  --theme-accent-rgb: 224, 178, 77;
+
+  --theme-bg: #0B1524;
+  --theme-bg-solid: #0B1524;
+  --theme-surface: #141F38;
+  --theme-surface-2: #1B2744;
+
+  --theme-text: #F1EEE4;
+  --theme-text-muted: #9AA6BC;
+
+  --theme-border: rgba(30, 45, 76, 0.6);
+  --theme-border-strong: rgba(95, 191, 138, 0.4);
+
+  --theme-success: #5FBF8A;
+  --theme-success-rgb: 95, 191, 138;
+  --theme-warning: #E0B24D;
+  --theme-warning-rgb: 224, 178, 77;
+  --theme-danger: #E57575;
+  --theme-danger-rgb: 229, 117, 117;
+
+  --theme-glass-bg: rgba(20, 31, 56, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.08);
+  --glow-brand: rgba(95, 191, 138, 0.25);
+  --glow-info: rgba(127, 168, 217, 0.2);
+}
+
+/* ============================================
+   BODY BACKGROUND — retain glassy
+   ============================================ */
+body {
+  background: var(--theme-bg);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--theme-text);
+  transition: background 0.5s ease, color 0.3s ease;
+}
+
+.dashboard-shell,
+.order-page,
+.catalog-page,
+.cart-page,
+.checkout-page,
+.product-page,
+.settings-shell,
+.profile-shell,
+.auth-shell,
+.register-page {
+  background: transparent !important;
 }
