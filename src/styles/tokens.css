@@ -446,7 +446,6 @@
 
 /* ============================================================
    ✅ SEMANTIC CONTRAST TOKENS — SaaS-grade
-   Auto-computes readable foreground for any colored surface
 ============================================================ */
 
 :root,
@@ -478,7 +477,6 @@
   --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
 }
 
-/* ✅ Per-theme fine-tuning */
 [data-theme='matte-black'] {
   --theme-on-primary: #1A1209;
   --theme-on-primary-rgb: 26, 18, 9;
@@ -1039,7 +1037,8 @@ input:focus, select:focus, textarea:focus,
 .catalog-card__stock,
 .product-card__stock,
 .stock-badge,
-.in-stock-badge {
+.in-stock-badge,
+.favorites-card__badge {
   border-width: 1px;
   border-style: solid;
 }
@@ -1073,58 +1072,79 @@ input:focus, select:focus, textarea:focus,
   border-color: rgba(var(--theme-danger-rgb), 0.3) !important;
 }
 
+/* ✅ Favorites badge (like "SALE") */
+.favorites-card__badge {
+  background: var(--theme-accent) !important;
+  color: var(--theme-on-accent) !important;
+  border-color: transparent !important;
+}
+
 /* ------------------------------------------------------------
-   11. FAVORITES CARD SPECIFIC FIXES
+   11. CATALOG, FAVORITES, PRODUCT CARDS
 ------------------------------------------------------------ */
-.favorites-card__body,
 .catalog-card__body,
 .product-card__body,
+.favorites-card__body,
 .cart-item__body,
 .checkout-item__body {
   background: transparent !important;
   color: var(--theme-text) !important;
 }
 
-.favorites-card__body span,
 .catalog-card__body span,
-.product-card__body span {
+.product-card__body span,
+.favorites-card__body span,
+.catalog-card__category,
+.product-card__category,
+.favorites-card__category {
   color: var(--theme-text-muted) !important;
 }
 
-.favorites-card__price,
-.catalog-card__price,
-.product-card__price,
-.cart-item__price,
-.checkout-item__price {
+.catalog-card__name,
+.product-card__name,
+.favorites-card__name,
+.product-info__title {
   color: var(--theme-text) !important;
 }
 
-.favorites-card__btn,
+.catalog-card__price,
+.product-card__price,
+.favorites-card__price,
+.cart-item__price,
+.checkout-item__price {
+  color: var(--theme-primary) !important;
+}
+
 .catalog-card__btn,
 .product-card__btn,
+.favorites-card__btn,
+.favorites-card__cta,
 .cart-item__btn,
 .checkout-item__btn,
-.select-options-btn {
-  background: var(--theme-surface-2) !important;
-  color: var(--theme-primary) !important;
-  border: 1px solid var(--theme-border-strong) !important;
+.select-options-btn,
+.favorites-empty__cta {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  border: 1px solid var(--theme-primary) !important;
   transition: all 150ms ease !important;
 }
 
-.favorites-card__btn:hover,
 .catalog-card__btn:hover,
 .product-card__btn:hover,
+.favorites-card__btn:hover,
+.favorites-card__cta:hover:not(.is-disabled),
 .cart-item__btn:hover,
 .checkout-item__btn:hover,
-.select-options-btn:hover {
-  background: var(--theme-primary) !important;
+.select-options-btn:hover,
+.favorites-empty__cta:hover {
+  background: var(--theme-primary-hover) !important;
   color: var(--theme-on-primary) !important;
-  border-color: var(--theme-primary) !important;
+  border-color: var(--theme-primary-hover) !important;
 }
 
-.favorites-card__media,
 .catalog-card__media,
 .product-card__media,
+.favorites-card__media,
 .cart-item__media,
 .checkout-item__media {
   background: var(--theme-surface-2) !important;
@@ -1132,21 +1152,269 @@ input:focus, select:focus, textarea:focus,
 }
 
 .favorites-card__remove,
-.favorites-card__close {
-  background: rgba(0, 0, 0, 0.5) !important;
-  color: #ffffff !important;
+.favorites-card__close,
+.catalog-card__remove {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text-muted) !important;
+  border: 1px solid var(--theme-border) !important;
   border-radius: 50% !important;
   transition: all 150ms ease !important;
 }
 
-.favorites-card__remove:hover,
-.favorites-card__close:hover {
-  background: var(--theme-danger) !important;
-  transform: scale(1.1) !important;
+.favorites-card__remove:hover:not(:disabled),
+.favorites-card__close:hover,
+.catalog-card__remove:hover {
+  background: rgba(var(--theme-danger-rgb), 0.1) !important;
+  color: var(--theme-danger) !important;
+  border-color: var(--theme-danger) !important;
+  transform: rotate(90deg) !important;
 }
 
 /* ------------------------------------------------------------
-   12. FINAL TEXT COLOR FALLBACKS (Retains Fonts)
+   12. NOTIFICATIONS — Text visibility fix
+   ✅ Icon lang ang glassy, text ay solid & readable
+------------------------------------------------------------ */
+.notification-card,
+.notifications-container,
+.notifications-panel,
+.notifications-list__item,
+.notification-item {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  border: 1px solid var(--theme-border) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.notifications-header,
+.notification-card__header,
+.notifications-panel__header {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text) !important;
+  border-bottom: 1px solid var(--theme-border) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.notification-card__title,
+.notifications-header__title,
+.notification-item__title,
+.notification-card h3,
+.notification-card h4 {
+  color: var(--theme-text) !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.notification-card__message,
+.notification-card__desc,
+.notification-item__message,
+.notification-item__desc,
+.notification-card p {
+  color: var(--theme-text-muted) !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.notification-card__time,
+.notification-card__date,
+.notification-item__time,
+.notification-item__date,
+.notification-card small {
+  color: var(--theme-text-subtle, var(--theme-text-muted)) !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* ✅ Icon lang ang glassy */
+.notification-card__icon,
+.notification-item__icon,
+.notifications-header__icon,
+.notification-bell__icon {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-primary) !important;
+  border: 1px solid var(--theme-border) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border-radius: 50% !important;
+}
+
+.notification-card.is-unread,
+.notification-item.is-unread,
+.notifications-list__item.is-unread {
+  background: rgba(var(--theme-primary-rgb), 0.05) !important;
+  border-left: 3px solid var(--theme-primary) !important;
+}
+
+.notifications-empty,
+.notifications-empty__title,
+.notifications-empty__description {
+  color: var(--theme-text) !important;
+  text-shadow: none !important;
+}
+
+.notifications-empty__description {
+  color: var(--theme-text-muted) !important;
+}
+
+.notification-bell__badge,
+.notifications-badge {
+  background: var(--theme-danger) !important;
+  color: var(--theme-on-danger, #ffffff) !important;
+  font-weight: 700 !important;
+  border: 2px solid var(--theme-surface) !important;
+}
+
+.notification-bell__dropdown {
+  background: var(--theme-surface) !important;
+  border: 1px solid var(--theme-border) !important;
+  box-shadow: var(--theme-shadow-lg) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.notification-bell__dropdown-item,
+.notification-bell__item {
+  color: var(--theme-text) !important;
+  background: transparent !important;
+}
+
+.notification-bell__dropdown-item:hover,
+.notification-bell__item:hover {
+  background: var(--theme-surface-2) !important;
+}
+
+.notifications-header__action,
+.notifications-mark-all {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-primary) !important;
+  border: 1px solid var(--theme-border-strong) !important;
+}
+
+.notifications-header__action:hover,
+.notifications-mark-all:hover {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+}
+
+/* ------------------------------------------------------------
+   13. SJCM STORE BRAND CARD (Orange/Gold Card)
+------------------------------------------------------------ */
+.profile-brand-card,
+.profile-side__brand,
+.settings-brand-card,
+.sjcm-brand-card {
+  background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-hover)) !important;
+  color: var(--theme-on-accent) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 1rem !important;
+}
+
+.profile-brand-card h3,
+.profile-brand-card__title,
+.profile-side__brand h3,
+.settings-brand-card h3,
+.settings-brand-card__title,
+.sjcm-brand-card h3,
+.sjcm-brand-card__name {
+  color: var(--theme-on-accent) !important;
+  font-weight: 800 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+  letter-spacing: 0.02em !important;
+  opacity: 1 !important;
+}
+
+.profile-brand-card p,
+.profile-brand-card__subtitle,
+.profile-side__brand p,
+.settings-brand-card p,
+.settings-brand-card__subtitle,
+.sjcm-brand-card p,
+.sjcm-brand-card__subtitle {
+  color: var(--theme-on-accent) !important;
+  opacity: 0.85 !important;
+  font-weight: 500 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+.profile-brand-card em,
+.profile-brand-card__quote,
+.profile-side__brand em,
+.settings-brand-card em,
+.settings-brand-card__tagline,
+.sjcm-brand-card em,
+.sjcm-brand-card__quote {
+  color: var(--theme-on-accent) !important;
+  opacity: 0.75 !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+}
+
+.profile-brand-card__avatar,
+.profile-side__brand__avatar,
+.sjcm-brand-card__avatar {
+  background: rgba(var(--theme-on-accent-rgb), 0.2) !important;
+  color: var(--theme-on-accent) !important;
+  border: 2px solid rgba(var(--theme-on-accent-rgb), 0.3) !important;
+  font-weight: 800 !important;
+}
+
+/* ------------------------------------------------------------
+   14. LOCKED FIELDS (Full Name, Student ID, Email)
+------------------------------------------------------------ */
+.profile-field-locked,
+.profile-input-locked,
+.settings-field-locked,
+.settings-field__input--locked,
+input[readonly],
+input:disabled,
+.input-locked {
+  background: var(--theme-surface-2) !important;
+  background-image: none !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 1 !important;
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 0.6rem !important;
+  font-style: italic !important;
+  cursor: not-allowed !important;
+}
+
+.profile-field-locked::placeholder,
+.settings-field__input--locked::placeholder,
+input[readonly]::placeholder,
+input:disabled::placeholder {
+  color: var(--theme-text-subtle, var(--theme-text-muted)) !important;
+  opacity: 0.6 !important;
+  font-style: italic !important;
+}
+
+.profile-locked-badge,
+.locked-badge,
+.field-badge-locked,
+.settings-field__lock {
+  background: rgba(var(--theme-warning-rgb), 0.15) !important;
+  color: var(--theme-warning) !important;
+  border: 1px solid rgba(var(--theme-warning-rgb), 0.3) !important;
+  font-weight: 700 !important;
+  font-size: 0.6rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 0.15rem 0.5rem !important;
+  border-radius: 999px !important;
+}
+
+.profile-locked-badge .react-icon,
+.locked-badge .react-icon,
+.settings-field__lock .react-icon {
+  width: 0.7rem !important;
+  height: 0.7rem !important;
+}
+
+/* ------------------------------------------------------------
+   15. FINAL TEXT COLOR FALLBACKS (Retains Fonts)
 ------------------------------------------------------------ */
 h1, h2, h3, h4, h5, h6 {
   color: var(--theme-text);
@@ -1160,127 +1428,1066 @@ span, p, div, a, button, input, select, textarea, label {
   color: inherit;
 }
 /* ============================================================
-   ✅ SJCM STORE BRAND CARD (Orange/Gold Card sa Profile Sidebar)
-   ✅ Auto-adjusts text color for perfect readability
+   ✅ FAVORITES / CATALOG / PRODUCT CARDS — FULL TEXT FIX
+   ✅ Ensures ALL text is readable in Light & Dark mode
+   ✅ Retains beautiful fonts (Fraunces, Inter, etc.)
 ============================================================ */
 
-/* Container ng brand card */
-.profile-brand-card,
-.profile-side__brand,
-.settings-brand-card,
-.sjcm-brand-card {
-  background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-hover)) !important;
-  color: var(--theme-on-accent) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  border-radius: 1rem !important;
-}
-
-/* Pangalan ng store - "SJCM STORE" */
-.profile-brand-card h3,
-.profile-brand-card__title,
-.profile-side__brand h3,
-.settings-brand-card h3,
-.sjcm-brand-card h3,
-.sjcm-brand-card__name {
-  color: var(--theme-on-accent) !important;
-  font-weight: 800 !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
-  letter-spacing: 0.02em !important;
+/* ------------------------------------------------------------
+   A. "IN STOCK" BADGE — Success green sa lahat ng themes
+------------------------------------------------------------ */
+.favorites-card__stock,
+.catalog-card__stock,
+.product-card__stock,
+.stock-badge,
+.in-stock-badge,
+.product-stock-badge,
+.product-stock,
+.product-card__badge,
+.catalog-card__badge,
+.favorites-card__badge-stock {
+  background: rgba(var(--theme-success-rgb), 0.15) !important;
+  color: var(--theme-success) !important;
+  border: 1px solid rgba(var(--theme-success-rgb), 0.3) !important;
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-weight: 700 !important;
+  font-size: 0.65rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 0.2rem 0.6rem !important;
+  border-radius: 999px !important;
+  text-shadow: none !important;
   opacity: 1 !important;
 }
 
-/* Subtitle - "Account Settings" */
-.profile-brand-card p,
-.profile-brand-card__subtitle,
-.profile-side__brand p,
-.settings-brand-card p,
-.sjcm-brand-card p,
-.sjcm-brand-card__subtitle {
-  color: var(--theme-on-accent) !important;
-  opacity: 0.85 !important;
+/* ------------------------------------------------------------
+   B. CATEGORY TEXT (BSA, BSBA, etc.) — Muted readable color
+------------------------------------------------------------ */
+.favorites-card__category,
+.catalog-card__category,
+.product-card__category,
+.product-info__category,
+.product-info__subtitle,
+.product-card__subtitle,
+.catalog-card__subtitle,
+.favorites-card__subtitle,
+.favorites-card__meta,
+.catalog-card__meta,
+.product-card__meta {
+  color: var(--theme-text-muted) !important;
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 0.75rem !important;
   font-weight: 500 !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+  letter-spacing: 0.02em !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
 }
 
-/* Quote - "Your account. Your control." */
-.profile-brand-card em,
-.profile-brand-card__quote,
-.profile-side__brand em,
-.settings-brand-card em,
-.sjcm-brand-card em,
-.sjcm-brand-card__quote {
-  color: var(--theme-on-accent) !important;
-  opacity: 0.75 !important;
-  font-style: italic !important;
-  font-weight: 400 !important;
+/* ------------------------------------------------------------
+   C. PRODUCT NAME / TITLE — Main readable text
+------------------------------------------------------------ */
+.favorites-card__name,
+.catalog-card__name,
+.product-card__name,
+.product-info__title,
+.product-related__name,
+.cart-item__name,
+.checkout-item__name,
+.order-card__name,
+.od-item__name {
+  color: var(--theme-text) !important;
+  font-family: var(--font-display, 'Fraunces', serif) !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
 }
 
-/* Avatar/Logo sa loob ng brand card */
-.profile-brand-card__avatar,
-.profile-side__brand__avatar,
-.sjcm-brand-card__avatar {
-  background: rgba(var(--theme-on-accent-rgb), 0.2) !important;
-  color: var(--theme-on-accent) !important;
-  border: 2px solid rgba(var(--theme-on-accent-rgb), 0.3) !important;
-  font-weight: 800 !important;
+/* ------------------------------------------------------------
+   D. PRICE — Accent color for prominence
+------------------------------------------------------------ */
+.favorites-card__price,
+.catalog-card__price,
+.product-card__price,
+.product-info__price,
+.product-related__price,
+.cart-item__price,
+.checkout-item__price,
+.order-card__price {
+  color: var(--theme-primary) !important;
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace) !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
 }
-/* ============================================================
-   ✅ LOCKED FIELDS (Full Name, Student ID, Email Address)
-   ✅ Ensures text is visible on the striped disabled background
+
+/* ------------------------------------------------------------
+   E. SPAN/P/DIV inside cards — Muted by default, readable
+------------------------------------------------------------ */
+.favorites-card__body span,
+.catalog-card__body span,
+.product-card__body span,
+.product-info__body span,
+.favorites-card__body p,
+.catalog-card__body p,
+.product-card__body p {
+  color: var(--theme-text-muted) !important;
+  background: transparent !important;
+  opacity: 1 !important;
+}
+
+/* ------------------------------------------------------------
+   F. "SELECT OPTIONS" & OTHER CARD BUTTONS
+------------------------------------------------------------ */
+.favorites-card__btn,
+.catalog-card__btn,
+.product-card__btn,
+.product-info__btn,
+.select-options-btn,
+.add-to-cart-btn,
+.favorites-card__cta {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  border: 1px solid var(--theme-primary) !important;
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  transition: all 150ms ease !important;
+  text-shadow: none !important;
+}
+
+.favorites-card__btn:hover,
+.catalog-card__btn:hover,
+.product-card__btn:hover,
+.product-info__btn:hover,
+.select-options-btn:hover,
+.add-to-cart-btn:hover,
+.favorites-card__cta:hover:not(.is-disabled) {
+  background: var(--theme-primary-hover) !important;
+  color: var(--theme-on-primary) !important;
+  border-color: var(--theme-primary-hover) !important;
+}
+
+/* ------------------------------------------------------------
+   G. FAVORITES/CATALOG CARD CONTAINER — Card body/text flow
+------------------------------------------------------------ */
+.favorites-card__body,
+.catalog-card__body,
+.product-card__body,
+.product-info__body {
+  background: transparent !important;
+  color: var(--theme-text) !important;
+  opacity: 1 !important;
+}
+
+/* ------------------------------------------------------------
+   H. REMOVE BUTTON (X) on Favorites Card
+------------------------------------------------------------ */
+.favorites-card__remove,
+.favorites-card__close,
+.catalog-card__remove {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text-muted) !important;
+  border: 1px solid var(--theme-border) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  opacity: 1 !important;
+}
+
+.favorites-card__remove:hover:not(:disabled),
+.favorites-card__close:hover {
+  background: rgba(var(--theme-danger-rgb), 0.15) !important;
+  color: var(--theme-danger) !important;
+  border-color: var(--theme-danger) !important;
+  transform: rotate(90deg) !important;
+}/* ============================================================
+   ✅ CATALOG PAGE — Text Fix (SAME as Favorites)
+   ✅ Consistent theme-aware text sa lahat ng 10 themes
 ============================================================ */
 
-/* Container ng locked field */
-.profile-field-locked,
-.profile-input-locked,
-.settings-field-locked,
-input[readonly],
-input:disabled,
-.input-locked {
-  /* ✅ Solid theme background instead of striped pattern */
-  background: var(--theme-surface-2) !important;
-  background-image: none !important;
-  
-  /* ✅ Theme text color para visible */
+/* ✅ Category text (BSA, BSBA, General, etc.) */
+.catalog-card__category,
+.catalog-card__subtitle {
   color: var(--theme-text-muted) !important;
   -webkit-text-fill-color: var(--theme-text-muted) !important;
   opacity: 1 !important;
-  
-  /* ✅ Border */
-  border: 1px solid var(--theme-border) !important;
-  border-radius: 0.6rem !important;
-  
-  /* ✅ Italic para ipakita na locked */
-  font-style: italic !important;
-  cursor: not-allowed !important;
+  font-weight: 500 !important;
 }
 
-/* Placeholder sa locked fields */
-.profile-field-locked::placeholder,
-input[readonly]::placeholder,
-input:disabled::placeholder {
-  color: var(--theme-text-subtle, var(--theme-text-muted)) !important;
-  opacity: 0.6 !important;
-  font-style: italic !important;
+/* ✅ Product name — Readable main text */
+.catalog-card__name,
+.catalog-card__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  opacity: 1 !important;
 }
 
-/* "LOCKED" Badge */
-.profile-locked-badge,
-.locked-badge,
-.field-badge-locked {
-  background: rgba(var(--theme-warning-rgb), 0.15) !important;
-  color: var(--theme-warning) !important;
-  border: 1px solid rgba(var(--theme-warning-rgb), 0.3) !important;
-  font-weight: 700 !important;
-  font-size: 0.6rem !important;
+/* ✅ Price — Accent color */
+.catalog-card__price {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ✅ "IN STOCK" badge — Success green */
+.catalog-card__badge,
+.catalog-card__stock {
+  background: var(--theme-success) !important;
+  color: var(--theme-on-success, #ffffff) !important;
+  -webkit-text-fill-color: var(--theme-on-success, #ffffff) !important;
+  border: 1px solid transparent !important;
+  font-weight: 800 !important;
   text-transform: uppercase !important;
-  letter-spacing: 0.05em !important;
-  padding: 0.15rem 0.5rem !important;
-  border-radius: 999px !important;
+  text-shadow: none !important;
 }
 
-/* Icon ng lock sa loob ng badge */
-.profile-locked-badge .react-icon,
-.locked-badge .react-icon {
-  width: 0.7rem !important;
-  height: 0.7rem !important;
+/* ✅ "Select Options" / "Add to Cart" button */
+.catalog-card__btn,
+.catalog-card__cta,
+.select-options-btn {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border: 1px solid var(--theme-primary) !important;
+}
+
+.catalog-card__btn:hover:not(:disabled),
+.catalog-card__cta:hover:not(.is-disabled),
+.select-options-btn:hover:not(:disabled) {
+  background: var(--theme-primary-hover) !important;
+  border-color: var(--theme-primary-hover) !important;
+}
+
+/* ✅ Hero (kung meron) */
+.catalog-hero__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.catalog-hero__kicker {
+  color: var(--theme-accent) !important;
+  -webkit-text-fill-color: var(--theme-accent) !important;
+}
+
+.catalog-hero__description {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ✅ Empty state */
+.catalog-empty h2 {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.catalog-empty p {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+/* ============================================================
+   ✅ FAVORITES PAGE — Text Fix (SAME approach as Catalog)
+   ✅ Consistent theme-aware text sa lahat ng 10 themes
+============================================================ */
+
+/* ✅ Category text (BSA, BSBA, etc.) */
+.favorites-card__category,
+.favorites-card__subtitle {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 1 !important;
+  font-weight: 500 !important;
+}
+
+/* ✅ Product name — Readable main text */
+.favorites-card__name,
+.favorites-card__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  opacity: 1 !important;
+}
+
+/* ✅ Price — Accent color */
+.favorites-card__price {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ✅ "IN STOCK" badge — Success green */
+.favorites-card__badge,
+.favorites-card__stock {
+  background: var(--theme-success) !important;
+  color: var(--theme-on-success, #ffffff) !important;
+  -webkit-text-fill-color: var(--theme-on-success, #ffffff) !important;
+  border: 1px solid transparent !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  text-shadow: none !important;
+}
+
+/* ✅ "Select Options" / "Add to Cart" button */
+.favorites-card__btn,
+.favorites-card__cta,
+.select-options-btn {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border: 1px solid var(--theme-primary) !important;
+}
+
+.favorites-card__btn:hover:not(:disabled),
+.favorites-card__cta:hover:not(.is-disabled),
+.select-options-btn:hover:not(:disabled) {
+  background: var(--theme-primary-hover) !important;
+  border-color: var(--theme-primary-hover) !important;
+}
+
+/* ✅ Remove (X) button */
+.favorites-card__remove {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  border: 1px solid var(--theme-border) !important;
+}
+
+.favorites-card__remove:hover:not(:disabled) {
+  background: rgba(var(--theme-danger-rgb), 0.15) !important;
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+  border-color: var(--theme-danger) !important;
+}
+
+/* ✅ Hero */
+.favorites-hero__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.favorites-hero__kicker {
+  color: var(--theme-accent) !important;
+  -webkit-text-fill-color: var(--theme-accent) !important;
+}
+
+.favorites-hero__description {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ✅ Hero count badge */
+.favorites-hero__count {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ✅ Empty state */
+.favorites-empty h2 {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.favorites-empty p {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.favorites-empty__cta {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border: 1px solid var(--theme-primary) !important;
+}
+
+.favorites-empty__cta:hover {
+  background: var(--theme-primary-hover) !important;
+  border-color: var(--theme-primary-hover) !important;
+}
+/* ============================================================
+   ✅ HOME PAGE — THEME-COMPATIBLE OVERRIDE
+   ✅ Hero, Home Sections, Home Cards
+   ✅ Auto-adjusts for all 10 themes (Light & Dark)
+============================================================ */
+
+/* ------------------------------------------------------------
+   1. HOME SECTION — Glass effect on top of theme surface
+------------------------------------------------------------ */
+.home-section {
+  background: var(--theme-surface) !important;
+  border: 1px solid var(--theme-border) !important;
+  box-shadow: var(--theme-shadow-sm) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.home-section:hover {
+  border-color: var(--theme-border-strong) !important;
+  background: var(--theme-surface) !important;
+  box-shadow: var(--theme-shadow-md) !important;
+}
+
+.home-section__header {
+  border-bottom: 1px solid var(--theme-border) !important;
+}
+
+.home-section__kicker {
+  color: var(--theme-accent) !important;
+  -webkit-text-fill-color: var(--theme-accent) !important;
+}
+
+.home-section__kicker::before {
+  background: var(--theme-accent) !important;
+}
+
+.home-section__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.home-section__description {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.home-section__link {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.home-section__link:hover {
+  color: var(--theme-primary-hover) !important;
+}
+
+/* ------------------------------------------------------------
+   2. HOME CARDS — Solid theme surfaces
+------------------------------------------------------------ */
+.home-card {
+  background: var(--theme-surface) !important;
+  border: 1px solid var(--theme-border) !important;
+  box-shadow: var(--theme-shadow-sm) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: var(--theme-text) !important;
+}
+
+.home-card:hover {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border-strong) !important;
+  box-shadow: var(--theme-shadow-md) !important;
+  transform: translateY(-3px) !important;
+}
+
+.home-card__media {
+  background: var(--theme-surface-2) !important;
+  border-bottom: 1px solid var(--theme-border) !important;
+}
+
+.home-card__placeholder {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* Card badge — Success/accent themed */
+.home-card__badge {
+  background: var(--theme-accent) !important;
+  color: var(--theme-on-accent) !important;
+  -webkit-text-fill-color: var(--theme-on-accent) !important;
+}
+
+/* Card body & text */
+.home-card__body {
+  color: var(--theme-text) !important;
+}
+
+.home-card__name {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  opacity: 1 !important;
+}
+
+.home-card__category {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 1 !important;
+}
+
+.home-card__price {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* Card CTA button */
+.home-card__cta {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border: 1px solid var(--theme-primary) !important;
+}
+
+.home-card__cta:hover {
+  background: var(--theme-primary-hover) !important;
+  border-color: var(--theme-primary-hover) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* Category card variant — icon circle */
+.home-card--category .home-card__media--icon {
+  background: var(--theme-surface-2) !important;
+  border-bottom: 1px solid var(--theme-border) !important;
+}
+
+.home-card__icon-circle {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.2) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.home-card--category:hover .home-card__icon-circle {
+  background: rgba(var(--theme-primary-rgb), 0.18) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.4) !important;
+  color: var(--theme-primary-hover) !important;
+}
+
+/* ------------------------------------------------------------
+   3. HERO SHELL — Theme-aware hero section
+------------------------------------------------------------ */
+.hero-shell {
+  background: transparent !important;
+  color: var(--theme-text) !important;
+}
+
+.hero-title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.hero-lede {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.hero-bullets {
+  border-top: 1px solid var(--theme-border) !important;
+}
+
+.hero-bullet {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.hero-bullet strong {
+  color: var(--theme-text) !important;
+}
+
+.hero-bullet small {
+  color: var(--theme-text-muted) !important;
+}
+
+.hero-bullet:not(:last-child)::after {
+  background: var(--theme-border) !important;
+}
+
+.hero-bullet__icon {
+  background: rgba(var(--theme-primary-rgb), 0.08) !important;
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.2) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ------------------------------------------------------------
+   4. HERO PHOTO
+------------------------------------------------------------ */
+.hero-photo__frame {
+  background: var(--theme-surface-2) !important;
+  box-shadow: var(--theme-shadow-md) !important;
+}
+
+.hero-photo__blur {
+  background: linear-gradient(
+    to right,
+    var(--theme-surface) 0%,
+    rgba(var(--theme-primary-rgb), 0.15) 40%,
+    transparent 62%
+  ) !important;
+}
+
+.hero-photo__signage {
+  background: var(--theme-glass-bg) !important;
+  border: 1px solid var(--theme-glass-border) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.hero-photo__tag {
+  background: var(--theme-text) !important;
+  color: var(--theme-surface) !important;
+  -webkit-text-fill-color: var(--theme-surface) !important;
+  border: 1px dashed rgba(var(--theme-primary-rgb), 0.4) !important;
+}
+
+.hero-photo__overlay {
+  background: var(--theme-glass-bg) !important;
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.2) !important;
+}
+
+.hero-photo__eyebrow {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.hero-photo__name {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.hero-photo__stock-count {
+  color: var(--theme-text-muted) !important;
+}
+
+.hero-photo__stock-count strong {
+  color: var(--theme-text) !important;
+}
+
+.hero-photo__link {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.hero-photo__empty {
+  background: var(--theme-surface) !important;
+  border: 1px dashed var(--theme-border) !important;
+}
+
+/* ------------------------------------------------------------
+   5. QUEUE / LIVE BADGE
+------------------------------------------------------------ */
+.queue-badge,
+.live-badge {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.3) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ------------------------------------------------------------
+   6. HERO CAROUSEL
+------------------------------------------------------------ */
+.hero-carousel__viewport {
+  background: var(--theme-surface) !important;
+  border: 1px solid var(--theme-border) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.hero-carousel__viewport::before {
+  background-image: radial-gradient(
+    rgba(var(--theme-primary-rgb), 0.05) 1px,
+    transparent 1px
+  ) !important;
+  mix-blend-mode: normal !important;
+}
+
+/* Caption — dark overlay for readability on any image */
+.hero-carousel__caption {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.65) 0%,
+    rgba(0, 0, 0, 0.45) 100%
+  ) !important;
+  color: #ffffff !important;
+}
+
+.hero-carousel__name {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.hero-carousel__meta {
+  color: rgba(255, 255, 255, 0.9) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Carousel buttons */
+.hero-carousel__btn {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.hero-carousel__btn:hover {
+  background: rgba(0, 0, 0, 0.6) !important;
+  border-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Carousel dots */
+.hero-carousel__dots {
+  background: rgba(0, 0, 0, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.hero-carousel__dot {
+  background: rgba(255, 255, 255, 0.45) !important;
+}
+
+.hero-carousel__dot:hover {
+  background: rgba(255, 255, 255, 0.85) !important;
+}
+
+.hero-carousel__dot.is-active {
+  background: #ffffff !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6) !important;
+}
+
+/* ------------------------------------------------------------
+   7. HOME HIGHLIGHTS — Visit Us panel
+------------------------------------------------------------ */
+.home-highlights__panel {
+  background: var(--theme-surface) !important;
+  border: 1px solid var(--theme-border) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: var(--theme-shadow-sm) !important;
+}
+
+.visit-panel__list li {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.visit-panel__icon {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ------------------------------------------------------------
+   8. UNIVERSAL HERO BUTTONS (Primary/Secondary CTAs)
+------------------------------------------------------------ */
+.hero-actions .button--primary,
+.hero-actions .btn-primary,
+.hero-actions [class*="--primary"] {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border: 1px solid var(--theme-primary) !important;
+}
+
+.hero-actions .button--primary:hover,
+.hero-actions .btn-primary:hover {
+  background: var(--theme-primary-hover) !important;
+  border-color: var(--theme-primary-hover) !important;
+}
+
+.hero-actions .button--secondary,
+.hero-actions .btn-secondary,
+.hero-actions [class*="--secondary"],
+.hero-actions [class*="--ghost"] {
+  background: transparent !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  border: 1px solid var(--theme-border-strong) !important;
+}
+
+.hero-actions .button--secondary:hover,
+.hero-actions .btn-secondary:hover,
+.hero-actions [class*="--secondary"]:hover,
+.hero-actions [class*="--ghost"]:hover {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text) !important;
+  border-color: var(--theme-primary) !important;
+}
+
+/* ------------------------------------------------------------
+   9. SAFETY NET — Force all text in home cards to be theme-aware
+------------------------------------------------------------ */
+.home-card__name,
+.home-card__category,
+.home-card__price,
+.home-section__title,
+.home-section__description,
+.home-section__kicker,
+.hero-title,
+.hero-lede {
+  text-shadow: none !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+}
+
+/* Walang glassy effect sa text */
+.home-card *,
+.home-section * {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+} 
+/* ============================================================
+   ✅ HERO TITLE — Compatible sa lahat ng 10 themes
+   ✅ Solid readable color + subtle accent underline
+   ✅ Removes gradient-clip issue (invisible text sa dark mode)
+============================================================ */
+
+/* ✅ HERO TITLE — Main heading "Reserve. Pick up." etc. */
+.hero-title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.04em !important;
+}
+
+/* ✅ Accent word inside hero title */
+.hero-title span {
+  /* ✅ Remove gradient-clip effect */
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  
+  /* ✅ Solid accent color instead */
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  opacity: 1 !important;
+  
+  /* ✅ Subtle text shadow for readability (parang engraved effect) */
+  text-shadow: 
+    0 1px 0 rgba(var(--theme-primary-rgb), 0.15),
+    0 2px 8px rgba(var(--theme-primary-rgb), 0.2) !important;
+  
+  font-weight: 800 !important;
+  font-style: italic !important;
+  position: relative;
+}
+
+/* ✅ Optional: subtle underline accent para elegant */
+.hero-title span::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.05em;
+  height: 0.12em;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(var(--theme-primary-rgb), 0.5) 50%,
+    transparent 100%
+  );
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+/* ✅ HERO LEDE — Description text */
+.hero-lede {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+/* ✅ HERO KICKER (if may "NEW ARRIVALS" etc.) */
+.hero-kicker,
+.hero-eyebrow {
+  color: var(--theme-accent) !important;
+  -webkit-text-fill-color: var(--theme-accent) !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+/* ✅ HERO BULLETS text */
+.hero-bullet {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  opacity: 1 !important;
+}
+
+.hero-bullet strong {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.hero-bullet small {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+/* ✅ Shimmer effect — passes through badge periodically */
+.queue-badge,
+.live-badge {
+  position: relative;
+  overflow: hidden;
+}
+
+.queue-badge::after,
+.live-badge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  animation: queue-shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes queue-shimmer {
+  0%, 100% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+}
+/* ============================================================
+   ✅ HOME CARDS — Slightly Bigger (Moderate Adjustment)
+   ✅ 5 columns sa desktop (from 6)
+   ✅ Bahagyang mas malaki ang card, font, at padding
+   ✅ Consistent sa lahat ng 10 themes
+============================================================ */
+
+/* ✅ Main card grid — bahagyang mas malaki */
+.home-cards {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr)) !important;
+  gap: 1rem !important;
+  align-items: stretch !important;
+  width: 100% !important;
+}
+
+/* ✅ Best finds grid — bahagyang mas malaki */
+.home-cards--best {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr)) !important;
+  gap: 0.85rem !important;
+}
+
+/* ✅ Card — bahagyang mas mataas */
+.home-card {
+  min-height: 20rem !important;
+}
+
+/* ✅ Media — bahagyang mas malaki */
+.home-card__media {
+  min-height: 12rem !important;
+}
+
+/* ✅ Card body — bahagyang mas maluwag */
+.home-card__body {
+  padding: 0.85rem 0.9rem 0.95rem !important;
+  gap: 0.35rem !important;
+}
+
+/* ✅ Card name — bahagyang mas malaki */
+.home-card__name {
+  font-size: 0.85rem !important;
+  line-height: 1.35 !important;
+  min-height: 2.4em !important;
+}
+
+/* ✅ Category — bahagyang mas readable */
+.home-card__category {
+  font-size: 0.66rem !important;
+}
+
+/* ✅ Price — bahagyang mas prominent */
+.home-card__price {
+  font-size: 0.95rem !important;
+  margin: 0.25rem 0 0 !important;
+}
+
+/* ✅ CTA button — bahagyang mas malaki */
+.home-card__cta {
+  padding: 0.5rem 0.75rem !important;
+  font-size: 0.72rem !important;
+  min-height: 2.1rem !important;
+  border-radius: 0.45rem !important;
+}
+
+/* ============================================================
+   RESPONSIVE — Auto-adjust columns
+============================================================ */
+
+/* ✅ Large desktop — 5 columns */
+@media (min-width: 1400px) {
+  .home-cards {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+  .home-cards--best {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ✅ Medium desktop — 4 columns */
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .home-cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+  .home-cards--best {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ✅ Tablet — 3 columns */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .home-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.85rem !important;
+  }
+  .home-cards--best {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ✅ Mobile — 2 columns */
+@media (max-width: 767px) {
+  .home-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.65rem !important;
+  }
+  .home-cards--best {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.65rem !important;
+  }
+
+  .home-card {
+    min-height: 17rem !important;
+  }
+
+  .home-card__media {
+    min-height: 9rem !important;
+  }
+
+  .home-card__name {
+    font-size: 0.78rem !important;
+  }
+
+  .home-card__price {
+    font-size: 0.85rem !important;
+  }
+
+  .home-card__cta {
+    font-size: 0.68rem !important;
+    padding: 0.45rem 0.6rem !important;
+    min-height: 1.9rem !important;
+  }
+}
+
+/* ✅ Small mobile — 1 column */
+@media (max-width: 480px) {
+  .home-cards {
+    grid-template-columns: 1fr !important;
+  }
+  .home-cards--best {
+    grid-template-columns: 1fr !important;
+  }
+
+  .home-card {
+    min-height: auto !important;
+  }
+
+  .home-card__media {
+    min-height: 15rem !important;
+  }
 }

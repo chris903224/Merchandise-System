@@ -29,13 +29,13 @@ export default function HomePage() {
 
   /* =========================================================
      HERO CAROUSEL — dynamic from products
-     ✅ Kukuha ng products na may image, tapos ipapakita sa carousel
+     ✅ Filter: products na may image at may stock
+     ✅ Show max 5 slides
   ========================================================== */
   const carouselProducts = useMemo(() => {
-    /* Filter: only products na may image at may stock */
     return products
-      .filter((p) => p.image && p.image.trim() !== '')
-      .slice(0, 5); // ✅ Show max 5 slides
+      .filter((p) => p.image && p.image.trim() !== '' && Number(p.stock) > 0)
+      .slice(0, 5);
   }, [products]);
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -250,7 +250,7 @@ export default function HomePage() {
       </main>
 
       {/* =========================================================
-          FRESH STOCK — Visible glass cards
+          FRESH STOCK — Newest arrivals
       ========================================================== */}
       {newArrivals.length > 0 && (
         <section
@@ -326,9 +326,7 @@ export default function HomePage() {
       )}
 
       {/* =========================================================
-          CATEGORY SECTION — ✅ WORKING FILTERS
-          Ang bawat card ay nagre-redirect sa /catalog?search=<term>
-          at ang CatalogPage ay nag-fifilter base sa search term.
+          CATEGORY SECTION — Working filters
       ========================================================== */}
       <section
         className="page-shell home-section"
@@ -353,7 +351,7 @@ export default function HomePage() {
         </div>
 
         <div className="home-cards">
-          {/* ✅ ID LACES — search term: "ID Lace" */}
+          {/* ✅ ID LACES */}
           <Link
             to="/catalog?search=ID%20Lace"
             className="home-card home-card--category"
@@ -385,10 +383,7 @@ export default function HomePage() {
             </div>
           </Link>
 
-          {/* ✅ ORGANIZATION UNIFORMS — search term: "Org"
-              Ito ay mag-hahanap sa products na may "Org" sa name
-              (e.g. "SSITE Org Shirt", "CISE Shirt", "Vanguards Shirt")
-              at sa organization field (e.g. "Interest Based Organizations") */}
+          {/* ✅ ORGANIZATION UNIFORMS */}
           <Link
             to="/catalog?search=Organization"
             className="home-card home-card--category"
@@ -420,9 +415,7 @@ export default function HomePage() {
             </div>
           </Link>
 
-          {/* ✅ SCHOOL & PE UNIFORMS — search term: "Uniform"
-              Ito ay mag-hahanap sa lahat ng products na may "Uniform"
-              sa name (College General Uniform Set, PE Uniform Set, etc.) */}
+          {/* ✅ SCHOOL & PE UNIFORMS */}
           <Link
             to="/catalog?search=Uniform"
             className="home-card home-card--category"

@@ -14,11 +14,13 @@ import {
   ChevronDown,
   X,
   Heart,
+  Globe,          // ✅ IDAGDAG
 } from 'lucide-react';
 import { useApp } from '../store';
 import { countCartItems, getConsolePath, isStaffRole } from '../services';
 import { fetchProfileImages } from '../data/storage';
 import NotificationBell from './NotificationBell';
+import LanguageSwitcher from './LanguageSwitcher';  // ✅ IDAGDAG
 
 const NAV_AVATAR_SIZE = 36;
 const DROPDOWN_AVATAR_SIZE = 48;
@@ -34,7 +36,6 @@ const ROUTES = {
   FAVORITES: '/favorites',
 } as const;
 
-// ✅ Path ng logo image — nasa public/ folder
 const LOGO_SRC = '/logo.png';
 
 export default function Navbar() {
@@ -365,6 +366,19 @@ export default function Navbar() {
                       <Settings className="react-icon" aria-hidden="true" />
                       <span>Settings</span>
                     </Link>
+
+                    <hr className="nav-dropdown-divider" />
+
+                    {/* ============================================
+                        ✅ LANGUAGE SWITCHER — inline menu
+                    ============================================ */}
+                    <div className="nav-dropdown-language">
+                      <div className="nav-dropdown-language__header">
+                        <Globe className="react-icon" aria-hidden="true" />
+                        <span>Language</span>
+                      </div>
+                      <LanguageSwitcher variant="inline" />
+                    </div>
 
                     <hr className="nav-dropdown-divider" />
 
