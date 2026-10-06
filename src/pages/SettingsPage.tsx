@@ -29,6 +29,8 @@ import {
   Check,
   Phone,
   X,
+  Building2,     // ✅ IDAGDAG
+  DoorOpen,      // ✅ IDAGDAG
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
@@ -43,7 +45,7 @@ import {
   fetchUserProfile,
   updateUserProfile,
 } from '../data/storage';
-import { COURSE_OPTIONS, YEAR_LEVELS } from '../data/constants';
+import { COURSE_OPTIONS, YEAR_LEVELS, BUILDINGS, BUILDING_NAMES } from '../data/constants'; // ✅ IDAGDAG
 import './SettingsPage.css';
 
 type SettingsTab = 'account' | 'security' | 'notifications' | 'appearance' | 'privacy';
@@ -65,8 +67,65 @@ const sideNavItems = [
   { to: '/settings', label: 'Settings', icon: Shield, active: true },
 ];
 
-/** Default theme ID — para consistent sa theme.ts */
 const DEFAULT_THEME_ID: ThemeId = 'cream-yellow';
+
+/* ✅ Available languages for Google Translate */
+const LANGUAGES = [
+  { code: 'en', label: 'English (US)', flag: '🇺🇸' },
+  { code: 'tl', label: 'Tagalog', flag: '🇵🇭' },
+  { code: 'es', label: 'Español', flag: '🇪🇸' },
+  { code: 'zh-CN', label: '中文', flag: '🇨🇳' },
+  { code: 'ja', label: '日本語', flag: '🇯🇵' },
+  { code: 'ko', label: '한국어', flag: '🇰🇷' },
+];
+
+/* ✅ Helper: read current Google Translate language */
+function getCurrentLanguage(): string {
+  const match = document.cookie.match(/googtrans=\/en\/([^;]+)/);
+  return match ? match[1] : 'en';
+}
+
+/* ✅ Helper: apply Google Translate language */
+function applyLanguage(langCode: string) {
+  document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+
+  if (langCode === 'en') {
+    window.location.reload();
+    return;
+  }
+
+  document.cookie = `googtrans=/en/${langCode}; path=/`;
+
+  const selectEl = document.querySelector<HTMLSelectElement>('.goog-te-combo');
+  if (selectEl) {
+    selectEl.value = langCode;
+    selectEl.dispatchEvent(new Event('change'));
+  } else {
+    window.location.reload();
+  }
+}
+
+/* ============================================
+   ✅ PHONE NUMBER HELPERS
+   ============================================ */
+
+/** ✅ Format phone: 09XX XXX XXXX (11 digits) */
+function formatPhoneNumber(input: string): string {
+  // Remove all non-digits
+  const digits = input.replace(/\D/g, '').slice(0, 11);
+
+  // Format: 09XX XXX XXXX
+  if (digits.length === 0) return '';
+  if (digits.length <= 4) return digits;
+  if (digits.length <= 7) return `${digits.slice(0, 4)} ${digits.slice(4)}`;
+  return `${digits.slice(0, 4)} ${digits.slice(4, 7)} ${digits.slice(7, 11)}`;
+}
+
+/** ✅ Validate phone: must be 11 digits starting with 09 */
+function isValidPhone(phone: string): boolean {
+  const digits = phone.replace(/\D/g, '');
+  return digits.length === 11 && digits.startsWith('09');
+}
 
 export default function SettingsPage() {
   const { session, updateProfilePicture } = useApp();
@@ -107,12 +166,19 @@ export default function SettingsPage() {
   const [showActivityToOthers, setShowActivityToOthers] = useState(true);
   const [showProfileInDirectory, setShowProfileInDirectory] = useState(true);
 
-  const [language, setLanguage] = useState('en-US');
+  const [language, setLanguage] = useState<string>(getCurrentLanguage());
 
-  const [shippingAddress, setShippingAddress] = useState<string>('');
+  /* ============================================
+     ✅ SHIPPING ADDRESS — Building + Room
+     ============================================ */
+  const [shippingBuilding, setShippingBuilding] = useState<string>(BUILDING_NAMES[0] || '');
+  const [shippingRoom, setShippingRoom] = useState<string>(BUILDINGS[BUILDING_NAMES[0]]?.[0] || '');
+  const [shippingNotes, setShippingNotes] = useState<string>('');
+
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
-  const [draftAddress, setDraftAddress] = useState(shippingAddress);
-  const [draftLabel, setDraftLabel] = useState('Default');
+  const [draftBuilding, setDraftBuilding] = useState(shippingBuilding);
+  const [draftRoom, setDraftRoom] = useState(shippingRoom);
+  const [draftNotes, setDraftNotes] = useState(shippingNotes);
   const [isSavingAddress, setIsSavingAddress] = useState(false);
 
   /* ============================================
@@ -132,7 +198,7 @@ export default function SettingsPage() {
     if ((session as any).course) setCourseStrand((session as any).course);
     if ((session as any).yearLevel) setYearLevel((session as any).yearLevel);
     if ((session as any).dateOfBirth) setDob((session as any).dateOfBirth);
-    if ((session as any).phone) setPhone((session as any).phone);
+    if ((session as any).phone) setPhone(formatPhoneNumber((session as any).phone));
 
     const loadProfile = async () => {
       setIsLoadingProfile(true);
@@ -146,7 +212,7 @@ export default function SettingsPage() {
         if (profile) {
           if (profile.course_strand) setCourseStrand(profile.course_strand);
           if (profile.year_level) setYearLevel(profile.year_level);
-          if (profile.phone) setPhone(profile.phone);
+          if (profile.phone) setPhone(formatPhoneNumber(profile.phone));
 
           if (profile.date_of_birth) {
             const dobStr =
@@ -155,6 +221,15 @@ export default function SettingsPage() {
                 : new Date(profile.date_of_birth).toISOString().slice(0, 10);
             setDob(dobStr);
           }
+
+          /* ✅ Load shipping address from profile if available */
+          if ((profile as any).building) {
+            setShippingBuilding((profile as any).building);
+            const rooms = BUILDINGS[(profile as any).building] || [];
+            setShippingRoom((profile as any).room || rooms[0] || '');
+          }
+          if ((profile as any).room) setShippingRoom((profile as any).room);
+          if ((profile as any).shipping_notes) setShippingNotes((profile as any).shipping_notes);
         }
       } catch (error) {
         console.warn('[Settings] Failed to load profile:', error);
@@ -165,6 +240,13 @@ export default function SettingsPage() {
 
     void loadProfile();
   }, [session, navigate]);
+
+  useEffect(() => {
+    const syncLanguage = () => setLanguage(getCurrentLanguage());
+    syncLanguage();
+    const interval = setInterval(syncLanguage, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (!isAddressModalOpen) return;
@@ -222,14 +304,28 @@ export default function SettingsPage() {
     input.click();
   };
 
+  /* ============================================
+     ✅ PHONE INPUT HANDLER — numbers only + auto-format
+     ============================================ */
+  const handlePhoneChange = (value: string) => {
+    const formatted = formatPhoneNumber(value);
+    setPhone(formatted);
+  };
+
   const handleSaveAccount = async () => {
+    /* ✅ Validate phone before saving */
+    if (phone && !isValidPhone(phone)) {
+      toast('Phone number must be 11 digits starting with 09 (e.g., 0917 123 4567).', 'warning');
+      return;
+    }
+
     setIsSavingAccount(true);
     try {
       await updateUserProfile(session.id, {
         course_strand: courseStrand || null,
         year_level: yearLevel || null,
         date_of_birth: dob || null,
-        phone: phone || null,
+        phone: phone ? phone.replace(/\D/g, '') : null, // ✅ Save raw digits
       });
 
       toast('Account details saved!', 'success');
@@ -267,11 +363,16 @@ export default function SettingsPage() {
   const handleSaveNotifications = () =>
     toast('Notification preferences updated!', 'success');
 
-  /* ✅ THEME — auto-apply pag-click */
   const handleThemeChange = (newTheme: ThemeId) => {
     setTheme(newTheme);
     applyTheme(newTheme);
     toast('Theme applied!', 'success');
+  };
+
+  const handleLanguageChange = (langCode: string) => {
+    setLanguage(langCode);
+    applyLanguage(langCode);
+    toast('Language changed!', 'success');
   };
 
   const handleSavePrivacy = () =>
@@ -290,8 +391,13 @@ export default function SettingsPage() {
     );
   };
 
+  /* ============================================
+     ✅ ADDRESS MODAL HANDLERS
+     ============================================ */
   const openAddressModal = () => {
-    setDraftAddress(shippingAddress);
+    setDraftBuilding(shippingBuilding);
+    setDraftRoom(shippingRoom);
+    setDraftNotes(shippingNotes);
     setIsAddressModalOpen(true);
   };
 
@@ -300,33 +406,48 @@ export default function SettingsPage() {
     setIsAddressModalOpen(false);
   };
 
+  /* ✅ Building change — auto-select first room */
+  const handleDraftBuildingChange = (newBuilding: string) => {
+    setDraftBuilding(newBuilding);
+    const rooms = BUILDINGS[newBuilding] || [];
+    setDraftRoom(rooms[0] || '');
+  };
+
   const handleSaveAddress = async () => {
-    if (!draftAddress.trim()) {
-      toast('Address cannot be empty.', 'warning');
+    if (!draftBuilding.trim() || !draftRoom.trim()) {
+      toast('Please select a building and room.', 'warning');
       return;
     }
     setIsSavingAddress(true);
     try {
-      await new Promise((r) => setTimeout(r, 500));
-      setShippingAddress(draftAddress.trim());
+      await updateUserProfile(session.id, {
+        building: draftBuilding,
+        room: draftRoom,
+        shipping_notes: draftNotes || null,
+      } as any);
+
+      setShippingBuilding(draftBuilding);
+      setShippingRoom(draftRoom);
+      setShippingNotes(draftNotes);
+
       toast('Shipping address updated!', 'success');
       setIsAddressModalOpen(false);
+    } catch (error) {
+      console.error('[Settings] Failed to save address:', error);
+      toast('Failed to save address.', 'danger');
     } finally {
       setIsSavingAddress(false);
     }
   };
 
   const currentThemeOption = themeOptions.find((t) => t.id === theme);
-
-  /* ✅ Group themes by mode — para sa mas malinis na rendering */
   const lightThemes = themeOptions.filter((t) => t.mode === 'light');
   const darkThemes = themeOptions.filter((t) => t.mode === 'dark');
+  const availableDraftRooms = BUILDINGS[draftBuilding] || [];
 
   return (
     <div className="settings-shell">
-      {/* ============================================
-          SIDEBAR — compact premium glass
-      ============================================ */}
+      {/* SIDEBAR */}
       <aside className="settings-sidebar">
         <div className="settings-sidebar__top">
           <nav className="settings-sidebar__nav">
@@ -337,9 +458,7 @@ export default function SettingsPage() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`settings-sidebar__item ${
-                    isActive ? 'is-active' : ''
-                  }`}
+                  className={`settings-sidebar__item ${isActive ? 'is-active' : ''}`}
                   data-label={item.label}
                 >
                   <Icon className="react-icon" aria-hidden="true" />
@@ -351,9 +470,7 @@ export default function SettingsPage() {
         </div>
       </aside>
 
-      {/* ============================================
-          MAIN
-      ============================================ */}
+      {/* MAIN */}
       <div className="settings-main">
         <div className="settings-scroll">
           <section className="settings-hero">
@@ -372,11 +489,7 @@ export default function SettingsPage() {
             </div>
           </section>
 
-          <nav
-            className="settings-tabs"
-            role="tablist"
-            aria-label="Settings sections"
-          >
+          <nav className="settings-tabs" role="tablist" aria-label="Settings sections">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -385,9 +498,7 @@ export default function SettingsPage() {
                   type="button"
                   role="tab"
                   aria-selected={activeTab === tab.id}
-                  className={`settings-tab ${
-                    activeTab === tab.id ? 'is-active' : ''
-                  }`}
+                  className={`settings-tab ${activeTab === tab.id ? 'is-active' : ''}`}
                   onClick={() => handleTabChange(tab.id)}
                 >
                   <Icon className="react-icon" aria-hidden="true" />
@@ -408,9 +519,7 @@ export default function SettingsPage() {
                           <User className="react-icon" aria-hidden="true" />
                         </span>
                         <div>
-                          <h2 className="settings-panel__title">
-                            Profile Information
-                          </h2>
+                          <h2 className="settings-panel__title">Profile Information</h2>
                           <p className="settings-panel__subtitle">
                             Update your personal details and profile picture.
                           </p>
@@ -424,11 +533,7 @@ export default function SettingsPage() {
                       >
                         <Save className="react-icon" aria-hidden="true" />
                         <span>
-                          {isSavingAccount
-                            ? 'Saving...'
-                            : isLoadingProfile
-                            ? 'Loading...'
-                            : 'Save Changes'}
+                          {isSavingAccount ? 'Saving...' : isLoadingProfile ? 'Loading...' : 'Save Changes'}
                         </span>
                       </button>
                     </header>
@@ -439,9 +544,7 @@ export default function SettingsPage() {
                           {profilePicture ? (
                             <img src={profilePicture} alt={fullName} />
                           ) : (
-                            <span className="settings-photo__fallback">
-                              {getInitials()}
-                            </span>
+                            <span className="settings-photo__fallback">{getInitials()}</span>
                           )}
                           <button
                             type="button"
@@ -449,10 +552,7 @@ export default function SettingsPage() {
                             onClick={handleProfilePictureUpload}
                             aria-label="Upload profile picture"
                           >
-                            <Camera
-                              className="react-icon"
-                              aria-hidden="true"
-                            />
+                            <Camera className="react-icon" aria-hidden="true" />
                           </button>
                         </div>
                         <button
@@ -469,14 +569,8 @@ export default function SettingsPage() {
                         <div className="settings-field">
                           <label className="settings-field__label">
                             Full Name
-                            <span
-                              className="settings-field__lock"
-                              title="Managed by your registration record"
-                            >
-                              <LockIcon
-                                className="react-icon"
-                                aria-hidden="true"
-                              />
+                            <span className="settings-field__lock" title="Managed by your registration record">
+                              <LockIcon className="react-icon" aria-hidden="true" />
                               <span>Locked</span>
                             </span>
                           </label>
@@ -491,14 +585,8 @@ export default function SettingsPage() {
                         <div className="settings-field">
                           <label className="settings-field__label">
                             Student ID
-                            <span
-                              className="settings-field__lock"
-                              title="Managed by your registration record"
-                            >
-                              <LockIcon
-                                className="react-icon"
-                                aria-hidden="true"
-                              />
+                            <span className="settings-field__lock" title="Managed by your registration record">
+                              <LockIcon className="react-icon" aria-hidden="true" />
                               <span>Locked</span>
                             </span>
                           </label>
@@ -511,23 +599,16 @@ export default function SettingsPage() {
                         </div>
 
                         <div className="settings-field">
-                          <label className="settings-field__label">
-                            Course / Strand
-                          </label>
+                          <label className="settings-field__label">Course / Strand</label>
                           <select
                             className="settings-field__select"
                             value={courseStrand}
-                            onChange={(e) =>
-                              setCourseStrand(e.target.value)
-                            }
+                            onChange={(e) => setCourseStrand(e.target.value)}
                             disabled={isLoadingProfile}
                           >
                             <option value="">Select course / strand</option>
                             {COURSE_OPTIONS.map((course) => (
-                              <option
-                                key={course.value}
-                                value={course.value}
-                              >
+                              <option key={course.value} value={course.value}>
                                 {course.label}
                               </option>
                             ))}
@@ -535,9 +616,7 @@ export default function SettingsPage() {
                         </div>
 
                         <div className="settings-field">
-                          <label className="settings-field__label">
-                            Year Level
-                          </label>
+                          <label className="settings-field__label">Year Level</label>
                           <select
                             className="settings-field__select"
                             value={yearLevel}
@@ -546,22 +625,15 @@ export default function SettingsPage() {
                           >
                             <option value="">Select year level</option>
                             {YEAR_LEVELS.map((year) => (
-                              <option key={year} value={year}>
-                                {year}
-                              </option>
+                              <option key={year} value={year}>{year}</option>
                             ))}
                           </select>
                         </div>
 
                         <div className="settings-field">
-                          <label className="settings-field__label">
-                            Date of Birth
-                          </label>
+                          <label className="settings-field__label">Date of Birth</label>
                           <div className="settings-field__icon-wrap">
-                            <Calendar
-                              className="react-icon"
-                              aria-hidden="true"
-                            />
+                            <Calendar className="react-icon" aria-hidden="true" />
                             <input
                               type="date"
                               className="settings-field__input settings-field__input--icon"
@@ -572,45 +644,48 @@ export default function SettingsPage() {
                           </div>
                         </div>
 
+                        {/* ============================================
+                            ✅ CONTACT NUMBER — Numbers only, 11 digits max
+                        ============================================ */}
                         <div className="settings-field">
                           <label className="settings-field__label">
                             Contact Number
                           </label>
                           <div className="settings-field__icon-wrap">
-                            <Phone
-                              className="react-icon"
-                              aria-hidden="true"
-                            />
+                            <Phone className="react-icon" aria-hidden="true" />
                             <input
                               type="tel"
+                              inputMode="numeric"
                               className="settings-field__input settings-field__input--icon"
                               value={phone}
-                              onChange={(e) => setPhone(e.target.value)}
+                              onChange={(e) => handlePhoneChange(e.target.value)}
                               placeholder="09XX XXX XXXX"
+                              maxLength={13}  /* 11 digits + 2 spaces */
                               disabled={isLoadingProfile}
                             />
                           </div>
+                          {phone && !isValidPhone(phone) && (
+                            <p className="settings-field__hint settings-field__hint--error">
+                              ⚠️ Phone must be 11 digits starting with 09.
+                            </p>
+                          )}
+                          {phone && isValidPhone(phone) && (
+                            <p className="settings-field__hint settings-field__hint--success">
+                              ✓ Valid phone number
+                            </p>
+                          )}
                         </div>
 
                         <div className="settings-field">
                           <label className="settings-field__label">
                             Email Address
-                            <span
-                              className="settings-field__lock"
-                              title="Managed by your registration record"
-                            >
-                              <LockIcon
-                                className="react-icon"
-                                aria-hidden="true"
-                              />
+                            <span className="settings-field__lock" title="Managed by your registration record">
+                              <LockIcon className="react-icon" aria-hidden="true" />
                               <span>Locked</span>
                             </span>
                           </label>
                           <div className="settings-field__icon-wrap">
-                            <Mail
-                              className="react-icon"
-                              aria-hidden="true"
-                            />
+                            <Mail className="react-icon" aria-hidden="true" />
                             <input
                               type="email"
                               className="settings-field__input settings-field__input--icon settings-field__input--locked"
@@ -624,19 +699,17 @@ export default function SettingsPage() {
                     </div>
                   </section>
 
+                  {/* ============================================
+                      ✅ SHIPPING ADDRESS — Building + Room
+                  ============================================ */}
                   <section className="settings-panel">
                     <header className="settings-panel__header">
                       <div className="settings-panel__heading">
                         <span className="settings-panel__icon">
-                          <MapPin
-                            className="react-icon"
-                            aria-hidden="true"
-                          />
+                          <MapPin className="react-icon" aria-hidden="true" />
                         </span>
                         <div>
-                          <h2 className="settings-panel__title">
-                            Shipping Address
-                          </h2>
+                          <h2 className="settings-panel__title">Shipping Address</h2>
                           <p className="settings-panel__subtitle">
                             Manage your delivery address for your orders.
                           </p>
@@ -654,70 +727,65 @@ export default function SettingsPage() {
                     <div className="settings-panel__body">
                       <div className="settings-address">
                         <span className="settings-address__icon">
-                          <Home
-                            className="react-icon"
-                            aria-hidden="true"
-                          />
+                          <Building2 className="react-icon" aria-hidden="true" />
                         </span>
                         <span className="settings-address__text">
-                          {shippingAddress ||
-                            'No shipping address on file yet.'}
+                          {shippingBuilding && shippingRoom
+                            ? `${shippingBuilding} — ${shippingRoom}`
+                            : 'No shipping address on file yet.'}
                         </span>
-                        <span className="settings-address__badge">
-                          Default
-                        </span>
+                        <span className="settings-address__badge">Default</span>
                       </div>
+                      {shippingNotes && (
+                        <p className="settings-address__notes">
+                          <strong>Notes:</strong> {shippingNotes}
+                        </p>
+                      )}
                     </div>
                   </section>
 
+                  {/* LANGUAGE */}
                   <section className="settings-panel">
                     <header className="settings-panel__header">
                       <div className="settings-panel__heading">
                         <span className="settings-panel__icon">
-                          <Globe
-                            className="react-icon"
-                            aria-hidden="true"
-                          />
+                          <Globe className="react-icon" aria-hidden="true" />
                         </span>
                         <div>
-                          <h2 className="settings-panel__title">
-                            Language &amp; Region
-                          </h2>
+                          <h2 className="settings-panel__title">Language &amp; Region</h2>
                           <p className="settings-panel__subtitle">
-                            Set your preferred language and region.
+                            Set your preferred language — applies to the entire site.
                           </p>
                         </div>
                       </div>
                       <select
                         className="settings-field__select settings-field__select--inline"
                         value={language}
-                        onChange={(e) => setLanguage(e.target.value)}
+                        onChange={(e) => handleLanguageChange(e.target.value)}
                       >
-                        <option value="en-US">English (US)</option>
-                        <option value="en-PH">
-                          English (Philippines)
-                        </option>
-                        <option value="tl-PH">Tagalog</option>
+                        {LANGUAGES.map((lang) => (
+                          <option key={lang.code} value={lang.code}>
+                            {lang.flag} {lang.label}
+                          </option>
+                        ))}
                       </select>
                     </header>
                   </section>
                 </>
               )}
 
+              {/* ============================================
+                  SECURITY TAB
+              ============================================ */}
               {activeTab === 'security' && (
                 <section className="settings-panel">
                   <header className="settings-panel__header">
                     <div className="settings-panel__heading">
                       <span className="settings-panel__icon">
-                        <Shield
-                          className="react-icon"
-                          aria-hidden="true"
-                        />
+                        <Shield className="react-icon" aria-hidden="true" />
                       </span>
                       <div>
-                        <h2 className="settings-panel__title">
-                          Security Settings
-                        </h2>
+                        <h2 className="settings-panel__title">Security Settings</h2>
                         <p className="settings-panel__subtitle">
                           Manage your password and security preferences.
                         </p>
@@ -726,79 +794,50 @@ export default function SettingsPage() {
                   </header>
 
                   <div className="settings-panel__body">
-                    <form
-                      className="settings-form"
-                      onSubmit={(e) => e.preventDefault()}
-                    >
+                    <form className="settings-form" onSubmit={(e) => e.preventDefault()}>
                       <div className="settings-field">
-                        <label className="settings-field__label">
-                          Current Password
-                        </label>
+                        <label className="settings-field__label">Current Password</label>
                         <div className="settings-field__password">
                           <input
-                            type={
-                              showCurrentPassword ? 'text' : 'password'
-                            }
+                            type={showCurrentPassword ? 'text' : 'password'}
                             className="settings-field__input"
                             value={currentPassword}
-                            onChange={(e) =>
-                              setCurrentPassword(e.target.value)
-                            }
+                            onChange={(e) => setCurrentPassword(e.target.value)}
                             placeholder="Enter your current password"
                           />
                           <button
                             type="button"
                             className="settings-field__toggle"
-                            onClick={() =>
-                              setShowCurrentPassword(!showCurrentPassword)
-                            }
+                            onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                           >
                             {showCurrentPassword ? (
-                              <EyeOff
-                                className="react-icon"
-                                aria-hidden="true"
-                              />
+                              <EyeOff className="react-icon" aria-hidden="true" />
                             ) : (
-                              <Eye
-                                className="react-icon"
-                                aria-hidden="true"
-                              />
+                              <Eye className="react-icon" aria-hidden="true" />
                             )}
                           </button>
                         </div>
                       </div>
 
                       <div className="settings-field">
-                        <label className="settings-field__label">
-                          New Password
-                        </label>
+                        <label className="settings-field__label">New Password</label>
                         <div className="settings-field__password">
                           <input
                             type={showNewPassword ? 'text' : 'password'}
                             className="settings-field__input"
                             value={newPassword}
-                            onChange={(e) =>
-                              setNewPassword(e.target.value)
-                            }
+                            onChange={(e) => setNewPassword(e.target.value)}
                             placeholder="At least 6 characters"
                           />
                           <button
                             type="button"
                             className="settings-field__toggle"
-                            onClick={() =>
-                              setShowNewPassword(!showNewPassword)
-                            }
+                            onClick={() => setShowNewPassword(!showNewPassword)}
                           >
                             {showNewPassword ? (
-                              <EyeOff
-                                className="react-icon"
-                                aria-hidden="true"
-                              />
+                              <EyeOff className="react-icon" aria-hidden="true" />
                             ) : (
-                              <Eye
-                                className="react-icon"
-                                aria-hidden="true"
-                              />
+                              <Eye className="react-icon" aria-hidden="true" />
                             )}
                           </button>
                         </div>
@@ -808,40 +847,24 @@ export default function SettingsPage() {
                       </div>
 
                       <div className="settings-field">
-                        <label className="settings-field__label">
-                          Confirm New Password
-                        </label>
+                        <label className="settings-field__label">Confirm New Password</label>
                         <div className="settings-field__password">
                           <input
-                            type={
-                              showConfirmPassword ? 'text' : 'password'
-                            }
+                            type={showConfirmPassword ? 'text' : 'password'}
                             className="settings-field__input"
                             value={confirmPassword}
-                            onChange={(e) =>
-                              setConfirmPassword(e.target.value)
-                            }
+                            onChange={(e) => setConfirmPassword(e.target.value)}
                             placeholder="Re-enter your new password"
                           />
                           <button
                             type="button"
                             className="settings-field__toggle"
-                            onClick={() =>
-                              setShowConfirmPassword(
-                                !showConfirmPassword
-                              )
-                            }
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                           >
                             {showConfirmPassword ? (
-                              <EyeOff
-                                className="react-icon"
-                                aria-hidden="true"
-                              />
+                              <EyeOff className="react-icon" aria-hidden="true" />
                             ) : (
-                              <Eye
-                                className="react-icon"
-                                aria-hidden="true"
-                              />
+                              <Eye className="react-icon" aria-hidden="true" />
                             )}
                           </button>
                         </div>
@@ -853,33 +876,26 @@ export default function SettingsPage() {
                         onClick={handleChangePassword}
                         disabled={isSaving}
                       >
-                        <LockIcon
-                          className="react-icon"
-                          aria-hidden="true"
-                        />
-                        <span>
-                          {isSaving ? 'Changing...' : 'Change Password'}
-                        </span>
+                        <LockIcon className="react-icon" aria-hidden="true" />
+                        <span>{isSaving ? 'Changing...' : 'Change Password'}</span>
                       </button>
                     </form>
                   </div>
                 </section>
               )}
 
+              {/* ============================================
+                  NOTIFICATIONS TAB
+              ============================================ */}
               {activeTab === 'notifications' && (
                 <section className="settings-panel">
                   <header className="settings-panel__header">
                     <div className="settings-panel__heading">
                       <span className="settings-panel__icon">
-                        <Bell
-                          className="react-icon"
-                          aria-hidden="true"
-                        />
+                        <Bell className="react-icon" aria-hidden="true" />
                       </span>
                       <div>
-                        <h2 className="settings-panel__title">
-                          Notification Preferences
-                        </h2>
+                        <h2 className="settings-panel__title">Notification Preferences</h2>
                         <p className="settings-panel__subtitle">
                           Control how and when you receive notifications.
                         </p>
@@ -892,28 +908,17 @@ export default function SettingsPage() {
                       <div className="settings-toggle-group">
                         <div className="settings-toggle-item">
                           <div className="settings-toggle-info">
-                            <Mail
-                              className="react-icon"
-                              aria-hidden="true"
-                            />
+                            <Mail className="react-icon" aria-hidden="true" />
                             <div>
-                              <h4 className="settings-toggle-label">
-                                Email Notifications
-                              </h4>
-                              <p className="settings-toggle-desc">
-                                Receive notifications via email.
-                              </p>
+                              <h4 className="settings-toggle-label">Email Notifications</h4>
+                              <p className="settings-toggle-desc">Receive notifications via email.</p>
                             </div>
                           </div>
                           <label className="settings-switch">
                             <input
                               type="checkbox"
                               checked={emailNotifications}
-                              onChange={() =>
-                                setEmailNotifications(
-                                  !emailNotifications
-                                )
-                              }
+                              onChange={() => setEmailNotifications(!emailNotifications)}
                             />
                             <span className="settings-switch__slider" />
                           </label>
@@ -923,26 +928,17 @@ export default function SettingsPage() {
 
                         <div className="settings-toggle-item">
                           <div className="settings-toggle-info">
-                            <CreditCard
-                              className="react-icon"
-                              aria-hidden="true"
-                            />
+                            <CreditCard className="react-icon" aria-hidden="true" />
                             <div>
-                              <h4 className="settings-toggle-label">
-                                Order Updates
-                              </h4>
-                              <p className="settings-toggle-desc">
-                                Get updates on your order status.
-                              </p>
+                              <h4 className="settings-toggle-label">Order Updates</h4>
+                              <p className="settings-toggle-desc">Get updates on your order status.</p>
                             </div>
                           </div>
                           <label className="settings-switch">
                             <input
                               type="checkbox"
                               checked={orderUpdates}
-                              onChange={() =>
-                                setOrderUpdates(!orderUpdates)
-                              }
+                              onChange={() => setOrderUpdates(!orderUpdates)}
                             />
                             <span className="settings-switch__slider" />
                           </label>
@@ -952,26 +948,17 @@ export default function SettingsPage() {
 
                         <div className="settings-toggle-item">
                           <div className="settings-toggle-info">
-                            <Bell
-                              className="react-icon"
-                              aria-hidden="true"
-                            />
+                            <Bell className="react-icon" aria-hidden="true" />
                             <div>
-                              <h4 className="settings-toggle-label">
-                                Promotions &amp; Offers
-                              </h4>
-                              <p className="settings-toggle-desc">
-                                Receive promotional offers and discounts.
-                              </p>
+                              <h4 className="settings-toggle-label">Promotions &amp; Offers</h4>
+                              <p className="settings-toggle-desc">Receive promotional offers and discounts.</p>
                             </div>
                           </div>
                           <label className="settings-switch">
                             <input
                               type="checkbox"
                               checked={promotions}
-                              onChange={() =>
-                                setPromotions(!promotions)
-                              }
+                              onChange={() => setPromotions(!promotions)}
                             />
                             <span className="settings-switch__slider" />
                           </label>
@@ -981,17 +968,11 @@ export default function SettingsPage() {
 
                         <div className="settings-toggle-item">
                           <div className="settings-toggle-info">
-                            <Bell
-                              className="react-icon"
-                              aria-hidden="true"
-                            />
+                            <Bell className="react-icon" aria-hidden="true" />
                             <div>
-                              <h4 className="settings-toggle-label">
-                                Pickup Reminders
-                              </h4>
+                              <h4 className="settings-toggle-label">Pickup Reminders</h4>
                               <p className="settings-toggle-desc">
-                                Get reminders when your items are ready
-                                for pickup.
+                                Get reminders when your items are ready for pickup.
                               </p>
                             </div>
                           </div>
@@ -999,9 +980,7 @@ export default function SettingsPage() {
                             <input
                               type="checkbox"
                               checked={pickupReminders}
-                              onChange={() =>
-                                setPickupReminders(!pickupReminders)
-                              }
+                              onChange={() => setPickupReminders(!pickupReminders)}
                             />
                             <span className="settings-switch__slider" />
                           </label>
@@ -1013,10 +992,7 @@ export default function SettingsPage() {
                         className="settings-btn settings-btn--primary"
                         onClick={handleSaveNotifications}
                       >
-                        <Save
-                          className="react-icon"
-                          aria-hidden="true"
-                        />
+                        <Save className="react-icon" aria-hidden="true" />
                         <span>Save Preferences</span>
                       </button>
                     </div>
@@ -1025,8 +1001,7 @@ export default function SettingsPage() {
               )}
 
               {/* ============================================
-                  APPEARANCE — 10 themes (5 light + 5 dark)
-                  ✅ Grouped by mode for cleaner UI
+                  APPEARANCE TAB
               ============================================ */}
               {activeTab === 'appearance' && (
                 <>
@@ -1034,29 +1009,20 @@ export default function SettingsPage() {
                     <header className="settings-panel__header">
                       <div className="settings-panel__heading">
                         <span className="settings-panel__icon">
-                          <Palette
-                            className="react-icon"
-                            aria-hidden="true"
-                          />
+                          <Palette className="react-icon" aria-hidden="true" />
                         </span>
                         <div>
-                          <h2 className="settings-panel__title">
-                            Theme &amp; Colors
-                          </h2>
+                          <h2 className="settings-panel__title">Theme &amp; Colors</h2>
                           <p className="settings-panel__subtitle">
-                            Choose from 5 light and 5 dark themes — tap
-                            to apply instantly.
+                            Choose from 5 light and 5 dark themes — tap to apply instantly.
                           </p>
                         </div>
                       </div>
                     </header>
 
                     <div className="settings-panel__body">
-                      {/* ✅ LIGHT THEMES */}
                       <div className="appearance-section">
-                        <h3 className="appearance-section__title">
-                          ☀️ Light Themes
-                        </h3>
+                        <h3 className="appearance-section__title">☀️ Light Themes</h3>
                         <p className="appearance-section__subtitle">
                           Bright & clean — perfect for daytime use.
                         </p>
@@ -1068,33 +1034,18 @@ export default function SettingsPage() {
                               type="button"
                               data-theme-id={option.id}
                               data-theme-mode={option.mode}
-                              className={`theme-card ${
-                                theme === option.id
-                                  ? 'is-active'
-                                  : ''
-                              }`}
-                              onClick={() =>
-                                handleThemeChange(option.id)
-                              }
+                              className={`theme-card ${theme === option.id ? 'is-active' : ''}`}
+                              onClick={() => handleThemeChange(option.id)}
                               aria-pressed={theme === option.id}
                             >
                               <div
                                 className="theme-card__preview"
-                                style={
-                                  {
-                                    background: option.gradient,
-                                  } as React.CSSProperties
-                                }
+                                style={{ background: option.gradient } as React.CSSProperties}
                               >
-                                <span className="theme-card__emoji">
-                                  {option.emoji}
-                                </span>
+                                <span className="theme-card__emoji">{option.emoji}</span>
                               </div>
                               <div className="theme-card__body">
-                                <div
-                                  className="theme-card__dots"
-                                  aria-hidden="true"
-                                >
+                                <div className="theme-card__dots" aria-hidden="true">
                                   <span className="theme-card__dot theme-card__dot--1" />
                                   <span className="theme-card__dot theme-card__dot--2" />
                                   <span className="theme-card__dot theme-card__dot--3" />
@@ -1102,19 +1053,11 @@ export default function SettingsPage() {
                                 <span className="theme-card__label">
                                   {option.label}
                                   {option.id === DEFAULT_THEME_ID && (
-                                    <span className="theme-card__default">
-                                      {' '}
-                                      (Default)
-                                    </span>
+                                    <span className="theme-card__default"> (Default)</span>
                                   )}
                                 </span>
-                                <span
-                                  className="theme-card__radio"
-                                  aria-hidden="true"
-                                >
-                                  {theme === option.id && (
-                                    <Check className="react-icon" />
-                                  )}
+                                <span className="theme-card__radio" aria-hidden="true">
+                                  {theme === option.id && <Check className="react-icon" />}
                                 </span>
                               </div>
                             </button>
@@ -1122,11 +1065,8 @@ export default function SettingsPage() {
                         </div>
                       </div>
 
-                      {/* ✅ DARK THEMES */}
                       <div className="appearance-section">
-                        <h3 className="appearance-section__title">
-                          🌙 Dark Themes
-                        </h3>
+                        <h3 className="appearance-section__title">🌙 Dark Themes</h3>
                         <p className="appearance-section__subtitle">
                           Easy on the eyes — perfect for nighttime use.
                         </p>
@@ -1138,47 +1078,25 @@ export default function SettingsPage() {
                               type="button"
                               data-theme-id={option.id}
                               data-theme-mode={option.mode}
-                              className={`theme-card ${
-                                theme === option.id
-                                  ? 'is-active'
-                                  : ''
-                              }`}
-                              onClick={() =>
-                                handleThemeChange(option.id)
-                              }
+                              className={`theme-card ${theme === option.id ? 'is-active' : ''}`}
+                              onClick={() => handleThemeChange(option.id)}
                               aria-pressed={theme === option.id}
                             >
                               <div
                                 className="theme-card__preview"
-                                style={
-                                  {
-                                    background: option.gradient,
-                                  } as React.CSSProperties
-                                }
+                                style={{ background: option.gradient } as React.CSSProperties}
                               >
-                                <span className="theme-card__emoji">
-                                  {option.emoji}
-                                </span>
+                                <span className="theme-card__emoji">{option.emoji}</span>
                               </div>
                               <div className="theme-card__body">
-                                <div
-                                  className="theme-card__dots"
-                                  aria-hidden="true"
-                                >
+                                <div className="theme-card__dots" aria-hidden="true">
                                   <span className="theme-card__dot theme-card__dot--1" />
                                   <span className="theme-card__dot theme-card__dot--2" />
                                   <span className="theme-card__dot theme-card__dot--3" />
                                 </div>
-                                <span className="theme-card__label">
-                                  {option.label}
-                                </span>
-                                <span
-                                  className="theme-card__radio"
-                                  aria-hidden="true"
-                                >
-                                  {theme === option.id && (
-                                    <Check className="react-icon" />
-                                  )}
+                                <span className="theme-card__label">{option.label}</span>
+                                <span className="theme-card__radio" aria-hidden="true">
+                                  {theme === option.id && <Check className="react-icon" />}
                                 </span>
                               </div>
                             </button>
@@ -1191,29 +1109,19 @@ export default function SettingsPage() {
                   <section className="appearance-current-theme">
                     <div className="appearance-current-theme__head">
                       <span className="appearance-current-theme__icon">
-                        <Palette
-                          className="react-icon"
-                          aria-hidden="true"
-                        />
+                        <Palette className="react-icon" aria-hidden="true" />
                       </span>
                       <div>
-                        <p className="appearance-current-theme__label">
-                          Current Theme
-                        </p>
+                        <p className="appearance-current-theme__label">Current Theme</p>
                         <p className="appearance-current-theme__name">
                           {currentThemeOption?.label || 'Cream Yellow'}
                         </p>
                       </div>
                       <span className="appearance-current-theme__badge">
-                        {currentThemeOption?.mode === 'dark'
-                          ? 'Dark'
-                          : 'Light'}
+                        {currentThemeOption?.mode === 'dark' ? 'Dark' : 'Light'}
                       </span>
                     </div>
-                    <div
-                      className="appearance-current-theme__preview"
-                      aria-hidden="true"
-                    >
+                    <div className="appearance-current-theme__preview" aria-hidden="true">
                       <span className="appearance-current-theme__dot" />
                       <span className="appearance-current-theme__dot" />
                       <span className="appearance-current-theme__dot" />
@@ -1222,23 +1130,20 @@ export default function SettingsPage() {
                 </>
               )}
 
+              {/* ============================================
+                  PRIVACY TAB
+              ============================================ */}
               {activeTab === 'privacy' && (
                 <section className="settings-panel">
                   <header className="settings-panel__header">
                     <div className="settings-panel__heading">
                       <span className="settings-panel__icon">
-                        <Eye
-                          className="react-icon"
-                          aria-hidden="true"
-                        />
+                        <Eye className="react-icon" aria-hidden="true" />
                       </span>
                       <div>
-                        <h2 className="settings-panel__title">
-                          Privacy
-                        </h2>
+                        <h2 className="settings-panel__title">Privacy</h2>
                         <p className="settings-panel__subtitle">
-                          Control what others can see about your
-                          account.
+                          Control what others can see about your account.
                         </p>
                       </div>
                     </div>
@@ -1249,17 +1154,11 @@ export default function SettingsPage() {
                       <div className="settings-toggle-group">
                         <div className="settings-toggle-item">
                           <div className="settings-toggle-info">
-                            <Eye
-                              className="react-icon"
-                              aria-hidden="true"
-                            />
+                            <Eye className="react-icon" aria-hidden="true" />
                             <div>
-                              <h4 className="settings-toggle-label">
-                                Show My Order Activity
-                              </h4>
+                              <h4 className="settings-toggle-label">Show My Order Activity</h4>
                               <p className="settings-toggle-desc">
-                                Let other students see that you've
-                                placed an order.
+                                Let other students see that you've placed an order.
                               </p>
                             </div>
                           </div>
@@ -1267,11 +1166,7 @@ export default function SettingsPage() {
                             <input
                               type="checkbox"
                               checked={showActivityToOthers}
-                              onChange={() =>
-                                setShowActivityToOthers(
-                                  !showActivityToOthers
-                                )
-                              }
+                              onChange={() => setShowActivityToOthers(!showActivityToOthers)}
                             />
                             <span className="settings-switch__slider" />
                           </label>
@@ -1281,17 +1176,11 @@ export default function SettingsPage() {
 
                         <div className="settings-toggle-item">
                           <div className="settings-toggle-info">
-                            <User
-                              className="react-icon"
-                              aria-hidden="true"
-                            />
+                            <User className="react-icon" aria-hidden="true" />
                             <div>
-                              <h4 className="settings-toggle-label">
-                                Show Profile in Directory
-                              </h4>
+                              <h4 className="settings-toggle-label">Show Profile in Directory</h4>
                               <p className="settings-toggle-desc">
-                                Make your profile visible in the
-                                student directory.
+                                Make your profile visible in the student directory.
                               </p>
                             </div>
                           </div>
@@ -1299,11 +1188,7 @@ export default function SettingsPage() {
                             <input
                               type="checkbox"
                               checked={showProfileInDirectory}
-                              onChange={() =>
-                                setShowProfileInDirectory(
-                                  !showProfileInDirectory
-                                )
-                              }
+                              onChange={() => setShowProfileInDirectory(!showProfileInDirectory)}
                             />
                             <span className="settings-switch__slider" />
                           </label>
@@ -1315,10 +1200,7 @@ export default function SettingsPage() {
                         className="settings-btn settings-btn--primary"
                         onClick={handleSavePrivacy}
                       >
-                        <Save
-                          className="react-icon"
-                          aria-hidden="true"
-                        />
+                        <Save className="react-icon" aria-hidden="true" />
                         <span>Save Preferences</span>
                       </button>
                     </div>
@@ -1327,26 +1209,16 @@ export default function SettingsPage() {
               )}
             </div>
 
+            {/* RIGHT SIDE PANEL */}
             <aside className="settings-side">
               <div className="settings-brand-card">
-                {/* ✅ IMAGE-BASED LOGO — replace "SJ" text */}
                 <span className="settings-brand-card__logo">
-                  <img
-                    src="/logo.png"
-                    alt="SJCM Store Logo"
-                    className="settings-brand-card__logo-img"
-                  />
+                  <img src="/logo.png" alt="SJCM Store Logo" className="settings-brand-card__logo-img" />
                 </span>
                 <div>
-                  <p className="settings-brand-card__title">
-                    SJCM STORE
-                  </p>
-                  <p className="settings-brand-card__subtitle">
-                    Account Settings
-                  </p>
-                  <p className="settings-brand-card__tagline">
-                    "Your account. Your control."
-                  </p>
+                  <p className="settings-brand-card__title">SJCM STORE</p>
+                  <p className="settings-brand-card__subtitle">Account Settings</p>
+                  <p className="settings-brand-card__tagline">"Your account. Your control."</p>
                 </div>
               </div>
 
@@ -1359,23 +1231,13 @@ export default function SettingsPage() {
                     onClick={() => setActiveTab('security')}
                   >
                     <span className="settings-quicklink__icon">
-                      <LockIcon
-                        className="react-icon"
-                        aria-hidden="true"
-                      />
+                      <LockIcon className="react-icon" aria-hidden="true" />
                     </span>
                     <span className="settings-quicklink__copy">
-                      <span className="settings-quicklink__label">
-                        Change Password
-                      </span>
-                      <span className="settings-quicklink__desc">
-                        Keep your account secure
-                      </span>
+                      <span className="settings-quicklink__label">Change Password</span>
+                      <span className="settings-quicklink__desc">Keep your account secure</span>
                     </span>
-                    <ChevronRight
-                      className="react-icon settings-quicklink__chev"
-                      aria-hidden="true"
-                    />
+                    <ChevronRight className="react-icon settings-quicklink__chev" aria-hidden="true" />
                   </button>
 
                   <button
@@ -1384,57 +1246,31 @@ export default function SettingsPage() {
                     onClick={() => setActiveTab('notifications')}
                   >
                     <span className="settings-quicklink__icon">
-                      <Bell
-                        className="react-icon"
-                        aria-hidden="true"
-                      />
+                      <Bell className="react-icon" aria-hidden="true" />
                     </span>
                     <span className="settings-quicklink__copy">
-                      <span className="settings-quicklink__label">
-                        Manage Notifications
-                      </span>
-                      <span className="settings-quicklink__desc">
-                        Control what you receive
-                      </span>
+                      <span className="settings-quicklink__label">Manage Notifications</span>
+                      <span className="settings-quicklink__desc">Control what you receive</span>
                     </span>
-                    <ChevronRight
-                      className="react-icon settings-quicklink__chev"
-                      aria-hidden="true"
-                    />
+                    <ChevronRight className="react-icon settings-quicklink__chev" aria-hidden="true" />
                   </button>
 
-                  <a
-                    href="mailto:suppliesjc@gmail.com"
-                    className="settings-quicklink"
-                  >
+                  <a href="mailto:suppliesjc@gmail.com" className="settings-quicklink">
                     <span className="settings-quicklink__icon">
-                      <LifeBuoy
-                        className="react-icon"
-                        aria-hidden="true"
-                      />
+                      <LifeBuoy className="react-icon" aria-hidden="true" />
                     </span>
                     <span className="settings-quicklink__copy">
-                      <span className="settings-quicklink__label">
-                        Help &amp; Support
-                      </span>
-                      <span className="settings-quicklink__desc">
-                        Get assistance when you need it
-                      </span>
+                      <span className="settings-quicklink__label">Help &amp; Support</span>
+                      <span className="settings-quicklink__desc">Get assistance when you need it</span>
                     </span>
-                    <ChevronRight
-                      className="react-icon settings-quicklink__chev"
-                      aria-hidden="true"
-                    />
+                    <ChevronRight className="react-icon settings-quicklink__chev" aria-hidden="true" />
                   </a>
                 </div>
               </div>
 
               <div className="settings-side-card settings-side-card--danger">
                 <p className="settings-side-card__title settings-side-card__title--danger">
-                  <AlertTriangle
-                    className="react-icon"
-                    aria-hidden="true"
-                  />
+                  <AlertTriangle className="react-icon" aria-hidden="true" />
                   <span>Danger Zone</span>
                 </p>
                 <p className="settings-side-card__subtitle">
@@ -1446,15 +1282,10 @@ export default function SettingsPage() {
                   onClick={handleDeleteAccount}
                 >
                   <span className="settings-danger-btn__icon">
-                    <Trash2
-                      className="react-icon"
-                      aria-hidden="true"
-                    />
+                    <Trash2 className="react-icon" aria-hidden="true" />
                   </span>
                   <span className="settings-danger-btn__copy">
-                    <span className="settings-danger-btn__label">
-                      Delete Account
-                    </span>
+                    <span className="settings-danger-btn__label">Delete Account</span>
                     <span className="settings-danger-btn__desc">
                       Permanently remove your account and data
                     </span>
@@ -1466,6 +1297,9 @@ export default function SettingsPage() {
         </div>
       </div>
 
+      {/* ============================================
+          ✅ ADDRESS MODAL — Building + Room
+      ============================================ */}
       {isAddressModalOpen && (
         <div
           className="settings-modal-overlay"
@@ -1474,27 +1308,18 @@ export default function SettingsPage() {
           aria-modal="true"
           aria-labelledby="address-modal-title"
         >
-          <div
-            className="settings-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="settings-modal" onClick={(e) => e.stopPropagation()}>
             <header className="settings-modal__header">
               <div className="settings-modal__heading">
                 <span className="settings-modal__icon">
-                  <MapPin
-                    className="react-icon"
-                    aria-hidden="true"
-                  />
+                  <MapPin className="react-icon" aria-hidden="true" />
                 </span>
                 <div>
-                  <h2
-                    id="address-modal-title"
-                    className="settings-modal__title"
-                  >
+                  <h2 id="address-modal-title" className="settings-modal__title">
                     Edit Shipping Address
                   </h2>
                   <p className="settings-modal__subtitle">
-                    Update your delivery address for future orders.
+                    Update your pickup location for future orders.
                   </p>
                 </div>
               </div>
@@ -1509,45 +1334,63 @@ export default function SettingsPage() {
             </header>
 
             <div className="settings-modal__body">
+              {/* Building */}
               <div className="settings-field">
-                <label className="settings-field__label">Address</label>
+                <label className="settings-field__label">Building</label>
                 <div className="settings-field__icon-wrap">
-                  <Home
-                    className="react-icon"
-                    aria-hidden="true"
-                  />
-                  <input
-                    type="text"
-                    className="settings-field__input settings-field__input--icon"
-                    value={draftAddress}
-                    onChange={(e) => setDraftAddress(e.target.value)}
-                    placeholder="Street, building, room, city"
-                    autoFocus
-                  />
+                  <Building2 className="react-icon" aria-hidden="true" />
+                  <select
+                    className="settings-field__select settings-field__select--icon"
+                    value={draftBuilding}
+                    onChange={(e) => handleDraftBuildingChange(e.target.value)}
+                  >
+                    {BUILDING_NAMES.map((b) => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
+              {/* Room */}
               <div className="settings-field">
-                <label className="settings-field__label">Label</label>
-                <div className="settings-modal__labels">
-                  {['Default', 'Home', 'Dorm', 'Other'].map((label) => (
-                    <button
-                      key={label}
-                      type="button"
-                      className={`settings-modal__label-chip ${
-                        draftLabel === label ? 'is-active' : ''
-                      }`}
-                      onClick={() => setDraftLabel(label)}
-                    >
-                      {draftLabel === label && (
-                        <Check
-                          className="react-icon"
-                          aria-hidden="true"
-                        />
-                      )}
-                      <span>{label}</span>
-                    </button>
-                  ))}
+                <label className="settings-field__label">Room / Office</label>
+                <div className="settings-field__icon-wrap">
+                  <DoorOpen className="react-icon" aria-hidden="true" />
+                  <select
+                    className="settings-field__select settings-field__select--icon"
+                    value={draftRoom}
+                    onChange={(e) => setDraftRoom(e.target.value)}
+                  >
+                    {availableDraftRooms.map((r) => (
+                      <option key={r} value={r}>{r}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Notes */}
+              <div className="settings-field">
+                <label className="settings-field__label">Additional Notes (Optional)</label>
+                <textarea
+                  className="settings-field__input settings-field__input--textarea"
+                  rows={3}
+                  value={draftNotes}
+                  onChange={(e) => setDraftNotes(e.target.value)}
+                  placeholder="e.g., Landmark, preferred pickup time, etc."
+                />
+              </div>
+
+              {/* Preview */}
+              <div className="settings-address-preview">
+                <MapPin className="react-icon" aria-hidden="true" />
+                <div>
+                  <p className="settings-address-preview__title">Pickup Location</p>
+                  <p className="settings-address-preview__text">
+                    {draftBuilding} · {draftRoom}
+                  </p>
+                  <p className="settings-address-preview__note">
+                    Monday – Friday · 8:00 AM – 4:00 PM. Bring a valid school ID.
+                  </p>
                 </div>
               </div>
             </div>
@@ -1568,9 +1411,7 @@ export default function SettingsPage() {
                 disabled={isSavingAddress}
               >
                 <Save className="react-icon" aria-hidden="true" />
-                <span>
-                  {isSavingAddress ? 'Saving...' : 'Save Address'}
-                </span>
+                <span>{isSavingAddress ? 'Saving...' : 'Save Address'}</span>
               </button>
             </footer>
           </div>

@@ -1,0 +1,395 @@
+/* ============================================
+   ✅ LANGUAGE SWITCHER — Custom Styled
+   ✅ Blends with site design, theme-aware
+============================================================ */
+
+.lang-switcher {
+  position: relative;
+  display: inline-block;
+}
+
+/* ✅ Trigger button */
+.lang-switcher__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 150ms ease;
+  white-space: nowrap;
+}
+
+.lang-switcher__btn:hover {
+  background: var(--theme-surface-2);
+  border-color: var(--theme-border-strong);
+  color: var(--theme-primary);
+}
+
+.lang-switcher__btn .react-icon {
+  width: 0.85rem;
+  height: 0.85rem;
+  color: var(--theme-text-muted);
+}
+
+.lang-switcher__btn:hover .react-icon {
+  color: var(--theme-primary);
+}
+
+.lang-switcher__label {
+  color: inherit;
+}
+
+.lang-switcher__chev {
+  transition: transform 200ms ease;
+}
+
+.lang-switcher__chev.is-open {
+  transform: rotate(180deg);
+}
+
+/* ✅ Backdrop (close on click outside) */
+.lang-switcher__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 998;
+  background: transparent;
+  cursor: default;
+}
+
+/* ✅ Dropdown menu */
+.lang-switcher__menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 999;
+  min-width: 12rem;
+  padding: 0.4rem;
+  border-radius: 0.75rem;
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow-lg, 0 12px 32px rgba(0, 0, 0, 0.15));
+  animation: lang-dropdown-in 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+}
+
+@keyframes lang-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ✅ Menu item */
+.lang-switcher__item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--theme-text);
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.lang-switcher__item:hover {
+  background: var(--theme-surface-2);
+  color: var(--theme-primary);
+}
+
+.lang-switcher__item.is-active {
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  color: var(--theme-primary);
+  font-weight: 700;
+}
+
+.lang-switcher__flag {
+  font-size: 1.1rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.lang-switcher__item-label {
+  flex: 1;
+  color: inherit;
+}
+
+/* ✅ Hide Google's default UI (ugly) */
+.lang-switcher__hidden,
+#google_translate_element {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  left: -9999px;
+}
+
+/* ✅ Hide Google banner (top bar) */
+.goog-te-banner-frame,
+.skiptranslate iframe {
+  display: none !important;
+}
+
+body {
+  top: 0 !important;
+}
+
+/* ✅ Hide Google's default tooltip */
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+}
+
+.goog-text-highlight {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* ✅ Remove Google's popup highlight */
+#goog-gt-tt {
+  display: none !important;
+}
+
+/* ✅ Responsive — smaller sa mobile */
+@media (max-width: 640px) {
+  .lang-switcher__btn {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.72rem;
+  }
+
+  .lang-switcher__label {
+    display: none; /* Icon lang sa mobile */
+  }
+
+  .lang-switcher__btn .react-icon:first-child {
+    display: block;
+  }
+}
+/* ============================================================
+   ✅ LANGUAGE SWITCHER — INLINE VARIANT FIX
+   ✅ Ayusin ang layout para hindi siksik
+   ✅ Proper spacing at colors sa lahat ng 10 themes
+============================================================ */
+
+/* ✅ Inline variant container — proper vertical list */
+.lang-switcher-inline {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.15rem !important;
+  padding: 0 !important;
+  width: 100% !important;
+}
+
+/* ✅ Each language item — malinis na button */
+.lang-switcher-inline__item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  width: 100% !important;
+  padding: 0.55rem 0.75rem !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  background: transparent !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  text-align: left !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: all 150ms ease !important;
+  line-height: 1.2 !important;
+  min-height: 2.25rem !important;
+  box-sizing: border-box !important;
+}
+
+.lang-switcher-inline__item:hover {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  transform: translateX(2px) !important;
+}
+
+/* ✅ Active language — may checkmark */
+.lang-switcher-inline__item.is-active {
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  font-weight: 700 !important;
+}
+
+.lang-switcher-inline__item.is-active::after {
+  content: '✓' !important;
+  margin-left: auto !important;
+  font-weight: 700 !important;
+  color: var(--theme-primary) !important;
+  font-size: 0.9rem !important;
+}
+
+/* ✅ Flag icon */
+.lang-switcher-inline__flag {
+  font-size: 1.15rem !important;
+  line-height: 1 !important;
+  flex-shrink: 0 !important;
+  width: 1.5rem !important;
+  text-align: center !important;
+}
+
+/* ✅ Label */
+.lang-switcher-inline__label {
+  flex: 1 !important;
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* ============================================================
+   ✅ LANGUAGE HEADER — "Language" text sa dropdown
+============================================================ */
+.nav-dropdown-language {
+  padding: 0.5rem 0.75rem 0.25rem !important;
+  background: transparent !important;
+}
+
+.nav-dropdown-language__header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  margin-bottom: 0.35rem !important;
+  padding: 0 0.75rem 0.35rem !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  border-bottom: 1px solid var(--theme-border) !important;
+}
+
+.nav-dropdown-language__header .react-icon {
+  width: 0.75rem !important;
+  height: 0.75rem !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ============================================================
+   ✅ PROFILE DROPDOWN — Bawas padding kapag may language
+============================================================ */
+.nav-dropdown {
+  min-width: 16rem !important;
+  max-width: 18rem !important;
+}
+
+/* ✅ Bawas padding sa divider */
+.nav-dropdown-divider {
+  margin: 0.4rem 0 !important;
+  border: none !important;
+  border-top: 1px solid var(--theme-border) !important;
+  background: transparent !important;
+}
+
+/* ============================================================
+   ✅ KILL GOOGLE TRANSLATE BANNER & TOOLTIPS
+   ✅ Hindi dapat nakikita yung banner sa taas
+============================================================ */
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+iframe.goog-te-banner-frame,
+.skiptranslate iframe {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+}
+
+body {
+  top: 0 !important;
+  position: static !important;
+  margin-top: 0 !important;
+}
+
+html {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* ✅ Hide Google logo & tooltip */
+#goog-gt-tt,
+.goog-tooltip,
+.goog-tooltip:hover,
+.goog-te-balloon-frame {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.goog-text-highlight {
+  background-color: transparent !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* ✅ Hide Google Translate widget container (yung visible dropdown) */
+#google_translate_element,
+.lang-switcher__hidden {
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+/* ✅ Remove Google Translate frame borders */
+.goog-te-menu-frame {
+  box-shadow: none !important;
+}
+
+/* ============================================================
+   ✅ RESPONSIVE — Language items sa maliit na screen
+============================================================ */
+@media (max-width: 640px) {
+  .nav-dropdown {
+    min-width: 14rem !important;
+    max-width: 16rem !important;
+  }
+
+  .lang-switcher-inline__item {
+    padding: 0.5rem 0.65rem !important;
+    font-size: 0.82rem !important;
+  }
+
+  .lang-switcher-inline__flag {
+    font-size: 1rem !important;
+    width: 1.25rem !important;
+  }
+}
