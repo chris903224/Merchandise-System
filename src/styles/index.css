@@ -1,10 +1,10 @@
 /* ============================================================
-   SJCM — Master stylesheet entry
+   SJCM — Master stylesheet entry (index.css)
    ============================================================ */
 
 @import './theme.css';
-@import './footer.css';
 @import './tokens.css';
+@import './footer.css';
 @import './base.css';
 @import './layout.css';
 @import './navigation.css';
@@ -24,17 +24,16 @@
 
 /* ============================================================
    GLASSY BACKGROUND LAYER
-   ✅ Solid color dominant + subtle image hint
-   ✅ Yung solid color ay kitang-kita
    ============================================================ */
 
 body {
-  /* ✅ Solid color base — kitang-kita */
   background: var(--theme-bg-solid);
   background-attachment: fixed;
   min-height: 100vh;
   color: var(--theme-text);
-  transition: background 0.5s ease, color 0.3s ease;
+  transition:
+    background 0.5s ease,
+    color 0.3s ease;
 }
 
 body::before {
@@ -47,20 +46,14 @@ body::before {
   background-position: center;
   background-attachment: fixed;
   background-repeat: no-repeat;
-
-  /* ✅ Very subtle — image hint lang */
   opacity: 0.10;
-
-  /* ✅ Blend — i-mix subtly sa solid color */
   mix-blend-mode: multiply;
-
   transition:
     background 0.5s ease,
     opacity 0.5s ease,
     mix-blend-mode 0.5s ease;
 }
 
-/* ✅ Dark themes — subtle glow */
 [data-theme-mode='dark'] body::before {
   mix-blend-mode: screen;
   opacity: 0.12;
@@ -73,76 +66,60 @@ body::before {
 }
 
 /* ============================================================
-   THEME-SPECIFIC GLASSY LAYERS — 10 themes
-   ✅ Very subtle image hint (opacity 0.08–0.14)
+   THEME-SPECIFIC GLASSY LAYERS
    ============================================================ */
 
-/* ============================================
-   LIGHT — WARM IVORY FAMILY
-   ============================================ */
-
-[data-theme='warm-ivory'] body::before {
+/* Light themes */
+[data-theme='cream-yellow'] body::before {
   background-image: url('/campus.png');
-  opacity: 0.10;
+  opacity: 0.08;
+}
+[data-theme='warm-beige'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.08;
+}
+[data-theme='pure-white'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.06;
+}
+[data-theme='soft-gray'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.07;
+}
+[data-theme='pale-blush'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.08;
 }
 
-[data-theme='warm-cream'] body::before {
-  background-image: url('/campus.png');
-  opacity: 0.09;
-}
-
-[data-theme='soft-almond'] body::before {
-  background-image: url('/campus.png');
-  opacity: 0.11;
-}
-
-[data-theme='pale-sand'] body::before {
-  background-image: url('/campus.png');
-  opacity: 0.12;
-}
-
-[data-theme='ivory-mist'] body::before {
-  background-image: url('/campus.png');
-  opacity: 0.10;
-}
-
-/* ============================================
-   DARK — MIDNIGHT NAVY FAMILY
-   ============================================ */
-
+/* Dark themes */
 [data-theme='midnight-navy'] body::before {
   background-image: url('/campus.png');
-  opacity: 0.12;
-  mix-blend-mode: screen;
-}
-
-[data-theme='deep-navy'] body::before {
-  background-image: url('/campus.png');
   opacity: 0.10;
   mix-blend-mode: screen;
 }
-
-[data-theme='slate-navy'] body::before {
+[data-theme='matte-black'] body::before {
   background-image: url('/campus.png');
-  opacity: 0.12;
+  opacity: 0.06;
   mix-blend-mode: screen;
 }
-
-[data-theme='steel-navy'] body::before {
+[data-theme='charcoal-gray'] body::before {
   background-image: url('/campus.png');
-  opacity: 0.11;
+  opacity: 0.07;
   mix-blend-mode: screen;
 }
-
-[data-theme='ink-navy'] body::before {
+[data-theme='deep-forest'] body::before {
   background-image: url('/campus.png');
-  opacity: 0.10;
+  opacity: 0.09;
+  mix-blend-mode: screen;
+}
+[data-theme='dark-plum'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.08;
   mix-blend-mode: screen;
 }
 
 /* ============================================================
-   TRANSPARENT SHELLS — content wrappers
-   ✅ Solid color base visible sa lahat ng pages
+   TRANSPARENT SHELLS
    ============================================================ */
 
 .dashboard-shell,
@@ -154,17 +131,16 @@ body::before {
 .settings-shell,
 .profile-shell,
 .auth-shell,
-.register-page {
+.register-page,
+.notifications-shell,
+.favorites-page {
   background: transparent !important;
 }
 
 /* ============================================================
-   ✅ SUBTLE GLASS COMPONENTS
-   - Solid color dominant
-   - Glass hint lang (light blur + high opacity)
+   ✅ CONTRAST-SAFE PANELS
    ============================================================ */
 
-/* Panels, cards, modals — mostly solid */
 .settings-panel,
 .dashboard-sidebar,
 .dashboard-summary__card,
@@ -174,62 +150,109 @@ body::before {
 .profile-card,
 .profile-side__card,
 .catalog-card,
-.product-card {
-  /* ✅ High opacity — almost solid */
-  background: rgba(255, 255, 255, 0.92);
+.product-card,
+.product-related__card,
+.favorites-card,
+.notification-card,
+.notifications-container,
+.notification-bell__dropdown {
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  border: 1px solid var(--theme-border);
   backdrop-filter: blur(8px) saturate(120%);
   -webkit-backdrop-filter: blur(8px) saturate(120%);
 }
 
-/* Dark mode — solid navy with subtle glass */
+/* Panel headers */
+.settings-panel__header,
+.od-card__head,
+.profile-card-header,
+.notifications-header,
+.notifications-toolbar {
+  background: var(--theme-surface-2);
+  color: var(--theme-text);
+  border-bottom: 1px solid var(--theme-border);
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+}
+
+/* Text contrast — guaranteed readable */
+.settings-panel__title,
+.od-card__head-title,
+.profile-card-title,
+.notification-card__title,
+.catalog-card__name,
+.product-info__title,
+.favorites-card__name,
+.dashboard-summary__title,
+.od-rail-card__title {
+  color: var(--theme-text);
+}
+
+.settings-panel__subtitle,
+.profile-card-subtitle,
+.notification-card__message,
+.catalog-card__category,
+.favorites-card__category,
+.dashboard-summary__label,
+.od-rail-card__text {
+  color: var(--theme-text-muted);
+}
+
+/* Sidebars */
+.settings-sidebar,
+.profile-sidebar,
+.order-sidebar-nav,
+.notifications-sidebar {
+  background: var(--theme-surface);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+  border-color: var(--theme-border);
+}
+
+/* ============================================================
+   ✅ DARK MODE PANEL OVERRIDES
+   ============================================================ */
+
 [data-theme-mode='dark'] .settings-panel,
+[data-theme-mode='dark'] .dashboard-sidebar,
 [data-theme-mode='dark'] .dashboard-summary__card,
 [data-theme-mode='dark'] .order-card,
 [data-theme-mode='dark'] .od-card,
 [data-theme-mode='dark'] .od-rail-card,
 [data-theme-mode='dark'] .profile-card,
-[data-theme-mode='dark'] .profile-side__card {
-  background: rgba(22, 33, 58, 0.95);
-  backdrop-filter: blur(8px) saturate(120%);
-  -webkit-backdrop-filter: blur(8px) saturate(120%);
-}
-
-/* Sidebar — solid with glass hint */
-.settings-sidebar,
-.profile-sidebar,
-.order-sidebar-nav {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px) saturate(130%);
-  -webkit-backdrop-filter: blur(12px) saturate(130%);
-}
-
-[data-theme-mode='dark'] .settings-sidebar,
-[data-theme-mode='dark'] .profile-sidebar,
-[data-theme-mode='dark'] .order-sidebar-nav {
-  background: rgba(22, 33, 58, 0.97);
-  backdrop-filter: blur(12px) saturate(130%);
-  -webkit-backdrop-filter: blur(12px) saturate(130%);
-}
-
-/* Panels with glass headers */
-.settings-panel__header,
-.od-card__head,
-.profile-card-header {
-  background: rgba(245, 241, 230, 0.6);
-  backdrop-filter: blur(6px) saturate(120%);
-  -webkit-backdrop-filter: blur(6px) saturate(120%);
+[data-theme-mode='dark'] .profile-side__card,
+[data-theme-mode='dark'] .catalog-card,
+[data-theme-mode='dark'] .product-card,
+[data-theme-mode='dark'] .product-related__card,
+[data-theme-mode='dark'] .favorites-card,
+[data-theme-mode='dark'] .notification-card,
+[data-theme-mode='dark'] .notifications-container,
+[data-theme-mode='dark'] .notification-bell__dropdown {
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  border-color: var(--theme-border);
 }
 
 [data-theme-mode='dark'] .settings-panel__header,
 [data-theme-mode='dark'] .od-card__head,
-[data-theme-mode='dark'] .profile-card-header {
-  background: rgba(27, 39, 66, 0.6);
-  backdrop-filter: blur(6px) saturate(120%);
-  -webkit-backdrop-filter: blur(6px) saturate(120%);
+[data-theme-mode='dark'] .profile-card-header,
+[data-theme-mode='dark'] .notifications-header,
+[data-theme-mode='dark'] .notifications-toolbar {
+  background: var(--theme-surface-2);
+  border-bottom-color: var(--theme-border);
+}
+
+[data-theme-mode='dark'] .settings-sidebar,
+[data-theme-mode='dark'] .profile-sidebar,
+[data-theme-mode='dark'] .order-sidebar-nav,
+[data-theme-mode='dark'] .notifications-sidebar {
+  background: var(--theme-surface);
+  border-color: var(--theme-border);
 }
 
 /* ============================================================
-   ✅ FALLBACK — kung walang backdrop-filter support
+   ✅ FALLBACK — no backdrop-filter support
    ============================================================ */
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
@@ -242,17 +265,335 @@ body::before {
   .profile-card,
   .profile-side__card,
   .catalog-card,
-  .product-card {
-    background: #ffffff;
+  .product-card,
+  .product-related__card,
+  .favorites-card,
+  .notification-card,
+  .notifications-container,
+  .notification-bell__dropdown,
+  .settings-sidebar,
+  .profile-sidebar,
+  .order-sidebar-nav,
+  .notifications-sidebar {
+    background: var(--theme-surface);
+    color: var(--theme-text);
   }
+}
 
-  [data-theme-mode='dark'] .settings-panel,
-  [data-theme-mode='dark'] .dashboard-summary__card,
-  [data-theme-mode='dark'] .order-card,
-  [data-theme-mode='dark'] .od-card,
-  [data-theme-mode='dark'] .od-rail-card,
-  [data-theme-mode='dark'] .profile-card,
-  [data-theme-mode='dark'] .profile-side__card {
-    background: #16213a;
+/* ============================================================
+   ✅ EXTRA CONTRAST SAFETY
+   ============================================================ */
+
+h1, h2, h3, h4, h5, h6,
+.settings-hero__title,
+.dashboard-hero__title,
+.od-hero__id,
+.profile-name,
+.catalog-hero__title,
+.notifications-hero__title,
+.favorites-hero__title {
+  color: var(--theme-text);
+}
+
+p,
+span,
+li,
+.settings-hero__description,
+.dashboard-hero__description,
+.profile-meta-row,
+.catalog-hero__description,
+.notifications-hero__description,
+.favorites-hero__description {
+  color: var(--theme-text-muted);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--theme-text-subtle, var(--theme-text-muted));
+  opacity: 0.7;
+}
+
+input,
+textarea,
+select {
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  border: 1px solid var(--theme-border);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--theme-primary);
+  outline: 2px solid rgba(var(--theme-primary-rgb), 0.2);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   ✅ GLOBAL CONTRAST SAFETY NET
+   Prevents invisible text on any theme
+   ============================================================ */
+
+button[class*="cta"],
+button[class*="btn"],
+a[class*="cta"],
+a[class*="btn"] {
+  color: var(--theme-on-primary);
+}
+
+[style*="background: var(--sjcm-green)"],
+[style*="background: var(--theme-primary)"] {
+  color: var(--theme-on-primary);
+}
+
+/* ============================================================
+   ✅ UNIVERSAL INTERACTIVE STATES
+   ============================================================ */
+
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 2px;
+  border-radius: 0.4rem;
+}
+
+:where(button, input, select, textarea):disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(0.3);
+}
+
+::placeholder {
+  color: var(--theme-text-subtle, var(--theme-text-muted));
+  opacity: 0.7;
+}
+
+::selection {
+  background: rgba(var(--theme-primary-rgb), 0.25);
+  color: var(--theme-text);
+}
+
+/* ============================================================
+   ✅ DARK MODE MEDIA TREATMENT
+   ============================================================ */
+
+[data-theme-mode='dark'] .catalog-card__image,
+[data-theme-mode='dark'] .product-media__image,
+[data-theme-mode='dark'] .product-related__image {
+  filter: brightness(0.94) contrast(1.04);
+  transition: filter 200ms ease, transform 300ms ease;
+}
+
+[data-theme-mode='dark'] .catalog-card:hover .catalog-card__image,
+[data-theme-mode='dark'] .product-related__card:hover .product-related__image {
+  filter: brightness(1) contrast(1.06);
+}
+
+[data-theme-mode='light'] .catalog-card__image,
+[data-theme-mode='light'] .product-media__image {
+  filter: none;
+}
+
+/* ============================================================
+   ✅ THEME GRID (Settings page)
+   ============================================================ */
+
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+  max-width: 100%;
+}
+
+.theme-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 2px solid transparent;
+  color: #1a1a1a;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 4.5rem;
+  text-align: center;
+}
+
+.theme-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.theme-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.theme-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 24px -8px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.theme-card.is-active {
+  border-color: #10b981;
+  box-shadow:
+    0 0 0 2px rgba(16, 185, 129, 0.25),
+    0 12px 24px -8px rgba(16, 185, 129, 0.3);
+}
+
+.theme-card__emoji {
+  font-size: 1.35rem;
+  line-height: 1;
+  position: relative;
+  z-index: 3;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+}
+
+.theme-card__label {
+  position: relative;
+  z-index: 3;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.25);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.theme-card[data-theme-id='cream-yellow'] .theme-card__label,
+.theme-card[data-theme-id='warm-beige'] .theme-card__label,
+.theme-card[data-theme-id='pure-white'] .theme-card__label,
+.theme-card[data-theme-id='soft-gray'] .theme-card__label,
+.theme-card[data-theme-id='pale-blush'] .theme-card__label {
+  color: #1a1a1a;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+}
+
+.theme-card[data-theme-id='midnight-navy'] .theme-card__label,
+.theme-card[data-theme-id='matte-black'] .theme-card__label,
+.theme-card[data-theme-id='charcoal-gray'] .theme-card__label,
+.theme-card[data-theme-id='deep-forest'] .theme-card__label,
+.theme-card[data-theme-id='dark-plum'] .theme-card__label {
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.theme-card__check {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: #10b981;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.5);
+  animation: theme-check-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 4;
+}
+
+.theme-card__check .react-icon {
+  width: 0.7rem;
+  height: 0.7rem;
+  stroke-width: 3;
+}
+
+@keyframes theme-check-pop {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 640px) {
+  .theme-grid {
+    grid-template-columns: 1fr;
   }
+}
+/* ============================================================
+   ✅ FIX: Button text color cascade
+   Siguraduhin na ang lahat ng descendants ng button
+   ay sumusunod sa --theme-on-primary
+============================================================ */
+
+.catalog-card__cta,
+.catalog-card__cta *,
+.catalog-card__cta span,
+.catalog-card__cta svg {
+  color: var(--theme-on-primary) !important;
+}
+
+.catalog-card__cta:hover,
+.catalog-card__cta:hover *,
+.catalog-card__cta:hover span,
+.catalog-card__cta:hover svg {
+  color: var(--theme-on-primary) !important;
+}
+
+/* Same fix para sa iba pang colored buttons */
+.catalog-empty__cta,
+.catalog-empty__cta *,
+.catalog-empty__cta span,
+.catalog-empty__cta svg {
+  color: var(--theme-on-primary) !important;
+}
+
+.product-info__cta,
+.product-info__cta *,
+.product-info__cta span,
+.product-info__cta svg {
+  color: var(--theme-on-primary) !important;
+}
+
+.product-variant.is-selected,
+.product-variant.is-selected * {
+  color: var(--theme-on-primary) !important;
+}
+
+.catalog-category.is-active .catalog-category__icon,
+.catalog-category.is-active .catalog-category__icon * {
+  color: var(--theme-on-primary) !important;
+}
+
+.catalog-category.is-active .catalog-category__count {
+  color: var(--theme-on-primary) !important;
+}
+
+.catalog-pagination__btn.is-active {
+  color: var(--theme-on-primary) !important;
+}
+
+.catalog-card__badge {
+  color: var(--theme-on-accent) !important;
+}
+
+.product-media__badge,
+.product-related__badge {
+  color: var(--theme-on-accent) !important;
+}
+
+.product-not-found__cta {
+  color: var(--theme-on-primary) !important;
 }

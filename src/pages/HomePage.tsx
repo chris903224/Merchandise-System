@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowUpRight,
+  ArrowRight,
   LogIn,
   PackageSearch,
   ShieldCheck,
@@ -248,204 +249,281 @@ export default function HomePage() {
         </aside>
       </main>
 
-      {/* FRESH STOCK */}
+      {/* =========================================================
+          FRESH STOCK — Visible glass cards
+      ========================================================== */}
       {newArrivals.length > 0 && (
         <section
-          className="page-shell arrivals-section"
+          className="page-shell home-section"
           aria-labelledby="arrivals-title"
         >
-          <div className="arrivals-section__header">
+          <div className="home-section__header">
             <div>
-              <p className="section-kicker">Fresh stock</p>
-              <h2 id="arrivals-title" className="section-title">
+              <p className="home-section__kicker">Fresh stock</p>
+              <h2 id="arrivals-title" className="home-section__title">
                 Newest arrivals this week
               </h2>
-              <p className="section-description">
+              <p className="home-section__description">
                 Recently restocked uniforms, apparel, and laces —
                 ready to reserve today.
               </p>
             </div>
 
-            <Link to="/catalog" className="text-link">
+            <Link to="/catalog" className="home-section__link">
               View all
               <ArrowUpRight className="react-icon" aria-hidden="true" />
             </Link>
           </div>
 
-          <div className="arrivals-grid">
+          <div className="home-cards">
             {newArrivals.map((product) => (
               <Link
                 key={product.id}
                 to={`/products/${encodeURIComponent(product.id)}`}
-                className="arrival-card glass-card-hover"
+                className="home-card"
               >
-                <div className="arrival-card__media">
+                <div className="home-card__media">
                   <ProductImage
                     product={product}
-                    className="arrival-card__image"
-                    width={220}
-                    height={220}
+                    className="home-card__image"
+                    width={260}
+                    height={320}
                   />
+                  {Number(product.stock) > 0 && Number(product.stock) <= 5 && (
+                    <span className="home-card__badge">Low stock</span>
+                  )}
                 </div>
 
-                <p className="arrival-card__name">{product.name}</p>
-                <p className="arrival-card__price">
-                  {formatPrice(product.price)}
-                </p>
+                <div className="home-card__body">
+                  <h3 className="home-card__name">{product.name}</h3>
+
+                  {product.category && (
+                    <p className="home-card__category">
+                      {product.category}
+                    </p>
+                  )}
+
+                  <p className="home-card__price">
+                    {formatPrice(product.price)}
+                  </p>
+
+                  <button
+                    type="button"
+                    className="home-card__cta"
+                    tabIndex={-1}
+                  >
+                    View
+                    <ArrowRight
+                      className="react-icon"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </div>
               </Link>
             ))}
           </div>
         </section>
       )}
 
-      {/* CATEGORY SECTION */}
+      {/* =========================================================
+          CATEGORY SECTION — ✅ WORKING FILTERS
+          Ang bawat card ay nagre-redirect sa /catalog?search=<term>
+          at ang CatalogPage ay nag-fifilter base sa search term.
+      ========================================================== */}
       <section
-        className="page-shell category-section"
+        className="page-shell home-section"
         aria-labelledby="category-title"
       >
-        <div className="category-section__header">
+        <div className="home-section__header">
           <div>
-            <p className="section-kicker">Shop by need</p>
-            <h2 id="category-title" className="section-title">
+            <p className="home-section__kicker">Shop by need</p>
+            <h2 id="category-title" className="home-section__title">
               Official items, ready for pickup
             </h2>
-            <p className="section-description">
+            <p className="home-section__description">
               Find the right school or organization item without the
               campus queue.
             </p>
           </div>
 
-          <Link to="/catalog" className="text-link">
+          <Link to="/catalog" className="home-section__link">
             All merchandise
             <ArrowUpRight className="react-icon" aria-hidden="true" />
           </Link>
         </div>
 
-        <div className="category-grid">
+        <div className="home-cards">
+          {/* ✅ ID LACES — search term: "ID Lace" */}
           <Link
-            to="/catalog?category=ID Lace"
-            className="category-card glass-card-hover"
+            to="/catalog?search=ID%20Lace"
+            className="home-card home-card--category"
           >
-            <div className="category-card__top">
-              <span className="category-card__icon">
+            <div className="home-card__media home-card__media--icon">
+              <span className="home-card__icon-circle">
                 <Package className="react-icon" aria-hidden="true" />
               </span>
-              <ArrowUpRight className="react-icon" aria-hidden="true" />
             </div>
-            <div>
-              <h3 className="category-card__title">
+
+            <div className="home-card__body">
+              <h3 className="home-card__name">
                 ID laces &amp; accessories
               </h3>
-              <p className="category-card__description">
+              <p className="home-card__category">
                 Official lanyards, card holders, and clips.
               </p>
+              <button
+                type="button"
+                className="home-card__cta"
+                tabIndex={-1}
+              >
+                Browse
+                <ArrowRight
+                  className="react-icon"
+                  aria-hidden="true"
+                />
+              </button>
             </div>
           </Link>
 
+          {/* ✅ ORGANIZATION UNIFORMS — search term: "Org"
+              Ito ay mag-hahanap sa products na may "Org" sa name
+              (e.g. "SSITE Org Shirt", "CISE Shirt", "Vanguards Shirt")
+              at sa organization field (e.g. "Interest Based Organizations") */}
           <Link
-            to="/catalog?category=Org Uniform"
-            className="category-card glass-card-hover"
+            to="/catalog?search=Organization"
+            className="home-card home-card--category"
           >
-            <div className="category-card__top">
-              <span className="category-card__icon">
+            <div className="home-card__media home-card__media--icon">
+              <span className="home-card__icon-circle">
                 <Shirt className="react-icon" aria-hidden="true" />
               </span>
-              <ArrowUpRight className="react-icon" aria-hidden="true" />
             </div>
-            <div>
-              <h3 className="category-card__title">
+
+            <div className="home-card__body">
+              <h3 className="home-card__name">
                 Organization uniforms
               </h3>
-              <p className="category-card__description">
+              <p className="home-card__category">
                 Department polos and council apparel.
               </p>
+              <button
+                type="button"
+                className="home-card__cta"
+                tabIndex={-1}
+              >
+                Browse
+                <ArrowRight
+                  className="react-icon"
+                  aria-hidden="true"
+                />
+              </button>
             </div>
           </Link>
 
+          {/* ✅ SCHOOL & PE UNIFORMS — search term: "Uniform"
+              Ito ay mag-hahanap sa lahat ng products na may "Uniform"
+              sa name (College General Uniform Set, PE Uniform Set, etc.) */}
           <Link
-            to="/catalog?category=School Uniform"
-            className="category-card glass-card-hover"
+            to="/catalog?search=Uniform"
+            className="home-card home-card--category"
           >
-            <div className="category-card__top">
-              <span className="category-card__icon">
+            <div className="home-card__media home-card__media--icon">
+              <span className="home-card__icon-circle">
                 <Shirt className="react-icon" aria-hidden="true" />
               </span>
-              <ArrowUpRight className="react-icon" aria-hidden="true" />
             </div>
-            <div>
-              <h3 className="category-card__title">
+
+            <div className="home-card__body">
+              <h3 className="home-card__name">
                 School &amp; PE uniforms
               </h3>
-              <p className="category-card__description">
+              <p className="home-card__category">
                 Campus uniforms, PE shirts, and joggers.
               </p>
+              <button
+                type="button"
+                className="home-card__cta"
+                tabIndex={-1}
+              >
+                Browse
+                <ArrowRight
+                  className="react-icon"
+                  aria-hidden="true"
+                />
+              </button>
             </div>
           </Link>
         </div>
       </section>
 
-      {/* BEST FINDS + VISIT US */}
+      {/* =========================================================
+          BEST FINDS + VISIT US
+      ========================================================== */}
       <section
-        className="page-shell home-highlights"
+        className="page-shell home-section"
         aria-label="Best finds and store information"
       >
         <div className="home-highlights__grid">
-          <div className="panel home-highlights__panel">
-            <div className="panel-heading">
+          <div className="home-highlights__panel">
+            <div className="home-section__header">
               <div>
-                <p className="section-kicker">Popular right now</p>
-                <h2 className="panel-heading__title">
+                <p className="home-section__kicker">Popular right now</p>
+                <h2 className="home-section__title">
                   Best finds right now
                 </h2>
               </div>
 
-              <Link to="/catalog" className="text-link">
+              <Link to="/catalog" className="home-section__link">
                 See more
                 <ArrowUpRight className="react-icon" aria-hidden="true" />
               </Link>
             </div>
 
             {bestFinds.length > 0 ? (
-              <div className="best-finds-grid">
+              <div className="home-cards home-cards--best">
                 {bestFinds.map((product) => (
                   <Link
                     key={product.id}
                     to={`/products/${encodeURIComponent(product.id)}`}
-                    className="best-find-card glass-card-hover"
+                    className="home-card"
                   >
-                    <div className="best-find-card__media">
+                    <div className="home-card__media">
                       <ProductImage
                         product={product}
-                        className="best-find-card__image"
-                        width={200}
-                        height={200}
+                        className="home-card__image"
+                        width={240}
+                        height={300}
                       />
                     </div>
 
-                    <p className="best-find-card__meta">
-                      {product.category}
-                    </p>
-                    <p className="best-find-card__name">
-                      {product.name}
-                    </p>
-                    <p className="best-find-card__price">
-                      From {formatPrice(product.price)}
-                    </p>
+                    <div className="home-card__body">
+                      {product.category && (
+                        <p className="home-card__category">
+                          {product.category}
+                        </p>
+                      )}
+                      <h3 className="home-card__name">
+                        {product.name}
+                      </h3>
+                      <p className="home-card__price">
+                        From {formatPrice(product.price)}
+                      </p>
+                    </div>
                   </Link>
                 ))}
               </div>
             ) : (
-              <p className="section-description">
+              <p className="home-section__description">
                 No items to highlight yet.
               </p>
             )}
           </div>
 
-          <div className="panel home-highlights__panel visit-panel">
-            <div className="panel-heading">
+          <div className="home-highlights__panel visit-panel">
+            <div className="home-section__header">
               <div>
-                <p className="section-kicker">Visit us</p>
-                <h2 className="panel-heading__title">SJCM Supply Office</h2>
+                <p className="home-section__kicker">Visit us</p>
+                <h2 className="home-section__title">SJCM Supply Office</h2>
               </div>
             </div>
 

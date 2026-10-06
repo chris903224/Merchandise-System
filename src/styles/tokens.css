@@ -1,166 +1,103 @@
 /* ============================================================
    THEME VARIABLES — 10 themes
-   Light: Warm Ivory family (5 variants)
-   Dark: Midnight Navy family (5 variants)
-   ✅ Same accent, same primary — background shades lang nag-iiba
+   Light: Cream Yellow, Warm Beige, Pure White, Soft Gray, Pale Blush
+   Dark: Midnight Navy, Matte Black, Charcoal Gray, Deep Forest, Dark Plum
+   ✅ Same structure — colors lang ang bago
 ============================================================ */
 
 /* ============================================================
-   LIGHT — WARM IVORY FAMILY
-   Primary text: #14301F
-   Muted text: #5B6B60
-   Accent (CTA): #C9993A
-   Secondary (badges): #2F6B45
-   Surface border: #E8E2D2
+   LIGHT — 5 VARIANTS
 ============================================================ */
 
-/* ----- 1. WARM IVORY (default) ----- */
+/* ----- 1. CREAM YELLOW (default light) ----- */
 :root,
-[data-theme='warm-ivory'] {
+[data-theme='cream-yellow'] {
   color-scheme: light;
 
-  --theme-primary: #2F6B45;
-  --theme-primary-hover: #245536;
-  --theme-primary-rgb: 47, 107, 69;
+  --theme-primary: #B8860B;
+  --theme-primary-hover: #966C09;
+  --theme-primary-rgb: 184, 134, 11;
 
-  --theme-accent: #C9993A;
-  --theme-accent-hover: #B0852C;
-  --theme-accent-rgb: 201, 153, 58;
+  --theme-accent: #8B5E34;
+  --theme-accent-hover: #734A28;
+  --theme-accent-rgb: 139, 94, 52;
 
-  --theme-bg: #FAF7F0;
-  --theme-bg-solid: #FAF7F0;
+  --theme-bg: #FEF9E7;
+  --theme-bg-solid: #FEF9E7;
   --theme-surface: #FFFFFF;
-  --theme-surface-2: #F5F1E6;
+  --theme-surface-2: #FFFBF0;
+  --theme-surface-raised: #FFFFFF;
 
-  --theme-text: #14301F;
-  --theme-text-muted: #5B6B60;
+  --theme-text: #2A2010;
+  --theme-text-muted: #6B5B3A;
+  --theme-text-subtle: rgba(42, 32, 16, 0.5);
 
-  --theme-border: #E8E2D2;
-  --theme-border-strong: rgba(47, 107, 69, 0.3);
+  --theme-border: #F0E5C0;
+  --theme-border-strong: rgba(184, 134, 11, 0.3);
 
-  --theme-success: #2F6B45;
-  --theme-success-rgb: 47, 107, 69;
-  --theme-warning: #C9993A;
-  --theme-warning-rgb: 201, 153, 58;
+  --theme-success: #5D7A3A;
+  --theme-success-rgb: 93, 122, 58;
+  --theme-warning: #B8860B;
+  --theme-warning-rgb: 184, 134, 11;
   --theme-danger: #A93C3C;
   --theme-danger-rgb: 169, 60, 60;
+
+  --theme-shadow-sm: 0 1px 2px rgba(42, 32, 16, 0.06);
+  --theme-shadow-md: 0 4px 12px rgba(42, 32, 16, 0.08);
+  --theme-shadow-lg: 0 12px 32px rgba(42, 32, 16, 0.1);
+  --theme-shadow-xl: 0 24px 48px rgba(42, 32, 16, 0.12);
 
   --theme-glass-bg: rgba(255, 255, 255, 0.7);
   --theme-glass-border: rgba(255, 255, 255, 0.9);
-  --glow-brand: rgba(47, 107, 69, 0.15);
-  --glow-info: rgba(63, 106, 134, 0.12);
+  --glow-brand: rgba(184, 134, 11, 0.15);
+  --glow-info: rgba(107, 91, 58, 0.12);
 }
 
-/* ----- 2. WARM CREAM ----- */
-[data-theme='warm-cream'] {
+/* ----- 2. WARM BEIGE ----- */
+[data-theme='warm-beige'] {
   color-scheme: light;
 
-  --theme-primary: #2F6B45;
-  --theme-primary-hover: #245536;
-  --theme-primary-rgb: 47, 107, 69;
+  --theme-primary: #8B6F47;
+  --theme-primary-hover: #705A38;
+  --theme-primary-rgb: 139, 111, 71;
 
-  --theme-accent: #C9993A;
-  --theme-accent-hover: #B0852C;
-  --theme-accent-rgb: 201, 153, 58;
-
-  --theme-bg: #FBF5E8;
-  --theme-bg-solid: #FBF5E8;
-  --theme-surface: #FFFEF9;
-  --theme-surface-2: #F7EFDD;
-
-  --theme-text: #14301F;
-  --theme-text-muted: #5B6B60;
-
-  --theme-border: #EDE3CD;
-  --theme-border-strong: rgba(47, 107, 69, 0.3);
-
-  --theme-success: #2F6B45;
-  --theme-success-rgb: 47, 107, 69;
-  --theme-warning: #C9993A;
-  --theme-warning-rgb: 201, 153, 58;
-  --theme-danger: #A93C3C;
-  --theme-danger-rgb: 169, 60, 60;
-
-  --theme-glass-bg: rgba(255, 254, 249, 0.75);
-  --theme-glass-border: rgba(255, 255, 255, 0.9);
-  --glow-brand: rgba(47, 107, 69, 0.15);
-  --glow-info: rgba(63, 106, 134, 0.12);
-}
-
-/* ----- 3. SOFT ALMOND ----- */
-[data-theme='soft-almond'] {
-  color-scheme: light;
-
-  --theme-primary: #2F6B45;
-  --theme-primary-hover: #245536;
-  --theme-primary-rgb: 47, 107, 69;
-
-  --theme-accent: #C9993A;
-  --theme-accent-hover: #B0852C;
-  --theme-accent-rgb: 201, 153, 58;
-
-  --theme-bg: #F8F2E5;
-  --theme-bg-solid: #F8F2E5;
-  --theme-surface: #FDFAF4;
-  --theme-surface-2: #F3EBD9;
-
-  --theme-text: #14301F;
-  --theme-text-muted: #5B6B60;
-
-  --theme-border: #E9DFC5;
-  --theme-border-strong: rgba(47, 107, 69, 0.3);
-
-  --theme-success: #2F6B45;
-  --theme-success-rgb: 47, 107, 69;
-  --theme-warning: #C9993A;
-  --theme-warning-rgb: 201, 153, 58;
-  --theme-danger: #A93C3C;
-  --theme-danger-rgb: 169, 60, 60;
-
-  --theme-glass-bg: rgba(253, 250, 244, 0.75);
-  --theme-glass-border: rgba(255, 255, 255, 0.9);
-  --glow-brand: rgba(47, 107, 69, 0.15);
-  --glow-info: rgba(63, 106, 134, 0.12);
-}
-
-/* ----- 4. PALE SAND ----- */
-[data-theme='pale-sand'] {
-  color-scheme: light;
-
-  --theme-primary: #2F6B45;
-  --theme-primary-hover: #245536;
-  --theme-primary-rgb: 47, 107, 69;
-
-  --theme-accent: #C9993A;
-  --theme-accent-hover: #B0852C;
-  --theme-accent-rgb: 201, 153, 58;
+  --theme-accent: #A67C52;
+  --theme-accent-hover: #8B6640;
+  --theme-accent-rgb: 166, 124, 82;
 
   --theme-bg: #F5EFE0;
   --theme-bg-solid: #F5EFE0;
   --theme-surface: #FCF8EE;
-  --theme-surface-2: #EFE6CE;
+  --theme-surface-2: #F5EEDB;
+  --theme-surface-raised: #FFFFFF;
 
-  --theme-text: #14301F;
-  --theme-text-muted: #5B6B60;
+  --theme-text: #2A1F10;
+  --theme-text-muted: #6B5B47;
+  --theme-text-subtle: rgba(42, 31, 16, 0.5);
 
-  --theme-border: #E4D9B8;
-  --theme-border-strong: rgba(47, 107, 69, 0.3);
+  --theme-border: #E4D5B7;
+  --theme-border-strong: rgba(139, 111, 71, 0.3);
 
-  --theme-success: #2F6B45;
-  --theme-success-rgb: 47, 107, 69;
-  --theme-warning: #C9993A;
-  --theme-warning-rgb: 201, 153, 58;
+  --theme-success: #5D7A3A;
+  --theme-success-rgb: 93, 122, 58;
+  --theme-warning: #A67C52;
+  --theme-warning-rgb: 166, 124, 82;
   --theme-danger: #A93C3C;
   --theme-danger-rgb: 169, 60, 60;
 
+  --theme-shadow-sm: 0 1px 2px rgba(42, 31, 16, 0.06);
+  --theme-shadow-md: 0 4px 12px rgba(42, 31, 16, 0.08);
+  --theme-shadow-lg: 0 12px 32px rgba(42, 31, 16, 0.1);
+  --theme-shadow-xl: 0 24px 48px rgba(42, 31, 16, 0.12);
+
   --theme-glass-bg: rgba(252, 248, 238, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.9);
-  --glow-brand: rgba(47, 107, 69, 0.15);
-  --glow-info: rgba(63, 106, 134, 0.12);
+  --glow-brand: rgba(139, 111, 71, 0.15);
+  --glow-info: rgba(107, 91, 71, 0.12);
 }
 
-/* ----- 5. IVORY MIST ----- */
-[data-theme='ivory-mist'] {
+/* ----- 3. PURE WHITE ----- */
+[data-theme='pure-white'] {
   color-scheme: light;
 
   --theme-primary: #2F6B45;
@@ -171,15 +108,17 @@
   --theme-accent-hover: #B0852C;
   --theme-accent-rgb: 201, 153, 58;
 
-  --theme-bg: #F7F3EA;
-  --theme-bg-solid: #F7F3EA;
-  --theme-surface: #FDFBF5;
-  --theme-surface-2: #F1EBDD;
+  --theme-bg: #FFFFFF;
+  --theme-bg-solid: #FFFFFF;
+  --theme-surface: #F8F8F8;
+  --theme-surface-2: #F0F0F0;
+  --theme-surface-raised: #FFFFFF;
 
-  --theme-text: #14301F;
-  --theme-text-muted: #5B6B60;
+  --theme-text: #1A1A1A;
+  --theme-text-muted: #4A4A4A;
+  --theme-text-subtle: rgba(26, 26, 26, 0.5);
 
-  --theme-border: #E6DDC9;
+  --theme-border: #E5E5E5;
   --theme-border-strong: rgba(47, 107, 69, 0.3);
 
   --theme-success: #2F6B45;
@@ -189,28 +128,114 @@
   --theme-danger: #A93C3C;
   --theme-danger-rgb: 169, 60, 60;
 
-  --theme-glass-bg: rgba(253, 251, 245, 0.75);
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --theme-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08);
+  --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.1);
+
+  --theme-glass-bg: rgba(248, 248, 248, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.9);
   --glow-brand: rgba(47, 107, 69, 0.15);
-  --glow-info: rgba(63, 106, 134, 0.12);
+  --glow-info: rgba(74, 74, 74, 0.12);
+}
+
+/* ----- 4. SOFT GRAY ----- */
+[data-theme='soft-gray'] {
+  color-scheme: light;
+
+  --theme-primary: #4B5563;
+  --theme-primary-hover: #374151;
+  --theme-primary-rgb: 75, 85, 99;
+
+  --theme-accent: #6B7280;
+  --theme-accent-hover: #4B5563;
+  --theme-accent-rgb: 107, 114, 128;
+
+  --theme-bg: #F3F4F6;
+  --theme-bg-solid: #F3F4F6;
+  --theme-surface: #FFFFFF;
+  --theme-surface-2: #E5E7EB;
+  --theme-surface-raised: #FFFFFF;
+
+  --theme-text: #1F2937;
+  --theme-text-muted: #4B5563;
+  --theme-text-subtle: rgba(31, 41, 55, 0.5);
+
+  --theme-border: #D1D5DB;
+  --theme-border-strong: rgba(75, 85, 99, 0.3);
+
+  --theme-success: #059669;
+  --theme-success-rgb: 5, 150, 105;
+  --theme-warning: #D97706;
+  --theme-warning-rgb: 217, 119, 6;
+  --theme-danger: #DC2626;
+  --theme-danger-rgb: 220, 38, 38;
+
+  --theme-shadow-sm: 0 1px 2px rgba(31, 41, 55, 0.06);
+  --theme-shadow-md: 0 4px 12px rgba(31, 41, 55, 0.08);
+  --theme-shadow-lg: 0 12px 32px rgba(31, 41, 55, 0.1);
+  --theme-shadow-xl: 0 24px 48px rgba(31, 41, 55, 0.12);
+
+  --theme-glass-bg: rgba(255, 255, 255, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(75, 85, 99, 0.15);
+  --glow-info: rgba(107, 114, 128, 0.12);
+}
+
+/* ----- 5. PALE BLUSH ----- */
+[data-theme='pale-blush'] {
+  color-scheme: light;
+
+  --theme-primary: #B8637A;
+  --theme-primary-hover: #9C5062;
+  --theme-primary-rgb: 184, 99, 122;
+
+  --theme-accent: #D48A9C;
+  --theme-accent-hover: #B8737F;
+  --theme-accent-rgb: 212, 138, 156;
+
+  --theme-bg: #FDF2F4;
+  --theme-bg-solid: #FDF2F4;
+  --theme-surface: #FFFFFF;
+  --theme-surface-2: #FCE8EC;
+  --theme-surface-raised: #FFFFFF;
+
+  --theme-text: #2A1A1F;
+  --theme-text-muted: #6B4A52;
+  --theme-text-subtle: rgba(42, 26, 31, 0.5);
+
+  --theme-border: #F0D5DB;
+  --theme-border-strong: rgba(184, 99, 122, 0.3);
+
+  --theme-success: #5D7A3A;
+  --theme-success-rgb: 93, 122, 58;
+  --theme-warning: #D48A9C;
+  --theme-warning-rgb: 212, 138, 156;
+  --theme-danger: #A93C3C;
+  --theme-danger-rgb: 169, 60, 60;
+
+  --theme-shadow-sm: 0 1px 2px rgba(42, 26, 31, 0.06);
+  --theme-shadow-md: 0 4px 12px rgba(42, 26, 31, 0.08);
+  --theme-shadow-lg: 0 12px 32px rgba(42, 26, 31, 0.1);
+  --theme-shadow-xl: 0 24px 48px rgba(42, 26, 31, 0.12);
+
+  --theme-glass-bg: rgba(255, 255, 255, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(184, 99, 122, 0.15);
+  --glow-info: rgba(107, 74, 82, 0.12);
 }
 
 /* ============================================================
-   DARK — MIDNIGHT NAVY FAMILY
-   Primary text: #F1EEE4
-   Muted text: #9AA6BC
-   Accent (CTA): #E0B24D
-   Secondary (mint): #5FBF8A
-   Surface border: rgba(38, 51, 81, 0.6)
+   DARK — 5 VARIANTS
 ============================================================ */
 
 /* ----- 6. MIDNIGHT NAVY (default dark) ----- */
 [data-theme='midnight-navy'] {
   color-scheme: dark;
 
-  --theme-primary: #5FBF8A;
-  --theme-primary-hover: #4FA876;
-  --theme-primary-rgb: 95, 191, 138;
+  --theme-primary: #7FC8A2;
+  --theme-primary-hover: #6AB08C;
+  --theme-primary-rgb: 127, 200, 162;
 
   --theme-accent: #E0B24D;
   --theme-accent-hover: #D2A03D;
@@ -218,175 +243,276 @@
 
   --theme-bg: #0E1626;
   --theme-bg-solid: #0E1626;
-  --theme-surface: #16213A;
-  --theme-surface-2: #1B2742;
+  --theme-surface: #1B2742;
+  --theme-surface-2: #222F4D;
+  --theme-surface-raised: #283658;
 
   --theme-text: #F1EEE4;
-  --theme-text-muted: #9AA6BC;
+  --theme-text-muted: #B0B9CC;
+  --theme-text-subtle: rgba(241, 238, 228, 0.5);
 
-  --theme-border: rgba(38, 51, 81, 0.6);
-  --theme-border-strong: rgba(95, 191, 138, 0.4);
+  --theme-border: rgba(127, 200, 162, 0.15);
+  --theme-border-strong: rgba(127, 200, 162, 0.4);
 
-  --theme-success: #5FBF8A;
-  --theme-success-rgb: 95, 191, 138;
+  --theme-success: #7FC8A2;
+  --theme-success-rgb: 127, 200, 162;
   --theme-warning: #E0B24D;
   --theme-warning-rgb: 224, 178, 77;
   --theme-danger: #E57575;
   --theme-danger-rgb: 229, 117, 117;
 
-  --theme-glass-bg: rgba(22, 33, 58, 0.75);
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --theme-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.7);
+
+  --theme-glass-bg: rgba(27, 39, 66, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.08);
-  --glow-brand: rgba(95, 191, 138, 0.25);
-  --glow-info: rgba(127, 168, 217, 0.2);
+  --glow-brand: rgba(127, 200, 162, 0.25);
+  --glow-info: rgba(176, 185, 204, 0.2);
 }
 
-/* ----- 7. DEEP NAVY ----- */
-[data-theme='deep-navy'] {
+/* ----- 7. MATTE BLACK ----- */
+[data-theme='matte-black'] {
   color-scheme: dark;
 
-  --theme-primary: #5FBF8A;
-  --theme-primary-hover: #4FA876;
-  --theme-primary-rgb: 95, 191, 138;
+  --theme-primary: #D4A574;
+  --theme-primary-hover: #C19461;
+  --theme-primary-rgb: 212, 165, 116;
 
-  --theme-accent: #E0B24D;
-  --theme-accent-hover: #D2A03D;
-  --theme-accent-rgb: 224, 178, 77;
+  --theme-accent: #E5B584;
+  --theme-accent-hover: #D4A574;
+  --theme-accent-rgb: 229, 181, 132;
 
-  --theme-bg: #0A1220;
-  --theme-bg-solid: #0A1220;
-  --theme-surface: #15203A;
-  --theme-surface-2: #1A2645;
+  --theme-bg: #0F0F0F;
+  --theme-bg-solid: #0F0F0F;
+  --theme-surface: #1A1A1A;
+  --theme-surface-2: #252525;
+  --theme-surface-raised: #2F2F2F;
 
-  --theme-text: #F1EEE4;
-  --theme-text-muted: #9AA6BC;
+  --theme-text: #F5F5F5;
+  --theme-text-muted: #B8B8B8;
+  --theme-text-subtle: rgba(245, 245, 245, 0.5);
 
-  --theme-border: rgba(32, 45, 75, 0.6);
-  --theme-border-strong: rgba(95, 191, 138, 0.4);
+  --theme-border: rgba(255, 255, 255, 0.08);
+  --theme-border-strong: rgba(212, 165, 116, 0.4);
 
-  --theme-success: #5FBF8A;
-  --theme-success-rgb: 95, 191, 138;
-  --theme-warning: #E0B24D;
-  --theme-warning-rgb: 224, 178, 77;
+  --theme-success: #7FBF7F;
+  --theme-success-rgb: 127, 191, 127;
+  --theme-warning: #E5B584;
+  --theme-warning-rgb: 229, 181, 132;
   --theme-danger: #E57575;
   --theme-danger-rgb: 229, 117, 117;
 
-  --theme-glass-bg: rgba(21, 32, 58, 0.75);
-  --theme-glass-border: rgba(255, 255, 255, 0.08);
-  --glow-brand: rgba(95, 191, 138, 0.25);
-  --glow-info: rgba(127, 168, 217, 0.2);
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --theme-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.7);
+  --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.8);
+
+  --theme-glass-bg: rgba(26, 26, 26, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.1);
+  --glow-brand: rgba(212, 165, 116, 0.25);
+  --glow-info: rgba(184, 184, 184, 0.2);
 }
 
-/* ----- 8. SLATE NAVY ----- */
-[data-theme='slate-navy'] {
+/* ----- 8. CHARCOAL GRAY ----- */
+[data-theme='charcoal-gray'] {
   color-scheme: dark;
 
-  --theme-primary: #5FBF8A;
-  --theme-primary-hover: #4FA876;
-  --theme-primary-rgb: 95, 191, 138;
+  --theme-primary: #A8B8C8;
+  --theme-primary-hover: #94A4B4;
+  --theme-primary-rgb: 168, 184, 200;
 
-  --theme-accent: #E0B24D;
-  --theme-accent-hover: #D2A03D;
-  --theme-accent-rgb: 224, 178, 77;
+  --theme-accent: #C8B896;
+  --theme-accent-hover: #B4A484;
+  --theme-accent-rgb: 200, 184, 150;
 
-  --theme-bg: #101B2E;
-  --theme-bg-solid: #101B2E;
-  --theme-surface: #1A2942;
-  --theme-surface-2: #20304D;
+  --theme-bg: #1A1A1A;
+  --theme-bg-solid: #1A1A1A;
+  --theme-surface: #2A2A2A;
+  --theme-surface-2: #353535;
+  --theme-surface-raised: #404040;
 
-  --theme-text: #F1EEE4;
-  --theme-text-muted: #9AA6BC;
+  --theme-text: #F0F0F0;
+  --theme-text-muted: #B0B0B0;
+  --theme-text-subtle: rgba(240, 240, 240, 0.5);
 
-  --theme-border: rgba(36, 51, 82, 0.6);
-  --theme-border-strong: rgba(95, 191, 138, 0.4);
+  --theme-border: rgba(255, 255, 255, 0.1);
+  --theme-border-strong: rgba(168, 184, 200, 0.4);
 
-  --theme-success: #5FBF8A;
-  --theme-success-rgb: 95, 191, 138;
-  --theme-warning: #E0B24D;
-  --theme-warning-rgb: 224, 178, 77;
+  --theme-success: #7FBF7F;
+  --theme-success-rgb: 127, 191, 127;
+  --theme-warning: #C8B896;
+  --theme-warning-rgb: 200, 184, 150;
   --theme-danger: #E57575;
   --theme-danger-rgb: 229, 117, 117;
 
-  --theme-glass-bg: rgba(26, 41, 66, 0.75);
-  --theme-glass-border: rgba(255, 255, 255, 0.08);
-  --glow-brand: rgba(95, 191, 138, 0.25);
-  --glow-info: rgba(127, 168, 217, 0.2);
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --theme-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.7);
+  --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.8);
+
+  --theme-glass-bg: rgba(42, 42, 42, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.1);
+  --glow-brand: rgba(168, 184, 200, 0.25);
+  --glow-info: rgba(176, 176, 176, 0.2);
 }
 
-/* ----- 9. STEEL NAVY ----- */
-[data-theme='steel-navy'] {
+/* ----- 9. DEEP FOREST ----- */
+[data-theme='deep-forest'] {
   color-scheme: dark;
 
-  --theme-primary: #5FBF8A;
-  --theme-primary-hover: #4FA876;
-  --theme-primary-rgb: 95, 191, 138;
+  --theme-primary: #7FC8A2;
+  --theme-primary-hover: #6AB08C;
+  --theme-primary-rgb: 127, 200, 162;
 
-  --theme-accent: #E0B24D;
-  --theme-accent-hover: #D2A03D;
-  --theme-accent-rgb: 224, 178, 77;
+  --theme-accent: #D4A574;
+  --theme-accent-hover: #C19461;
+  --theme-accent-rgb: 212, 165, 116;
 
-  --theme-bg: #0C1A28;
-  --theme-bg-solid: #0C1A28;
-  --theme-surface: #172740;
-  --theme-surface-2: #1D2E4B;
+  --theme-bg: #0A1F1A;
+  --theme-bg-solid: #0A1F1A;
+  --theme-surface: #153029;
+  --theme-surface-2: #1C3D33;
+  --theme-surface-raised: #234A3D;
 
-  --theme-text: #F1EEE4;
-  --theme-text-muted: #9AA6BC;
+  --theme-text: #E8F0EC;
+  --theme-text-muted: #A8BCB3;
+  --theme-text-subtle: rgba(232, 240, 236, 0.5);
 
-  --theme-border: rgba(33, 48, 80, 0.6);
-  --theme-border-strong: rgba(95, 191, 138, 0.4);
+  --theme-border: rgba(127, 200, 162, 0.15);
+  --theme-border-strong: rgba(127, 200, 162, 0.4);
 
-  --theme-success: #5FBF8A;
-  --theme-success-rgb: 95, 191, 138;
-  --theme-warning: #E0B24D;
-  --theme-warning-rgb: 224, 178, 77;
+  --theme-success: #7FC8A2;
+  --theme-success-rgb: 127, 200, 162;
+  --theme-warning: #D4A574;
+  --theme-warning-rgb: 212, 165, 116;
   --theme-danger: #E57575;
   --theme-danger-rgb: 229, 117, 117;
 
-  --theme-glass-bg: rgba(23, 39, 64, 0.75);
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --theme-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.7);
+
+  --theme-glass-bg: rgba(21, 48, 41, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.08);
-  --glow-brand: rgba(95, 191, 138, 0.25);
-  --glow-info: rgba(127, 168, 217, 0.2);
+  --glow-brand: rgba(127, 200, 162, 0.25);
+  --glow-info: rgba(168, 188, 179, 0.2);
 }
 
-/* ----- 10. INK NAVY ----- */
-[data-theme='ink-navy'] {
+/* ----- 10. DARK PLUM ----- */
+[data-theme='dark-plum'] {
   color-scheme: dark;
 
-  --theme-primary: #5FBF8A;
-  --theme-primary-hover: #4FA876;
-  --theme-primary-rgb: 95, 191, 138;
+  --theme-primary: #C8A0D4;
+  --theme-primary-hover: #B48CC0;
+  --theme-primary-rgb: 200, 160, 212;
 
-  --theme-accent: #E0B24D;
-  --theme-accent-hover: #D2A03D;
-  --theme-accent-rgb: 224, 178, 77;
+  --theme-accent: #E0B2C8;
+  --theme-accent-hover: #D4A0B8;
+  --theme-accent-rgb: 224, 178, 200;
 
-  --theme-bg: #0B1524;
-  --theme-bg-solid: #0B1524;
-  --theme-surface: #141F38;
-  --theme-surface-2: #1B2744;
+  --theme-bg: #1A0E1F;
+  --theme-bg-solid: #1A0E1F;
+  --theme-surface: #2A1A30;
+  --theme-surface-2: #382444;
+  --theme-surface-raised: #452C52;
 
-  --theme-text: #F1EEE4;
-  --theme-text-muted: #9AA6BC;
+  --theme-text: #F0E8F2;
+  --theme-text-muted: #C0B0C8;
+  --theme-text-subtle: rgba(240, 232, 242, 0.5);
 
-  --theme-border: rgba(30, 45, 76, 0.6);
-  --theme-border-strong: rgba(95, 191, 138, 0.4);
+  --theme-border: rgba(200, 160, 212, 0.15);
+  --theme-border-strong: rgba(200, 160, 212, 0.4);
 
-  --theme-success: #5FBF8A;
-  --theme-success-rgb: 95, 191, 138;
-  --theme-warning: #E0B24D;
-  --theme-warning-rgb: 224, 178, 77;
+  --theme-success: #7FBF9F;
+  --theme-success-rgb: 127, 191, 159;
+  --theme-warning: #E0B2C8;
+  --theme-warning-rgb: 224, 178, 200;
   --theme-danger: #E57575;
   --theme-danger-rgb: 229, 117, 117;
 
-  --theme-glass-bg: rgba(20, 31, 56, 0.75);
-  --theme-glass-border: rgba(255, 255, 255, 0.08);
-  --glow-brand: rgba(95, 191, 138, 0.25);
-  --glow-info: rgba(127, 168, 217, 0.2);
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --theme-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.7);
+  --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.8);
+
+  --theme-glass-bg: rgba(42, 26, 48, 0.75);
+  --theme-glass-border: rgba(200, 160, 212, 0.15);
+  --glow-brand: rgba(200, 160, 212, 0.25);
+  --glow-info: rgba(192, 176, 200, 0.2);
+}
+
+/* ============================================================
+   ✅ SEMANTIC CONTRAST TOKENS — SaaS-grade
+   Auto-computes readable foreground for any colored surface
+============================================================ */
+
+:root,
+[data-theme-mode='light'] {
+  --theme-on-primary: #FFFFFF;
+  --theme-on-primary-rgb: 255, 255, 255;
+  --theme-on-accent: #1A1209;
+  --theme-on-accent-rgb: 26, 18, 9;
+  --theme-on-success: #FFFFFF;
+  --theme-on-danger: #FFFFFF;
+  --theme-on-warning: #1A1209;
+  --theme-scrim: rgba(0, 0, 0, 0.04);
+  --theme-scrim-strong: rgba(0, 0, 0, 0.08);
+  --theme-surface-hover: var(--theme-surface-2);
+  --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
+}
+
+[data-theme-mode='dark'] {
+  --theme-on-primary: #0E1626;
+  --theme-on-primary-rgb: 14, 22, 38;
+  --theme-on-accent: #0E1626;
+  --theme-on-accent-rgb: 14, 22, 38;
+  --theme-on-success: #0E1626;
+  --theme-on-danger: #0E1626;
+  --theme-on-warning: #0E1626;
+  --theme-scrim: rgba(255, 255, 255, 0.04);
+  --theme-scrim-strong: rgba(255, 255, 255, 0.08);
+  --theme-surface-hover: var(--theme-surface-2);
+  --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
+}
+
+/* ✅ Per-theme fine-tuning */
+[data-theme='matte-black'] {
+  --theme-on-primary: #1A1209;
+  --theme-on-primary-rgb: 26, 18, 9;
+  --theme-on-accent: #1A1209;
+  --theme-on-accent-rgb: 26, 18, 9;
+}
+[data-theme='deep-forest'] {
+  --theme-on-primary: #0A1F1A;
+  --theme-on-primary-rgb: 10, 31, 26;
+  --theme-on-accent: #0A1F1A;
+  --theme-on-accent-rgb: 10, 31, 26;
+}
+[data-theme='dark-plum'] {
+  --theme-on-primary: #1A0E1F;
+  --theme-on-primary-rgb: 26, 14, 31;
+  --theme-on-accent: #1A0E1F;
+  --theme-on-accent-rgb: 26, 14, 31;
+}
+[data-theme='charcoal-gray'] {
+  --theme-on-primary: #1A1A1A;
+  --theme-on-primary-rgb: 26, 26, 26;
+  --theme-on-accent: #1A1A1A;
+  --theme-on-accent-rgb: 26, 26, 26;
+}
+[data-theme='midnight-navy'] {
+  --theme-on-primary: #0E1626;
+  --theme-on-primary-rgb: 14, 22, 38;
+  --theme-on-accent: #0E1626;
+  --theme-on-accent-rgb: 14, 22, 38;
 }
 
 /* ============================================
-   BODY BACKGROUND — retain glassy
-   ============================================ */
+   BODY BACKGROUND
+============================================================ */
 body {
   background: var(--theme-bg);
   background-attachment: fixed;
@@ -403,7 +529,758 @@ body {
 .product-page,
 .settings-shell,
 .profile-shell,
+.profile-page,
 .auth-shell,
-.register-page {
+.register-page,
+.notifications-shell,
+.favorites-page,
+.order-details-page {
   background: transparent !important;
+}
+
+/* ============================================
+   THEME GRID (Settings Page)
+============================================================ */
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+  max-width: 100%;
+}
+.theme-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 2px solid transparent;
+  color: #1a1a1a;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 4.5rem;
+  text-align: center;
+}
+.theme-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+.theme-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+  pointer-events: none;
+  z-index: 2;
+}
+.theme-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.5);
+}
+.theme-card.is-active {
+  border-color: #10b981;
+  box-shadow: 0 0 0 2px rgba(16,185,129,0.25), 0 12px 24px -8px rgba(16,185,129,0.3);
+}
+.theme-card__emoji {
+  font-size: 1.35rem;
+  line-height: 1;
+  position: relative;
+  z-index: 3;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+}
+.theme-card__label {
+  position: relative;
+  z-index: 3;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.25);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.theme-card[data-theme-id='cream-yellow'] .theme-card__label,
+.theme-card[data-theme-id='warm-beige'] .theme-card__label,
+.theme-card[data-theme-id='pure-white'] .theme-card__label,
+.theme-card[data-theme-id='soft-gray'] .theme-card__label,
+.theme-card[data-theme-id='pale-blush'] .theme-card__label {
+  color: #1a1a1a;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.6);
+}
+.theme-card[data-theme-id='midnight-navy'] .theme-card__label,
+.theme-card[data-theme-id='matte-black'] .theme-card__label,
+.theme-card[data-theme-id='charcoal-gray'] .theme-card__label,
+.theme-card[data-theme-id='deep-forest'] .theme-card__label,
+.theme-card[data-theme-id='dark-plum'] .theme-card__label {
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+.theme-card__check {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: #10b981;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 6px rgba(16,185,129,0.5);
+  animation: theme-check-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 4;
+}
+.theme-card__check .react-icon {
+  width: 0.7rem;
+  height: 0.7rem;
+  stroke-width: 3;
+}
+@keyframes theme-check-pop {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+@media (max-width: 640px) {
+  .theme-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   ✅ UNIVERSAL INTERACTIVE STATES
+============================================================ */
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 2px;
+  border-radius: 0.4rem;
+}
+:where(button, input, select, textarea):disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(0.3);
+}
+::placeholder {
+  color: var(--theme-text-subtle, var(--theme-text-muted));
+  opacity: 0.7;
+}
+::selection {
+  background: rgba(var(--theme-primary-rgb), 0.25);
+  color: var(--theme-text);
+}
+
+/* ============================================================
+   ✅ DARK MODE MEDIA TREATMENT
+============================================================ */
+[data-theme-mode='dark'] .catalog-card__image,
+[data-theme-mode='dark'] .product-media__image,
+[data-theme-mode='dark'] .product-related__image,
+[data-theme-mode='dark'] .favorites-card__image {
+  filter: brightness(0.92) contrast(1.05);
+  transition: filter 200ms ease, transform 300ms ease;
+}
+[data-theme-mode='dark'] .catalog-card:hover .catalog-card__image,
+[data-theme-mode='dark'] .product-related__card:hover .product-related__image {
+  filter: brightness(1) contrast(1.08);
+}
+[data-theme-mode='light'] .catalog-card__image,
+[data-theme-mode='light'] .product-media__image,
+[data-theme-mode='light'] .favorites-card__image {
+  filter: none;
+}
+
+
+/* ============================================================
+   🚀 GLOBAL OVERRIDE RULES — ALL PAGES
+   ✅ Fixes contrast issues across the entire app
+   ✅ Retains your beautiful fonts (Fraunces, Times, Inter)
+   ✅ Only changes colors to match the active theme
+============================================================ */
+
+/* ------------------------------------------------------------
+   1. UNIVERSAL CARDS, PANELS, & CONTAINERS
+------------------------------------------------------------ */
+.profile-card,
+.profile-sidebar,
+.dashboard-summary__card,
+.dashboard-orders,
+.order-card,
+.settings-panel,
+.settings-card,
+.od-card,
+.od-rail-card,
+.od-summary-card,
+.profile-side__card,
+.catalog-card,
+.product-card,
+.product-related__card,
+.favorites-card,
+.notification-card,
+.notifications-container,
+.notification-bell__dropdown,
+.checkout-card,
+.cart-card,
+.cart-summary,
+.order-details-card,
+.order-details-summary {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  border-color: var(--theme-border) !important;
+  box-shadow: var(--theme-shadow-sm);
+}
+
+/* Panel Headers */
+.profile-card-header,
+.settings-panel__header,
+.settings-card__header,
+.od-card__head,
+.od-summary-card__head,
+.notifications-header,
+.checkout-card__header,
+.cart-card__header,
+.order-details-card__header {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text) !important;
+  border-bottom: 1px solid var(--theme-border) !important;
+}
+
+/* ------------------------------------------------------------
+   2. SIDEBAR & NAVIGATION
+------------------------------------------------------------ */
+.profile-sidebar__item,
+.profile-nav-item,
+.dashboard-sidebar__item,
+.settings-nav-item {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text-muted) !important;
+  border: 1px solid transparent !important;
+  transition: all 150ms ease;
+}
+
+.profile-sidebar__item:hover,
+.profile-nav-item:hover,
+.dashboard-sidebar__item:hover,
+.settings-nav-item:hover {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  border-color: var(--theme-border-strong) !important;
+}
+
+.profile-sidebar__item.is-active,
+.profile-nav-item.is-active,
+.dashboard-sidebar__item.is-active,
+.settings-nav-item.is-active {
+  background: rgba(var(--theme-primary-rgb), 0.15) !important;
+  color: var(--theme-primary) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.3) !important;
+}
+
+.profile-sidebar__item.is-cart {
+  background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-hover)) !important;
+  color: var(--theme-on-accent) !important;
+  border: none !important;
+}
+
+/* ------------------------------------------------------------
+   3. FORM LABELS, VALUES, & TEXT
+------------------------------------------------------------ */
+.profile-form-label,
+label.profile-form-label,
+.settings-label,
+.settings-form-label,
+.od-label,
+.order-details-label,
+.dashboard-sidebar__user-role,
+.cart-item-label,
+.checkout-label {
+  color: var(--theme-text-muted) !important;
+}
+
+.profile-form-value,
+.profile-info-value,
+.settings-value,
+.settings-form-value,
+.od-value,
+.order-details-value,
+.dashboard-sidebar__user-name,
+.cart-item-value,
+.checkout-value {
+  color: var(--theme-text) !important;
+}
+
+.profile-card-title,
+.settings-panel__title,
+.settings-card__title,
+.od-card__head-title,
+.od-summary-card__title,
+.notification-card__title,
+.catalog-card__name,
+.product-info__title,
+.favorites-card__name,
+.dashboard-summary__title,
+.cart-card__title,
+.checkout-card__title,
+.order-details-card__title {
+  color: var(--theme-text) !important;
+}
+
+.profile-card-subtitle,
+.settings-panel__subtitle,
+.settings-card__subtitle,
+.od-card__head-title + *,
+.notification-card__message,
+.catalog-card__category,
+.favorites-card__category,
+.dashboard-summary__label,
+.cart-card__subtitle,
+.checkout-card__subtitle,
+.order-details-card__subtitle {
+  color: var(--theme-text-muted) !important;
+}
+
+/* ------------------------------------------------------------
+   4. BUTTONS
+------------------------------------------------------------ */
+.profile-edit-btn,
+.settings-btn-primary,
+.settings-btn,
+.od-btn,
+.order-card__btn,
+.dashboard-summary__cta,
+.cart-btn,
+.checkout-btn,
+.order-details-btn {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-primary) !important;
+  border: 1px solid var(--theme-border-strong) !important;
+}
+
+.profile-edit-btn:hover,
+.settings-btn-primary:hover,
+.settings-btn:hover,
+.od-btn:hover,
+.order-card__btn:hover,
+.dashboard-summary__cta:hover,
+.cart-btn:hover,
+.checkout-btn:hover,
+.order-details-btn:hover {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  border-color: var(--theme-primary) !important;
+}
+
+.profile-btn-secondary,
+.settings-btn-secondary,
+.cart-btn-secondary,
+.checkout-btn-secondary {
+  background: transparent !important;
+  color: var(--theme-text-muted) !important;
+  border: 1px solid var(--theme-border) !important;
+}
+
+.profile-btn-secondary:hover,
+.settings-btn-secondary:hover,
+.cart-btn-secondary:hover,
+.checkout-btn-secondary:hover {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text) !important;
+}
+
+/* ------------------------------------------------------------
+   5. TABS
+------------------------------------------------------------ */
+.profile-tabs,
+.settings-tabs,
+.order-details-tabs {
+  border-bottom: 1px solid var(--theme-border) !important;
+}
+
+.profile-tab,
+.settings-tab,
+.order-details-tab {
+  color: var(--theme-text-muted) !important;
+  background: none !important;
+  border-bottom: 2px solid transparent !important;
+}
+
+.profile-tab:hover,
+.settings-tab:hover,
+.order-details-tab:hover {
+  color: var(--theme-text) !important;
+}
+
+.profile-tab.is-active,
+.settings-tab.is-active,
+.order-details-tab.is-active {
+  color: var(--theme-primary) !important;
+  border-bottom-color: var(--theme-primary) !important;
+}
+
+/* ------------------------------------------------------------
+   6. PROFILE HEADER (Cover Photo Text)
+------------------------------------------------------------ */
+.profile-header__name,
+.profile-name {
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.95) !important;
+  font-weight: 700;
+}
+
+.profile-meta-row {
+  background: transparent !important;
+  color: #ffffff !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.95) !important;
+}
+
+.profile-meta-row span {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+.profile-meta-dot {
+  color: rgba(255, 255, 255, 0.7) !important;
+  background: transparent !important;
+}
+
+.profile-active-badge {
+  background: rgba(0, 0, 0, 0.6) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(8px);
+  text-shadow: none !important;
+}
+
+.profile-active-badge .dot {
+  background: #10b981 !important;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+}
+
+/* ------------------------------------------------------------
+   7. ORDER CARDS & ORDER DETAILS
+------------------------------------------------------------ */
+.order-card__price,
+.order-card__id,
+.od-price,
+.order-details-price {
+  color: var(--theme-text) !important;
+}
+
+.order-card__payment,
+.order-card__meta,
+.od-meta,
+.order-details-meta {
+  color: var(--theme-text-muted) !important;
+}
+
+.order-card__thumb,
+.od-thumb,
+.order-details-thumb {
+  background: var(--theme-surface-2) !important;
+  border-color: var(--theme-border) !important;
+}
+
+/* ------------------------------------------------------------
+   8. SUMMARY LISTS & TOTALS
+------------------------------------------------------------ */
+.dashboard-summary__total,
+.od-summary__total,
+.order-details-summary__total,
+.cart-summary__total,
+.checkout-summary__total {
+  color: var(--theme-text) !important;
+  border-top: 1px solid var(--theme-border) !important;
+  padding-top: 0.75rem;
+}
+
+.dashboard-summary__total strong,
+.od-summary__total strong,
+.order-details-summary__total strong,
+.cart-summary__total strong,
+.checkout-summary__total strong {
+  color: var(--theme-primary) !important;
+}
+
+/* ------------------------------------------------------------
+   9. INPUTS, SELECTS, & TEXTAREAS
+------------------------------------------------------------ */
+input, select, textarea,
+.settings-input,
+.cart-input,
+.checkout-input,
+.order-details-input {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  border-color: var(--theme-border) !important;
+}
+
+input:focus, select:focus, textarea:focus,
+.settings-input:focus,
+.cart-input:focus,
+.checkout-input:focus,
+.order-details-input:focus {
+  border-color: var(--theme-primary) !important;
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.1) !important;
+}
+
+/* ------------------------------------------------------------
+   10. BADGES & STATUS PILLS
+------------------------------------------------------------ */
+.status-badge,
+.order-status-badge,
+.od-status-badge,
+.order-details-status-badge,
+.favorites-card__stock,
+.catalog-card__stock,
+.product-card__stock,
+.stock-badge,
+.in-stock-badge {
+  border-width: 1px;
+  border-style: solid;
+}
+
+.status-badge.is-completed,
+.order-status-badge.is-completed,
+.od-status-badge.is-completed,
+.favorites-card__stock,
+.catalog-card__stock,
+.product-card__stock,
+.stock-badge,
+.in-stock-badge {
+  background: rgba(var(--theme-success-rgb), 0.1) !important;
+  color: var(--theme-success) !important;
+  border-color: rgba(var(--theme-success-rgb), 0.3) !important;
+}
+
+.status-badge.is-processing,
+.order-status-badge.is-processing,
+.od-status-badge.is-processing {
+  background: rgba(var(--theme-warning-rgb), 0.1) !important;
+  color: var(--theme-warning) !important;
+  border-color: rgba(var(--theme-warning-rgb), 0.3) !important;
+}
+
+.status-badge.is-cancelled,
+.order-status-badge.is-cancelled,
+.od-status-badge.is-cancelled {
+  background: rgba(var(--theme-danger-rgb), 0.1) !important;
+  color: var(--theme-danger) !important;
+  border-color: rgba(var(--theme-danger-rgb), 0.3) !important;
+}
+
+/* ------------------------------------------------------------
+   11. FAVORITES CARD SPECIFIC FIXES
+------------------------------------------------------------ */
+.favorites-card__body,
+.catalog-card__body,
+.product-card__body,
+.cart-item__body,
+.checkout-item__body {
+  background: transparent !important;
+  color: var(--theme-text) !important;
+}
+
+.favorites-card__body span,
+.catalog-card__body span,
+.product-card__body span {
+  color: var(--theme-text-muted) !important;
+}
+
+.favorites-card__price,
+.catalog-card__price,
+.product-card__price,
+.cart-item__price,
+.checkout-item__price {
+  color: var(--theme-text) !important;
+}
+
+.favorites-card__btn,
+.catalog-card__btn,
+.product-card__btn,
+.cart-item__btn,
+.checkout-item__btn,
+.select-options-btn {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-primary) !important;
+  border: 1px solid var(--theme-border-strong) !important;
+  transition: all 150ms ease !important;
+}
+
+.favorites-card__btn:hover,
+.catalog-card__btn:hover,
+.product-card__btn:hover,
+.cart-item__btn:hover,
+.checkout-item__btn:hover,
+.select-options-btn:hover {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  border-color: var(--theme-primary) !important;
+}
+
+.favorites-card__media,
+.catalog-card__media,
+.product-card__media,
+.cart-item__media,
+.checkout-item__media {
+  background: var(--theme-surface-2) !important;
+  border-bottom: 1px solid var(--theme-border) !important;
+}
+
+.favorites-card__remove,
+.favorites-card__close {
+  background: rgba(0, 0, 0, 0.5) !important;
+  color: #ffffff !important;
+  border-radius: 50% !important;
+  transition: all 150ms ease !important;
+}
+
+.favorites-card__remove:hover,
+.favorites-card__close:hover {
+  background: var(--theme-danger) !important;
+  transform: scale(1.1) !important;
+}
+
+/* ------------------------------------------------------------
+   12. FINAL TEXT COLOR FALLBACKS (Retains Fonts)
+------------------------------------------------------------ */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--theme-text);
+}
+
+span, p, div, a, button, input, select, textarea, label {
+  /* 
+     ⚠️ WALANG font-family dito para ma-retain ang magagandang fonts mo.
+     Colors lang ang i-aapply para readable sa lahat ng themes.
+  */
+  color: inherit;
+}
+/* ============================================================
+   ✅ SJCM STORE BRAND CARD (Orange/Gold Card sa Profile Sidebar)
+   ✅ Auto-adjusts text color for perfect readability
+============================================================ */
+
+/* Container ng brand card */
+.profile-brand-card,
+.profile-side__brand,
+.settings-brand-card,
+.sjcm-brand-card {
+  background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-hover)) !important;
+  color: var(--theme-on-accent) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 1rem !important;
+}
+
+/* Pangalan ng store - "SJCM STORE" */
+.profile-brand-card h3,
+.profile-brand-card__title,
+.profile-side__brand h3,
+.settings-brand-card h3,
+.sjcm-brand-card h3,
+.sjcm-brand-card__name {
+  color: var(--theme-on-accent) !important;
+  font-weight: 800 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+  letter-spacing: 0.02em !important;
+  opacity: 1 !important;
+}
+
+/* Subtitle - "Account Settings" */
+.profile-brand-card p,
+.profile-brand-card__subtitle,
+.profile-side__brand p,
+.settings-brand-card p,
+.sjcm-brand-card p,
+.sjcm-brand-card__subtitle {
+  color: var(--theme-on-accent) !important;
+  opacity: 0.85 !important;
+  font-weight: 500 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Quote - "Your account. Your control." */
+.profile-brand-card em,
+.profile-brand-card__quote,
+.profile-side__brand em,
+.settings-brand-card em,
+.sjcm-brand-card em,
+.sjcm-brand-card__quote {
+  color: var(--theme-on-accent) !important;
+  opacity: 0.75 !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+}
+
+/* Avatar/Logo sa loob ng brand card */
+.profile-brand-card__avatar,
+.profile-side__brand__avatar,
+.sjcm-brand-card__avatar {
+  background: rgba(var(--theme-on-accent-rgb), 0.2) !important;
+  color: var(--theme-on-accent) !important;
+  border: 2px solid rgba(var(--theme-on-accent-rgb), 0.3) !important;
+  font-weight: 800 !important;
+}
+/* ============================================================
+   ✅ LOCKED FIELDS (Full Name, Student ID, Email Address)
+   ✅ Ensures text is visible on the striped disabled background
+============================================================ */
+
+/* Container ng locked field */
+.profile-field-locked,
+.profile-input-locked,
+.settings-field-locked,
+input[readonly],
+input:disabled,
+.input-locked {
+  /* ✅ Solid theme background instead of striped pattern */
+  background: var(--theme-surface-2) !important;
+  background-image: none !important;
+  
+  /* ✅ Theme text color para visible */
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 1 !important;
+  
+  /* ✅ Border */
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 0.6rem !important;
+  
+  /* ✅ Italic para ipakita na locked */
+  font-style: italic !important;
+  cursor: not-allowed !important;
+}
+
+/* Placeholder sa locked fields */
+.profile-field-locked::placeholder,
+input[readonly]::placeholder,
+input:disabled::placeholder {
+  color: var(--theme-text-subtle, var(--theme-text-muted)) !important;
+  opacity: 0.6 !important;
+  font-style: italic !important;
+}
+
+/* "LOCKED" Badge */
+.profile-locked-badge,
+.locked-badge,
+.field-badge-locked {
+  background: rgba(var(--theme-warning-rgb), 0.15) !important;
+  color: var(--theme-warning) !important;
+  border: 1px solid rgba(var(--theme-warning-rgb), 0.3) !important;
+  font-weight: 700 !important;
+  font-size: 0.6rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 0.15rem 0.5rem !important;
+  border-radius: 999px !important;
+}
+
+/* Icon ng lock sa loob ng badge */
+.profile-locked-badge .react-icon,
+.locked-badge .react-icon {
+  width: 0.7rem !important;
+  height: 0.7rem !important;
 }

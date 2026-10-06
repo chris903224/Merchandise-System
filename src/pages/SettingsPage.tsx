@@ -3,10 +3,32 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  User, Shield, Bell, Palette, Lock as LockIcon, Mail, CreditCard,
-  Calendar, MapPin, Home, Globe, Trash2, AlertTriangle, Save, Camera,
-  Pencil, ChevronRight, LifeBuoy, Eye, EyeOff, Store, Package,
-  ShoppingCart, Check, Phone, X,
+  User,
+  Shield,
+  Bell,
+  Palette,
+  Lock as LockIcon,
+  Mail,
+  CreditCard,
+  Calendar,
+  MapPin,
+  Home,
+  Globe,
+  Trash2,
+  AlertTriangle,
+  Save,
+  Camera,
+  Pencil,
+  ChevronRight,
+  LifeBuoy,
+  Eye,
+  EyeOff,
+  Store,
+  Package,
+  ShoppingCart,
+  Check,
+  Phone,
+  X,
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
@@ -42,6 +64,9 @@ const sideNavItems = [
   { to: '/profile', label: 'Profile', icon: User },
   { to: '/settings', label: 'Settings', icon: Shield, active: true },
 ];
+
+/** Default theme ID — para consistent sa theme.ts */
+const DEFAULT_THEME_ID: ThemeId = 'cream-yellow';
 
 export default function SettingsPage() {
   const { session, updateProfilePicture } = useApp();
@@ -242,7 +267,7 @@ export default function SettingsPage() {
   const handleSaveNotifications = () =>
     toast('Notification preferences updated!', 'success');
 
-  /* ✅ BAGO — auto-apply pag-click, hindi na kailangan ng Save button */
+  /* ✅ THEME — auto-apply pag-click */
   const handleThemeChange = (newTheme: ThemeId) => {
     setTheme(newTheme);
     applyTheme(newTheme);
@@ -292,6 +317,10 @@ export default function SettingsPage() {
   };
 
   const currentThemeOption = themeOptions.find((t) => t.id === theme);
+
+  /* ✅ Group themes by mode — para sa mas malinis na rendering */
+  const lightThemes = themeOptions.filter((t) => t.mode === 'light');
+  const darkThemes = themeOptions.filter((t) => t.mode === 'dark');
 
   return (
     <div className="settings-shell">
@@ -997,6 +1026,7 @@ export default function SettingsPage() {
 
               {/* ============================================
                   APPEARANCE — 10 themes (5 light + 5 dark)
+                  ✅ Grouped by mode for cleaner UI
               ============================================ */}
               {activeTab === 'appearance' && (
                 <>
@@ -1014,45 +1044,25 @@ export default function SettingsPage() {
                             Theme &amp; Colors
                           </h2>
                           <p className="settings-panel__subtitle">
-                            Customize your app experience with your
-                            preferred theme and color style.
+                            Choose from 5 light and 5 dark themes — tap
+                            to apply instantly.
                           </p>
                         </div>
                       </div>
                     </header>
 
                     <div className="settings-panel__body">
-                      <div className="appearance-tabs">
-                        <button
-                          type="button"
-                          className="appearance-tab is-active"
-                          aria-selected="true"
-                        >
-                          <Palette
-                            className="react-icon"
-                            aria-hidden="true"
-                          />
-                          <span>Color Theme</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="appearance-tab"
-                        >
-                          <span>☀️</span>
-                          <span>Light / Dark Mode</span>
-                        </button>
-                      </div>
-
+                      {/* ✅ LIGHT THEMES */}
                       <div className="appearance-section">
                         <h3 className="appearance-section__title">
-                          Color Themes
+                          ☀️ Light Themes
                         </h3>
                         <p className="appearance-section__subtitle">
-                          Choose a color theme that matches your style.
+                          Bright & clean — perfect for daytime use.
                         </p>
 
                         <div className="theme-grid">
-                          {themeOptions.map((option) => (
+                          {lightThemes.map((option) => (
                             <button
                               key={option.id}
                               type="button"
@@ -1091,13 +1101,76 @@ export default function SettingsPage() {
                                 </div>
                                 <span className="theme-card__label">
                                   {option.label}
-                                  {option.id ===
-                                    'warm-ivory' && (
+                                  {option.id === DEFAULT_THEME_ID && (
                                     <span className="theme-card__default">
                                       {' '}
                                       (Default)
                                     </span>
                                   )}
+                                </span>
+                                <span
+                                  className="theme-card__radio"
+                                  aria-hidden="true"
+                                >
+                                  {theme === option.id && (
+                                    <Check className="react-icon" />
+                                  )}
+                                </span>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* ✅ DARK THEMES */}
+                      <div className="appearance-section">
+                        <h3 className="appearance-section__title">
+                          🌙 Dark Themes
+                        </h3>
+                        <p className="appearance-section__subtitle">
+                          Easy on the eyes — perfect for nighttime use.
+                        </p>
+
+                        <div className="theme-grid">
+                          {darkThemes.map((option) => (
+                            <button
+                              key={option.id}
+                              type="button"
+                              data-theme-id={option.id}
+                              data-theme-mode={option.mode}
+                              className={`theme-card ${
+                                theme === option.id
+                                  ? 'is-active'
+                                  : ''
+                              }`}
+                              onClick={() =>
+                                handleThemeChange(option.id)
+                              }
+                              aria-pressed={theme === option.id}
+                            >
+                              <div
+                                className="theme-card__preview"
+                                style={
+                                  {
+                                    background: option.gradient,
+                                  } as React.CSSProperties
+                                }
+                              >
+                                <span className="theme-card__emoji">
+                                  {option.emoji}
+                                </span>
+                              </div>
+                              <div className="theme-card__body">
+                                <div
+                                  className="theme-card__dots"
+                                  aria-hidden="true"
+                                >
+                                  <span className="theme-card__dot theme-card__dot--1" />
+                                  <span className="theme-card__dot theme-card__dot--2" />
+                                  <span className="theme-card__dot theme-card__dot--3" />
+                                </div>
+                                <span className="theme-card__label">
+                                  {option.label}
                                 </span>
                                 <span
                                   className="theme-card__radio"
@@ -1128,11 +1201,13 @@ export default function SettingsPage() {
                           Current Theme
                         </p>
                         <p className="appearance-current-theme__name">
-                          {currentThemeOption?.label || 'Ivory Classic'}
+                          {currentThemeOption?.label || 'Cream Yellow'}
                         </p>
                       </div>
                       <span className="appearance-current-theme__badge">
-                        Active
+                        {currentThemeOption?.mode === 'dark'
+                          ? 'Dark'
+                          : 'Light'}
                       </span>
                     </div>
                     <div
@@ -1254,7 +1329,14 @@ export default function SettingsPage() {
 
             <aside className="settings-side">
               <div className="settings-brand-card">
-                <span className="settings-brand-card__logo">SJ</span>
+                {/* ✅ IMAGE-BASED LOGO — replace "SJ" text */}
+                <span className="settings-brand-card__logo">
+                  <img
+                    src="/logo.png"
+                    alt="SJCM Store Logo"
+                    className="settings-brand-card__logo-img"
+                  />
+                </span>
                 <div>
                   <p className="settings-brand-card__title">
                     SJCM STORE

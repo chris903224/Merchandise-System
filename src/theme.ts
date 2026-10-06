@@ -1,16 +1,16 @@
 // src/theme.ts
 
 export type ThemeId =
-  | 'warm-ivory'
-  | 'warm-cream'
-  | 'soft-almond'
-  | 'pale-sand'
-  | 'ivory-mist'
+  | 'cream-yellow'
+  | 'warm-beige'
+  | 'pure-white'
+  | 'soft-gray'
+  | 'pale-blush'
   | 'midnight-navy'
-  | 'deep-navy'
-  | 'slate-navy'
-  | 'steel-navy'
-  | 'ink-navy';
+  | 'matte-black'
+  | 'charcoal-gray'
+  | 'deep-forest'
+  | 'dark-plum';
 
 export type ThemeMode = 'light' | 'dark';
 
@@ -25,51 +25,51 @@ export type ThemeDefinition = {
 
 export const themeOptions: ThemeDefinition[] = [
   /* ============================================
-     LIGHT — WARM IVORY FAMILY (5 variants)
+     LIGHT (5)
   ============================================ */
   {
-    id: 'warm-ivory',
-    label: 'Warm Ivory',
+    id: 'cream-yellow',
+    label: 'Cream Yellow',
     emoji: '☀️',
     mode: 'light',
-    gradient: 'linear-gradient(135deg, #FAF7F0 0%, #E8E2D2 100%)',
-    preview: 'linear-gradient(135deg, #FAF7F0, #E8E2D2)',
+    gradient: 'linear-gradient(135deg, #FEF9E7 0%, #F5E9C8 100%)',
+    preview: 'linear-gradient(135deg, #FEF9E7, #F5E9C8)',
   },
   {
-    id: 'warm-cream',
-    label: 'Warm Cream',
-    emoji: '🥛',
+    id: 'warm-beige',
+    label: 'Warm Beige',
+    emoji: '🍂',
     mode: 'light',
-    gradient: 'linear-gradient(135deg, #FBF5E8 0%, #EDE3CD 100%)',
-    preview: 'linear-gradient(135deg, #FBF5E8, #EDE3CD)',
+    gradient: 'linear-gradient(135deg, #F5EFE0 0%, #E4D5B7 100%)',
+    preview: 'linear-gradient(135deg, #F5EFE0, #E4D5B7)',
   },
   {
-    id: 'soft-almond',
-    label: 'Soft Almond',
-    emoji: '🌰',
+    id: 'pure-white',
+    label: 'Pure White',
+    emoji: '⚪',
     mode: 'light',
-    gradient: 'linear-gradient(135deg, #F8F2E5 0%, #E9DFC5 100%)',
-    preview: 'linear-gradient(135deg, #F8F2E5, #E9DFC5)',
+    gradient: 'linear-gradient(135deg, #FFFFFF 0%, #E8E8E8 100%)',
+    preview: 'linear-gradient(135deg, #FFFFFF, #E8E8E8)',
   },
   {
-    id: 'pale-sand',
-    label: 'Pale Sand',
-    emoji: '🏖️',
-    mode: 'light',
-    gradient: 'linear-gradient(135deg, #F5EFE0 0%, #E4D9B8 100%)',
-    preview: 'linear-gradient(135deg, #F5EFE0, #E4D9B8)',
-  },
-  {
-    id: 'ivory-mist',
-    label: 'Ivory Mist',
+    id: 'soft-gray',
+    label: 'Soft Gray',
     emoji: '🌫️',
     mode: 'light',
-    gradient: 'linear-gradient(135deg, #F7F3EA 0%, #E6DDC9 100%)',
-    preview: 'linear-gradient(135deg, #F7F3EA, #E6DDC9)',
+    gradient: 'linear-gradient(135deg, #F3F4F6 0%, #D1D5DB 100%)',
+    preview: 'linear-gradient(135deg, #F3F4F6, #D1D5DB)',
+  },
+  {
+    id: 'pale-blush',
+    label: 'Pale Blush',
+    emoji: '🌸',
+    mode: 'light',
+    gradient: 'linear-gradient(135deg, #FDF2F4 0%, #F0D5DB 100%)',
+    preview: 'linear-gradient(135deg, #FDF2F4, #F0D5DB)',
   },
 
   /* ============================================
-     DARK — MIDNIGHT NAVY FAMILY (5 variants)
+     DARK (5)
   ============================================ */
   {
     id: 'midnight-navy',
@@ -80,48 +80,48 @@ export const themeOptions: ThemeDefinition[] = [
     preview: 'linear-gradient(135deg, #0E1626, #1B2742)',
   },
   {
-    id: 'deep-navy',
-    label: 'Deep Navy',
-    emoji: '🌊',
+    id: 'matte-black',
+    label: 'Matte Black',
+    emoji: '🖤',
     mode: 'dark',
-    gradient: 'linear-gradient(135deg, #0A1220 0%, #15203A 100%)',
-    preview: 'linear-gradient(135deg, #0A1220, #15203A)',
+    gradient: 'linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 100%)',
+    preview: 'linear-gradient(135deg, #0F0F0F, #1A1A1A)',
   },
   {
-    id: 'slate-navy',
-    label: 'Slate Navy',
+    id: 'charcoal-gray',
+    label: 'Charcoal Gray',
     emoji: '🪨',
     mode: 'dark',
-    gradient: 'linear-gradient(135deg, #101B2E 0%, #1A2942 100%)',
-    preview: 'linear-gradient(135deg, #101B2E, #1A2942)',
+    gradient: 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%)',
+    preview: 'linear-gradient(135deg, #1A1A1A, #2A2A2A)',
   },
   {
-    id: 'steel-navy',
-    label: 'Steel Navy',
-    emoji: '⚙️',
+    id: 'deep-forest',
+    label: 'Deep Forest',
+    emoji: '🌲',
     mode: 'dark',
-    gradient: 'linear-gradient(135deg, #0C1A28 0%, #172740 100%)',
-    preview: 'linear-gradient(135deg, #0C1A28, #172740)',
+    gradient: 'linear-gradient(135deg, #0A1F1A 0%, #153029 100%)',
+    preview: 'linear-gradient(135deg, #0A1F1A, #153029)',
   },
   {
-    id: 'ink-navy',
-    label: 'Ink Navy',
-    emoji: '🖋️',
+    id: 'dark-plum',
+    label: 'Dark Plum',
+    emoji: '🍇',
     mode: 'dark',
-    gradient: 'linear-gradient(135deg, #0B1524 0%, #141F38 100%)',
-    preview: 'linear-gradient(135deg, #0B1524, #141F38)',
+    gradient: 'linear-gradient(135deg, #1A0E1F 0%, #2A1A30 100%)',
+    preview: 'linear-gradient(135deg, #1A0E1F, #2A1A30)',
   },
-];
+];  
 
 const STORAGE_KEY = 'sjcm_theme';
 
 export function getStoredTheme(): ThemeId {
-  if (typeof window === 'undefined') return 'warm-ivory';
+  if (typeof window === 'undefined') return 'cream-yellow';
   const stored = window.localStorage.getItem(STORAGE_KEY);
   if (stored && themeOptions.some((t) => t.id === stored)) {
     return stored as ThemeId;
   }
-  return 'warm-ivory';
+  return 'cream-yellow';
 }
 
 export function applyTheme(themeId: ThemeId) {
