@@ -1525,3 +1525,434 @@
     display: none;
   }
 }
+/* ============================================
+   PROFILE HEADER TEXT OVER COVER PHOTO
+   ✅ Fix: Make text white with shadow for readability
+============================================================ */
+
+/* Target the main name (e.g., "CHRISTIAN JR. VILLANUEVA") */
+.profile-header__name,
+.profile-cover__name,
+.profile-name {
+  color: #ffffff !important; /* Force white text */
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9); /* Heavy shadow for contrast */
+  font-weight: 700;
+}
+
+/* Target the subtitle (e.g., "Student • SJCM General • @npe.villanueva.sjc") */
+.profile-header__subtitle,
+.profile-header__meta,
+.profile-cover__subtitle,
+.profile-subtitle {
+  color: rgba(255, 255, 255, 0.95) !important; /* Slightly off-white */
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+/* Optional: If there is an "Active" badge next to the name, ensure it stays readable */
+.profile-header__badge,
+.status-badge.is-active {
+  background: rgba(0, 0, 0, 0.6) !important; /* Dark background for the badge */
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+}
+/* ============================================
+   PROFILE META ROW — FIXED FOR COVER PHOTO
+   ✅ Removes dark background block
+   ✅ Forces white text with shadow
+============================================================ */
+
+/* Target the container row */
+.profile-meta-row {
+  /* Remove any background color creating the dark block */
+  background: transparent !important;
+  background-color: transparent !important;
+  
+  /* Force white text */
+  color: #ffffff !important;
+  
+  /* Add strong shadow for readability over any image */
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.95);
+  
+  /* Ensure no padding/border is creating a visible box */
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Target the individual spans inside the row (Student, SJCM General, etc.) */
+.profile-meta-row span {
+  color: #ffffff !important;
+  text-shadow: inherit;
+  background: transparent !important;
+}
+
+/* Target the separator dots (•) */
+.profile-meta-dot {
+  color: rgba(255, 255, 255, 0.7) !important;
+  background: transparent !important;
+}
+
+/* ============================================
+   ACTIVE BADGE FIX (The green "Active" pill)
+   ✅ Make it readable over the dark background
+============================================================ */
+.profile-active-badge, 
+.profile-header__badge {
+  background: rgba(0, 0, 0, 0.6) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(8px);
+  text-shadow: none; 
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+}
+
+/* The green dot inside the Active badge */
+.profile-active-badge .dot,
+.profile-header__badge .dot {
+  background: #10b981 !important; 
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+}
+
+/* ============================================
+   NAME FIX (Main title)
+============================================================ */
+.profile-name {
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.95);
+  font-weight: 700;
+}
+/* ============================================================
+   PROFILE PAGE — FULLY THEME-COMPATIBLE (10 Themes)
+   ✅ Fixes unreadable text in Light & Dark Mode
+   ✅ Fixes "Edit Profile" button contrast
+   ✅ Uses theme variables for all surfaces, text, and borders
+============================================================ */
+
+/* ============================================
+   1. PAGE CONTAINER & TYPOGRAPHY
+============================================================ */
+.profile-page {
+  background: transparent;
+  color: var(--theme-text);
+  padding: 1.5rem;
+  font-family: var(--font-body, 'Inter', sans-serif);
+}
+
+.profile-page * {
+  box-sizing: border-box;
+}
+
+/* ============================================
+   2. PROFILE CARDS (Personal Info, Quick Actions, etc.)
+============================================================ */
+.profile-card {
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 1rem;
+  box-shadow: var(--theme-shadow-md);
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+  color: var(--theme-text);
+}
+
+.profile-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.profile-card-title {
+  margin: 0;
+  font-family: var(--font-display, 'Fraunces', serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--theme-text);
+}
+
+.profile-card-subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  color: var(--theme-text-muted);
+}
+
+/* ============================================
+   3. FORM LABELS & VALUES (Fixing invisible text)
+============================================================ */
+.profile-form-label,
+label.profile-form-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--theme-text-muted); /* ✅ Was hardcoded --ink-400 */
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.profile-form-value,
+.profile-info-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--theme-text); /* ✅ Ensures text is visible in dark mode */
+  margin: 0;
+  word-break: break-word;
+}
+
+/* If using a grid for info rows */
+.profile-form-grid,
+.profile-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.profile-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================
+   4. BUTTONS (Fixing the "Edit Profile" button)
+============================================================ */
+.profile-edit-btn,
+.profile-card-header .profile-edit-btn,
+a.profile-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 150ms ease;
+  
+  /* ✅ Replaced hardcoded #252525 and #1A1209 */
+  background: var(--theme-surface-2);
+  color: var(--theme-primary);
+  border: 1px solid var(--theme-border-strong);
+}
+
+.profile-edit-btn:hover {
+  background: var(--theme-primary);
+  color: var(--theme-on-primary);
+  border-color: var(--theme-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--theme-shadow-sm);
+}
+
+/* Secondary button variant (like "Add" or "Change Photo") */
+.profile-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  color: var(--theme-text-muted);
+  border: 1px solid var(--theme-border);
+  transition: all 150ms ease;
+}
+
+.profile-btn-secondary:hover {
+  background: var(--theme-surface-2);
+  color: var(--theme-text);
+  border-color: var(--theme-text-muted);
+}
+
+/* ============================================
+   5. TABS (Personal Info, Account Security, etc.)
+============================================================ */
+.profile-tabs {
+  display: flex;
+  gap: 1.5rem;
+  border-bottom: 1px solid var(--theme-border);
+  margin-bottom: 1.5rem;
+}
+
+.profile-tab {
+  padding: 0.75rem 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--theme-text-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.profile-tab:hover {
+  color: var(--theme-text);
+}
+
+.profile-tab.is-active {
+  color: var(--theme-primary);
+  border-bottom-color: var(--theme-primary);
+}
+
+/* ============================================
+   6. COVER PHOTO & HEADER TEXT (Keep white with shadow)
+============================================================ */
+.profile-header__name,
+.profile-name {
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.95);
+  font-weight: 700;
+  margin: 0;
+}
+
+.profile-meta-row {
+  background: transparent !important;
+  color: #ffffff !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.profile-meta-row span {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+.profile-meta-dot {
+  color: rgba(255, 255, 255, 0.7) !important;
+  background: transparent !important;
+}
+
+/* Active Badge */
+.profile-active-badge {
+  background: rgba(0, 0, 0, 0.6) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(8px);
+  text-shadow: none;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.profile-active-badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981 !important;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+}
+
+/* ============================================
+   7. QUICK ACTIONS & SUMMARY LISTS
+============================================================ */
+.profile-action-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--theme-border);
+  text-decoration: none;
+  color: inherit;
+  transition: background 150ms ease;
+}
+
+.profile-action-item:last-child {
+  border-bottom: none;
+}
+
+.profile-action-item:hover {
+  background: var(--theme-surface-2);
+  border-radius: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.profile-action-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  display: grid;
+  place-items: center;
+  background: var(--theme-surface-2);
+  color: var(--theme-primary);
+  flex-shrink: 0;
+}
+
+.profile-action-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.profile-action-text strong {
+  font-size: 0.85rem;
+  color: var(--theme-text);
+}
+
+.profile-action-text span {
+  font-size: 0.72rem;
+  color: var(--theme-text-muted);
+}
+
+.profile-action-arrow {
+  color: var(--theme-text-muted);
+  transition: transform 150ms ease;
+}
+
+.profile-action-item:hover .profile-action-arrow {
+  transform: translateX(3px);
+  color: var(--theme-primary);
+}
+
+/* ============================================
+   8. AVATAR & PHOTO UPLOAD
+============================================================ */
+.profile-avatar-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 1rem;
+  object-fit: cover;
+  border: 3px solid var(--theme-surface);
+  box-shadow: var(--theme-shadow-lg);
+}
+
+.profile-avatar-edit {
+  position: absolute;
+  bottom: -0.5rem;
+  right: -0.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--theme-primary);
+  color: var(--theme-on-primary);
+  border: 2px solid var(--theme-surface);
+  cursor: pointer;
+  box-shadow: var(--theme-shadow-md);
+  transition: all 150ms ease;
+}
+
+.profile-avatar-edit:hover {
+  background: var(--theme-primary-hover);
+  transform: scale(1.05);
+}
