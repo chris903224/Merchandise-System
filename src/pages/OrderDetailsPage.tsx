@@ -478,19 +478,12 @@ export default function OrderDetailsPage() {
                             />
                           )}
                         </Link>
-
-                        <div className="od-item__info">
-                          <p className="od-item__name">{item.name}</p>
-                          <p className="od-item__meta">
-                            {item.size && <>Size: {item.size}</>}
-                            {item.size && item.organization && <> · </>}
-                            {item.organization && (
-                              <>
-                                Color: <strong>Maroon</strong>
-                              </>
-                            )}
-                          </p>
-                        </div>
+                     <div className="od-item__info">
+                   <p className="od-item__name">{item.name}</p>
+                   <p className="od-item__meta">
+                 {item.size && <>Size: {item.size}</>}
+                  </p>
+                   </div>
 
                         <div className="od-item__qty">
                           <span className="od-item__qty-label">Qty</span>
