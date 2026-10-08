@@ -27,6 +27,7 @@ import { useApp } from '../store';
 import { useToast } from '../toast';
 import { formatPrice, isStaffRole, sumCartItems } from '../services';
 import { placeOrder as placeOrderService } from '../services/orders';
+import { createPayMongoCheckout } from '../services/paymongo';
 import { BUILDINGS, BUILDING_NAMES } from '../data/constants';
 import type { Order } from '../types';
 
@@ -69,12 +70,10 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (!session) return;
 
-    // ✅ Priority: session.phone → fetch from Supabase profile
     const sessionPhone = (session as any).phone;
     if (sessionPhone) {
       setPhone(sessionPhone);
     } else {
-      // Background fetch from profiles table
       import('../data/storage').then(({ fetchUserProfile }) => {
         fetchUserProfile(session.id).then((profile) => {
           if (profile?.phone) {
@@ -147,7 +146,7 @@ export default function CheckoutPage() {
     }
     setIsGcashModalOpen(false);
     toast(
-      `GCash ${gcashSubMethod === 'qr' ? 'QR Code' : 'Manual'} selected.`,
+      `GCash ${gcashSubMethod === 'qr' ? 'PayMongo' : 'Manual'} selected.`,
       'success'
     );
   };
@@ -205,7 +204,7 @@ export default function CheckoutPage() {
   }
 
   /* ============================================
-     SUBMIT
+     ✅ SUBMIT — With PayMongo Integration
      ============================================ */
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -225,7 +224,7 @@ export default function CheckoutPage() {
       return;
     }
 
-    /* GCash validation */
+    /* ✅ GCash validation */
     if (paymentMethod === 'gcash') {
       if (!gcashSubMethod) {
         toast('Please choose a GCash payment method.', 'warning');
@@ -246,14 +245,14 @@ export default function CheckoutPage() {
       const paymentMethodLabel: Record<PaymentMethod, string> = {
         gcash:
           gcashSubMethod === 'qr'
-            ? 'GCash (QR Code)'
+            ? 'GCash (PayMongo QR)'
             : 'GCash (Manual)',
         cod: 'Cash on Delivery',
         cop: 'Cash on Pickup',
       };
 
       const paymentStatus: Record<PaymentMethod, string> = {
-        gcash: 'Verification Pending',
+        gcash: gcashSubMethod === 'qr' ? 'Pending' : 'Verification Pending',
         cod: 'Unpaid (COD)',
         cop: 'Unpaid (OTC)',
       };
@@ -264,6 +263,7 @@ export default function CheckoutPage() {
           ? gcashRefNumber
           : null;
 
+      // ✅ Step 1: Save order to database FIRST
       const newOrder: Order = {
         id: orderId,
         userId: session.id,
@@ -291,12 +291,42 @@ export default function CheckoutPage() {
 
       await placeOrderService(newOrder);
 
+      // ✅ Step 2: Check kung PayMongo QR ang napili
+      if (paymentMethod === 'gcash' && gcashSubMethod === 'qr') {
+        try {
+          const { checkoutUrl } = await createPayMongoCheckout({
+            orderId: orderId,
+            amount: subtotal,
+            description: `SJCM Order ${orderId} — ${totalItems} item${totalItems > 1 ? 's' : ''}`,
+            email: email,
+            customerName: fullName,
+          });
+
+          setCart([]);
+          window.location.href = checkoutUrl;
+          return;
+        } catch (paymongoError: any) {
+          console.error('[Checkout] PayMongo error:', paymongoError);
+          toast(
+            paymongoError?.message ||
+              'Payment gateway error. Please try again or choose another method.',
+            'danger'
+          );
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
+      // ✅ Step 3: Para sa COD/COP/Manual GCash
       setCart([]);
       toast('Order placed successfully!', 'success');
       navigate('/dashboard');
     } catch (error: any) {
       console.error('Checkout error:', error);
-      toast(error?.message || 'Checkout failed. Please try again.', 'danger');
+      toast(
+        error?.message || 'Checkout failed. Please try again.',
+        'danger'
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -413,7 +443,7 @@ export default function CheckoutPage() {
                   />
                 </div>
 
-                {/* ✅ EDITABLE: Phone — auto-filled from session/profile */}
+                {/* EDITABLE: Phone */}
                 <div className="field">
                   <label className="field__label" htmlFor="co-phone">
                     Phone Number
@@ -544,7 +574,7 @@ export default function CheckoutPage() {
               </header>
 
               <div className="payment-options">
-                {/* GCash — triggers modal */}
+                {/* GCash */}
                 <label
                   className={`payment-option ${
                     paymentMethod === 'gcash' ? 'is-selected' : ''
@@ -570,7 +600,7 @@ export default function CheckoutPage() {
                     </span>
                     <span className="payment-option__description">
                       {gcashSubMethod === 'qr'
-                        ? '✓ QR Code selected'
+                        ? '✓ PayMongo QR selected'
                         : gcashSubMethod === 'manual'
                         ? '✓ Manual payment selected'
                         : 'Click to choose QR or manual'}
@@ -738,7 +768,13 @@ export default function CheckoutPage() {
               disabled={isSubmitting}
             >
               <Lock className="react-icon" aria-hidden="true" />
-              <span>{isSubmitting ? 'Placing Order...' : 'Place Order'}</span>
+              <span>
+                {isSubmitting
+                  ? paymentMethod === 'gcash' && gcashSubMethod === 'qr'
+                    ? 'Redirecting to PayMongo...'
+                    : 'Placing Order...'
+                  : 'Place Order'}
+              </span>
               <ArrowRight className="react-icon" aria-hidden="true" />
             </button>
 
@@ -801,6 +837,7 @@ export default function CheckoutPage() {
 
             <div className="gcash-modal__body">
               <div className="gcash-modal__options">
+                {/* QR Option */}
                 <button
                   type="button"
                   className={`gcash-modal__option ${
@@ -812,9 +849,11 @@ export default function CheckoutPage() {
                     <QrCode className="react-icon" aria-hidden="true" />
                   </span>
                   <span className="gcash-modal__option-copy">
-                    <span className="gcash-modal__option-title">QR Code</span>
+                    <span className="gcash-modal__option-title">
+                      PayMongo Checkout
+                    </span>
                     <span className="gcash-modal__option-desc">
-                      Scan via PayMongo
+                      Scan QR or continue to secure checkout
                     </span>
                   </span>
                   {gcashSubMethod === 'qr' && (
@@ -822,6 +861,7 @@ export default function CheckoutPage() {
                   )}
                 </button>
 
+                {/* Manual Option */}
                 <button
                   type="button"
                   className={`gcash-modal__option ${
@@ -844,30 +884,41 @@ export default function CheckoutPage() {
                 </button>
               </div>
 
+              {/* QR Panel with Image */}
               {gcashSubMethod === 'qr' && (
                 <div className="gcash-modal__panel gcash-modal__panel--qr">
                   <div className="gcash-modal__qr-frame">
-                    <QrCode
-                      className="gcash-modal__qr-icon"
-                      aria-hidden="true"
+                    <img
+                      src="/qr.png"
+                      alt="PayMongo QR Code"
+                      className="gcash-modal__qr-image"
                     />
-                    <span className="gcash-modal__qr-text">QR Code</span>
                   </div>
                   <div className="gcash-modal__qr-info">
                     <p className="gcash-modal__qr-title">
-                      Scan to pay via PayMongo
+                      📷 Scan to Pay with GCash
                     </p>
                     <p className="gcash-modal__qr-desc">
-                      Open your GCash app, tap{' '}
-                      <strong>Scan QR</strong>, and scan the code above.
+                      Open your GCash app, tap <strong>Scan QR</strong>, and
+                      scan the code above. Or click{' '}
+                      <strong>"Place Order"</strong> to continue to PayMongo's
+                      secure checkout.
                     </p>
+                    <ul className="gcash-modal__payment-list">
+                      <li>📱 GCash</li>
+                      <li>💳 Maya (PayMaya)</li>
+                      <li>💳 Cards (Visa, Mastercard, JCB)</li>
+                      <li>📷 QR Ph</li>
+                    </ul>
                     <p className="gcash-modal__qr-note">
-                      ⚠️ Mock only — real PayMongo integration coming soon.
+                      ✅ Your payment is secured by PayMongo. You'll return to
+                      SJCM Store after payment.
                     </p>
                   </div>
                 </div>
               )}
 
+              {/* Manual Panel */}
               {gcashSubMethod === 'manual' && (
                 <div className="gcash-modal__panel gcash-modal__panel--manual">
                   <div className="field">

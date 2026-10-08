@@ -2491,3 +2491,67 @@ span, p, div, a, button, input, select, textarea, label {
     min-height: 15rem !important;
   }
 }
+/* ============================================================
+   🚀 ULTIMATE FIX — IN STOCK BADGE (Force Solid Green)
+   ✅ Override LAHAT ng lumang style
+   ✅ Force solid color per theme
+============================================================ */
+
+/* ✅ SUPER SPECIFIC — Force lahat ng badge sa media containers */
+.catalog-card__media .catalog-card__badge,
+.catalog-card__media span.catalog-card__badge,
+.favorites-card__media .favorites-card__badge,
+.favorites-card__media span.favorites-card__badge,
+.product-card__media .product-card__badge,
+.product-card__media span.product-card__badge,
+.product-media__frame .product-media__badge,
+.product-media__frame span.product-media__badge,
+article .catalog-card__badge,
+article .favorites-card__badge,
+article .product-card__badge,
+a .catalog-card__badge,
+a .favorites-card__badge {
+  /* ✅ SOLID GREEN background — force! */
+  background: var(--theme-success) !important;
+  background-color: var(--theme-success) !important;
+  background-image: none !important;
+  
+  /* ✅ White text */
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  
+  /* ✅ Remove any border */
+  border: none !important;
+  border-color: transparent !important;
+  
+  /* ✅ Remove any backdrop-filter */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  
+  /* ✅ Force opacity */
+  opacity: 1 !important;
+  
+  /* ✅ Add subtle shadow for depth */
+  box-shadow: 
+    0 2px 6px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  
+  /* ✅ Typography */
+  font-weight: 800 !important;
+  text-shadow: none !important;
+  
+  /* ✅ Border radius */
+  border-radius: 999px !important;
+  
+  /* ✅ Padding */
+  padding: 0.25rem 0.6rem !important;
+}
+
+/* ✅ DARK MODE — mas darker text sa light green */
+[data-theme-mode='dark'] .catalog-card__media .catalog-card__badge,
+[data-theme-mode='dark'] .favorites-card__media .favorites-card__badge,
+[data-theme-mode='dark'] .product-card__media .product-card__badge,
+[data-theme-mode='dark'] .product-media__frame .product-media__badge {
+  color: var(--theme-on-success, #1A1209) !important;
+  -webkit-text-fill-color: var(--theme-on-success, #1A1209) !important;
+}
