@@ -35,6 +35,10 @@ function mapProductToAdmin(p: Product): AdminProduct {
     stockState: stockStateFromCount(p.stock),
     stockLabel: stockLabelFromCount(p.stock),
     img: p.image,
+    // ✅ IDINAGDAG — sizes, description, organization
+    sizes: p.sizes || [],
+    description: p.description || '',
+    organization: p.organization || '',
   };
 }
 
@@ -50,7 +54,11 @@ export async function getProducts(filter: string = 'all'): Promise<AdminProduct[
   if (filter === 'uniforms') return mapped.filter((p) => p.category === 'Uniforms');
   if (filter === 'shirts')   return mapped.filter((p) => p.category === 'Shirts');
   if (filter === 'laces')    return mapped.filter((p) => p.category === 'ID Laces');
-  if (filter === 'low-stock') return mapped.filter((p) => p.stockState === 'low-stock' || p.stockState === 'out');
+  if (filter === 'low-stock') {
+    return mapped.filter(
+      (p) => p.stockState === 'low-stock' || p.stockState === 'out'
+    );
+  }
 
   return mapped;
 }
@@ -68,12 +76,23 @@ export async function updateProduct(
   id: string,
   updates: Partial<AdminProduct>
 ): Promise<void> {
-  // Get full product para hindi ma-overwrite yung ibang fields
+  // ✅ Get full product para hindi ma-overwrite yung ibang fields
   const all = await fetchProducts();
   const existing = all.find((p) => p.id === id);
   if (!existing) throw new Error(`Product ${id} not found.`);
 
-  // Merge updates
+  console.log('[updateProduct] Existing:', {
+    id: existing.id,
+    sizes: existing.sizes,
+  });
+  console.log('[updateProduct] Updates:', {
+    id,
+    sizes: updates.sizes,
+    description: updates.description,
+    organization: updates.organization,
+  });
+
+  // ✅ Merge updates — kasama lahat ng fields
   const merged: Product = {
     ...existing,
     name: updates.name ?? existing.name,
@@ -81,9 +100,24 @@ export async function updateProduct(
     price: updates.price ?? existing.price,
     stock: updates.stock ?? existing.stock,
     image: updates.img ?? existing.image,
+    // ✅ IDINAGDAG — sizes, description, organization
+    sizes: updates.sizes ?? existing.sizes ?? [],
+    description: updates.description ?? existing.description ?? '',
+    organization: updates.organization ?? existing.organization ?? '',
   };
 
+  console.log('[updateProduct] Merged product:', {
+    id: merged.id,
+    sizes: merged.sizes,
+    description: merged.description,
+    organization: merged.organization,
+  });
+
   await updateProductInDb(merged);
+
+  // ✅ Invalidate cache para lumabas yung bagong data
+  const { invalidateCache } = await import('../../utils/cache');
+  invalidateCache('products');
 }
 
 export async function addProduct(
@@ -95,36 +129,45 @@ export async function addProduct(
     id,
     name: data.name,
     category: data.category,
-    organization: 'Institutional',
+    organization: data.organization || 'Institutional',
     price: data.price,
     stock: data.stock,
-    sizes: [],
+    // ✅ GAMITIN yung sizes from data
+    sizes: data.sizes || [],
     sizeStocks: {},
     image: data.img,
     imageAlt: data.name,
-    description: '',
+    description: data.description || '',
   };
 
-  // Use supabase directly for insert (walang insertProductInDb sa existing products.ts)
+  console.log('[addProduct] Creating product:', {
+    id: product.id,
+    name: product.name,
+    sizes: product.sizes,
+  });
+
+  // Use supabase directly for insert
   const { error } = await (await import('../../lib/supabaseClient')).supabase
     .from('products')
-    .insert([{
-      id: product.id,
-      name: product.name,
-      category: product.category,
-      organization: product.organization,
-      price: product.price,
-      stock: product.stock,
-      sizes: product.sizes,
-      size_stocks: product.sizeStocks,
-      image: product.image,
-      image_alt: product.imageAlt,
-      description: product.description,
-    }]);
+    .insert([
+      {
+        id: product.id,
+        name: product.name,
+        category: product.category,
+        organization: product.organization,
+        price: product.price,
+        stock: product.stock,
+        sizes: product.sizes,
+        size_stocks: product.sizeStocks,
+        image: product.image,
+        image_alt: product.imageAlt,
+        description: product.description,
+      },
+    ]);
 
   if (error) throw new Error(error.message);
 
-  // Invalidate cache
+  // ✅ Invalidate cache
   const { invalidateCache } = await import('../../utils/cache');
   invalidateCache('products');
 }
