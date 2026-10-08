@@ -7,7 +7,7 @@ import {
   ShieldCheck, User, Settings, ChevronRight,
 } from 'lucide-react';
 import { useAdminStore, type AdminPage } from '../../store/adminStore';
-import logo from '../../../dist/logo.png';
+
 
 interface NavItem {
   to: string;
@@ -90,7 +90,7 @@ export default function AdminSidebar() {
       {/* ✅ Brand — SJ logo icon only when collapsed */}
       <div className="admin-sidebar__brand">
         <div className="admin-sidebar__logo">
-  <img src={logo} alt="SJCM Store logo" />
+  <img src="/logo.png" alt="SJCM Store logo" />
 </div>
         <div className="admin-sidebar__brand-text">
           <span className="admin-sidebar__brand-name">SJCM Store</span>
