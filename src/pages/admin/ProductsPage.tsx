@@ -18,6 +18,9 @@ const FILTERS = [
   { id: 'low-stock', label: 'Low Stock' },
 ];
 
+/* ✅ Common sizes for reference */
+const COMMON_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
+
 export default function ProductsPage() {
   const [filter, setFilter] = useState('all');
   const [refreshKey, setRefreshKey] = useState(0);
@@ -85,7 +88,6 @@ export default function ProductsPage() {
       setIsSubmitting(true);
       try {
         const safeStock = Math.max(0, stock);
-        // ✅ Alisin yung stockState at stockLabel — automatic na sa service
         await updateProduct(stockProduct.id, { stock: safeStock });
         setStockProduct(null);
         setRefreshKey((k) => k + 1);
@@ -102,7 +104,6 @@ export default function ProductsPage() {
     async (data: Omit<AdminProduct, 'id' | 'stockState' | 'stockLabel'>) => {
       setIsSubmitting(true);
       try {
-        // ✅ Alisin yung stockState at stockLabel — automatic na sa service
         await addProduct(data);
         setIsAddOpen(false);
         setRefreshKey((k) => k + 1);
@@ -166,6 +167,14 @@ export default function ProductsPage() {
                 </span>
                 <h3 className="admin-shop-card__name">{p.name}</h3>
                 <p className="admin-shop-card__category">{p.category}</p>
+
+                {/* ✅ Display Sizes */}
+                {p.sizes && p.sizes.length > 0 && (
+                  <p className="admin-shop-card__sizes">
+                    <strong>Sizes:</strong> {p.sizes.join(', ')}
+                  </p>
+                )}
+
                 <div className="admin-shop-card__row">
                   <span className="admin-shop-card__price">
                     ₱ {p.price.toLocaleString()}
@@ -182,7 +191,9 @@ export default function ProductsPage() {
         )}
       </div>
 
-      {/* EDIT MODAL */}
+      {/* ============================================
+          EDIT MODAL — with Sizes
+      ============================================ */}
       <AdminModal
         open={Boolean(editingProduct)}
         title="Edit Product"
@@ -205,10 +216,19 @@ export default function ProductsPage() {
                 ) as HTMLFormElement;
                 if (!form) return;
                 const fd = new FormData(form);
+
+                /* ✅ Extract sizes from checked checkboxes */
+                const sizes = Array.from(
+                  form.querySelectorAll<HTMLInputElement>(
+                    'input[name="sizes"]:checked'
+                  )
+                ).map((cb) => cb.value);
+
                 handleSaveEdit({
                   name: String(fd.get('name')),
                   category: String(fd.get('category')),
                   price: Number(fd.get('price')),
+                  sizes, // ✅ Include sizes
                 });
               }}
             >
@@ -223,6 +243,7 @@ export default function ProductsPage() {
               <label>Name</label>
               <input name="name" defaultValue={editingProduct.name} />
             </div>
+
             <div className="admin-modal__grid-2">
               <div className="admin-modal__field">
                 <label>Category</label>
@@ -241,11 +262,38 @@ export default function ProductsPage() {
                 />
               </div>
             </div>
+
+            {/* ✅ SIZES FIELD */}
+            <div className="admin-modal__field">
+              <label>Sizes</label>
+              <div className="admin-modal__sizes">
+                {COMMON_SIZES.map((size) => {
+                  const isChecked =
+                    editingProduct.sizes?.includes(size) ?? false;
+                  return (
+                    <label key={size} className="admin-modal__size-chip">
+                      <input
+                        type="checkbox"
+                        name="sizes"
+                        value={size}
+                        defaultChecked={isChecked}
+                      />
+                      <span>{size}</span>
+                    </label>
+                  );
+                })}
+              </div>
+              <p className="admin-modal__hint">
+                Select all available sizes for this product.
+              </p>
+            </div>
           </form>
         )}
       </AdminModal>
 
-      {/* STOCK MODAL */}
+      {/* ============================================
+          STOCK MODAL
+      ============================================ */}
       <AdminModal
         open={Boolean(stockProduct)}
         title="Update Stock"
@@ -289,7 +337,9 @@ export default function ProductsPage() {
         )}
       </AdminModal>
 
-      {/* ADD MODAL */}
+      {/* ============================================
+          ADD MODAL — with Sizes
+      ============================================ */}
       <AdminModal
         open={isAddOpen}
         title="Add New Product"
@@ -315,11 +365,20 @@ export default function ProductsPage() {
                 const name = String(fd.get('name')).trim();
                 const price = Number(fd.get('price'));
                 if (!name || !price) return;
+
+                /* ✅ Extract sizes from checked checkboxes */
+                const sizes = Array.from(
+                  form.querySelectorAll<HTMLInputElement>(
+                    'input[name="sizes"]:checked'
+                  )
+                ).map((cb) => cb.value);
+
                 handleAdd({
                   name,
                   category: String(fd.get('category')),
                   price,
                   stock: Math.max(0, Number(fd.get('stock')) || 0),
+                  sizes, // ✅ Include sizes
                   img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=70',
                 });
               }}
@@ -334,6 +393,7 @@ export default function ProductsPage() {
             <label>Name</label>
             <input name="name" placeholder="e.g. SHS General Uniform" />
           </div>
+
           <div className="admin-modal__grid-2">
             <div className="admin-modal__field">
               <label>Category</label>
@@ -348,9 +408,26 @@ export default function ProductsPage() {
               <input name="price" type="number" placeholder="500" />
             </div>
           </div>
+
           <div className="admin-modal__field">
             <label>Initial Stock</label>
             <input name="stock" type="number" placeholder="30" />
+          </div>
+
+          {/* ✅ SIZES FIELD */}
+          <div className="admin-modal__field">
+            <label>Sizes</label>
+            <div className="admin-modal__sizes">
+              {COMMON_SIZES.map((size) => (
+                <label key={size} className="admin-modal__size-chip">
+                  <input type="checkbox" name="sizes" value={size} />
+                  <span>{size}</span>
+                </label>
+              ))}
+            </div>
+            <p className="admin-modal__hint">
+              Select all available sizes for this product.
+            </p>
           </div>
         </form>
       </AdminModal>

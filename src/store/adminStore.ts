@@ -30,6 +30,7 @@ export interface AdminNotification {
   actionLabel?: string;
 }
 
+/* ✅ UPDATED — may sizes, description, organization */
 export interface AdminProduct {
   id: string;
   name: string;
@@ -39,6 +40,9 @@ export interface AdminProduct {
   stockState: 'in-stock' | 'low-stock' | 'out';
   stockLabel: string;
   img: string;
+  sizes?: string[];           // ✅ Available sizes (XS, S, M, L, XL, 2XL, 3XL)
+  description?: string;       // ✅ Product description
+  organization?: string;      // ✅ Organization (Institutional, BSA, etc.)
 }
 
 export type AdminOrderStatus =
