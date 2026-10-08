@@ -3,7 +3,6 @@
 ============================================================ */
 
 .cart-page {
-  /* ✅ Naka-map sa theme variables */
   --sjcm-maroon: var(--theme-primary);
   --sjcm-maroon-dark: var(--theme-primary-hover);
   --sjcm-gold: var(--theme-accent);
@@ -628,76 +627,6 @@
   flex-shrink: 0;
   width: 0.85rem !important;
   height: 0.85rem !important;
-}
-
-/* ============================================================
-   RESPONSIVE
-============================================================ */
-
-@media (max-width: 1100px) {
-  .cart-body {
-    grid-template-columns: 1fr;
-  }
-  .cart-summary {
-    position: static;
-  }
-}
-
-@media (max-width: 720px) {
-  .cart-container {
-    width: min(100% - 1.5rem, 78rem);
-  }
-  .cart-hero {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 1.25rem 1.35rem;
-    min-height: auto;
-  }
-  .cart-hero__quote {
-    text-align: left;
-  }
-  .cart-toolbar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .cart-toolbar__actions {
-    justify-content: stretch;
-  }
-  .cart-toolbar__btn {
-    flex: 1;
-    justify-content: center;
-  }
-  .cart-item {
-    grid-template-columns: auto 4rem minmax(0, 1fr) auto;
-    gap: 0.65rem;
-    padding: 0.85rem;
-  }
-  .cart-item__qty,
-  .cart-item__remove {
-    grid-row: 2;
-  }
-  .cart-item__total {
-    grid-column: 3;
-    grid-row: 2;
-    text-align: left;
-    min-width: 0;
-    margin-top: 0.35rem;
-  }
-  .cart-item__qty {
-    grid-column: 1 / 3;
-    justify-self: start;
-    margin-top: 0.35rem;
-  }
-  .cart-item__remove {
-    grid-column: 4;
-    justify-self: end;
-    margin-top: 0.35rem;
-  }
-  .cart-item__media {
-    width: 4rem;
-    height: 4rem;
-  }
 }
 
 /* ============================================================
@@ -1595,28 +1524,102 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ✅ QR PANEL — POLISHED */
 .gcash-modal__panel--qr {
   display: flex;
+  flex-direction: column;
   gap: 16px;
   align-items: center;
+  padding: 20px;
 }
 
 .gcash-modal__qr-frame {
-  width: 130px;
-  height: 130px;
-  display: grid;
-  place-items: center;
-  gap: 6px;
-  background: var(--theme-surface);
-  border: 2px dashed var(--theme-border-strong);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  width: 100%;
+  max-width: 340px;
+  background: linear-gradient(
+    135deg,
+    var(--theme-surface) 0%,
+    rgba(var(--theme-primary-rgb), 0.04) 100%
+  );
+  border: 1.5px dashed rgba(var(--theme-primary-rgb), 0.3);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.gcash-modal__qr-frame:hover {
+  border-color: rgba(var(--theme-primary-rgb), 0.5);
+  box-shadow: 0 8px 24px rgba(var(--theme-primary-rgb), 0.1);
+}
+
+.gcash-modal__qr-frame::before,
+.gcash-modal__qr-frame::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--theme-primary);
+  opacity: 0.4;
+}
+
+.gcash-modal__qr-frame::before {
+  top: 8px;
+  left: 8px;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 3px 0 0 0;
+}
+
+.gcash-modal__qr-frame::after {
+  bottom: 8px;
+  right: 8px;
+  border-left: none;
+  border-top: none;
+  border-radius: 0 0 3px 0;
+}
+
+.gcash-modal__qr-image {
+  width: 100%;
+  max-width: 300px;
+  min-width: 220px;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
   border-radius: 12px;
-  color: var(--theme-text-muted);
-  flex-shrink: 0;
+  background: #ffffff;
+  padding: 10px;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 8px 24px rgba(var(--theme-primary-rgb), 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--theme-border);
+  animation: qrFadeIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gcash-modal__qr-image:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.06),
+    0 16px 40px rgba(var(--theme-primary-rgb), 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+@keyframes qrFadeIn {
+  from { opacity: 0; transform: scale(0.9) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .gcash-modal__qr-icon {
   width: 36px;
   height: 36px;
+  color: var(--theme-primary);
 }
 
 .gcash-modal__qr-text {
@@ -1624,37 +1627,80 @@
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  color: var(--theme-text-muted);
 }
 
 .gcash-modal__qr-info {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  min-width: 0;
+  gap: 12px;
+  width: 100%;
+  text-align: center;
 }
 
 .gcash-modal__qr-title {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--theme-text);
   margin: 0;
 }
 
 .gcash-modal__qr-desc {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--theme-text-muted);
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.6;
+}
+
+.gcash-modal__qr-desc strong {
+  color: var(--theme-primary);
+  font-weight: 700;
+}
+
+.gcash-modal__payment-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.gcash-modal__payment-list li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 12px;
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-text);
+  transition: all 0.2s ease;
+}
+
+.gcash-modal__payment-list li:hover {
+  transform: translateY(-1px);
+  border-color: rgba(var(--theme-primary-rgb), 0.3);
+  box-shadow: 0 4px 12px rgba(var(--theme-primary-rgb), 0.1);
 }
 
 .gcash-modal__qr-note {
-  font-size: 11px;
-  color: var(--theme-warning);
-  background: rgba(var(--theme-warning-rgb), 0.15);
-  padding: 6px 10px;
-  border-radius: 6px;
-  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--theme-text);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--theme-success-rgb), 0.1) 0%,
+    rgba(var(--theme-success-rgb), 0.04) 100%
+  );
+  padding: 12px 14px;
+  border-radius: 10px;
+  border-left: 3px solid var(--theme-success);
+  margin: 0;
+  box-shadow: 0 2px 8px rgba(var(--theme-success-rgb), 0.08);
 }
 
 .gcash-modal__panel--manual {
@@ -1881,7 +1927,77 @@
 }
 
 /* ============================================================
-   RESPONSIVE
+   RESPONSIVE — Cart
+============================================================ */
+
+@media (max-width: 1100px) {
+  .cart-body {
+    grid-template-columns: 1fr;
+  }
+  .cart-summary {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .cart-container {
+    width: min(100% - 1.5rem, 78rem);
+  }
+  .cart-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 1.35rem;
+    min-height: auto;
+  }
+  .cart-hero__quote {
+    text-align: left;
+  }
+  .cart-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .cart-toolbar__actions {
+    justify-content: stretch;
+  }
+  .cart-toolbar__btn {
+    flex: 1;
+    justify-content: center;
+  }
+  .cart-item {
+    grid-template-columns: auto 4rem minmax(0, 1fr) auto;
+    gap: 0.65rem;
+    padding: 0.85rem;
+  }
+  .cart-item__qty,
+  .cart-item__remove {
+    grid-row: 2;
+  }
+  .cart-item__total {
+    grid-column: 3;
+    grid-row: 2;
+    text-align: left;
+    min-width: 0;
+    margin-top: 0.35rem;
+  }
+  .cart-item__qty {
+    grid-column: 1 / 3;
+    justify-self: start;
+    margin-top: 0.35rem;
+  }
+  .cart-item__remove {
+    grid-column: 4;
+    justify-self: end;
+    margin-top: 0.35rem;
+  }
+  .cart-item__media {
+    width: 4rem;
+    height: 4rem;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — Checkout
 ============================================================ */
 
 @media (max-width: 1100px) {
@@ -1931,14 +2047,23 @@
     grid-template-columns: 1fr;
   }
   .gcash-modal__panel--qr {
-    flex-direction: column;
-    text-align: center;
+    padding: 16px;
   }
-  .gcash-modal__qr-frame {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1;
-    max-width: 160px;
+  .gcash-modal__qr-image {
+    max-width: 260px;
+    min-width: 220px;
+  }
+  .gcash-modal__payment-list {
+    grid-template-columns: 1fr;
+  }
+  .gcash-modal__payment-list li {
+    justify-content: flex-start;
+  }
+  .gcash-modal__qr-title {
+    font-size: 15px;
+  }
+  .gcash-modal__qr-desc {
+    font-size: 12px;
   }
 }
 

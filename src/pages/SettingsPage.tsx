@@ -1411,7 +1411,7 @@ export default function SettingsPage() {
                 disabled={isSavingAddress}
               >
                 <Save className="react-icon" aria-hidden="true" />
-                <span>{isSavingAddress ? 'Saving...' : 'Save Address'}</span>
+              <span>{isSavingAddress ? 'Saving...' : 'Save Address'}</span>
               </button>
             </footer>
           </div>
@@ -1419,4 +1419,4 @@ export default function SettingsPage() {
       )}
     </div>
   );
-}
+} 
