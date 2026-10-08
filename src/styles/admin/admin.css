@@ -77,20 +77,21 @@
    ============================================================ */
 
 .admin-sidebar {
-  position: relative;
-  width: 76px;                             /* ✅ Collapsed width */
+  position: sticky;                        /* stays pinned while the page scrolls */
+  top: 0;
+  height: 100vh;                           /* viewport height, not page height */
+  align-self: start;                       /* stops the grid from stretching it */
+  width: 76px;                             /* collapsed width */
   background: linear-gradient(180deg, #0f2f21 0%, #0a2118 100%);
   color: #f6f3ea;
   padding: 24px 0;
   display: flex;
   flex-direction: column;
-  overflow: visible;
+  overflow: visible;                       /* keep as is: your pin button sits outside the edge */
   z-index: 10;
 
-  /* ✅ Smooth expand animation */
   transition: width 0.32s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .admin-sidebar.is-open {
   width: 260px;                            /* ✅ Expanded width */
 }
@@ -2481,16 +2482,15 @@
     grid-template-columns: 1fr;
   }
 
-  .admin-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 260px;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    padding: 24px 16px;
-  }
+ .admin-sidebar {
+  position: fixed;   /* stays put while the page scrolls */
+  top: 0;
+  left: 0;
+  height: 100vh;     /* or 100dvh for mobile browsers */
+  z-index: 50;
+  overflow-y: auto;  /* lets the nav scroll if it's taller than the screen */
+  overflow-x: hidden;
+}
 
   .admin-sidebar.is-mobile-open {
     transform: translateX(0);
@@ -3095,4 +3095,9 @@
   width: 14px;
   height: 14px;
   color: var(--admin-brand-500);
+}
+/* Test A: pseudo-elements on the sidebar */
+.admin-sidebar::before,
+.admin-sidebar::after {
+  display: none !important;
 }
