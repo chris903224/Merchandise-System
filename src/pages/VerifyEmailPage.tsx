@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import { Mail, Loader2, CheckCircle, ArrowLeft, RefreshCw, Shield } from 'lucide-react';
+import { Mail, Loader2, CheckCircle, ArrowLeft, RefreshCw,} from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useToast } from '../toast';
 
