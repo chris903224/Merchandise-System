@@ -21,6 +21,7 @@
 @import './responsive.css';
 @import './orders.css';
 @import './print.css';
+@import './verify-email.css';
 
 /* ============================================================
    GLASSY BACKGROUND LAYER
@@ -281,9 +282,10 @@ body::before {
 }
 
 /* ============================================================
-   ✅ EXTRA CONTRAST SAFETY
+   ✅ EXTRA CONTRAST SAFETY — SCOPED (Walang broad `span`)
    ============================================================ */
 
+/* ✅ Headings — always readable */
 h1, h2, h3, h4, h5, h6,
 .settings-hero__title,
 .dashboard-hero__title,
@@ -295,8 +297,11 @@ h1, h2, h3, h4, h5, h6,
   color: var(--theme-text);
 }
 
+/* ✅ Paragraphs & specific elements — muted
+   ⚠️ IMPORTANT: Tinanggal ang `span` para hindi
+   mag-override sa button text colors.
+*/
 p,
-span,
 li,
 .settings-hero__description,
 .dashboard-hero__description,
@@ -305,6 +310,25 @@ li,
 .notifications-hero__description,
 .favorites-hero__description {
   color: var(--theme-text-muted);
+}
+
+/* ✅ Generic span — mag-inherit sa parent
+   (ito ang solusyon para gumana ang button text color)
+*/
+span {
+  color: inherit;
+}
+
+/* ✅ Lahat ng spans sa loob ng buttons — inherit
+   (mas explicit kaysa generic span rule)
+*/
+button span,
+button > span,
+a[class*="btn"] span,
+a[class*="cta"] span,
+[role="button"] span {
+  color: inherit;
+  -webkit-text-fill-color: inherit;
 }
 
 input::placeholder,
@@ -344,6 +368,111 @@ a[class*="btn"] {
 [style*="background: var(--sjcm-green)"],
 [style*="background: var(--theme-primary)"] {
   color: var(--theme-on-primary);
+}
+
+/* ============================================================
+   ✅ UNIVERSAL BUTTON TEXT CASCADE
+   Force lahat ng button text na sumunod sa parent color.
+   Ito ang CRITICAL FIX para sa invisible text sa dark themes.
+   ============================================================ */
+
+/* ✅ Lahat ng children sa loob ng buttons — inherit color */
+button > span,
+button > svg,
+button > .react-icon,
+button > *,
+a[class*="btn"] > span,
+a[class*="btn"] > svg,
+a[class*="btn"] > *,
+a[class*="cta"] > span,
+a[class*="cta"] > svg,
+a[class*="cta"] > *,
+[role="button"] > span,
+[role="button"] > svg,
+[role="button"] > * {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+/* ✅ Specific — Primary buttons (B2B SaaS grade) */
+button[class*="--primary"],
+button[class*="button--primary"],
+button[class*="btn--primary"],
+button[class*="__cta"],
+a[class*="--primary"],
+a[class*="button--primary"],
+a[class*="__cta"] {
+  color: var(--theme-on-primary, #ffffff) !important;
+  -webkit-text-fill-color: var(--theme-on-primary, #ffffff) !important;
+}
+
+button[class*="--primary"] > span,
+button[class*="--primary"] > svg,
+button[class*="--primary"] > *,
+button[class*="button--primary"] > span,
+button[class*="button--primary"] > svg,
+button[class*="button--primary"] > *,
+button[class*="btn--primary"] > span,
+button[class*="btn--primary"] > svg,
+button[class*="btn--primary"] > *,
+button[class*="__cta"] > span,
+button[class*="__cta"] > svg,
+button[class*="__cta"] > *,
+a[class*="--primary"] > span,
+a[class*="--primary"] > svg,
+a[class*="--primary"] > *,
+a[class*="__cta"] > span,
+a[class*="__cta"] > svg,
+a[class*="__cta"] > * {
+  color: var(--theme-on-primary, #ffffff) !important;
+  -webkit-text-fill-color: var(--theme-on-primary, #ffffff) !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+/* ✅ Specific — Ghost / Secondary buttons */
+button[class*="--ghost"],
+button[class*="--secondary"],
+button[class*="button--ghost"],
+button[class*="button--secondary"],
+button[class*="btn--ghost"],
+button[class*="btn--secondary"] {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+button[class*="--ghost"] > span,
+button[class*="--ghost"] > svg,
+button[class*="--ghost"] > *,
+button[class*="--secondary"] > span,
+button[class*="--secondary"] > svg,
+button[class*="--secondary"] > *,
+button[class*="button--ghost"] > span,
+button[class*="button--ghost"] > svg,
+button[class*="button--ghost"] > *,
+button[class*="button--secondary"] > span,
+button[class*="button--secondary"] > svg,
+button[class*="button--secondary"] > * {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+/* ✅ Specific — Badges with accent (gold) */
+[class*="__badge"],
+[class*="badge--accent"] {
+  color: var(--theme-on-accent, #1A1209) !important;
+  -webkit-text-fill-color: var(--theme-on-accent, #1A1209) !important;
+}
+
+[class*="__badge"] > span,
+[class*="__badge"] > svg,
+[class*="__badge"] > * {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
 }
 
 /* ============================================================
@@ -532,11 +661,10 @@ a[class*="btn"] {
     grid-template-columns: 1fr;
   }
 }
+
 /* ============================================================
-   ✅ FIX: Button text color cascade
-   Siguraduhin na ang lahat ng descendants ng button
-   ay sumusunod sa --theme-on-primary
-============================================================ */
+   ✅ LEGACY FIXES — Retained for backward compat
+   ============================================================ */
 
 .catalog-card__cta,
 .catalog-card__cta *,
@@ -552,7 +680,6 @@ a[class*="btn"] {
   color: var(--theme-on-primary) !important;
 }
 
-/* Same fix para sa iba pang colored buttons */
 .catalog-empty__cta,
 .catalog-empty__cta *,
 .catalog-empty__cta span,
@@ -596,4 +723,71 @@ a[class*="btn"] {
 
 .product-not-found__cta {
   color: var(--theme-on-primary) !important;
+}
+
+/* ============================================================
+   ✅ OTP VERIFY PAGE — Specific Fix
+   Force button text/icons to follow --theme-on-primary
+   ============================================================ */
+
+.otp-modal__btn,
+.otp-modal__btn--primary,
+.otp-modal__btn--primary *,
+.otp-modal__btn--primary span,
+.otp-modal__btn--primary svg,
+.otp-modal__btn--primary .react-icon {
+  color: var(--theme-on-primary, #ffffff) !important;
+  -webkit-text-fill-color: var(--theme-on-primary, #ffffff) !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+.otp-modal__btn--primary:hover:not(:disabled),
+.otp-modal__btn--primary:hover:not(:disabled) *,
+.otp-modal__btn--primary:hover:not(:disabled) span,
+.otp-modal__btn--primary:hover:not(:disabled) svg {
+  color: var(--theme-on-primary, #ffffff) !important;
+  -webkit-text-fill-color: var(--theme-on-primary, #ffffff) !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+.otp-modal__btn--ghost,
+.otp-modal__btn--ghost *,
+.otp-modal__btn--ghost span,
+.otp-modal__btn--ghost svg,
+.otp-modal__btn--ghost .react-icon {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+.otp-modal__btn--ghost:hover:not(:disabled),
+.otp-modal__btn--ghost:hover:not(:disabled) *,
+.otp-modal__btn--ghost:hover:not(:disabled) span,
+.otp-modal__btn--ghost:hover:not(:disabled) svg {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   ✅ DASHBOARD GATE — Specific Fix
+   ============================================================ */
+
+.dashboard-gate__btn--primary,
+.dashboard-gate__btn--primary *,
+.dashboard-gate__btn--primary span,
+.dashboard-gate__btn--primary svg {
+  color: var(--theme-on-primary, #ffffff) !important;
+  -webkit-text-fill-color: var(--theme-on-primary, #ffffff) !important;
+  fill: currentColor !important;
+}
+
+.dashboard-gate__btn--ghost,
+.dashboard-gate__btn--ghost *,
+.dashboard-gate__btn--ghost span,
+.dashboard-gate__btn--ghost svg {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
 }

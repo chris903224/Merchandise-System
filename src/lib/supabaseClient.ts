@@ -2,6 +2,13 @@
 
 import { createClient } from '@supabase/supabase-js';
 
+/* ============================================================
+   ✅ SUPABASE CLIENT
+   - Single export
+   - No self-import
+   - Proper TypeScript types
+============================================================ */
+
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 

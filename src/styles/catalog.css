@@ -1,17 +1,11 @@
 /* ============================================================
-   CATALOG PAGE — Full-width layout, categories card on left
+   CATALOG PAGE — full-width layout, categories card on left
    ✅ Theme-driven — adaptive sa light at dark
    ✅ Even card heights (flex layout)
-   ✅ Badge fix — SOLID theme-success (IN STOCK)
-   ✅ Google Translate leak fix
-   ✅ Stable grid — hindi mag-compress sa translations
-============================================================ */
-
-/* ============================================================
-   PAGE SHELL
 ============================================================ */
 
 .catalog-page {
+  /* ✅ Naka-map sa theme variables — auto-adjust sa lahat ng 10 themes */
   --sjcm-green: var(--theme-primary);
   --sjcm-green-dark: var(--theme-primary-hover);
   --sjcm-green-rgb: var(--theme-primary-rgb);
@@ -24,7 +18,6 @@
   --sjcm-border: var(--theme-border);
   --sjcm-border-strong: var(--theme-border-strong);
   --sjcm-success: var(--theme-success);
-  --sjcm-danger: var(--theme-danger);
 
   min-height: calc(100vh - 4.25rem);
   background: transparent;
@@ -121,155 +114,94 @@
 }
 
 /* ============================================================
-   TOOLBAR — Search + Filters
+   TOOLBAR
 ============================================================ */
 
 .catalog-toolbar {
-  display: grid !important;
-  grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)) !important;
-  gap: 0.65rem !important;
-  margin-bottom: 1.25rem !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
 }
 
 .catalog-toolbar__search {
-  position: relative !important;
-  display: flex !important;
-  align-items: center !important;
-  width: 100% !important;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.catalog-toolbar__search svg,
-.catalog-toolbar__search .react-icon {
-  position: absolute !important;
-  left: 0.85rem !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: 1rem !important;
-  height: 1rem !important;
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  pointer-events: none !important;
-  z-index: 2 !important;
+.catalog-toolbar__search svg {
+  position: absolute;
+  left: 0.85rem;
+  color: var(--sjcm-ink-soft);
+  pointer-events: none;
 }
 
 .catalog-toolbar__search input {
-  width: 100% !important;
-  min-height: 2.65rem !important;
-  padding: 0.6rem 2.5rem 0.6rem 2.4rem !important;
-  border: 1px solid var(--theme-border) !important;
-  border-radius: 999px !important;
-  background: var(--theme-surface) !important;
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  font-size: 0.85rem !important;
-  outline: 0 !important;
-  box-sizing: border-box !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-}
-
-.catalog-toolbar__search input:focus {
-  border-color: var(--theme-primary) !important;
-  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.1) !important;
+  width: 100%;
+  min-height: 2.65rem;
+  padding: 0.6rem 1rem 0.6rem 2.4rem;
+  border: 1px solid var(--sjcm-border);
+  border-radius: 999px;
+  background: var(--sjcm-white);
+  color: var(--sjcm-ink);
+  font-size: 0.85rem;
+  outline: 0;
 }
 
 .catalog-toolbar__search input::placeholder {
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  opacity: 0.7 !important;
+  color: var(--sjcm-ink-soft);
+  opacity: 0.7;
+}
+
+.catalog-toolbar__search input:focus {
+  border-color: var(--sjcm-green);
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.1);
 }
 
 .catalog-toolbar__select {
-  min-height: 2.65rem !important;
-  padding: 0.6rem 2.5rem 0.6rem 1rem !important;
-  border: 1px solid var(--theme-border) !important;
-  border-radius: 999px !important;
-  background: var(--theme-surface) !important;
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  font-size: 0.82rem !important;
-  cursor: pointer !important;
-  outline: 0 !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-  text-overflow: ellipsis !important;
-  overflow: hidden !important;
-  white-space: nowrap !important;
+  min-height: 2.65rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--sjcm-border);
+  border-radius: 999px;
+  background: var(--sjcm-white);
+  color: var(--sjcm-ink);
+  font-size: 0.82rem;
+  cursor: pointer;
+  outline: 0;
 }
 
 .catalog-toolbar__select:focus {
-  border-color: var(--theme-primary) !important;
-  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.1) !important;
-}
-
-.catalog-toolbar__clear {
-  position: absolute !important;
-  right: 0.75rem !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  display: grid !important;
-  place-items: center !important;
-  width: 1.5rem !important;
-  height: 1.5rem !important;
-  border: 0 !important;
-  border-radius: 50% !important;
-  background: transparent !important;
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  cursor: pointer !important;
-  z-index: 3 !important;
-  transition: all 150ms ease !important;
-}
-
-.catalog-toolbar__clear:hover {
-  background: rgba(var(--theme-primary-rgb), 0.08) !important;
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-}
-
-.catalog-toolbar__clear .react-icon {
-  width: 0.85rem;
-  height: 0.85rem;
+  border-color: var(--sjcm-green);
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.1);
 }
 
 /* ============================================================
-   BODY — Categories + Grid
+   BODY (categories + grid)
 ============================================================ */
 
 .catalog-body {
-  display: grid !important;
-  grid-template-columns: 15rem minmax(0, 1fr) !important;
-  gap: 1.25rem !important;
-  align-items: start !important;
-  width: 100% !important;
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: start;
 }
 
-/* Categories column */
+/* Categories card */
 .catalog-categories {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 1rem !important;
-  position: sticky !important;
-  top: 5rem !important;
-  width: 15rem !important;
-  max-width: 15rem !important;
-  min-width: 15rem !important;
-  flex-shrink: 0 !important;
+  display: grid;
+  gap: 1rem;
+  position: sticky;
+  top: 5rem;
 }
 
 .catalog-categories__card {
-  background: var(--theme-surface) !important;
-  border: 1px solid var(--theme-border) !important;
-  border-radius: 1rem !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  box-shadow: var(--theme-shadow-md) !important;
-  padding: 1rem !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
+  background: var(--sjcm-white);
+  border: 1px solid var(--sjcm-border);
+  border-radius: 1rem;
+  width: 82%;
+  box-shadow: 0 18px 42px rgba(var(--theme-primary-rgb), 0.06);
+  padding: 1rem;
 }
 
 .catalog-categories__title {
@@ -281,58 +213,50 @@
 }
 
 .catalog-categories__list {
-  list-style: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0.15rem !important;
-  width: 100% !important;
-  overflow: hidden !important;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.15rem;
 }
 
 .catalog-category {
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.65rem !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  padding: 0.55rem 0.6rem !important;
-  border: 0 !important;
-  border-radius: 0.55rem !important;
-  background: transparent !important;
-  cursor: pointer !important;
-  text-align: left !important;
-  font-family: inherit !important;
-  transition: background 150ms ease !important;
-  box-sizing: border-box !important;
-  overflow: hidden !important;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 82%;
+  padding: 0.55rem 0.6rem;
+  border: 0;
+  border-radius: 0.55rem;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 150ms ease;
 }
 
 .catalog-category:hover {
-  background: var(--sjcm-cream-soft) !important;
+  background: var(--sjcm-cream-soft);
 }
 
 .catalog-category.is-active {
-  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  background: rgba(var(--theme-primary-rgb), 0.12);
 }
 
 .catalog-category__icon {
-  display: grid !important;
-  width: 1.9rem !important;
-  height: 1.9rem !important;
-  min-width: 1.9rem !important;
-  min-height: 1.9rem !important;
-  flex-shrink: 0 !important;
-  place-items: center !important;
-  border-radius: 0.5rem !important;
-  background: var(--theme-surface-2) !important;
-  color: var(--theme-primary) !important;
+  display: grid;
+  width: 1.9rem;
+  height: 1.9rem;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 0.5rem;
+  background: var(--sjcm-cream-soft);
+  color: var(--sjcm-green);
 }
 
 .catalog-category.is-active .catalog-category__icon {
-  background: var(--sjcm-green) !important;
-  color: var(--theme-surface) !important;
+  background: var(--sjcm-green);
+  color: var(--theme-surface);
 }
 
 .catalog-category__icon .react-icon {
@@ -341,43 +265,35 @@
 }
 
 .catalog-category__label {
-  flex: 1 1 auto !important;
-  min-width: 0 !important;
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  font-size: 0.8rem !important;
-  font-weight: 600 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-  max-width: 100% !important;
-  display: block !important;
+  flex: 1;
+  color: var(--sjcm-ink);
+  font-size: 0.8rem;
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .catalog-category__count {
-  flex: 0 0 auto !important;
-  padding: 0.1rem 0.5rem !important;
-  border-radius: 999px !important;
-  background: var(--theme-surface-2) !important;
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace) !important;
-  font-size: 0.68rem !important;
-  font-weight: 700 !important;
-  min-width: 1.75rem !important;
-  text-align: center !important;
-  margin-left: auto !important;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: var(--sjcm-cream-soft);
+  color: var(--sjcm-ink-soft);
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.68rem;
+  font-weight: 700;
 }
 
 .catalog-category.is-active .catalog-category__count {
-  background: var(--sjcm-green) !important;
-  color: var(--theme-surface) !important;
+  background: var(--sjcm-green);
+  color: var(--theme-surface);
 }
 
 .catalog-categories__note {
   display: grid;
   gap: 0.4rem;
-  width: 100%;
+  width: 82%;
   padding: 1rem;
   border-radius: 1rem;
   background: var(--sjcm-cream-soft);
@@ -407,14 +323,9 @@
   line-height: 1.4;
 }
 
-/* ============================================================
-   GRID SECTION
-============================================================ */
-
+/* Grid section */
 .catalog-grid-section {
-  min-width: 0 !important;
-  width: 100% !important;
-  overflow: hidden !important;
+  min-width: 0;
 }
 
 .catalog-results-meta {
@@ -437,40 +348,40 @@
   color: var(--sjcm-green);
 }
 
+/* ============================================================
+   ✅ GRID — even card heights
+============================================================ */
+
 .catalog-grid {
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: 1rem !important;
-  align-items: stretch !important;
-  grid-auto-rows: 1fr !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
+  align-items: stretch;
+  grid-auto-rows: 1fr;
 }
 
 /* ============================================================
-   CARD
+   ✅ CARD — flex layout, pantay ang heights
 ============================================================ */
 
 .catalog-card {
-  display: flex !important;
-  min-width: 0 !important;
-  flex-direction: column !important;
-  height: 100% !important;
-  min-height: 22rem !important;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  height: 100%;
 
-  background: var(--theme-surface) !important;
-  border: 1px solid var(--theme-border) !important;
-  border-radius: 1rem !important;
-  overflow: hidden !important;
-  box-shadow: var(--theme-shadow-sm) !important;
-  transition: all 200ms ease !important;
-  box-sizing: border-box !important;
+  background: var(--sjcm-white);
+  border: 1px solid var(--sjcm-border);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(var(--theme-primary-rgb), 0.04);
+  transition: all 200ms ease;
 }
 
 .catalog-card:hover {
-  border-color: rgba(var(--theme-primary-rgb), 0.28) !important;
-  box-shadow: var(--theme-shadow-md) !important;
-  transform: translateY(-3px) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.28);
+  box-shadow: 0 18px 42px rgba(var(--theme-primary-rgb), 0.1);
+  transform: translateY(-3px);
 }
 
 .catalog-card__media {
@@ -496,71 +407,34 @@
   transform: scale(1.04);
 }
 
+/* Line ~430 sa file mo */
 /* ============================================================
-   ✅ IN STOCK BADGE — SOLID THEME-SUCCESS (Fixed!)
+   ✅ CATALOG CARD BADGE — THEME-AWARE (Solid Green IN STOCK)
+   ✅ Fixed: Ginagamit na ang --theme-success instead of --sjcm-gold
 ============================================================ */
-
-.catalog-card__badge,
-.product-media__badge,
-.product-related__badge,
-.favorites-card__badge {
-  /* ✅ SOLID GREEN background — theme-aware */
-  background: var(--theme-success) !important;
-  background-color: var(--theme-success) !important;
-  background-image: none !important;
-
-  /* ✅ Auto-contrast text */
-  color: var(--theme-on-success, #ffffff) !important;
-  -webkit-text-fill-color: var(--theme-on-success, #ffffff) !important;
-
-  /* ✅ Clean border */
-  border: none !important;
-
-  /* ✅ Typography */
-  font-family: var(--font-body, 'Inter', sans-serif) !important;
-  font-size: 0.6rem !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.04em !important;
-  text-transform: uppercase !important;
-  text-shadow: none !important;
-
-  /* ✅ Subtle shadow for depth */
-  box-shadow: 0 2px 6px rgba(var(--theme-success-rgb), 0.3) !important;
-
-  /* ✅ Solid padding + radius */
-  padding: 0.25rem 0.6rem !important;
-  border-radius: 999px !important;
-
-  /* ✅ Position */
+.catalog-card__badge {
   position: absolute;
   top: 0.6rem;
   left: 0.6rem;
   z-index: 2;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
 
-  opacity: 1 !important;
+  /* ✅ SOLID GREEN — para sa "IN STOCK" */
+  background: var(--theme-success);
+  color: var(--theme-on-success, #ffffff);
+  -webkit-text-fill-color: var(--theme-on-success, #ffffff);
+
+  border: none;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-shadow: none;
+
+  /* ✅ Subtle shadow for depth */
+  box-shadow: 0 2px 6px rgba(var(--theme-success-rgb), 0.3);
 }
-
-/* ✅ Dark mode — darker text sa light green bg */
-[data-theme-mode='dark'] .catalog-card__badge,
-[data-theme-mode='dark'] .product-media__badge,
-[data-theme-mode='dark'] .product-related__badge,
-[data-theme-mode='dark'] .favorites-card__badge {
-  color: var(--theme-on-success, #0E1626) !important;
-  -webkit-text-fill-color: var(--theme-on-success, #0E1626) !important;
-}
-
-/* ✅ Out of stock variant */
-.catalog-card__badge.is-out,
-.favorites-card__badge.is-out {
-  background: var(--theme-danger) !important;
-  color: var(--theme-on-danger, #ffffff) !important;
-  -webkit-text-fill-color: var(--theme-on-danger, #ffffff) !important;
-  box-shadow: 0 2px 6px rgba(var(--theme-danger-rgb), 0.3) !important;
-}
-
-/* ============================================================
-   WISH BUTTON (Heart)
-============================================================ */
 
 .catalog-card__wish {
   position: absolute;
@@ -605,99 +479,73 @@
 }
 
 /* ============================================================
-   CARD BODY
+   ✅ CARD BODY — flex column
 ============================================================ */
 
 .catalog-card__body {
-  display: flex !important;
-  flex-direction: column !important;
-  flex: 1 !important;
-  gap: 0.4rem !important;
-  padding: 0.9rem !important;
-  min-width: 0 !important;
-  overflow: hidden !important;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.3rem;
+  padding: 0.85rem;
 }
 
 .catalog-card__name {
-  margin: 0 !important;
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  font-family: var(--font-display, 'Fraunces', serif) !important;
-  font-size: 0.88rem !important;
-  font-weight: 700 !important;
-  line-height: 1.35 !important;
-  display: -webkit-box !important;
-  -webkit-line-clamp: 2 !important;
-  -webkit-box-orient: vertical !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  word-break: break-word !important;
-  overflow-wrap: anywhere !important;
-  min-height: 2.6em !important;
-  max-height: 2.7em !important;
+  margin: 0;
+  color: var(--sjcm-ink);
+  font-family: var(--font-display, 'Fraunces', serif);
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.3em;
 }
 
 .catalog-card__category {
-  margin: 0 !important;
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  font-size: 0.7rem !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-  min-width: 0 !important;
+  margin: 0;
+  color: var(--sjcm-ink-soft);
+  font-size: 0.68rem;
 }
 
 .catalog-card__price {
-  margin: 0.2rem 0 0.6rem !important;
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace) !important;
-  font-size: 0.95rem !important;
-  font-weight: 700 !important;
-  white-space: nowrap !important;
+  margin: 0.15rem 0 0.5rem;
+  color: var(--sjcm-green);
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.95rem;
+  font-weight: 700;
 }
 
 /* ============================================================
-   CTA BUTTON
+   ✅ CTA — laging nasa baba
 ============================================================ */
 
 .catalog-card__cta {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 0.4rem !important;
-  width: 100% !important;
-  padding: 0.65rem 0.75rem !important;
-  border: 1px solid var(--theme-primary) !important;
-  border-radius: 0.55rem !important;
-  background: var(--theme-primary) !important;
-  color: var(--theme-on-primary) !important;
-  -webkit-text-fill-color: var(--theme-on-primary) !important;
-  font-family: inherit !important;
-  font-size: 0.78rem !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-  transition: all 150ms ease !important;
-  margin-top: auto !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  min-height: 2.5rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--sjcm-green);
+  border-radius: 0.55rem;
+  background: var(--sjcm-green);
+  color: var(--theme-surface);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 150ms ease;
+  margin-top: auto;
 }
 
 .catalog-card__cta:hover {
-  background: var(--theme-primary-hover) !important;
-  border-color: var(--theme-primary-hover) !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 6px 16px rgba(var(--theme-primary-rgb), 0.3) !important;
-}
-
-.catalog-card__cta span {
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  max-width: 100% !important;
+  background: var(--sjcm-green-dark);
+  border-color: var(--sjcm-green-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(var(--theme-primary-rgb), 0.3);
 }
 
 .catalog-card__cta .react-icon {
@@ -706,7 +554,7 @@
 }
 
 /* ============================================================
-   EMPTY STATE
+   EMPTY
 ============================================================ */
 
 .catalog-empty {
@@ -870,151 +718,69 @@
   height: 0.7rem;
 }
 
-/* ============================================================
-   ✅ GOOGLE TRANSLATE — KILL ALL LEAKING UI
-============================================================ */
-
-.goog-te-gadget,
-.goog-te-gadget-simple,
-.goog-te-gadget-icon,
-.goog-te-gadget span,
-.goog-te-gadget a,
-.goog-te-banner-frame,
-.goog-te-menu-frame,
-.goog-te-balloon-frame,
-#goog-gt-tt,
-#google_translate_element,
-.skiptranslate,
-iframe[name="google_translate_frame"],
-iframe.goog-te-banner-frame,
-.goog-logo-link,
-.goog-logo-link img,
-.goog-te-button,
-.goog-te-button-hover,
-.goog-te-combo,
-select.goog-te-combo,
-.goog-te-combo-wrapper,
-.goog-te-combo-container {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  width: 0 !important;
-  height: 0 !important;
-  position: absolute !important;
-  left: -9999px !important;
-  top: -9999px !important;
-  pointer-events: none !important;
-  z-index: -9999 !important;
+.catalog-toolbar__clear {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--sjcm-ink-soft);
+  cursor: pointer;
+  transition: all 150ms ease;
 }
 
-body > .skiptranslate,
-body > iframe.skiptranslate,
-body > .goog-te-banner-frame {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  width: 0 !important;
-  position: absolute !important;
-  left: -9999px !important;
+.catalog-toolbar__clear:hover {
+  background: rgba(var(--theme-primary-rgb), 0.08);
+  color: var(--sjcm-green);
 }
 
-.goog-text-highlight {
-  background-color: transparent !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-  outline: none !important;
-}
-
-body {
-  top: 0 !important;
-  position: static !important;
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-}
-
-html {
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-  transform: none !important;
-}
-
-.catalog-toolbar__search > *:not(input):not(svg):not(.react-icon):not(.catalog-toolbar__clear):not(.catalog-toolbar__search-icon) {
-  display: none !important;
-}
-
-.catalog-toolbar__search span:not([class*="react-icon"]) {
-  display: none !important;
+.catalog-toolbar__clear .react-icon {
+  width: 0.85rem;
+  height: 0.85rem;
 }
 
 /* ============================================================
-   RESPONSIVE — Catalog
+   RESPONSIVE
 ============================================================ */
 
-@media (min-width: 1400px) {
+@media (max-width: 1200px) {
   .catalog-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 1100px) and (max-width: 1399px) {
-  .catalog-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  }
-}
-
-@media (min-width: 900px) and (max-width: 1099px) {
+@media (max-width: 1100px) {
   .catalog-body {
-    grid-template-columns: 13rem minmax(0, 1fr) !important;
-  }
-  .catalog-categories {
-    width: 13rem !important;
-    max-width: 13rem !important;
-    min-width: 13rem !important;
-  }
-  .catalog-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    grid-template-columns: 13rem minmax(0, 1fr);
   }
   .catalog-toolbar {
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: 1fr 1fr;
   }
 }
 
-@media (max-width: 899px) {
+@media (max-width: 900px) {
   .catalog-body {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr;
   }
   .catalog-categories {
-    position: static !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
+    position: static;
   }
   .catalog-categories__list {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 0.35rem !important;
-  }
-  .catalog-category__label {
-    white-space: normal !important;
-    text-overflow: initial !important;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 1 !important;
-    -webkit-box-orient: vertical !important;
-  }
-  .catalog-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 0.75rem !important;
-  }
-  .catalog-toolbar {
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: grid;
   }
   .catalog-categories__note {
-    display: none !important;
+    display: none;
   }
 }
 
-@media (max-width: 719px) {
+@media (max-width: 720px) {
   .catalog-container {
     width: min(100% - 1.5rem, 78rem);
   }
@@ -1028,34 +794,31 @@ html {
     text-align: left;
   }
   .catalog-toolbar {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr;
   }
   .catalog-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 0.65rem !important;
-  }
-  .catalog-card {
-    min-height: 18rem !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
   }
   .catalog-card__body {
-    padding: 0.7rem !important;
+    padding: 0.7rem;
   }
   .catalog-card__name {
-    font-size: 0.8rem !important;
+    font-size: 0.82rem;
   }
 }
 
 @media (max-width: 480px) {
   .catalog-grid {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr;
   }
   .catalog-categories__list {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr;
   }
 }
 
 /* ============================================================
-   ✅ PRODUCT PAGE — Theme-driven
+   ✅ PRODUCT PAGE — THEME-DRIVEN (naka-map sa theme variables)
 ============================================================ */
 
 .product-page {
@@ -1159,7 +922,7 @@ html {
   text-decoration: none;
 }
 
-/* PRODUCT LAYOUT */
+/* LAYOUT */
 .product-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -1168,6 +931,7 @@ html {
   margin-bottom: 3rem;
 }
 
+/* MEDIA */
 .product-media__frame {
   position: relative;
   aspect-ratio: 1 / 1;
@@ -1183,6 +947,31 @@ html {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+/* ============================================================
+   ✅ PRODUCT MEDIA BADGE — THEME-AWARE
+============================================================ */
+.product-media__badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 2;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+
+  /* ✅ SOLID GREEN */
+  background: var(--theme-success);
+  color: var(--theme-on-success, #ffffff);
+  -webkit-text-fill-color: var(--theme-on-success, #ffffff);
+
+  border: none;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-shadow: none;
+  box-shadow: 0 2px 6px rgba(var(--theme-success-rgb), 0.3);
 }
 
 .product-media__wish {
@@ -1212,7 +1001,7 @@ html {
   height: 0.95rem;
 }
 
-/* PRODUCT INFO */
+/* INFO */
 .product-info {
   display: grid;
   gap: 0.85rem;
@@ -1459,7 +1248,7 @@ html {
   font-size: 0.68rem;
 }
 
-/* PRODUCT RELATED */
+/* RELATED */
 .product-related {
   padding-top: 2rem;
   border-top: 1px solid var(--sjcm-border);
@@ -1548,6 +1337,20 @@ html {
   object-fit: cover;
 }
 
+.product-related__badge {
+  position: absolute;
+  top: 0.55rem;
+  left: 0.55rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: var(--sjcm-gold);
+  color: #1a1209;
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .product-related__body {
   display: grid;
   gap: 0.2rem;
@@ -1574,7 +1377,7 @@ html {
   font-weight: 700;
 }
 
-/* RESPONSIVE — Product Page */
+/* RESPONSIVE — product-page */
 @media (max-width: 900px) {
   .product-layout {
     grid-template-columns: 1fr;
@@ -1595,4 +1398,600 @@ html {
   .product-related__grid {
     grid-template-columns: 1fr;
   }
+}
+/* ============================================================
+   ✅ CATALOG TOOLBAR FIX — AYUSIN ANG LEAKING GOOGLE TRANSLATE
+   ✅ Nililinis ang search input at iniiwasan ang overlap
+============================================================ */
+
+/* ------------------------------------------------------------
+   1. SEARCH INPUT — Tamang padding at positioning
+------------------------------------------------------------ */
+.catalog-toolbar__search {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+/* ✅ Search icon — tamang position */
+.catalog-toolbar__search svg,
+.catalog-toolbar__search .react-icon {
+  position: absolute !important;
+  left: 0.85rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 1rem !important;
+  height: 1rem !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+}
+
+/* ✅ Search input — sapat na padding sa lahat ng side */
+.catalog-toolbar__search input {
+  width: 100% !important;
+  min-height: 2.65rem !important;
+  padding: 0.6rem 2.5rem 0.6rem 2.4rem !important;
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 999px !important;
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  font-size: 0.85rem !important;
+  outline: 0 !important;
+  box-sizing: border-box !important;
+  /* ✅ KILL Google Translate na pwedeng dumikit sa input */
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.catalog-toolbar__search input:focus {
+  border-color: var(--theme-primary) !important;
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.1) !important;
+}
+
+.catalog-toolbar__search input::placeholder {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 0.7 !important;
+}
+
+/* ✅ Clear button — nasa tamang position */
+.catalog-toolbar__clear {
+  position: absolute !important;
+  right: 0.75rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  cursor: pointer !important;
+  z-index: 3 !important;
+  transition: all 150ms ease !important;
+}
+
+.catalog-toolbar__clear:hover {
+  background: rgba(var(--theme-primary-rgb), 0.08) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ------------------------------------------------------------
+   2. KILL GOOGLE TRANSLATE LEAKING ICONS
+   ✅ Ito yung maliit na icon sa screenshot mo
+------------------------------------------------------------ */
+
+/* ✅ Hide lahat ng Google Translate elements */
+.goog-te-gadget,
+.goog-te-gadget-simple,
+.goog-te-gadget-icon,
+.goog-te-gadget span,
+.goog-te-gadget a,
+.goog-te-banner-frame,
+.goog-te-menu-frame,
+.goog-te-balloon-frame,
+#goog-gt-tt,
+#google_translate_element,
+.skiptranslate,
+iframe[name="google_translate_frame"],
+iframe.goog-te-banner-frame,
+.goog-logo-link,
+.goog-logo-link img {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  pointer-events: none !important;
+  z-index: -9999 !important;
+}
+
+/* ✅ Kill yung position: static na nai-inject ng Google sa lahat ng elements */
+body > .skiptranslate,
+body > iframe.skiptranslate,
+body > .goog-te-banner-frame {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+/* ✅ KILL yung yellow highlight sa text */
+.goog-text-highlight {
+  background-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* ✅ KILL yung "G" o "Translate" button na nai-inject sa button */
+.goog-te-button,
+.goog-te-button-hover {
+  display: none !important;
+}
+
+/* ✅ Iwasan ang body displacement ng Google banner */
+body {
+  top: 0 !important;
+  position: static !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+html {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  transform: none !important;
+}
+
+/* ------------------------------------------------------------
+   3. SPECIFIC FIX — Yung icon sa tabi ng search bar
+   ✅ Tinatarget yung specific pattern ng leakage
+------------------------------------------------------------ */
+
+/* ✅ If yung icon ay may class na `.goog-te-gadget-simple`, naka-hide na ito */
+
+/* ✅ If yung icon ay may class na `.goog-te-button`, naka-hide na ito */
+
+/* ✅ If yung icon ay naka-inject as sibling ng search, iwasan overlap */
+.catalog-toolbar__search > *:not(input):not(svg):not(.react-icon):not(.catalog-toolbar__clear):not(.catalog-toolbar__search-icon) {
+  display: none !important;
+}
+
+/* ✅ Iwasan yung mga elements na naka-absolute na wala sa tamang lugar */
+.catalog-toolbar__search span:not([class*="react-icon"]) {
+  display: none !important;
+}
+
+/* ------------------------------------------------------------
+   4. KUNG ANG ICON AY YUNG "GOOGLE TRANSLATE" NA SUMISINGIT
+   ✅ Ito yung madalas nangyayari kapag may `.goog-te-combo`
+------------------------------------------------------------ */
+.goog-te-combo,
+select.goog-te-combo {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+/* ✅ Hide yung "select language" na dapat hindi nakikita */
+.goog-te-combo-wrapper,
+.goog-te-combo-container {
+  display: none !important;
+}
+/* ============================================================
+   ✅ CATALOG GRID FIX — Prevent Compression on Long Translations
+   ✅ Hindi mag-compress ang cards kahit mahaba ang translated text
+   ✅ Naka-theme-aware sa lahat ng 10 themes
+============================================================ */
+
+/* ------------------------------------------------------------
+   1. MAIN CATALOG BODY — Stable 2-column layout
+------------------------------------------------------------ */
+.catalog-body {
+  display: grid !important;
+  grid-template-columns: 15rem minmax(0, 1fr) !important;
+  gap: 1.25rem !important;
+  align-items: start !important;
+  width: 100% !important;
+}
+
+/* ✅ Categories column — FIXED width, hindi mag-expand */
+.catalog-categories {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+  position: sticky !important;
+  top: 5rem !important;
+  width: 15rem !important;
+  max-width: 15rem !important;
+  min-width: 15rem !important;
+  flex-shrink: 0 !important;
+}
+
+.catalog-categories__card {
+  background: var(--theme-surface) !important;
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 1rem !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-shadow: var(--theme-shadow-md) !important;
+  padding: 1rem !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/* ------------------------------------------------------------
+   2. CATEGORIES LIST — Prevent overflow on long labels
+------------------------------------------------------------ */
+.catalog-categories__list {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.15rem !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+/* ✅ Category item — flexible, hindi lumalabas sa container */
+.catalog-category {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.65rem !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0.55rem 0.6rem !important;
+  border: 0 !important;
+  border-radius: 0.55rem !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  text-align: left !important;
+  font-family: inherit !important;
+  transition: background 150ms ease !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+/* ✅ Category label — TRUNCATE kapag sobrang haba */
+.catalog-category__label {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  /* ✅ TRUNCATE — hindi na lalabas yung buong text */
+  max-width: 100% !important;
+  display: block !important;
+}
+
+/* ✅ Category count badge — hindi naka-compress */
+.catalog-category__count {
+  flex: 0 0 auto !important;
+  padding: 0.1rem 0.5rem !important;
+  border-radius: 999px !important;
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace) !important;
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  min-width: 1.75rem !important;
+  text-align: center !important;
+  margin-left: auto !important;
+}
+
+/* ✅ Icon — hindi nag-compress */
+.catalog-category__icon {
+  display: grid !important;
+  width: 1.9rem !important;
+  height: 1.9rem !important;
+  min-width: 1.9rem !important;
+  min-height: 1.9rem !important;
+  flex-shrink: 0 !important;
+  place-items: center !important;
+  border-radius: 0.5rem !important;
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-primary) !important;
+}
+
+/* ------------------------------------------------------------
+   3. PRODUCT GRID — Fixed 4-column layout, hindi mag-compress
+------------------------------------------------------------ */
+.catalog-grid-section {
+  min-width: 0 !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+.catalog-grid {
+  display: grid !important;
+  /* ✅ FIXED 4 columns — hindi mag-adjust sa translated text */
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 1rem !important;
+  align-items: stretch !important;
+  grid-auto-rows: 1fr !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* ------------------------------------------------------------
+   4. PRODUCT CARDS — Prevent squishing
+------------------------------------------------------------ */
+.catalog-card {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 22rem !important;
+  background: var(--theme-surface) !important;
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 1rem !important;
+  overflow: hidden !important;
+  box-shadow: var(--theme-shadow-sm) !important;
+  transition: all 200ms ease !important;
+  box-sizing: border-box !important;
+}
+
+/* ✅ Card body — padding at gap consistent */
+.catalog-card__body {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+  gap: 0.4rem !important;
+  padding: 0.9rem !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+/* ✅ Card name — truncate para hindi mag-expand */
+.catalog-card__name {
+  margin: 0 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  font-family: var(--font-display, 'Fraunces', serif) !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+  /* ✅ TRUNCATE sa 2 lines lang */
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  /* ✅ Reserve height para pantay-pantay */
+  min-height: 2.6em !important;
+  max-height: 2.7em !important;
+}
+
+/* ✅ Card category */
+.catalog-card__category {
+  margin: 0 !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  font-size: 0.7rem !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  min-width: 0 !important;
+}
+
+/* ✅ Card price — hindi nag-compress */
+.catalog-card__price {
+  margin: 0.2rem 0 0.6rem !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace) !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+}
+
+/* ✅ CTA button — consistent height */
+.catalog-card__cta {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.4rem !important;
+  width: 100% !important;
+  padding: 0.65rem 0.75rem !important;
+  border: 1px solid var(--theme-primary) !important;
+  border-radius: 0.55rem !important;
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  font-family: inherit !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 150ms ease !important;
+  margin-top: auto !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  min-height: 2.5rem !important;
+}
+
+.catalog-card__cta span {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 100% !important;
+}
+
+/* ------------------------------------------------------------
+   5. TOOLBAR — Stable layout, hindi nag-o-overlap
+------------------------------------------------------------ */
+.catalog-toolbar {
+  display: grid !important;
+  grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)) !important;
+  gap: 0.65rem !important;
+  margin-bottom: 1.25rem !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* ✅ Select dropdowns — truncate kapag mahaba */
+.catalog-toolbar__select {
+  min-height: 2.65rem !important;
+  padding: 0.6rem 2.5rem 0.6rem 1rem !important;
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 999px !important;
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  font-size: 0.82rem !important;
+  cursor: pointer !important;
+  outline: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  text-overflow: ellipsis !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+
+/* ------------------------------------------------------------
+   6. RESPONSIVE — Column adjustments
+------------------------------------------------------------ */
+
+/* ✅ Large desktop (>= 1400px) — 4 columns */
+@media (min-width: 1400px) {
+  .catalog-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ✅ Medium desktop (1100px - 1399px) — 3 columns */
+@media (min-width: 1100px) and (max-width: 1399px) {
+  .catalog-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ✅ Tablet (900px - 1099px) — 3 columns, smaller sidebar */
+@media (min-width: 900px) and (max-width: 1099px) {
+  .catalog-body {
+    grid-template-columns: 13rem minmax(0, 1fr) !important;
+  }
+  .catalog-categories {
+    width: 13rem !important;
+    max-width: 13rem !important;
+    min-width: 13rem !important;
+  }
+  .catalog-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ✅ Small tablet (720px - 899px) — 1 column, stacked */
+@media (max-width: 899px) {
+  .catalog-body {
+    grid-template-columns: 1fr !important;
+  }
+  .catalog-categories {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  .catalog-categories__list {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.35rem !important;
+  }
+  .catalog-category__label {
+    /* ✅ Allow wrap sa tablet */
+    white-space: normal !important;
+    text-overflow: initial !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+  }
+  .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.75rem !important;
+  }
+  .catalog-toolbar {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* ✅ Mobile (max-width: 719px) — 2 columns */
+@media (max-width: 719px) {
+  .catalog-toolbar {
+    grid-template-columns: 1fr !important;
+  }
+  .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.65rem !important;
+  }
+  .catalog-card {
+    min-height: 18rem !important;
+  }
+  .catalog-card__name {
+    font-size: 0.8rem !important;
+  }
+}
+
+/* ✅ Small mobile (max-width: 480px) — 1 column */
+@media (max-width: 480px) {
+  .catalog-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .catalog-categories__list {
+    grid-template-columns: 1fr !important;
+  }
+}
+/* ============================================================
+   🚀 FINAL OVERRIDE — Force ALL badges to use theme-success
+   ✅ Ayusin lahat ng hardcoded gold badges
+============================================================ */
+
+.catalog-card__badge,
+.product-media__badge,
+.product-related__badge,
+.favorites-card__badge {
+  background: var(--theme-success) !important;
+  background-color: var(--theme-success) !important;
+  background-image: none !important;
+  
+  color: var(--theme-on-success, #ffffff) !important;
+  -webkit-text-fill-color: var(--theme-on-success, #ffffff) !important;
+  
+  border: none !important;
+  box-shadow: 0 2px 6px rgba(var(--theme-success-rgb), 0.3) !important;
+  text-shadow: none !important;
+}
+
+/* ✅ DARK MODE — darker text sa light green background */
+[data-theme-mode='dark'] .catalog-card__badge,
+[data-theme-mode='dark'] .product-media__badge,
+[data-theme-mode='dark'] .product-related__badge {
+  color: var(--theme-on-success, #0E1626) !important;
+  -webkit-text-fill-color: var(--theme-on-success, #0E1626) !important;
 }

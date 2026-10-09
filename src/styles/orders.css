@@ -1279,3 +1279,461 @@
     display: none;
   }
 }
+/* ============================================================
+   ✅ CANCEL ORDER — New Styles
+   Ito ang mga bagong styles para sa cancel feature
+============================================================ */
+
+/* ============================================
+   HERO CANCEL BUTTON
+   Lumalabas lang kapag Pending status
+============================================================ */
+
+.od-hero__cancel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.85rem;
+
+  /* ✅ Danger red — contrast sa hero background */
+  background: rgba(255, 253, 249, 0.15);
+  border: 1px solid rgba(255, 253, 249, 0.45);
+  border-radius: 0.5rem;
+
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  color: #fffdf9;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  transition: all 200ms ease;
+  position: relative;
+  z-index: 2;
+  width: fit-content;
+}
+
+.od-hero__cancel:hover {
+  background: rgba(220, 38, 38, 0.3);
+  border-color: rgba(220, 38, 38, 0.7);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.od-hero__cancel:active {
+  transform: translateY(0);
+}
+
+.od-hero__cancel .react-icon {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+/* ============================================
+   HERO LOCK NOTE
+   Lumalabas kapag Processing status
+============================================================ */
+
+.od-hero__lock-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+
+  background: rgba(255, 253, 249, 0.12);
+  border: 1px solid rgba(255, 253, 249, 0.3);
+  border-radius: 0.5rem;
+
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  color: rgba(255, 253, 249, 0.9);
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.4;
+  width: fit-content;
+  max-width: 30rem;
+
+  position: relative;
+  z-index: 2;
+}
+
+.od-hero__lock-note .react-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex-shrink: 0;
+  color: var(--theme-accent);
+}
+
+/* ============================================
+   CANCEL MODAL — Backdrop
+============================================================ */
+
+.cancel-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px) saturate(140%);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
+
+  animation: cancelFadeIn 200ms ease;
+}
+
+@keyframes cancelFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ============================================
+   CANCEL MODAL — Dialog
+============================================================ */
+
+.cancel-modal {
+  position: relative;
+  width: 100%;
+  max-width: 28rem;
+  padding: 1.75rem;
+
+  /* ✅ Theme-aware surface */
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 1.25rem;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 24px 64px rgba(0, 0, 0, 0.35),
+    0 48px 96px rgba(0, 0, 0, 0.2);
+
+  animation: cancelSlideUp 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes cancelSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ============================================
+   CANCEL MODAL — Header
+============================================================ */
+
+.cancel-modal__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+  padding-right: 2rem;
+}
+
+.cancel-modal__icon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+
+  /* ✅ Danger red background */
+  background: rgba(var(--theme-danger-rgb), 0.12);
+  border: 2px solid rgba(var(--theme-danger-rgb), 0.25);
+  color: var(--theme-danger);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 8px 20px rgba(var(--theme-danger-rgb), 0.15);
+}
+
+.cancel-modal__icon .react-icon {
+  width: 1.4rem;
+  height: 1.4rem;
+  stroke-width: 2;
+}
+
+.cancel-modal__title {
+  margin: 0 0 0.15rem;
+  color: var(--theme-text);
+  font-family: var(--font-display, 'Fraunces', serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.cancel-modal__subtitle {
+  margin: 0;
+  color: var(--theme-text-muted);
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* ✅ Close button */
+.cancel-modal__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: grid;
+  place-items: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--theme-text-muted);
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.cancel-modal__close:hover:not(:disabled) {
+  background: rgba(var(--theme-danger-rgb), 0.1);
+  color: var(--theme-danger);
+}
+
+.cancel-modal__close:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.cancel-modal__close .react-icon {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+/* ============================================
+   CANCEL MODAL — Body
+============================================================ */
+
+.cancel-modal__body {
+  margin-bottom: 1.5rem;
+}
+
+.cancel-modal__warning {
+  margin: 0 0 1.25rem;
+  padding: 0.85rem 1rem;
+
+  /* ✅ Warning yellow */
+  background: rgba(var(--theme-warning-rgb), 0.08);
+  border: 1px solid rgba(var(--theme-warning-rgb), 0.25);
+  border-radius: 0.6rem;
+
+  color: var(--theme-warning);
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+.cancel-modal__label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--theme-text);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.cancel-modal__textarea {
+  width: 100%;
+  padding: 0.75rem 0.85rem;
+
+  background: var(--theme-surface-2);
+  border: 1px solid var(--theme-border);
+  border-radius: 0.6rem;
+
+  color: var(--theme-text);
+  font-family: inherit;
+  font-size: 0.82rem;
+  line-height: 1.5;
+
+  outline: 0;
+  resize: vertical;
+  transition: all 200ms ease;
+}
+
+.cancel-modal__textarea:focus {
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.15);
+  background: var(--theme-surface);
+}
+
+.cancel-modal__textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancel-modal__textarea::placeholder {
+  color: var(--theme-text-subtle, var(--theme-text-muted));
+  opacity: 0.7;
+}
+
+/* ============================================
+   CANCEL MODAL — Footer
+============================================================ */
+
+.cancel-modal__footer {
+  display: flex;
+  gap: 0.65rem;
+  justify-content: flex-end;
+}
+
+.cancel-modal__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.7rem 1.15rem;
+  border-radius: 0.55rem;
+
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+/* ✅ Ghost button — Keep Order */
+.cancel-modal__btn--ghost {
+  background: transparent;
+  border: 1px solid var(--theme-border);
+  color: var(--theme-text-muted);
+}
+
+.cancel-modal__btn--ghost:hover:not(:disabled) {
+  background: var(--theme-surface-2);
+  border-color: var(--theme-text-muted);
+  color: var(--theme-text);
+}
+
+/* ✅ Danger button — Cancel Order */
+.cancel-modal__btn--danger {
+  background: var(--theme-danger);
+  border: 1px solid var(--theme-danger);
+  color: var(--theme-on-danger, #ffffff);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 4px 12px rgba(var(--theme-danger-rgb), 0.25);
+}
+
+.cancel-modal__btn--danger:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 6px 16px rgba(var(--theme-danger-rgb), 0.35),
+    0 12px 24px rgba(var(--theme-danger-rgb), 0.2);
+}
+
+.cancel-modal__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cancel-modal__btn .react-icon {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+/* ✅ Animate spin para sa Loader2 icon */
+.cancel-modal__btn .animate-spin {
+  animation: cancelSpin 1s linear infinite;
+}
+
+@keyframes cancelSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   CANCEL MODAL — Responsive
+============================================================ */
+
+@media (max-width: 640px) {
+  .cancel-modal-backdrop {
+    padding: 1rem;
+    align-items: flex-end;
+  }
+
+  .cancel-modal {
+    padding: 1.5rem;
+    border-radius: 1.25rem 1.25rem 0.75rem 0.75rem;
+    max-width: 100%;
+  }
+
+  .cancel-modal__header {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .cancel-modal__icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .cancel-modal__icon .react-icon {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  .cancel-modal__title {
+    font-size: 1rem;
+  }
+
+  .cancel-modal__footer {
+    flex-direction: column-reverse;
+  }
+
+  .cancel-modal__btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Hero buttons — full width on mobile */
+  .od-hero__cancel,
+  .od-hero__lock-note {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .od-hero__lock-note {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+}
+
+/* ============================================
+   ✅ DARK MODE — extra polish
+============================================================ */
+
+[data-theme-mode='dark'] .cancel-modal {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 24px 64px rgba(0, 0, 0, 0.5),
+    0 48px 96px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme-mode='dark'] .cancel-modal__warning {
+  background: rgba(var(--theme-warning-rgb), 0.12);
+  border-color: rgba(var(--theme-warning-rgb), 0.3);
+}
+
+[data-theme-mode='dark'] .cancel-modal__icon {
+  background: rgba(var(--theme-danger-rgb), 0.15);
+  border-color: rgba(var(--theme-danger-rgb), 0.35);
+}
