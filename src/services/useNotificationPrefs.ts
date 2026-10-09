@@ -29,13 +29,20 @@ export function useNotificationPrefs(userId: string | undefined) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  /* ============================================================
+     ✅ LOAD — kapag nagbago ang userId
+  ============================================================ */
   useEffect(() => {
+    // ✅ Kapag walang user, i-reset lahat sa defaults
     if (!userId) {
+      setPrefs(DEFAULTS);
       setLoading(false);
+      setError(null);
       return;
     }
 
     let cancelled = false;
+    setLoading(true);
 
     const load = async () => {
       try {
@@ -50,30 +57,40 @@ export function useNotificationPrefs(userId: string | undefined) {
         if (error) throw error;
 
         if (!cancelled) {
+          // ✅ Kung walang row, gamitin ang DEFAULTS
           setPrefs(data ?? DEFAULTS);
+          setError(null);
           setLoading(false);
         }
       } catch (err: any) {
         console.error('[Prefs] Load failed:', err);
         if (!cancelled) {
           setError(err.message);
+          setPrefs(DEFAULTS);  // ✅ fallback sa defaults
           setLoading(false);
         }
       }
     };
 
     void load();
+
     return () => {
       cancelled = true;
     };
   }, [userId]);
 
+  /* ============================================================
+     ✅ SAVE — hindi na umaasa sa `prefs` closure
+     Direkta nang tinatanggap ang buong NotificationPrefs object
+  ============================================================ */
   const save = useCallback(
-    async (next: Partial<NotificationPrefs>) => {
-      if (!userId) return;
+    async (next: NotificationPrefs) => {
+      if (!userId) {
+        throw new Error('No user logged in');
+      }
 
-      const merged = { ...prefs, ...next };
-      setPrefs(merged);
+      // ✅ Optimistic update — direkta nang gamitin ang `next`
+      setPrefs(next);
       setSaving(true);
       setError(null);
 
@@ -83,7 +100,7 @@ export function useNotificationPrefs(userId: string | undefined) {
           .upsert(
             {
               user_id: userId,
-              ...merged,
+              ...next,
               updated_at: new Date().toISOString(),
             },
             { onConflict: 'user_id' }
@@ -93,13 +110,12 @@ export function useNotificationPrefs(userId: string | undefined) {
       } catch (err: any) {
         console.error('[Prefs] Save failed:', err);
         setError(err.message);
-        setPrefs(prefs);
         throw err;
       } finally {
         setSaving(false);
       }
     },
-    [userId, prefs]
+    [userId]  // ✅ TANGGALIN ang `prefs` — hindi na kailangan
   );
 
   return { prefs, loading, saving, error, save };
