@@ -1732,3 +1732,290 @@ body {
 .notification-item__emoji {
   background: var(--theme-surface) !important;
 }
+/* ============================================================
+   ✅ HERO HEADER TEXT — Cart, Checkout, Order Details
+   ✅ Force readable sa LAHAT ng 10 themes
+   ✅ Auto-flip text color base sa --theme-on-primary
+============================================================ */
+
+/* ============================================================
+   1. CART HERO — Header ng cart page
+============================================================ */
+
+.cart-hero {
+  background: linear-gradient(
+    90deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  box-shadow: 0 18px 42px rgba(var(--theme-primary-rgb), 0.25) !important;
+}
+
+/* ✅ Force LAHAT ng text sa cart hero na readable */
+.cart-hero,
+.cart-hero *,
+.cart-hero__copy,
+.cart-hero__title,
+.cart-hero__kicker,
+.cart-hero__description,
+.cart-hero__quote,
+.cart-hero__quote span {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Kicker — slightly muted pero readable pa rin */
+.cart-hero__kicker {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
+}
+
+/* ✅ Quote — slightly muted */
+.cart-hero__quote,
+.cart-hero__quote span {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.92;
+}
+
+/* ✅ Description — slightly muted */
+.cart-hero__description {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.88;
+}
+
+/* ============================================================
+   2. CHECKOUT HERO — Header ng checkout page
+============================================================ */
+
+.checkout-hero {
+  background: linear-gradient(
+    90deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  box-shadow: 0 18px 42px rgba(var(--theme-primary-rgb), 0.25) !important;
+}
+
+/* ✅ Force LAHAT ng text sa checkout hero na readable */
+.checkout-hero,
+.checkout-hero *,
+.checkout-hero__copy,
+.checkout-hero__title,
+.checkout-hero__kicker,
+.checkout-hero__description,
+.checkout-hero__quote,
+.checkout-hero__back,
+.checkout-hero__back span,
+.checkout-hero__quote span {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Back link — slightly muted pero readable */
+.checkout-hero__back {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
+}
+
+.checkout-hero__back:hover {
+  opacity: 1;
+}
+
+.checkout-hero__back svg,
+.checkout-hero__back .react-icon {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  stroke: currentColor !important;
+}
+
+/* ✅ Kicker — slightly muted */
+.checkout-hero__kicker {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
+}
+
+/* ✅ Description — slightly muted */
+.checkout-hero__description {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.88;
+}
+
+/* ✅ Quote — slightly muted */
+.checkout-hero__quote,
+.checkout-hero__quote span {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.92;
+}
+
+/* ============================================================
+   3. ORDER DETAILS HERO — Header ng order details page
+============================================================ */
+
+.od-hero {
+  position: relative;
+}
+
+.od-hero__bg {
+  background: linear-gradient(
+    120deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 40%,
+    var(--theme-primary) 100%
+  ) !important;
+}
+
+/* ✅ Force LAHAT ng text sa OD hero na readable */
+.od-hero,
+.od-hero__body,
+.od-hero__id,
+.od-hero__date,
+.od-hero__status,
+.od-hero__status *,
+.od-hero__print,
+.od-hero__print *,
+.od-hero__cancel,
+.od-hero__cancel *,
+.od-hero__lock-note,
+.od-hero__lock-note * {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Status badge — theme-aware overlay */
+.od-hero__status {
+  background: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.2) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.od-hero__status-dot {
+  background: var(--theme-accent) !important;
+  box-shadow: 0 0 0 2px rgba(var(--theme-accent-rgb), 0.4) !important;
+}
+
+/* ✅ Order ID */
+.od-hero__id {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Date */
+.od-hero__date {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.8;
+}
+
+/* ✅ Print button */
+.od-hero__print {
+  background: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.15) !important;
+  border-color: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.4) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.od-hero__print svg,
+.od-hero__print .react-icon {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  stroke: currentColor !important;
+}
+
+.od-hero__print:hover {
+  background: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.25) !important;
+  border-color: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.6) !important;
+}
+
+/* ✅ Cancel button */
+.od-hero__cancel {
+  background: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.15) !important;
+  border-color: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.45) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.od-hero__cancel svg,
+.od-hero__cancel .react-icon {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  stroke: currentColor !important;
+}
+
+.od-hero__cancel:hover {
+  background: rgba(var(--theme-danger-rgb), 0.35) !important;
+  border-color: rgba(var(--theme-danger-rgb), 0.8) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Lock note */
+.od-hero__lock-note {
+  background: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.12) !important;
+  border-color: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.3) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.od-hero__lock-note svg,
+.od-hero__lock-note .react-icon {
+  color: var(--theme-accent) !important;
+  -webkit-text-fill-color: var(--theme-accent) !important;
+  stroke: currentColor !important;
+}
+
+/* ============================================================
+   4. GLOBAL HERO BUTTONS — Force readable sa LAHAT ng heroes
+============================================================ */
+
+/* ✅ Lahat ng button sa loob ng cart/checkout/od hero */
+.cart-hero button,
+.checkout-hero button,
+.od-hero button {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.cart-hero button *,
+.checkout-hero button *,
+.od-hero button * {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
+}
+
+/* ✅ Lahat ng links sa hero */
+.cart-hero a,
+.checkout-hero a,
+.od-hero a {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.cart-hero a *,
+.checkout-hero a *,
+.od-hero a * {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
+}
+
+/* ============================================================
+   5. HERO SVG ICONS — Force color inherit
+============================================================ */
+
+.cart-hero svg,
+.checkout-hero svg,
+.od-hero svg,
+.cart-hero .react-icon,
+.checkout-hero .react-icon,
+.od-hero .react-icon {
+  stroke: currentColor !important;
+  color: inherit !important;
+}
