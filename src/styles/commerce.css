@@ -1,5 +1,6 @@
 /* ============================================================
    CART PAGE — theme-driven, adaptive sa light at dark
+   ✅ FULLY MONOCHROME-AWARE
 ============================================================ */
 
 .cart-page {
@@ -15,6 +16,7 @@
   --sjcm-border: var(--theme-border);
   --sjcm-border-strong: var(--theme-border-strong);
   --sjcm-success: var(--theme-success);
+  --sjcm-on-primary: var(--theme-on-primary);  /* ✅ IDAGDAG */
 
   min-height: calc(100vh - 4.25rem);
   background: transparent;
@@ -57,12 +59,13 @@
   position: relative;
   z-index: 1;
   max-width: 32rem;
-  color: var(--theme-surface);
+  /* ✅ Dapat --theme-on-primary, hindi --theme-surface */
+  color: var(--theme-on-primary);
 }
 
 .cart-hero__kicker {
   margin: 0 0 0.4rem;
-  color: var(--theme-accent);
+  color: var(--theme-on-primary);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.13em;
@@ -72,7 +75,7 @@
 
 .cart-hero__title {
   margin: 0;
-  color: var(--theme-surface);
+  color: var(--theme-on-primary);
   font-family: var(--font-display, 'Fraunces', serif);
   font-size: clamp(1.75rem, 4vw, 2.75rem);
   font-weight: 700;
@@ -82,7 +85,7 @@
 
 .cart-hero__description {
   margin: 0.5rem 0 0;
-  color: var(--theme-surface);
+  color: var(--theme-on-primary);
   font-size: 0.85rem;
   opacity: 0.85;
 }
@@ -92,12 +95,13 @@
   z-index: 1;
   display: grid;
   text-align: right;
-  color: var(--theme-accent);
+  color: var(--theme-on-primary);
   font-family: var(--font-display, 'Fraunces', serif);
   font-style: italic;
   font-size: 0.9rem;
   line-height: 1.35;
   font-weight: 600;
+  opacity: 0.85;
 }
 
 /* ============================================================
@@ -537,12 +541,14 @@
 .cart-summary__btn--primary {
   background: var(--sjcm-maroon);
   border-color: var(--sjcm-maroon);
-  color: var(--theme-surface);
+  /* ✅ Palitan: --theme-surface → --theme-on-primary */
+  color: var(--theme-on-primary);
 }
 
 .cart-summary__btn--primary:hover:not(:disabled) {
   background: var(--sjcm-maroon-dark);
   border-color: var(--sjcm-maroon-dark);
+  color: var(--theme-on-primary);
 }
 
 .cart-summary__btn--ghost {
@@ -717,6 +723,7 @@
   --sjcm-border-strong: var(--theme-border-strong);
   --sjcm-success: var(--theme-success);
   --sjcm-info: var(--theme-primary);
+  --sjcm-on-primary: var(--theme-on-primary);  /* ✅ IDAGDAG */
 
   min-height: calc(100vh - 4.25rem);
   background: transparent;
@@ -782,7 +789,8 @@
   border: 1px solid var(--sjcm-maroon);
   border-radius: 0.55rem;
   background: var(--sjcm-maroon);
-  color: var(--theme-surface);
+  /* ✅ Palitan */
+  color: var(--theme-on-primary);
   font-size: 0.85rem;
   font-weight: 700;
   text-decoration: none;
@@ -791,6 +799,7 @@
 
 .checkout-empty__cta:hover {
   background: var(--sjcm-maroon-dark);
+  color: var(--theme-on-primary);
 }
 
 /* HERO */
@@ -805,7 +814,8 @@
     var(--theme-primary-hover) 100%
   );
   box-shadow: 0 18px 42px rgba(var(--theme-primary-rgb), 0.2);
-  color: var(--theme-surface);
+  /* ✅ Palitan */
+  color: var(--theme-on-primary);
   overflow: hidden;
 }
 
@@ -814,7 +824,7 @@
   align-items: center;
   gap: 0.35rem;
   margin-bottom: 0.85rem;
-  color: var(--theme-surface);
+  color: var(--theme-on-primary);
   font-size: 0.75rem;
   font-weight: 600;
   text-decoration: none;
@@ -844,7 +854,7 @@
 
 .checkout-hero__kicker {
   margin: 0 0 0.35rem;
-  color: var(--theme-accent);
+  color: var(--theme-on-primary);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.13em;
@@ -854,7 +864,7 @@
 
 .checkout-hero__title {
   margin: 0;
-  color: var(--theme-surface);
+  color: var(--theme-on-primary);
   font-family: var(--font-display, 'Fraunces', serif);
   font-size: clamp(1.6rem, 3.5vw, 2.25rem);
   font-weight: 700;
@@ -864,7 +874,7 @@
 
 .checkout-hero__description {
   margin: 0.35rem 0 0;
-  color: var(--theme-surface);
+  color: var(--theme-on-primary);
   font-size: 0.85rem;
   opacity: 0.85;
 }
@@ -872,12 +882,13 @@
 .checkout-hero__quote {
   display: grid;
   text-align: right;
-  color: var(--theme-accent);
+  color: var(--theme-on-primary);
   font-family: var(--font-display, 'Fraunces', serif);
   font-style: italic;
   font-size: 0.88rem;
   line-height: 1.35;
   font-weight: 600;
+  opacity: 0.85;
 }
 
 /* BODY */
@@ -1035,12 +1046,15 @@
   box-shadow: none !important;
 }
 
+/* ✅ FIXED: Select arrow — theme-aware color */
 .field__input--select {
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  /* ✅ Ginamit ang CSS variable para sa stroke color */
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 16px center;
   padding-right: 40px;
+  color: var(--sjcm-ink);
 }
 
 /* PICKUP INFO */
@@ -1130,7 +1144,8 @@
 
 .payment-option.is-selected .payment-option__icon {
   background: var(--sjcm-maroon);
-  color: var(--theme-surface);
+  /* ✅ Palitan */
+  color: var(--theme-on-primary);
 }
 
 .payment-option__icon .react-icon {
@@ -1319,7 +1334,8 @@
   border: 1px solid var(--sjcm-maroon);
   border-radius: 0.55rem;
   background: var(--sjcm-maroon);
-  color: var(--theme-surface);
+  /* ✅ Palitan */
+  color: var(--theme-on-primary);
   font-family: inherit;
   font-size: 0.85rem;
   font-weight: 700;
@@ -1330,6 +1346,7 @@
 .checkout-summary__submit:hover:not(:disabled) {
   background: var(--sjcm-maroon-dark);
   border-color: var(--sjcm-maroon-dark);
+  color: var(--theme-on-primary);
 }
 
 .checkout-summary__submit:disabled {
@@ -1386,10 +1403,15 @@
   display: grid;
   place-items: center;
   padding: 24px;
-  background: rgba(10, 20, 15, 0.55);
+  /* ✅ Theme-aware scrim */
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   animation: gcashBackdropIn 0.25s ease-out;
+}
+
+[data-theme-mode='light'] .gcash-modal-backdrop {
+  background: rgba(0, 0, 0, 0.35);
 }
 
 @keyframes gcashBackdropIn {
@@ -1399,13 +1421,13 @@
 
 .gcash-modal {
   width: 100%;
-  max-width: 520px;
+  max-width: 620px !important;
   max-height: 90vh;
   overflow-y: auto;
   background: var(--theme-surface);
   border-radius: 20px;
   box-shadow:
-    0 25px 50px -12px rgba(10, 20, 15, 0.35),
+    0 25px 50px -12px rgba(0, 0, 0, 0.35),
     0 0 0 1px var(--theme-border);
   animation: gcashModalIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: flex;
@@ -1438,7 +1460,8 @@
   width: 44px;
   height: 44px;
   background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
-  color: var(--theme-surface);
+  /* ✅ Palitan */
+  color: var(--theme-on-primary);
   border-radius: 12px;
   flex-shrink: 0;
   box-shadow: 0 4px 12px rgba(var(--theme-primary-rgb), 0.3);
@@ -1541,7 +1564,8 @@
 
 .gcash-modal__option.is-selected .gcash-modal__option-icon {
   background: var(--theme-primary);
-  color: var(--theme-surface);
+  /* ✅ Palitan */
+  color: var(--theme-on-primary);
 }
 
 .gcash-modal__option-icon svg {
@@ -1597,21 +1621,48 @@
 
 .gcash-modal__panel--qr {
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+  gap: 1.25rem;
   align-items: center;
+  padding: 1.5rem !important;
 }
 
 .gcash-modal__qr-frame {
-  width: 130px;
-  height: 130px;
-  display: grid;
-  place-items: center;
-  gap: 6px;
-  background: var(--theme-surface);
-  border: 2px dashed var(--theme-border-strong);
-  border-radius: 12px;
-  color: var(--theme-text-muted);
-  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto 1rem;
+  background: linear-gradient(
+    135deg,
+    var(--theme-surface) 0%,
+    rgba(var(--theme-primary-rgb), 0.04) 100%
+  );
+  border: 1.5px dashed rgba(var(--theme-primary-rgb), 0.3);
+  border-radius: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.gcash-modal__qr-image {
+  width: 100% !important;
+  max-width: 400px !important;
+  min-width: 320px !important;
+  height: auto !important;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  border-radius: 1rem;
+  background: #ffffff;
+  padding: 0.75rem;
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.06),
+    0 12px 32px rgba(var(--theme-primary-rgb), 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--theme-border);
 }
 
 .gcash-modal__qr-icon {
@@ -1716,13 +1767,15 @@
 
 .gcash-modal__btn--primary {
   background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
-  color: var(--theme-surface);
+  /* ✅ Palitan */
+  color: var(--theme-on-primary);
   box-shadow: 0 4px 12px rgba(var(--theme-primary-rgb), 0.3);
 }
 
 .gcash-modal__btn--primary:hover:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 8px 20px rgba(var(--theme-primary-rgb), 0.4);
+  color: var(--theme-on-primary);
 }
 
 .gcash-modal__btn--primary:disabled {
@@ -1742,10 +1795,15 @@
   display: grid;
   place-items: center;
   padding: 24px;
-  background: rgba(10, 20, 15, 0.55);
+  /* ✅ Theme-aware scrim */
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   animation: odModalBackdropIn 0.25s ease-out;
+}
+
+[data-theme-mode='light'] .od-modal-backdrop {
+  background: rgba(0, 0, 0, 0.35);
 }
 
 @keyframes odModalBackdropIn {
@@ -1760,7 +1818,7 @@
   background: var(--theme-surface);
   border-radius: 20px;
   box-shadow:
-    0 25px 50px -12px rgba(10, 20, 15, 0.35),
+    0 25px 50px -12px rgba(0, 0, 0, 0.35),
     0 0 0 1px var(--theme-border);
   animation: odModalIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: flex;
@@ -1794,7 +1852,8 @@
   width: 44px;
   height: 44px;
   background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
-  color: var(--theme-surface);
+  /* ✅ Palitan */
+  color: var(--theme-on-primary);
   border-radius: 12px;
   flex-shrink: 0;
   box-shadow: 0 4px 12px rgba(var(--theme-primary-rgb), 0.3);
@@ -1958,87 +2017,10 @@
 .od-pickup__location-label:first-child {
   margin-top: 0;
 }
+
 /* ============================================
-   ✅ GCASH MODAL — QR IMAGE (PALAKIIN)
-   ✅ Optimized para ma-scan ng GCash app
-============================================================ */
-
-.gcash-modal__qr-image {
-  width: 100% !important;
-  max-width: 400px !important;      /* ✅ Palaki from 300px to 400px */
-  min-width: 320px !important;      /* ✅ Minimum width para readable */
-  height: auto !important;
-  aspect-ratio: 1 / 1;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto;
-
-  /* ✅ Smooth corners */
-  border-radius: 1rem;
-  background: #ffffff;
-  padding: 0.75rem;
-
-  /* ✅ Premium shadow */
-  box-shadow:
-    0 4px 8px rgba(0, 0, 0, 0.06),
-    0 12px 32px rgba(var(--theme-primary-rgb), 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
-
-  border: 1px solid var(--theme-border);
-}
-
-/* ✅ QR Frame — palakihin din yung container */
-.gcash-modal__qr-frame {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  width: 100%;
-  max-width: 440px;                 /* ✅ Match sa image size + padding */
-  margin: 0 auto 1rem;
-  background: linear-gradient(
-    135deg,
-    var(--theme-surface) 0%,
-    rgba(var(--theme-primary-rgb), 0.04) 100%
-  );
-  border: 1.5px dashed rgba(var(--theme-primary-rgb), 0.3);
-  border-radius: 1.25rem;
-  transition: all 0.3s ease;
-}
-
-/* ✅ QR Panel — mas malaki */
-.gcash-modal__panel--qr {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  align-items: center;
-  padding: 1.5rem !important;
-}
-
-/* ✅ Modal — palakihin para magkasya yung malaking QR */
-.gcash-modal {
-  width: 100%;
-  max-width: 620px !important;      /* ✅ Palaki from 520px */
-  max-height: 90vh;
-  overflow-y: auto;
-  background: var(--theme-surface);
-  border-radius: 20px;
-  box-shadow:
-    0 25px 50px -12px rgba(10, 20, 15, 0.35),
-    0 0 0 1px var(--theme-border);
-  animation: gcashModalIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-  display: flex;
-  flex-direction: column;
-}
-/* ============================================================
    ✅ CHECKOUT OUTCOME PAGES (Success & Cancel)
    Premium glassmorphism centered layout
-   Auto-adapt sa 10 themes
-============================================================ */
-
-/* ============================================
-   PAGE WRAPPER — centered container
 ============================================================ */
 
 .checkout-outcome-page {
@@ -2050,15 +2032,10 @@
   background: transparent;
 }
 
-/* Legacy wrapper support */
 .checkout-page .checkout-success,
 .checkout-page .checkout-cancel {
   margin: 3rem auto;
 }
-
-/* ============================================
-   CARD — glassmorphism with centered content
-============================================================ */
 
 .checkout-success,
 .checkout-cancel {
@@ -2069,25 +2046,19 @@
   justify-content: center;
   text-align: center;
   gap: 1.1rem;
-
   width: 100%;
   max-width: 34rem;
   padding: 3rem 2.25rem;
-
-  /* ✅ Glassmorphism */
   background: var(--theme-glass-bg);
   border: 1px solid var(--theme-glass-border);
   border-radius: 1.5rem;
-
   backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
-
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.12),
     0 1px 2px rgba(0, 0, 0, 0.03),
     0 8px 24px rgba(var(--theme-primary-rgb), 0.06),
     0 32px 64px rgba(0, 0, 0, 0.05);
-
   transition:
     box-shadow 300ms ease,
     border-color 300ms ease,
@@ -2103,10 +2074,6 @@
     0 12px 32px rgba(var(--theme-primary-rgb), 0.08),
     0 40px 72px rgba(0, 0, 0, 0.06);
 }
-
-/* ============================================
-   DECORATIVE ICON CIRCLE
-============================================================ */
 
 .checkout-success::before,
 .checkout-cancel::before {
@@ -2140,10 +2107,6 @@
   );
 }
 
-/* ============================================
-   ICON — success / cancel
-============================================================ */
-
 .checkout-success__icon,
 .checkout-cancel__icon {
   width: 4.5rem !important;
@@ -2172,10 +2135,6 @@
     0 8px 24px rgba(var(--theme-danger-rgb), 0.2);
 }
 
-/* ============================================
-   TITLE
-============================================================ */
-
 .checkout-success__title,
 .checkout-cancel__title {
   margin: 0;
@@ -2186,10 +2145,6 @@
   letter-spacing: -0.02em;
   line-height: 1.15;
 }
-
-/* ============================================
-   DESCRIPTION
-============================================================ */
 
 .checkout-success__desc,
 .checkout-cancel__desc {
@@ -2210,10 +2165,6 @@
   background: rgba(var(--theme-primary-rgb), 0.08);
 }
 
-/* ============================================
-   HINT / NOTE
-============================================================ */
-
 .checkout-success__note,
 .checkout-cancel__hint {
   margin: 0;
@@ -2223,10 +2174,6 @@
   opacity: 0.85;
   max-width: 26rem;
 }
-
-/* ============================================
-   WARNING (error state)
-============================================================ */
 
 .checkout-success__warning {
   margin: 0.5rem 0;
@@ -2241,10 +2188,6 @@
   text-align: left;
 }
 
-/* ============================================
-   ACTIONS — buttons row
-============================================================ */
-
 .checkout-success__actions,
 .checkout-cancel__actions {
   display: flex;
@@ -2255,10 +2198,6 @@
   margin-top: 0.85rem;
   width: 100%;
 }
-
-/* ============================================
-   BUTTONS — base styling
-============================================================ */
 
 .checkout-success__actions .button,
 .checkout-cancel__actions .button {
@@ -2278,7 +2217,6 @@
   transition: all 200ms ease;
 }
 
-/* Primary — filled brand */
 .checkout-success__actions .button--primary,
 .checkout-cancel__actions .button--primary {
   background: var(--theme-primary);
@@ -2297,9 +2235,9 @@
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.2),
     0 8px 20px rgba(var(--theme-primary-rgb), 0.35);
+  color: var(--theme-on-primary);
 }
 
-/* Secondary — glass outline */
 .checkout-success__actions .button--secondary,
 .checkout-cancel__actions .button--secondary {
   background: rgba(var(--theme-primary-rgb), 0.06);
@@ -2317,16 +2255,11 @@
   transform: translateY(-1px);
 }
 
-/* Icons inside buttons */
 .checkout-success__actions .button .react-icon,
 .checkout-cancel__actions .button .react-icon {
   width: 1rem;
   height: 1rem;
 }
-
-/* ============================================
-   LOADING STATE — success page
-============================================================ */
 
 .checkout-success--loading {
   min-height: 20rem;
@@ -2353,10 +2286,6 @@
   font-weight: 500;
 }
 
-/* ============================================
-   RESPONSIVE — mobile
-============================================================ */
-
 @media (max-width: 640px) {
   .checkout-success,
   .checkout-cancel {
@@ -2364,40 +2293,31 @@
     gap: 0.9rem;
     border-radius: 1.25rem;
   }
-
   .checkout-success__icon,
   .checkout-cancel__icon {
     width: 3.75rem !important;
     height: 3.75rem !important;
     padding: 0.7rem;
   }
-
   .checkout-success__title,
   .checkout-cancel__title {
     font-size: 1.35rem;
   }
-
   .checkout-success__desc,
   .checkout-cancel__desc {
     font-size: 0.88rem;
   }
-
   .checkout-success__actions,
   .checkout-cancel__actions {
     flex-direction: column;
     width: 100%;
   }
-
   .checkout-success__actions .button,
   .checkout-cancel__actions .button {
     width: 100%;
     min-width: 0;
   }
 }
-
-/* ============================================
-   DARK MODE — brighter accents
-============================================================ */
 
 [data-theme-mode='dark'] .checkout-success,
 [data-theme-mode='dark'] .checkout-cancel {
@@ -2412,9 +2332,9 @@
 [data-theme-mode='dark'] .checkout-cancel__desc strong {
   background: rgba(var(--theme-primary-rgb), 0.15);
 }
+
 /* ============================================
    ✅ IN-APP NOTIFICATION BANNER
-   Yung lumalabas sa taas ng Order History
 ============================================================ */
 
 .notification-banner {
@@ -2422,23 +2342,18 @@
   display: flex;
   align-items: flex-start;
   gap: 1rem;
-
   margin: 0 0 1.5rem;
   padding: 1.25rem 3rem 1.25rem 1.5rem;
-
   background: var(--theme-surface);
   border: 1px solid var(--theme-border);
   border-left: 4px solid var(--theme-primary);
   border-radius: 1rem;
-
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
-
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 4px 12px rgba(var(--theme-primary-rgb), 0.06),
     0 12px 32px rgba(0, 0, 0, 0.06);
-
   animation: notifBannerSlideIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -2453,7 +2368,6 @@
   }
 }
 
-/* ✅ Icon circle */
 .notification-banner__icon {
   display: grid;
   place-items: center;
@@ -2461,7 +2375,6 @@
   height: 2.75rem;
   flex-shrink: 0;
   border-radius: 50%;
-
   background: rgba(var(--theme-primary-rgb), 0.12);
   border: 1px solid rgba(var(--theme-primary-rgb), 0.25);
   color: var(--theme-primary);
@@ -2473,7 +2386,6 @@
   stroke-width: 2;
 }
 
-/* ✅ Content */
 .notification-banner__content {
   flex: 1;
   min-width: 0;
@@ -2530,22 +2442,18 @@
   height: 0.85rem;
 }
 
-/* ✅ Close button */
 .notification-banner__close {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
-
   display: grid;
   place-items: center;
   width: 1.75rem;
   height: 1.75rem;
-
   border: 0;
   border-radius: 50%;
   background: transparent;
   color: var(--theme-text-muted);
-
   cursor: pointer;
   transition: all 150ms ease;
 }
@@ -2560,11 +2468,6 @@
   height: 0.9rem;
 }
 
-/* ============================================
-   ✅ BANNER VARIANTS — by type
-============================================================ */
-
-/* Success — Ready for Pickup, Delivered */
 .notification-banner--success {
   border-left-color: var(--theme-success);
 }
@@ -2575,7 +2478,6 @@
   color: var(--theme-success);
 }
 
-/* Warning — Pending, Low Stock */
 .notification-banner--warning {
   border-left-color: var(--theme-warning);
 }
@@ -2586,7 +2488,6 @@
   color: var(--theme-warning);
 }
 
-/* Danger — Cancelled */
 .notification-banner--danger {
   border-left-color: var(--theme-danger);
 }
@@ -2597,14 +2498,9 @@
   color: var(--theme-danger);
 }
 
-/* Info — default (order updates) */
 .notification-banner--info {
   border-left-color: var(--theme-primary);
 }
-
-/* ============================================
-   ✅ RESPONSIVE
-============================================================ */
 
 @media (max-width: 640px) {
   .notification-banner {
@@ -2612,21 +2508,17 @@
     gap: 0.75rem;
     border-radius: 0.85rem;
   }
-
   .notification-banner__icon {
     width: 2.25rem;
     height: 2.25rem;
   }
-
   .notification-banner__icon .react-icon {
     width: 1rem;
     height: 1rem;
   }
-
   .notification-banner__title {
     font-size: 0.92rem;
   }
-
   .notification-banner__message {
     font-size: 0.82rem;
   }

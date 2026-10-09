@@ -1605,40 +1605,39 @@
 
 /* ============================================================
    DESKTOP SIDEBAR — PREMIUM GLASS
-   ✅ Isa lang ito — walang conflict
 ============================================================ */
 
 @media (min-width: 1024px) {
+
+  /* ============================================
+     CONTAINER — compact glass pill
+  ============================================ */
   .settings-sidebar {
     position: fixed;
     top: 50%;
     left: 1.25rem;
     transform: translateY(-50%);
 
-    width: fit-content;
+    width: 4rem;
     height: auto;
-    padding: 0.75rem 0.65rem;
+    padding: 0.75rem 0.5rem;
 
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: stretch;
+    align-items: center;
     gap: 0;
 
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.85) 0%,
-      rgba(255, 255, 255, 0.65) 50%,
-      rgba(255, 255, 255, 0.75) 100%
-    );
+    /* ✅ THEME-AWARE GLASS (pinalitan yung hardcoded white) */
+    background: var(--theme-glass-bg);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
 
-    border: 1px solid rgba(255, 255, 255, 0.75);
+    border: 1px solid var(--theme-glass-border);
     border-radius: 1.25rem;
 
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
       inset 0 -1px 0 rgba(0, 0, 0, 0.04),
       0 1px 3px rgba(0, 0, 0, 0.04),
       0 4px 12px rgba(0, 0, 0, 0.06),
@@ -1649,20 +1648,23 @@
     z-index: 50;
     contain: layout;
 
-    transition: box-shadow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-      background 0.5s ease, border-color 0.5s ease;
+    transition:
+      width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      padding 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+      background 0.5s ease,
+      border-color 0.5s ease;
   }
 
   .settings-sidebar:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.95) 0%,
-      rgba(255, 255, 255, 0.8) 50%,
-      rgba(255, 255, 255, 0.9) 100%
-    );
+    width: fit-content;
+    padding: 0.75rem 0.65rem;
+
+    /* ✅ Theme-aware surface sa hover */
+    background: var(--theme-surface);
     border-color: rgba(var(--theme-primary-rgb), 0.2);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
       inset 0 -1px 0 rgba(0, 0, 0, 0.04),
       0 1px 3px rgba(0, 0, 0, 0.04),
       0 8px 20px rgba(0, 0, 0, 0.08),
@@ -1670,12 +1672,13 @@
       0 40px 100px rgba(var(--theme-primary-rgb), 0.1);
   }
 
+  /* ===== Groups ===== */
   .settings-sidebar .settings-sidebar__top {
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
     width: 100%;
-    align-items: stretch;
+    align-items: center;
     contain: layout;
   }
 
@@ -1685,10 +1688,16 @@
     gap: 0.35rem;
     margin: 0;
     width: 100%;
-    align-items: stretch;
+    align-items: center;
     contain: layout;
   }
 
+  .settings-sidebar:hover .settings-sidebar__top,
+  .settings-sidebar:hover .settings-sidebar__nav {
+    align-items: stretch;
+  }
+
+  /* Hide brand at pin at bottom */
   .settings-sidebar .settings-sidebar__brand,
   .settings-sidebar .settings-sidebar__brand-copy,
   .settings-sidebar .settings-sidebar__motto,
@@ -1698,77 +1707,107 @@
     display: none;
   }
 
+  /* ============================================
+     NAV ITEM — compact icon-only by default
+  ============================================ */
   .settings-sidebar .settings-sidebar__item {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 0.65rem;
+    justify-content: center;
+    gap: 0;
 
-    padding: 0.55rem 0.85rem;
+    padding: 0;
     position: relative;
 
-    width: auto;
-    min-width: 0;
-    max-width: none;
-    height: auto;
-    min-height: 2.5rem;
-    flex: 0 0 auto;
+    width: 2.75rem;
+    min-width: 2.75rem;
+    max-width: 2.75rem;
+    height: 2.75rem;
+    min-height: 2.75rem;
+    max-height: 2.75rem;
+    flex: 0 0 2.75rem;
 
-    border-radius: 0.85rem;
+    border-radius: 0.75rem;
     margin: 0;
 
-    background: rgba(255, 255, 255, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    color: var(--theme-text);
+    /* ✅ Theme-aware defaults */
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--theme-text-muted);
     font-size: 0.85rem;
     font-weight: 500;
     text-decoration: none;
     white-space: nowrap;
 
-    overflow: visible;
+    overflow: hidden;
     z-index: 1;
 
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
-
-    transition: background 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-      color 0.3s ease, box-shadow 0.3s ease,
-      transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-      border-color 0.3s ease;
+    transition:
+      background 0.25s ease,
+      color 0.25s ease,
+      width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+      padding 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+      transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   .settings-sidebar .settings-sidebar__item .react-icon {
-    width: 1.1rem;
-    height: 1.1rem;
+    width: 1.15rem;
+    height: 1.15rem;
+    /* ✅ Theme-aware icon */
     color: var(--theme-text-muted);
     flex-shrink: 0;
     position: relative;
     z-index: 2;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.06));
-    transition: color 0.3s ease,
-      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      filter 0.3s ease;
+    transition: color 0.2s ease, transform 0.3s ease;
   }
 
+  /* ✅ Text — HIDDEN by default */
   .settings-sidebar .settings-sidebar__item span {
     display: inline-block;
-    max-width: none;
-    opacity: 1;
-    overflow: visible;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
     white-space: nowrap;
     position: relative;
     z-index: 2;
+    pointer-events: none;
+
     color: inherit;
     font-weight: 500;
     font-size: 0.85rem;
-    letter-spacing: 0.01em;
-    filter: blur(0);
-    transform: translateX(0);
-    pointer-events: auto;
-    transition: color 0.3s ease,
-      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      filter 0.3s ease;
+
+    transition:
+      max-width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.2s ease,
+      margin-left 0.3s ease;
   }
 
+  /* ============================================
+     HOVER sa CONTAINER — lahat lumalabas text
+  ============================================ */
+  .settings-sidebar:hover .settings-sidebar__item {
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    padding: 0.55rem 0.85rem;
+    justify-content: flex-start;
+    gap: 0.65rem;
+
+    /* ✅ Theme-aware hover bg */
+    background: rgba(var(--theme-primary-rgb), 0.06);
+    border-color: var(--theme-glass-border);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .settings-sidebar:hover .settings-sidebar__item span {
+    max-width: 200px;
+    opacity: 1;
+    margin-left: 0;
+  }
+
+  /* ============================================
+     HOVER sa INDIVIDUAL ITEM — glow + lift
+  ============================================ */
   .settings-sidebar .settings-sidebar__item:hover {
     background: linear-gradient(
       135deg,
@@ -1776,7 +1815,8 @@
       var(--theme-primary-hover) 100%
     );
     border-color: transparent;
-    color: #ffffff;
+    /* ✅ Auto-flip text color */
+    color: var(--theme-on-primary);
     transform: translateX(3px);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.25),
@@ -1787,54 +1827,25 @@
   }
 
   .settings-sidebar .settings-sidebar__item:hover .react-icon {
-    color: #ffffff;
+    color: var(--theme-on-primary);
     transform: scale(1.15) rotate(-6deg);
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
   }
 
   .settings-sidebar .settings-sidebar__item:hover span {
-    color: #ffffff;
+    color: var(--theme-on-primary);
     font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-    transform: translateX(1px);
   }
 
-  .settings-sidebar:hover .settings-sidebar__item:not(:hover) {
-    background: rgba(255, 255, 255, 0.4);
-    color: var(--theme-text);
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    transform: none;
-  }
-
-  .settings-sidebar:hover .settings-sidebar__item:not(:hover) .react-icon {
-    color: var(--theme-text-muted);
-    transform: none;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.06));
-  }
-
-  .settings-sidebar:hover .settings-sidebar__item:not(:hover) span {
-    color: inherit;
-    font-weight: 500;
-    text-shadow: none;
-  }
-
+  /* ============================================
+     ACTIVE — primary bar + glow
+  ============================================ */
   .settings-sidebar .settings-sidebar__item.is-active {
-    background: linear-gradient(
-      135deg,
-      rgba(var(--theme-primary-rgb), 0.15) 0%,
-      rgba(var(--theme-primary-rgb), 0.08) 100%
-    );
+    background: rgba(var(--theme-primary-rgb), 0.12);
     color: var(--theme-primary);
-    border-color: rgba(var(--theme-primary-rgb), 0.2);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.9),
-      0 2px 8px rgba(var(--theme-primary-rgb), 0.15);
   }
 
   .settings-sidebar .settings-sidebar__item.is-active .react-icon {
     color: var(--theme-primary);
-    filter: drop-shadow(0 2px 4px rgba(var(--theme-primary-rgb), 0.3));
   }
 
   .settings-sidebar .settings-sidebar__item.is-active span {
@@ -1842,13 +1853,22 @@
     font-weight: 700;
   }
 
-  .settings-sidebar .settings-sidebar__item.is-active::after {
+  .settings-sidebar .settings-sidebar__item.is-active::before {
     content: '';
     position: absolute;
-    left: 0;
+    left: -0.4rem;
     top: 50%;
     transform: translateY(-50%);
     width: 3px;
+    height: 60%;
+    background: var(--theme-primary);
+    border-radius: 0 3px 3px 0;
+    z-index: 3;
+    transition: left 0.3s ease;
+  }
+
+  .settings-sidebar:hover .settings-sidebar__item.is-active::before {
+    left: 0;
     height: 65%;
     background: linear-gradient(
       180deg,
@@ -1856,7 +1876,6 @@
       var(--theme-primary) 100%
     );
     border-radius: 0 4px 4px 0;
-    z-index: 3;
     box-shadow:
       0 0 8px rgba(var(--theme-primary-rgb), 0.5),
       0 0 16px rgba(var(--theme-primary-rgb), 0.3);
@@ -1875,14 +1894,19 @@
         0 0 24px rgba(var(--theme-primary-rgb), 0.4);
     }
   }
-  /* ✅ Main offset — iiwas sa fixed sidebar */
+
+  /* ✅ Main offset */
   .settings-main {
     margin-left: 6rem;
     transition: margin-left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
+  body:has(.settings-sidebar:hover) .settings-main {
+    margin-left: 16rem;
+  }
+
   .settings-shell.is-sidebar-open .settings-main {
-    margin-left: 6rem;
+    margin-left: 16rem;
   }
 
   .settings-mobile-menu,
@@ -1890,7 +1914,6 @@
     display: none;
   }
 }
-
 @media (min-width: 1024px) {
 
   /* ============================================
