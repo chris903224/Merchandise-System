@@ -264,12 +264,17 @@ export default function SettingsPage() {
     void loadProfile();
   }, [session, navigate]);
 
-  /* ✅ Sync draftPrefs kapag nag-load ang notificationPrefs */
-  useEffect(() => {
-    if (notificationPrefs && !draftPrefs) {
-      setDraftPrefs(notificationPrefs);
-    }
-  }, [notificationPrefs, draftPrefs]);
+ // ✅ I-sync tuwing nag-load ang prefs
+useEffect(() => {
+  if (!isLoadingPrefs) {
+    setDraftPrefs(notificationPrefs);
+  }
+}, [isLoadingPrefs, notificationPrefs]);
+
+// ✅ I-reset kapag nagpalit ng user
+useEffect(() => {
+  setDraftPrefs(null);
+}, [session?.id]);
 
   useEffect(() => {
     const syncLanguage = () => setLanguage(getCurrentLanguage());
