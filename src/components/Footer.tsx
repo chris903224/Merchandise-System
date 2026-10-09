@@ -183,7 +183,7 @@ export default function Footer() {
                 <span className="site-footer__icon">
                   <Phone className="react-icon" aria-hidden="true" />
                 </span>
-                <a href="tel:+63281234567">(02) 8123-4567</a>
+                <a href="tel:+63281234567">09669971377</a>
               </li>
             </ul>
           </div>

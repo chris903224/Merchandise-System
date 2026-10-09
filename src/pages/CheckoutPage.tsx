@@ -32,10 +32,6 @@ import { createPayMongoCheckout } from '../services/paymongo';
 import { BUILDINGS, BUILDING_NAMES } from '../data/constants';
 import type { Order } from '../types';
 
-/* ============================================
-   TYPES
-   ============================================ */
-
 type PaymentMethod = 'gcash_paymongo' | 'gcash_manual' | 'cod' | 'cop';
 
 export default function CheckoutPage() {
@@ -43,44 +39,33 @@ export default function CheckoutPage() {
   const toast = useToast();
   const { session, cart, setCart } = useApp();
 
-  /* ✅ LOCKED FIELDS — galing sa session */
   const fullName = session?.name || '';
   const studentId = session?.idNumber || '';
   const email = session?.email || '';
   const organization = session?.organization || 'SJCM General';
 
-  /* Editable fields */
   const [phone, setPhone] = useState('');
   const [building, setBuilding] = useState('');
   const [room, setRoom] = useState('');
   const [notes, setNotes] = useState('');
 
-  /* Payment */
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('gcash_paymongo');
   const [gcashRefNumber, setGcashRefNumber] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  /* ✅ Modals */
   const [isGcashPayMongoModalOpen, setIsGcashPayMongoModalOpen] = useState(false);
   const [isGcashManualModalOpen, setIsGcashManualModalOpen] = useState(false);
   const [isRedirectModalOpen, setIsRedirectModalOpen] = useState(false);
 
-  /* ============================================
-     ✅ REDIRECT IF NO SESSION — MUST BE EARLY
-  ============================================ */
   useEffect(() => {
-    if (!session) {
-      navigate('/login', { replace: true });
-    }
+    if (!session) navigate('/login', { replace: true });
   }, [session, navigate]);
 
-  /* ✅ Phone number formatting — numbers only, max 11 digits */
   const handlePhoneChange = (value: string) => {
     const digits = value.replace(/\D/g, '').slice(0, 11);
     setPhone(digits);
   };
 
-  /* ✅ Auto-fill phone */
   useEffect(() => {
     if (!session) return;
     const sessionPhone = (session as any).phone;
@@ -107,50 +92,30 @@ export default function CheckoutPage() {
 
   const availableRooms = BUILDINGS[building] || [];
 
-  /* Dynamic placeholder for notes */
   const notesPlaceholder = useMemo(() => {
-    if (paymentMethod === 'gcash_paymongo') {
-      return 'Reference number after payment or notes...';
-    }
-    if (paymentMethod === 'gcash_manual') {
-      return 'GCash reference number (e.g., 1234 567 8901 2345)...';
-    }
-    if (paymentMethod === 'cod') {
-      return 'Delivery landmark, preferred time, or notes for the courier...';
-    }
-    if (paymentMethod === 'cop') {
-      return 'Any special request for your pickup...';
-    }
+    if (paymentMethod === 'gcash_paymongo') return 'Reference number after payment or notes...';
+    if (paymentMethod === 'gcash_manual') return 'GCash reference number (e.g., 1234 567 8901 2345)...';
+    if (paymentMethod === 'cod') return 'Delivery landmark, preferred time, or notes for the courier...';
+    if (paymentMethod === 'cop') return 'Any special request for your pickup...';
     return 'Any additional notes...';
   }, [paymentMethod]);
 
-  /* Building change handler */
   const handleBuildingChange = (newBuilding: string) => {
     setBuilding(newBuilding);
     setRoom(BUILDINGS[newBuilding]?.[0] || '');
   };
 
-  /* ============================================
-     MODAL HANDLERS
-     ============================================ */
-
   const openGcashPayMongoModal = () => {
     setPaymentMethod('gcash_paymongo');
     setIsGcashPayMongoModalOpen(true);
   };
-
-  const closeGcashPayMongoModal = () => {
-    setIsGcashPayMongoModalOpen(false);
-  };
+  const closeGcashPayMongoModal = () => setIsGcashPayMongoModalOpen(false);
 
   const openGcashManualModal = () => {
     setPaymentMethod('gcash_manual');
     setIsGcashManualModalOpen(true);
   };
-
-  const closeGcashManualModal = () => {
-    setIsGcashManualModalOpen(false);
-  };
+  const closeGcashManualModal = () => setIsGcashManualModalOpen(false);
 
   const confirmGcashManual = () => {
     if (!gcashRefNumber.trim()) {
@@ -161,24 +126,17 @@ export default function CheckoutPage() {
     toast('GCash Manual selected.', 'success');
   };
 
-  /* ✅ PayMongo redirect flow */
   const confirmGcashPayMongo = () => {
     setIsGcashPayMongoModalOpen(false);
     setIsRedirectModalOpen(true);
   };
 
-  /* ============================================
-     ✅ PROCEED TO PAYMONGO — WITH TIMEOUT & PROPER ERROR HANDLING
-  ============================================ */
   const proceedToPayMongo = async () => {
-    // ✅ Guard — kailangan may session
     if (!session) {
       toast('Please sign in to continue.', 'warning');
       navigate('/login');
       return;
     }
-
-    // Validation muna
     if (!phone.trim() || phone.length !== 11) {
       toast('Please enter a valid 11-digit phone number.', 'warning');
       setIsRedirectModalOpen(false);
@@ -227,76 +185,45 @@ export default function CheckoutPage() {
         createdAt: new Date().toISOString(),
       };
 
-      // Save order to DB first
-      await placeOrderService(newOrder);
-
-      // Save to sessionStorage as backup
+      /* ✅ Save to sessionStorage — idadagdag sa DB pagkatapos ng payment */
       sessionStorage.setItem('pendingOrder', JSON.stringify(newOrder));
       sessionStorage.setItem('pendingCart', JSON.stringify(cart));
       sessionStorage.setItem('pendingOrderId', orderId);
 
-      /* ✅ TIMEOUT WRAPPER — 15 seconds max */
+      console.log('[Checkout] Pending order saved:', orderId);
+
       const timeoutPromise = new Promise<string>((_, reject) =>
-        setTimeout(
-          () => reject(new Error('Request timeout. Please try again.')),
-          15000
-        )
+        setTimeout(() => reject(new Error('Request timeout. Please try again.')), 15000)
       );
 
       const paymongoPromise = (async (): Promise<string> => {
         const { checkoutUrl } = await createPayMongoCheckout({
           orderId: orderId,
           amount: subtotal,
-          description: `SJCM Order ${orderId} — ${totalItems} item${
-            totalItems > 1 ? 's' : ''
-          }`,
+          description: `SJCM Order ${orderId} — ${totalItems} item${totalItems > 1 ? 's' : ''}`,
           email: email,
           customerName: fullName,
         });
-
-        if (!checkoutUrl) {
-          throw new Error('No checkout URL received from PayMongo');
-        }
-
+        if (!checkoutUrl) throw new Error('No checkout URL received from PayMongo');
         return checkoutUrl;
       })();
 
-      /* ✅ RACE — alinman sa PayMongo OR timeout */
-      const checkoutUrl = await Promise.race([
-        paymongoPromise,
-        timeoutPromise,
-      ]);
+      const checkoutUrl = await Promise.race([paymongoPromise, timeoutPromise]);
 
       console.log('[Checkout] Redirecting to:', checkoutUrl);
-
-      // ✅ Redirect — huwag i-reset ang isSubmitting dito
       window.location.href = checkoutUrl;
     } catch (error: any) {
       console.error('[Checkout] PayMongo error:', error);
-
-      // ✅ Cleanup
       sessionStorage.removeItem('pendingOrder');
       sessionStorage.removeItem('pendingCart');
       sessionStorage.removeItem('pendingOrderId');
-
-      toast(
-        error?.message || 'Payment gateway error. Please try again.',
-        'danger'
-      );
-
-      // ✅ CRITICAL: laging i-reset sa error
+      toast(error?.message || 'Payment gateway error. Please try again.', 'danger');
       setIsSubmitting(false);
       setIsRedirectModalOpen(false);
     }
   };
 
-  /* ============================================
-     ✅ EARLY RETURNS
-  ============================================ */
-
-  if (!session) {
-    return null;
-  }
+  if (!session) return null;
 
   if (cart.length === 0) {
     return (
@@ -318,9 +245,6 @@ export default function CheckoutPage() {
     );
   }
 
-  /* ============================================
-     ✅ SUBMIT (COD / COP / GCash Manual)
-     ============================================ */
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -329,44 +253,36 @@ export default function CheckoutPage() {
       navigate('/login');
       return;
     }
-
     if (!phone.trim() || phone.length !== 11) {
       toast('Please enter a valid 11-digit phone number.', 'warning');
       return;
     }
-
     if (!building.trim()) {
       toast('Please select a building.', 'warning');
       return;
     }
-
     if (!room.trim()) {
       toast('Please select a room / office.', 'warning');
       return;
     }
-
     if (!notes.trim()) {
       toast('Please add additional notes.', 'warning');
       return;
     }
-
     if (isStaffRole(session.role)) {
       toast('Staff and admin accounts cannot place customer orders.', 'warning');
       return;
     }
-
     if (paymentMethod === 'gcash_manual' && !gcashRefNumber.trim()) {
       toast('Please enter your GCash reference number.', 'warning');
       return;
     }
 
-    // ✅ Kung PayMongo, i-trigger yung redirect modal
     if (paymentMethod === 'gcash_paymongo') {
       setIsRedirectModalOpen(true);
       return;
     }
 
-    // ✅ COD / COP / Manual GCash — direkta sa DB
     setIsSubmitting(true);
     try {
       const orderId = `SJCM-${Date.now()}`;
@@ -411,9 +327,17 @@ export default function CheckoutPage() {
       };
 
       await placeOrderService(newOrder);
+
+      /* ✅ Save order ID sa sessionStorage for verification tracking */
+      sessionStorage.setItem('lastOrderId', orderId);
+
       setCart([]);
-      toast('Order placed successfully!', 'success');
-      navigate('/dashboard');
+      toast('Order placed successfully! Check your email to verify.', 'success');
+
+      /* ✅ NEW: Redirect sa verification page imbes na dashboard */
+      navigate(
+        `/verify-email?order=${encodeURIComponent(orderId)}&email=${encodeURIComponent(email)}`
+      );
     } catch (error: any) {
       console.error('Checkout error:', error);
       toast(error?.message || 'Checkout failed. Please try again.', 'danger');
@@ -422,13 +346,9 @@ export default function CheckoutPage() {
     }
   };
 
-  /* ============================================
-     RENDER
-     ============================================ */
   return (
     <main className="checkout-page">
       <div className="checkout-container">
-        {/* HERO */}
         <header className="checkout-hero">
           <Link to="/cart" className="checkout-hero__back">
             <ArrowLeft className="react-icon" aria-hidden="true" />
@@ -449,7 +369,6 @@ export default function CheckoutPage() {
           </div>
         </header>
 
-        {/* FORM */}
         <form className="checkout-body" onSubmit={handleSubmit}>
           <div className="checkout-main">
             {/* Contact Information */}
@@ -459,9 +378,7 @@ export default function CheckoutPage() {
                   <User className="react-icon" aria-hidden="true" />
                 </span>
                 <div>
-                  <h2 className="checkout-section__title">
-                    Contact Information
-                  </h2>
+                  <h2 className="checkout-section__title">Contact Information</h2>
                   <p className="checkout-section__subtitle">
                     Your registered details from login (locked).
                   </p>
@@ -528,7 +445,6 @@ export default function CheckoutPage() {
                   />
                 </div>
 
-                {/* ✅ PHONE — Numbers only, max 11 digits */}
                 <div className="field">
                   <label className="field__label" htmlFor="co-phone">
                     Phone Number{' '}
@@ -571,9 +487,7 @@ export default function CheckoutPage() {
                   <MapPin className="react-icon" aria-hidden="true" />
                 </span>
                 <div>
-                  <h2 className="checkout-section__title">
-                    Pickup Location
-                  </h2>
+                  <h2 className="checkout-section__title">Pickup Location</h2>
                   <p className="checkout-section__subtitle">
                     Select where you'd like to pick up your items.
                   </p>
@@ -635,15 +549,12 @@ export default function CheckoutPage() {
                 <div className="checkout-pickup-info">
                   <MapPin className="react-icon" aria-hidden="true" />
                   <div>
-                    <p className="checkout-pickup-info__title">
-                      Pickup Location
-                    </p>
+                    <p className="checkout-pickup-info__title">Pickup Location</p>
                     <p className="checkout-pickup-info__text">
                       {building} · {room}
                     </p>
                     <p className="checkout-pickup-info__note">
-                      Monday – Friday · 8:00 AM – 4:00 PM. Bring a valid school
-                      ID.
+                      Monday – Friday · 8:00 AM – 4:00 PM. Bring a valid school ID.
                     </p>
                   </div>
                 </div>
@@ -657,9 +568,7 @@ export default function CheckoutPage() {
                   <CreditCard className="react-icon" aria-hidden="true" />
                 </span>
                 <div>
-                  <h2 className="checkout-section__title">
-                    Payment Method
-                  </h2>
+                  <h2 className="checkout-section__title">Payment Method</h2>
                   <p className="checkout-section__subtitle">
                     Choose how you'd like to pay for your order.
                   </p>
@@ -667,7 +576,6 @@ export default function CheckoutPage() {
               </header>
 
               <div className="payment-options">
-                {/* ✅ GCash PayMongo */}
                 <label
                   className={`payment-option ${
                     paymentMethod === 'gcash_paymongo' ? 'is-selected' : ''
@@ -694,7 +602,6 @@ export default function CheckoutPage() {
                   </span>
                 </label>
 
-                {/* ✅ GCash Manual */}
                 <label
                   className={`payment-option ${
                     paymentMethod === 'gcash_manual' ? 'is-selected' : ''
@@ -712,16 +619,13 @@ export default function CheckoutPage() {
                     <FileText className="react-icon" aria-hidden="true" />
                   </span>
                   <span className="payment-option__copy">
-                    <span className="payment-option__title">
-                      GCash (Manual)
-                    </span>
+                    <span className="payment-option__title">GCash (Manual)</span>
                     <span className="payment-option__description">
                       Enter reference #
                     </span>
                   </span>
                 </label>
 
-                {/* COD */}
                 <label
                   className={`payment-option ${
                     paymentMethod === 'cod' ? 'is-selected' : ''
@@ -738,16 +642,13 @@ export default function CheckoutPage() {
                     <Banknote className="react-icon" aria-hidden="true" />
                   </span>
                   <span className="payment-option__copy">
-                    <span className="payment-option__title">
-                      Cash on Delivery
-                    </span>
+                    <span className="payment-option__title">Cash on Delivery</span>
                     <span className="payment-option__description">
                       Delivered on campus
                     </span>
                   </span>
                 </label>
 
-                {/* COP */}
                 <label
                   className={`payment-option ${
                     paymentMethod === 'cop' ? 'is-selected' : ''
@@ -764,9 +665,7 @@ export default function CheckoutPage() {
                     <Banknote className="react-icon" aria-hidden="true" />
                   </span>
                   <span className="payment-option__copy">
-                    <span className="payment-option__title">
-                      Cash on Pickup
-                    </span>
+                    <span className="payment-option__title">Cash on Pickup</span>
                     <span className="payment-option__description">
                       Pay at the supply office
                     </span>
@@ -787,14 +686,13 @@ export default function CheckoutPage() {
                 <div className="ewallet-info">
                   <p>
                     <strong>Cash on Pickup:</strong> Pay in cash when you pick
-                    up your order at the selected office. Bring a valid school
-                    ID.
+                    up your order at the selected office. Bring a valid school ID.
                   </p>
                 </div>
               )}
             </section>
 
-            {/* ✅ Notes — REQUIRED na */}
+            {/* Notes */}
             <section className="checkout-section">
               <header className="checkout-section__header">
                 <span className="checkout-section__icon">
@@ -835,19 +733,13 @@ export default function CheckoutPage() {
             </section>
           </div>
 
-          {/* RIGHT: order summary */}
           <aside className="checkout-summary">
             <h2 className="checkout-summary__title">Order Summary</h2>
 
             <div className="checkout-summary__items">
               {cart.map((item, index) => (
-                <div
-                  className="checkout-summary__item"
-                  key={`${item.id}-${index}`}
-                >
-                  <span className="checkout-summary__item-qty">
-                    {item.qty}×
-                  </span>
+                <div className="checkout-summary__item" key={`${item.id}-${index}`}>
+                  <span className="checkout-summary__item-qty">{item.qty}×</span>
                   <span className="checkout-summary__item-copy">
                     <span className="checkout-summary__item-name">
                       {item.name}
@@ -874,9 +766,7 @@ export default function CheckoutPage() {
               </div>
               <div className="checkout-summary__line">
                 <span>Pickup Fee</span>
-                <strong className="checkout-summary__line--free">
-                  FREE
-                </strong>
+                <strong className="checkout-summary__line--free">FREE</strong>
               </div>
               <div className="checkout-summary__total">
                 <span>Total</span>
@@ -923,9 +813,7 @@ export default function CheckoutPage() {
         </form>
       </div>
 
-      {/* ============================================
-          ✅ PAYMONGO MODAL — Confirmation
-         ============================================ */}
+      {/* PAYMONGO MODAL */}
       {isGcashPayMongoModalOpen && (
         <div
           className="gcash-modal-backdrop"
@@ -1004,11 +892,7 @@ export default function CheckoutPage() {
         </div>
       )}
 
-      {/* ============================================
-          ✅ REDIRECT MODAL — Final confirmation
-          Cancel button: always enabled (removed disabled prop)
-          Reset isSubmitting on cancel
-         ============================================ */}
+      {/* REDIRECT MODAL */}
       {isRedirectModalOpen && (
         <div
           className="gcash-modal-backdrop"
@@ -1074,15 +958,14 @@ export default function CheckoutPage() {
                     lineHeight: 1.6,
                   }}
                 >
-                  Click <strong>"Proceed to PayMongo"</strong> to complete
-                  your payment. You'll be redirected to PayMongo's secure
-                  checkout page.
+                  Click <strong>"Proceed to PayMongo"</strong> to complete your
+                  payment. You'll be redirected to PayMongo's secure checkout
+                  page.
                 </p>
               </div>
             </div>
 
             <div className="gcash-modal__footer">
-              {/* ✅ Cancel — always enabled, force reset */}
               <button
                 type="button"
                 className="gcash-modal__btn gcash-modal__btn--ghost"
@@ -1106,10 +989,7 @@ export default function CheckoutPage() {
                   </>
                 ) : (
                   <>
-                    <ArrowRight
-                      className="react-icon"
-                      aria-hidden="true"
-                    />
+                    <ArrowRight className="react-icon" aria-hidden="true" />
                     Proceed to PayMongo
                   </>
                 )}
@@ -1119,9 +999,7 @@ export default function CheckoutPage() {
         </div>
       )}
 
-      {/* ============================================
-          ✅ GCASH MANUAL MODAL
-         ============================================ */}
+      {/* GCASH MANUAL MODAL */}
       {isGcashManualModalOpen && (
         <div
           className="gcash-modal-backdrop"
@@ -1171,8 +1049,8 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <p className="gcash-modal__manual-note">
-                  Send payment to <strong>0917 XXX XXXX</strong> then enter
-                  the reference number above.
+                  Send payment to <strong>0917 XXX XXXX</strong> then enter the
+                  reference number above.
                 </p>
               </div>
             </div>

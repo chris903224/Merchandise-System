@@ -2555,3 +2555,69 @@ a .favorites-card__badge {
   color: var(--theme-on-success, #1A1209) !important;
   -webkit-text-fill-color: var(--theme-on-success, #1A1209) !important;
 }
+/* ============================================================
+   ✅ CONTRAST FIXES — Auto-adapt sa lahat ng 10 themes
+   Ito ang semantic aliases para sa text/button visibility
+============================================================ */
+
+:root {
+  /* ============================================
+     ✅ TEXT ON COLORED SURFACES — CRITICAL
+     Ang mga ito ay nag-flip base sa theme mode
+     (naka-define sa theme.css: --theme-on-primary, etc.)
+     ============================================ */
+
+  --fg-on-primary: var(--theme-on-primary, #FFFFFF);
+  --fg-on-accent: var(--theme-on-accent, #1A1209);
+  --fg-on-success: var(--theme-on-success, #FFFFFF);
+  --fg-on-warning: var(--theme-on-warning, #1A1209);
+  --fg-on-danger: var(--theme-on-danger, #FFFFFF);
+
+  /* ============================================
+     ✅ DEFAULT TEXT — Always readable
+     ============================================ */
+
+  --fg-default: var(--theme-text);
+  --fg-muted: var(--theme-text-muted);
+  --fg-subtle: var(--theme-text-subtle, var(--theme-text-muted));
+
+  /* ============================================
+     ✅ SURFACE + BORDER ALIASES
+     ============================================ */
+
+  --surface-card: var(--theme-surface);
+  --surface-card-raised: var(--theme-surface-raised, var(--theme-surface));
+  --surface-muted: var(--theme-surface-2);
+  --surface-hover: var(--theme-surface-hover, var(--theme-surface-2));
+
+  --border-default: var(--theme-border);
+  --border-strong: var(--theme-border-strong);
+
+  /* ============================================
+     ✅ BUTTON PADDING — Standardized
+     ============================================ */
+
+  --btn-padding-xs: 0.35rem 0.6rem;
+  --btn-padding-sm: 0.5rem 0.85rem;
+  --btn-padding-md: 0.65rem 1.05rem;
+  --btn-padding-lg: 0.85rem 1.25rem;
+  --btn-padding-xl: 1rem 1.5rem;
+
+  --btn-radius-sm: 0.4rem;
+  --btn-radius-md: 0.55rem;
+  --btn-radius-lg: 0.7rem;
+  --btn-radius-pill: 999px;
+
+  --btn-font-sm: 0.72rem;
+  --btn-font-md: 0.82rem;
+  --btn-font-lg: 0.92rem;
+
+  --btn-font-weight: 700;
+
+  /* ============================================
+     ✅ HOVER STATES — Theme-aware
+     ============================================ */
+
+  --wash-hover: rgba(var(--theme-primary-rgb), 0.08);
+  --wash-active: rgba(var(--theme-primary-rgb), 0.15);
+}

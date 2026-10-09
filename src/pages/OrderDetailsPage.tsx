@@ -28,6 +28,9 @@ import {
   DoorOpen,
   Lock,
   Phone,
+  XCircle,        // ✅ IDAGDAG
+  AlertTriangle,  // ✅ IDAGDAG
+  Loader2,        // ✅ IDAGDAG
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
@@ -46,7 +49,10 @@ import {
   getOrderStudentId,
   getOrderTotal,
 } from '../services';
-import { fetchOrders } from '../services/orders';
+import {
+  fetchOrders,
+  cancelOrder,    // ✅ IDAGDAG
+} from '../services/orders';
 import { fetchProducts } from '../services/products';
 import type { Order, Product } from '../types';
 
@@ -101,6 +107,11 @@ export default function OrderDetailsPage() {
   const [editDateOfBirth, setEditDateOfBirth] = useState('');
   const [editPhone, setEditPhone] = useState('');
 
+  /* ✅ Cancel modal state */
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
+  const [isCancelling, setIsCancelling] = useState(false);
+
   /* Redirect kapag walang session */
   useEffect(() => {
     if (!session) {
@@ -113,7 +124,7 @@ export default function OrderDetailsPage() {
     }
   }, [session, navigate, toast]);
 
-  /* ✅ Load order + products + PROFILE (galing sa Supabase) */
+  /* ✅ Load order + products + PROFILE */
   useEffect(() => {
     if (!session || !id) {
       setIsLoading(false);
@@ -174,10 +185,13 @@ export default function OrderDetailsPage() {
 
   /* Close modal on Escape + lock body scroll */
   useEffect(() => {
-    if (!isEditModalOpen) return;
+    if (!isEditModalOpen && !isCancelModalOpen) return;
 
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsEditModalOpen(false);
+      if (e.key === 'Escape') {
+        if (isEditModalOpen && !isSaving) setIsEditModalOpen(false);
+        if (isCancelModalOpen && !isCancelling) setIsCancelModalOpen(false);
+      }
     };
 
     document.addEventListener('keydown', handleEscape);
@@ -187,7 +201,7 @@ export default function OrderDetailsPage() {
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = '';
     };
-  }, [isEditModalOpen]);
+  }, [isEditModalOpen, isCancelModalOpen, isSaving, isCancelling]);
 
   /* ✅ Save profile */
   const handleSaveProfile = async () => {
@@ -229,6 +243,29 @@ export default function OrderDetailsPage() {
       toast(error?.message || 'Failed to save profile', 'danger');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  /* ✅ Cancel order */
+  const handleCancelOrder = async () => {
+    if (!order || !session) return;
+
+    setIsCancelling(true);
+    try {
+      await cancelOrder(getOrderId(order), cancelReason || 'Cancelled by user');
+      toast('Order cancelled successfully', 'success');
+      setIsCancelModalOpen(false);
+
+      /* ✅ Update local state */
+      setOrder({ ...order, orderStatus: 'Cancelled' } as Order);
+
+      /* ✅ Redirect after 2 seconds */
+      setTimeout(() => navigate('/dashboard'), 2000);
+    } catch (error: any) {
+      console.error('[OrderDetails] Cancel failed:', error);
+      toast(error?.message || 'Failed to cancel order', 'danger');
+    } finally {
+      setIsCancelling(false);
     }
   };
 
@@ -350,6 +387,10 @@ export default function OrderDetailsPage() {
   );
   const status = getOrderStatus(order);
 
+  /* ✅ Determine if cancellable */
+  const canCancel = status === 'Pending';
+  const showLockNote = status === 'Processing';
+
   const steps = [
     {
       key: 'Pending',
@@ -381,9 +422,7 @@ export default function OrderDetailsPage() {
 
   return (
     <div className="order-page">
-      {/* ============================================
-          SIDEBAR — compact premium glass
-      ============================================ */}
+      {/* SIDEBAR */}
       <aside className="order-sidebar-nav">
         <div className="order-sidebar-nav__top">
           <nav className="order-sidebar-nav__list">
@@ -430,6 +469,29 @@ export default function OrderDetailsPage() {
                   <p className="od-hero__date">
                     Placed on {formatDateTime(getOrderDate(order))}
                   </p>
+
+                  {/* ✅ CANCEL BUTTON — Only if Pending */}
+                  {canCancel && (
+                    <button
+                      type="button"
+                      className="od-hero__cancel"
+                      onClick={() => setIsCancelModalOpen(true)}
+                    >
+                      <XCircle className="react-icon" aria-hidden="true" />
+                      <span>Cancel Order</span>
+                    </button>
+                  )}
+
+                  {/* ✅ LOCK NOTE — Processing status */}
+                  {showLockNote && (
+                    <div className="od-hero__lock-note">
+                      <Lock className="react-icon" aria-hidden="true" />
+                      <span>
+                        Order is being processed and cannot be cancelled.
+                        Contact the supply office if you need help.
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <button
                   type="button"
@@ -478,12 +540,12 @@ export default function OrderDetailsPage() {
                             />
                           )}
                         </Link>
-                     <div className="od-item__info">
-                   <p className="od-item__name">{item.name}</p>
-                   <p className="od-item__meta">
-                 {item.size && <>Size: {item.size}</>}
-                  </p>
-                   </div>
+                        <div className="od-item__info">
+                          <p className="od-item__name">{item.name}</p>
+                          <p className="od-item__meta">
+                            {item.size && <>Size: {item.size}</>}
+                          </p>
+                        </div>
 
                         <div className="od-item__qty">
                           <span className="od-item__qty-label">Qty</span>
@@ -908,6 +970,94 @@ export default function OrderDetailsPage() {
           </div>
         </div>
       )}
+
+      {/* ============================================
+          ✅ CANCEL ORDER MODAL
+      ============================================ */}
+      {isCancelModalOpen && order && (
+        <div
+          className="cancel-modal-backdrop"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isCancelling)
+              setIsCancelModalOpen(false);
+          }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Cancel order"
+        >
+          <div className="cancel-modal">
+            <div className="cancel-modal__header">
+              <span className="cancel-modal__icon">
+                <AlertTriangle className="react-icon" aria-hidden="true" />
+              </span>
+              <div>
+                <h2 className="cancel-modal__title">Cancel Order?</h2>
+                <p className="cancel-modal__subtitle">
+                  Order {getOrderId(order)}
+                </p>
+              </div>
+              <button
+                type="button"
+                className="cancel-modal__close"
+                onClick={() => setIsCancelModalOpen(false)}
+                disabled={isCancelling}
+                aria-label="Close"
+              >
+                <X className="react-icon" aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="cancel-modal__body">
+              <p className="cancel-modal__warning">
+                ⚠️ This action cannot be undone. Your order will be cancelled
+                and you'll need to place a new one if you change your mind.
+              </p>
+
+              <label className="cancel-modal__label" htmlFor="cancel-reason">
+                Reason for cancellation (optional)
+              </label>
+              <textarea
+                id="cancel-reason"
+                className="cancel-modal__textarea"
+                rows={3}
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                placeholder="e.g., Changed my mind, Wrong size, Duplicate order..."
+                disabled={isCancelling}
+              />
+            </div>
+
+            <div className="cancel-modal__footer">
+              <button
+                type="button"
+                className="cancel-modal__btn cancel-modal__btn--ghost"
+                onClick={() => setIsCancelModalOpen(false)}
+                disabled={isCancelling}
+              >
+                Keep Order
+              </button>
+              <button
+                type="button"
+                className="cancel-modal__btn cancel-modal__btn--danger"
+                onClick={handleCancelOrder}
+                disabled={isCancelling}
+              >
+                {isCancelling ? (
+                  <>
+                    <Loader2 className="react-icon animate-spin" aria-hidden="true" />
+                    <span>Cancelling...</span>
+                  </>
+                ) : (
+                  <>
+                    <XCircle className="react-icon" aria-hidden="true" />
+                    <span>Yes, Cancel Order</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+} 

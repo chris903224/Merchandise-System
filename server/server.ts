@@ -2,7 +2,7 @@
 
 /* ============================================
    ✅ LOCAL DEV BACKEND SERVER
-   ✅ Para sa local testing ng PayMongo integration
+   ✅ Para sa local testing ng PayMongo + Brevo
    ✅ Ito ay TULAD ng Vercel serverless functions,
       pero tumatakbo sa localhost:3001
 ============================================================ */
@@ -24,6 +24,7 @@ app.use(
     origin: [
       'http://localhost:5173',
       'http://localhost:5174',
+      'https://merchandise-system.vercel.app',
       process.env.FRONTEND_URL || '',
     ].filter(Boolean),
     credentials: true,
@@ -37,17 +38,24 @@ app.use(express.json());
 const PAYMONGO_SECRET_KEY = process.env.PAYMONGO_SECRET_KEY;
 const PAYMONGO_BASE_URL = 'https://api.paymongo.com/v1';
 
+const BREVO_API_KEY = process.env.BREVO_API_KEY;
+const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL;
+const BREVO_SENDER_NAME = process.env.BREVO_SENDER_NAME || 'SJCM Store';
+
 if (!PAYMONGO_SECRET_KEY) {
   console.error('❌ PAYMONGO_SECRET_KEY is not set in .env');
   console.error('💡 Please add it to app/.env file');
   process.exit(1);
 }
 
-// ✅ Log mode (TEST or LIVE)
+// ✅ Log modes
 console.log(
   `✅ PayMongo Mode: ${
     PAYMONGO_SECRET_KEY.startsWith('sk_test_') ? '🧪 TEST' : '🚀 LIVE'
   }`
+);
+console.log(
+  `✅ Brevo: ${BREVO_API_KEY ? '✅ Configured' : '❌ Missing BREVO_API_KEY'}`
 );
 
 /* ============================================
@@ -60,6 +68,7 @@ app.get('/', (req: Request, res: Response) => {
     paymongoMode: PAYMONGO_SECRET_KEY.startsWith('sk_test_')
       ? 'test'
       : 'live',
+    brevoConfigured: !!BREVO_API_KEY,
     timestamp: new Date().toISOString(),
   });
 });
@@ -74,7 +83,6 @@ app.post(
     try {
       const { orderId, amount, description, email, customerName } = req.body;
 
-      // ✅ Validate inputs
       if (!orderId || !amount || amount <= 0) {
         return res.status(400).json({ message: 'Invalid order details' });
       }
@@ -82,10 +90,8 @@ app.post(
       console.log(`[PayMongo] Creating checkout for order: ${orderId}`);
       console.log(`[PayMongo] Amount: ₱${(amount / 100).toFixed(2)}`);
 
-      // ✅ Base64 encode secret key
       const auth = Buffer.from(`${PAYMONGO_SECRET_KEY}:`).toString('base64');
 
-      // ✅ Create PayMongo Checkout Session
       const paymongoRes = await fetch(
         `${PAYMONGO_BASE_URL}/checkout_sessions`,
         {
@@ -165,10 +171,8 @@ app.get('/api/paymongo/verify', async (req: Request, res: Response) => {
 
     console.log(`[PayMongo] Verifying session: ${session_id}`);
 
-    // ✅ Base64 encode
     const auth = Buffer.from(`${PAYMONGO_SECRET_KEY}:`).toString('base64');
 
-    // ✅ Fetch checkout session
     const paymongoRes = await fetch(
       `${PAYMONGO_BASE_URL}/checkout_sessions/${session_id}`,
       {
@@ -187,7 +191,6 @@ app.get('/api/paymongo/verify', async (req: Request, res: Response) => {
       });
     }
 
-    // ✅ Check status
     const paymentStatus =
       json.data.attributes.payment_intent?.attributes?.status;
     const paid = paymentStatus === 'succeeded';
@@ -203,6 +206,182 @@ app.get('/api/paymongo/verify', async (req: Request, res: Response) => {
     return res.status(500).json({ message: error.message });
   }
 });
+
+/* ============================================
+   ✅ BREVO — Order Notification Emails
+   ✅ Free 300 emails/day
+   ✅ Sends to ANY recipient (no domain verification needed)
+============================================================ */
+
+type EmailPayload = {
+  orderId: string;
+  orderCode: string;
+  userId: string;
+  email: string;
+  customerName: string;
+  template: string;
+  previousStatus?: string;
+  newStatus: string;
+  claimLocation?: string;
+};
+
+/* ✅ Template renderer */
+function renderEmail(
+  template: string,
+  data: EmailPayload
+): { subject: string; html: string } {
+  const { orderCode, customerName, claimLocation } = data;
+
+  const templates: Record<string, { subject: string; html: string }> = {
+    order_confirmed: {
+      subject: `✅ Order Confirmed — ${orderCode}`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #333;">Hi ${customerName},</h2>
+          <p>Your order <strong>${orderCode}</strong> has been received and is now pending.</p>
+          <p>We'll notify you once it's ready for pickup.</p>
+          <p style="margin-top: 24px; color: #666;">— SJCM Store Team</p>
+        </div>
+      `,
+    },
+    order_processing: {
+      subject: `⏳ Order Being Processed — ${orderCode}`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #333;">Hi ${customerName},</h2>
+          <p>Your order <strong>${orderCode}</strong> is now being processed.</p>
+          <p>We'll notify you once it's ready.</p>
+          <p style="margin-top: 24px; color: #666;">— SJCM Store Team</p>
+        </div>
+      `,
+    },
+    order_ready_pickup: {
+      subject: `📦 Ready for Pickup — ${orderCode}`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #333;">Hi ${customerName},</h2>
+          <p>Your order <strong>${orderCode}</strong> is now ready for pickup!</p>
+          <p><strong>Pickup Location:</strong> ${claimLocation || 'SJCM Supply Office'}</p>
+          <p>Please bring a valid school ID.</p>
+          <p style="margin-top: 24px; color: #666;">— SJCM Store Team</p>
+        </div>
+      `,
+    },
+    order_out_for_delivery: {
+      subject: `🚚 Out for Delivery — ${orderCode}`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #333;">Hi ${customerName},</h2>
+          <p>Your order <strong>${orderCode}</strong> is now out for delivery.</p>
+          <p><strong>Delivery to:</strong> ${claimLocation || 'Your registered address'}</p>
+          <p>Please be available to receive it.</p>
+          <p style="margin-top: 24px; color: #666;">— SJCM Store Team</p>
+        </div>
+      `,
+    },
+    order_completed: {
+      subject: `✨ Order Completed — ${orderCode}`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #333;">Hi ${customerName},</h2>
+          <p>Your order <strong>${orderCode}</strong> is now complete. Thank you!</p>
+          <p>We hope to serve you again soon.</p>
+          <p style="margin-top: 24px; color: #666;">— SJCM Store Team</p>
+        </div>
+      `,
+    },
+    order_cancelled: {
+      subject: `❌ Order Cancelled — ${orderCode}`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #333;">Hi ${customerName},</h2>
+          <p>Your order <strong>${orderCode}</strong> has been cancelled.</p>
+          <p>If you have questions, please contact the supply office.</p>
+          <p style="margin-top: 24px; color: #666;">— SJCM Store Team</p>
+        </div>
+      `,
+    },
+  };
+
+  return templates[template] ?? {
+    subject: `Order Update — ${orderCode}`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h2>Hi ${customerName},</h2>
+        <p>Your order status has been updated.</p>
+        <p>— SJCM Store Team</p>
+      </div>
+    `,
+  };
+}
+
+app.post(
+  '/api/notifications/send-order-email',
+  async (req: Request, res: Response) => {
+    try {
+      const payload: EmailPayload = req.body;
+
+      console.log('[Email API] Received:', {
+        orderCode: payload.orderCode,
+        template: payload.template,
+        to: payload.email,
+      });
+
+      /* ✅ Validate */
+      if (!payload.email || !payload.template || !payload.orderCode) {
+        return res.status(400).json({ message: 'Missing required fields' });
+      }
+
+      if (!BREVO_API_KEY || !BREVO_SENDER_EMAIL) {
+        console.error('[Email API] ❌ Missing Brevo config');
+        return res
+          .status(500)
+          .json({ message: 'Email service not configured' });
+      }
+
+      /* ✅ Render template */
+      const { subject, html } = renderEmail(payload.template, payload);
+
+      /* ✅ Send via Brevo */
+      const brevoRes = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'api-key': BREVO_API_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sender: {
+            email: BREVO_SENDER_EMAIL,
+            name: BREVO_SENDER_NAME,
+          },
+          to: [
+            {
+              email: payload.email,
+              name: payload.customerName,
+            },
+          ],
+          subject,
+          htmlContent: html,
+        }),
+      });
+
+      const json: any = await brevoRes.json();
+
+      if (!brevoRes.ok) {
+        console.error('[Email API] ❌ Brevo error:', json);
+        return res.status(brevoRes.status).json({
+          message: json.message || 'Email send failed',
+        });
+      }
+
+      console.log('[Email API] ✅ Sent via Brevo:', json.messageId);
+      return res.status(200).json({ success: true, id: json.messageId });
+    } catch (error: any) {
+      console.error('[Email API] ❌ Error:', error);
+      return res.status(500).json({ message: error.message });
+    }
+  }
+);
 
 /* ============================================
    ✅ ERROR HANDLER
@@ -233,6 +412,9 @@ app.listen(PORT, () => {
   console.log(`║  Frontend:  ${process.env.FRONTEND_URL || 'http://localhost:5173'}  ║`);
   console.log(`║  PayMongo:  ${
     PAYMONGO_SECRET_KEY.startsWith('sk_test_') ? 'TEST Mode 🧪' : 'LIVE Mode 🚀     '
+  }           ║`);
+  console.log(`║  Brevo:     ${
+    BREVO_API_KEY ? '✅ Configured   ' : '❌ Missing      '
   }           ║`);
   console.log('╚════════════════════════════════════════════╝');
   console.log('');
