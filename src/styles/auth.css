@@ -1811,3 +1811,299 @@ body:has(.auth-experience) {
     font-size: 11px;
   }
 }
+/* ==========================================================================
+   ✅ ADD-ON — 92.5% SCALE (zoom out)
+   Idagdag lang sa dulo ng auth.css
+   ========================================================================== */
+
+/* ✅ Buong auth experience — 92.5% scale */
+.auth-experience {
+  zoom: 0.925;
+  -moz-transform: scale(0.925);
+  -moz-transform-origin: top center;
+}
+
+/* ✅ Fallback para sa browsers na walang `zoom` support */
+@supports not (zoom: 1) {
+  .auth-experience {
+    zoom: normal;
+    transform: scale(0.925);
+    transform-origin: top center;
+    width: 108.108%;       /* ✅ 1 / 0.925 ≈ 1.08108 */
+    margin-left: -4.054%;
+    min-height: 108.108vh;
+  }
+} 
+/* ==========================================================================
+   ✅ ADD-ON — SUBTLE COMPACT (hindi sobrang liit)
+   Idagdag lang sa dulo ng auth.css
+   ========================================================================== */
+
+/* ============================================
+   ✅ BUONG PAGE — bahagyang compact lang
+   ============================================ */
+
+.auth-experience {
+  gap: clamp(16px, 2.6vw, 32px);   /* ✅ Bahagyang maliit lang sa dating 20-40px */
+  padding-top: clamp(16px, 2.5vw, 32px);
+  padding-bottom: clamp(40px, 5vw, 72px);  /* ✅ Bahagyang maliit lang sa 48-88px */
+  justify-content: center;
+}
+
+/* ============================================
+   ✅ GLASS PANEL — moderate height
+   ============================================ */
+
+.auth-experience__content {
+  /* ✅ Hindi sobrang liit — bahagyang compact lang */
+  max-height: 680px;
+  min-height: 560px;
+  overflow: hidden;
+}
+
+/* ✅ Bawat cell — internal scroll lang kung sobrang haba */
+.auth-experience__content > * {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--theme-primary-rgb), 0.2) transparent;
+}
+
+.auth-experience__content > *::-webkit-scrollbar {
+  width: 6px;
+}
+
+.auth-experience__content > *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.auth-experience__content > *::-webkit-scrollbar-thumb {
+  background: rgba(var(--theme-primary-rgb), 0.2);
+  border-radius: 3px;
+}
+
+/* ============================================
+   ✅ IMAGE MARQUEE — bahagyang liit lang
+   ============================================ */
+
+.auth-marquee__viewport {
+  max-height: 400px;   /* ✅ Mula 460px — 60px lang binawasan */
+}
+
+.auth-marquee__card img {
+  height: 130px;       /* ✅ Mula 152px — 22px lang binawasan */
+}
+
+.auth-marquee__track {
+  gap: 12px;           /* ✅ Mula 14px */
+}
+
+.auth-marquee {
+  gap: 14px;           /* ✅ Mula 16px */
+}
+
+/* ============================================
+   ✅ MOBILE
+   ============================================ */
+
+@media (max-width: 1080px) {
+  .auth-experience__content {
+    max-height: none;
+    min-height: 0;
+    height: auto;
+  }
+}
+/* ==========================================================================
+   ✅ FINAL ADD-ON — CONSOLIDATED
+   Isang add-on lang para walang conflict
+   ========================================================================== */
+
+/* ============================================
+   1. BUONG PAGE — 92.5% zoom + compact + centered
+   ============================================ */
+
+.auth-experience {
+  /* ✅ Zoom 92.5% */
+  zoom: 0.925;
+
+  /* ✅ Compact spacing */
+  gap: clamp(16px, 2.6vw, 32px);
+  padding-top: clamp(16px, 2.5vw, 32px);
+  padding-bottom: clamp(40px, 5vw, 72px);
+
+  /* ✅ Centered vertically */
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* ✅ Fallback sa Firefox at browsers na walang zoom */
+@supports not (zoom: 1) {
+  .auth-experience {
+    zoom: normal;
+    transform: scale(0.925);
+    transform-origin: top center;
+    width: 108.108%;
+    margin-left: -4.054%;
+    min-height: 108.108vh;
+  }
+}
+
+/* ============================================
+   2. GLASS PANEL — fixed height + internal scroll
+   ============================================ */
+
+.auth-experience__content {
+  max-height: 680px;
+  min-height: 560px;
+  overflow: hidden;
+}
+
+/* ✅ Bawat cell — scroll kung mahaba */
+.auth-experience__content > * {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--theme-primary-rgb), 0.2) transparent;
+}
+
+.auth-experience__content > *::-webkit-scrollbar {
+  width: 6px;
+}
+
+.auth-experience__content > *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.auth-experience__content > *::-webkit-scrollbar-thumb {
+  background: rgba(var(--theme-primary-rgb), 0.2);
+  border-radius: 3px;
+}
+
+.auth-experience__content > *::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--theme-primary-rgb), 0.35);
+}
+
+/* ============================================
+   3. IMAGE MARQUEE — bahagyang liit
+   ============================================ */
+
+.auth-marquee__viewport {
+  max-height: 400px;
+}
+
+.auth-marquee__card img {
+  height: 130px;
+}
+
+.auth-marquee__track {
+  gap: 12px;
+}
+
+.auth-marquee {
+  gap: 14px;
+}
+
+/* ============================================
+   4. INNER COLUMN CENTERING (para sa forgot password)
+   ✅ Gamitin ang flexbox sa LOOB ng cell, hindi sa cell mismo
+   ============================================ */
+
+/* ✅ Guidelines — top-aligned */
+.auth-experience__content > .auth-guidelines {
+  /* Same, pero walang flex — normal flow */
+}
+
+/* ✅ Marquee — center ang content */
+.auth-experience__content > .auth-marquee {
+  justify-content: center;
+}
+
+/* ✅ Auth card — center ang content */
+.auth-experience__content > .auth-card {
+  justify-content: center;
+}
+
+/* ============================================
+   5. MOBILE — auto height
+   ============================================ */
+
+@media (max-width: 1080px) {
+  .auth-experience {
+    justify-content: flex-start;
+  }
+
+  .auth-experience__content {
+    max-height: none;
+    min-height: 0;
+    height: auto;
+  }
+}
+/* ==========================================================================
+   ✅ FIX — FORGOT PASSWORD CARD CENTERING
+   I-center ang card content sa loob ng column
+   ========================================================================== */
+
+/* ✅ Ang auth card mismo — gawing flex container */
+.auth-experience__content > .auth-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;    /* ✅ Vertical center ng content */
+  align-items: stretch;
+}
+
+/* ✅ Ang inner body ng card — i-center */
+.auth-card__body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ✅ Header — same */
+.auth-card__header {
+  /* Walang binago — normal flow */
+}
+
+/* ✅ Responsive — sa mobile, top-aligned */
+@media (max-width: 1080px) {
+  .auth-experience__content > .auth-card {
+    justify-content: flex-start;
+  }
+}
+/* ==========================================================================
+   ✅ FIX v2 — FORGOT PASSWORD FULL CENTERING
+   ========================================================================== */
+
+/* ✅ Siguraduhin na ang column ay nagbibigay ng buong height sa card */
+.auth-experience__content > * {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* ✅ Ang auth card — buong height ng column */
+.auth-experience__content > .auth-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center !important;   /* ✅ Force center */
+  height: 100%;                          /* ✅ Fill ang column height */
+  min-height: 100%;
+}
+
+/* ✅ Inner body — normal flow (hindi na kailangan ng center) */
+.auth-card__body {
+  flex: 0 0 auto;   /* ✅ Huwag mag-stretch */
+}
+
+/* ✅ Header — walang extra margin */
+.auth-card__header {
+  margin-bottom: 22px;
+}
+
+/* ✅ Responsive */
+@media (max-width: 1080px) {
+  .auth-experience__content > .auth-card {
+    height: auto;
+    min-height: 0;
+    justify-content: flex-start !important;
+  }
+}

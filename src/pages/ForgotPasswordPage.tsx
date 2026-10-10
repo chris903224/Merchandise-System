@@ -14,6 +14,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import AuthCard from '../components/auth/AuthCard';
+import AuthHeader from '../components/auth/AuthHeader';
 import AuthBackground from '../components/auth/AuthBackground';
 import GuidelinesPanel from '../components/auth/GuidelinesPanel';
 import ImageMarquee from '../components/auth/ImageMarquee';
@@ -50,6 +51,10 @@ export default function ForgotPasswordPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
+
+  /* ✅ Header dummy state — pang-decorative lang */
+  const [headerIdentifier] = useState('');
+  const [headerPassword] = useState('');
 
   const {
     timeLeft,
@@ -173,6 +178,21 @@ export default function ForgotPasswordPage() {
   return (
     <main className="auth-experience">
       <AuthBackground />
+
+      {/* ✅ HEADER — para consistent sa login/register pages */}
+      <AuthHeader
+        identifier={headerIdentifier}
+        password={headerPassword}
+        isSubmitting={false}
+        isLocked={true}  /* ✅ Locked para hindi magamit — decorative lang */
+        onIdentifierChange={() => {}}
+        onPasswordChange={() => {}}
+        onSubmit={(event) => {
+          event.preventDefault();
+          /* ✅ Redirect sa login page kung gusto mag-login */
+          navigate('/login');
+        }}
+      />
 
       <div className="auth-experience__content">
         <GuidelinesPanel />

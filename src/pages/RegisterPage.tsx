@@ -26,6 +26,7 @@ import PasswordStrength, {
   isStrongPassword,
 } from '../components/auth/PasswordStrength';
 import { OTP_EXPIRY_SECONDS, useOtpTimer } from '../components/auth/useOtpTimer';
+import { useRateLimit } from '../components/auth/useRateLimit';
 import type { AuthStage } from '../components/auth/authTypes';
 import { useApp } from '../store';
 import { useToast } from '../toast';
@@ -75,6 +76,17 @@ export default function RegisterPage() {
   const navigate = useNavigate();
   const toast = useToast();
   const { signIn } = useApp();
+
+  /* ✅ Global rate-limit — same hook, shared state */
+  const { isLocked: isLoginLocked, secondsLeft } = useRateLimit();
+
+  /* ✅ Header inputs (independent — hindi nakakaapekto sa register form) */
+  const [headerIdentifier, setHeaderIdentifier] = useState('');
+  const [headerPassword, setHeaderPassword] = useState('');
+  const [isHeaderSubmitting] = useState(false);
+
+  /* ✅ lockUntil timestamp para sa countdown display sa AuthHeader */
+  const loginLockUntil = isLoginLocked ? Date.now() + secondsLeft * 1000 : null;
 
   const [stage, setStage] = useState<AuthStage>('register');
   const [name, setName] = useState('');
@@ -295,16 +307,19 @@ export default function RegisterPage() {
         onContinue={() => setShowRequirementsModal(false)}
       />
 
+      {/* ✅ HEADER — naka-lock kapag naka-lock sa login (via shared useRateLimit) */}
       <AuthHeader
-        identifier={email}
-        password={password}
-        isSubmitting={isRegisterSubmitting}
-        isLocked={false}
-        onIdentifierChange={setEmail}
-        onPasswordChange={setPassword}
+        identifier={headerIdentifier}
+        password={headerPassword}
+        isSubmitting={isHeaderSubmitting}
+        isLocked={isLoginLocked}
+        lockUntil={loginLockUntil}
+        onIdentifierChange={setHeaderIdentifier}
+        onPasswordChange={setHeaderPassword}
         onSubmit={(event) => {
-          if (stage === 'otp') void handleVerifyOtp(event);
-          else void handleRegisterSubmit(event);
+          event.preventDefault();
+          /* ✅ Redirect sa login page kung gusto mag-login via header */
+          navigate('/login');
         }}
       />
 

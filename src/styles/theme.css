@@ -2284,3 +2284,705 @@ body {
       0 0 16px rgba(var(--theme-primary-rgb), 0.3) !important;
   }
 }
+
+/* ==========================================================================
+   ✅ AUTH — FULL THEME INTEGRATION
+   Lahat ng text, buttons, hover = sumusunod sa 10 themes
+   Idagdag sa dulo ng theme.css o auth.css
+   ========================================================================== */
+
+/* ============================================
+   1. PAGE WRAPPER — theme-aware
+   ============================================ */
+
+.auth-experience {
+  color: var(--theme-text);
+  font-family: var(--font-ui);
+}
+
+/* ============================================
+   2. HEADER — quick login pill
+   ============================================ */
+
+.auth-experience__header {
+  background: var(--theme-glass-bg);
+  border-color: var(--theme-glass-border);
+  box-shadow:
+    var(--theme-shadow-lg),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.auth-brand__name {
+  color: var(--theme-text) !important;
+}
+
+.auth-brand__tagline {
+  color: var(--theme-accent) !important;
+}
+
+.auth-brand__divider {
+  background: var(--theme-border-strong) !important;
+}
+
+.auth-brand__logo {
+  border-color: var(--theme-border-strong) !important;
+}
+
+/* ✅ Quick login inputs */
+.auth-quick-login__input {
+  background: rgba(var(--theme-primary-rgb), 0.05);
+  border-color: var(--theme-border);
+  color: var(--theme-text);
+}
+
+.auth-quick-login__input::placeholder {
+  color: var(--theme-text-muted) !important;
+  opacity: 0.7;
+}
+
+.auth-quick-login__input:focus-visible {
+  border-color: var(--theme-primary);
+  background: rgba(var(--theme-primary-rgb), 0.08);
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.18);
+}
+
+.auth-quick-login__field .react-icon {
+  color: var(--theme-text-muted) !important;
+  stroke: currentColor !important;
+}
+
+/* ✅ Quick login button */
+.auth-quick-login__submit {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary),
+    var(--theme-primary-hover)
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  box-shadow: 0 8px 20px -8px rgba(var(--theme-primary-rgb), 0.65);
+}
+
+.auth-quick-login__submit .react-icon {
+  color: var(--theme-on-primary) !important;
+  stroke: currentColor !important;
+}
+
+.auth-quick-login__submit:hover:not(:disabled) {
+  filter: brightness(1.06);
+  box-shadow: 0 12px 28px -8px rgba(var(--theme-primary-rgb), 0.75);
+}
+
+.auth-quick-login__submit:disabled {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 0.7 !important;
+  box-shadow: none !important;
+}
+
+/* ============================================
+   3. CONTENT GRID — panel
+   ============================================ */
+
+.auth-experience__content {
+  background: var(--theme-glass-bg);
+  border-color: var(--theme-glass-border);
+  box-shadow:
+    var(--theme-shadow-xl),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.auth-experience__content > *:not(:last-child) {
+  border-color: var(--theme-border);
+}
+
+/* ============================================
+   4. GUIDELINES PANEL — lahat ng text
+   ============================================ */
+
+.auth-section-heading__eyebrow {
+  color: var(--theme-accent) !important;
+}
+
+.auth-section-heading h2 {
+  color: var(--theme-text) !important;
+}
+
+.auth-section-heading p {
+  color: var(--theme-text-muted) !important;
+}
+
+.auth-guideline {
+  border-color: var(--theme-border) !important;
+  background: rgba(var(--theme-primary-rgb), 0.03) !important;
+}
+
+.auth-guideline.is-open {
+  border-color: var(--theme-border-strong) !important;
+  background: rgba(var(--theme-primary-rgb), 0.055) !important;
+}
+
+.auth-guideline__trigger {
+  color: var(--theme-text) !important;
+}
+
+.auth-guideline__icon {
+  background: linear-gradient(
+    150deg,
+    rgba(var(--theme-primary-rgb), 0.28),
+    rgba(var(--theme-accent-rgb), 0.14)
+  ) !important;
+  color: var(--theme-primary) !important;
+}
+
+.auth-guideline__icon .react-icon {
+  color: var(--theme-primary) !important;
+  stroke: currentColor !important;
+}
+
+.auth-guideline__chevron {
+  color: var(--theme-text-muted) !important;
+  stroke: currentColor !important;
+}
+
+.auth-guideline.is-open .auth-guideline__chevron {
+  color: var(--theme-accent) !important;
+}
+
+.auth-guideline__content p {
+  color: var(--theme-text-muted) !important;
+}
+
+/* ============================================
+   5. IMAGE MARQUEE — caption
+   ============================================ */
+
+.auth-marquee__card {
+  border-color: var(--theme-border) !important;
+}
+
+.auth-marquee__caption {
+  color: var(--theme-accent) !important;
+}
+
+/* ============================================
+   6. AUTH CARD — header, body, switch
+   ============================================ */
+
+.auth-card {
+  background-color: var(--theme-surface) !important;
+}
+
+.auth-card__eyebrow {
+  background: var(--theme-accent) !important;
+  color: var(--theme-on-accent) !important;
+  -webkit-text-fill-color: var(--theme-on-accent) !important;
+}
+
+.auth-card__title {
+  color: var(--theme-text) !important;
+}
+
+.auth-card__description {
+  color: var(--theme-text-muted) !important;
+}
+
+.auth-card__switch {
+  color: var(--theme-text-muted) !important;
+}
+
+.auth-card__switch a,
+.auth-card__switch button {
+  color: var(--theme-accent) !important;
+  -webkit-text-fill-color: var(--theme-accent) !important;
+}
+
+.auth-card__switch a:hover,
+.auth-card__switch button:hover {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ============================================
+   7. FORM FIELDS — labels, inputs, hints
+   ============================================ */
+
+.auth-field label {
+  color: var(--theme-text-muted) !important;
+}
+
+.auth-input {
+  background: rgba(var(--theme-primary-rgb), 0.04) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.auth-input::placeholder {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 0.7 !important;
+}
+
+.auth-input:focus-visible {
+  border-color: var(--theme-primary) !important;
+  background: rgba(var(--theme-primary-rgb), 0.06) !important;
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.18) !important;
+}
+
+.auth-input:disabled {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text-muted) !important;
+  opacity: 0.8 !important;
+}
+
+.auth-input.has-error {
+  border-color: var(--theme-danger) !important;
+  box-shadow: 0 0 0 3px rgba(var(--theme-danger-rgb), 0.15) !important;
+}
+
+.auth-input.is-valid {
+  border-color: var(--theme-success) !important;
+  background: rgba(var(--theme-success-rgb), 0.04) !important;
+}
+
+/* ✅ Input icons */
+.auth-input-wrap > .react-icon {
+  color: var(--theme-text-muted) !important;
+  stroke: currentColor !important;
+}
+
+/* ✅ Password toggle */
+.auth-password-toggle {
+  color: var(--theme-text-muted) !important;
+}
+
+.auth-password-toggle:hover {
+  color: var(--theme-text) !important;
+  background: rgba(var(--theme-primary-rgb), 0.06) !important;
+}
+
+.auth-password-toggle .react-icon {
+  color: inherit !important;
+  stroke: currentColor !important;
+}
+
+/* ✅ Errors, hints */
+.auth-error {
+  color: var(--theme-danger) !important;
+}
+
+.auth-hint {
+  color: var(--theme-text-muted) !important;
+}
+
+.auth-hint strong {
+  color: var(--theme-text) !important;
+}
+
+.auth-hint--success {
+  color: var(--theme-success) !important;
+}
+
+.auth-hint--error {
+  color: var(--theme-danger) !important;
+}
+
+/* ============================================
+   8. BUTTONS — submit, text buttons
+   ============================================ */
+
+.auth-submit {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary),
+    var(--theme-primary-hover)
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  box-shadow: 0 14px 30px -12px rgba(var(--theme-primary-rgb), 0.65);
+}
+
+.auth-submit .react-icon {
+  color: var(--theme-on-primary) !important;
+  stroke: currentColor !important;
+}
+
+.auth-submit:hover:not(:disabled) {
+  filter: brightness(1.05);
+  box-shadow: 0 18px 34px -12px rgba(var(--theme-primary-rgb), 0.75);
+}
+
+.auth-submit:disabled {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 0.7 !important;
+  box-shadow: none !important;
+}
+
+.auth-text-button {
+  color: var(--theme-text-muted) !important;
+}
+
+.auth-text-button:hover {
+  color: var(--theme-primary) !important;
+}
+
+.auth-text-button .react-icon {
+  color: inherit !important;
+  stroke: currentColor !important;
+}
+
+/* ✅ Forgot password link */
+.auth-forgot-link {
+  color: var(--theme-accent) !important;
+  -webkit-text-fill-color: var(--theme-accent) !important;
+}
+
+.auth-forgot-link:hover {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ============================================
+   9. CALLOUTS — danger, warning
+   ============================================ */
+
+.auth-callout {
+  border-color: var(--theme-border);
+}
+
+.auth-callout--danger {
+  background: rgba(var(--theme-danger-rgb), 0.12) !important;
+  border-color: rgba(var(--theme-danger-rgb), 0.35) !important;
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+}
+
+.auth-callout--danger .react-icon {
+  color: var(--theme-danger) !important;
+  stroke: currentColor !important;
+}
+
+.auth-callout--warning {
+  background: rgba(var(--theme-warning-rgb), 0.12) !important;
+  border-color: rgba(var(--theme-warning-rgb), 0.35) !important;
+  color: var(--theme-warning) !important;
+  -webkit-text-fill-color: var(--theme-warning) !important;
+}
+
+.auth-callout--warning .react-icon {
+  color: var(--theme-warning) !important;
+  stroke: currentColor !important;
+}
+
+/* ============================================
+   10. OTP / SUCCESS — stage icons
+   ============================================ */
+
+.auth-stage-icon {
+  background: linear-gradient(
+    150deg,
+    rgba(var(--theme-primary-rgb), 0.3),
+    rgba(var(--theme-accent-rgb), 0.16)
+  ) !important;
+  color: var(--theme-primary) !important;
+}
+
+.auth-stage-icon .react-icon {
+  color: var(--theme-primary) !important;
+  stroke: currentColor !important;
+}
+
+.auth-otp-meta {
+  color: var(--theme-text-muted) !important;
+}
+
+.auth-otp-meta .is-danger {
+  color: var(--theme-danger) !important;
+}
+
+.auth-otp-meta button {
+  color: var(--theme-accent) !important;
+}
+
+.auth-otp-meta button:hover:not(:disabled) {
+  color: var(--theme-primary) !important;
+}
+
+.auth-otp-meta button .react-icon {
+  color: inherit !important;
+  stroke: currentColor !important;
+}
+
+.auth-success__icon {
+  color: var(--theme-success) !important;
+  stroke: currentColor !important;
+}
+
+.auth-success p {
+  color: var(--theme-text) !important;
+}
+
+.auth-success span {
+  color: var(--theme-text-muted) !important;
+}
+
+/* ============================================
+   11. PASSWORD RULES — strength checklist
+   ============================================ */
+
+.auth-password-rules {
+  background: rgba(var(--theme-primary-rgb), 0.04) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.auth-password-rule {
+  color: var(--theme-text-muted) !important;
+}
+
+.auth-password-rule .react-icon {
+  color: inherit !important;
+  stroke: currentColor !important;
+}
+
+.auth-password-rule.is-pending {
+  color: var(--theme-text-muted) !important;
+}
+
+.auth-password-rule.is-pending .react-icon {
+  color: var(--theme-danger) !important;
+}
+
+.auth-password-rule.is-passed {
+  color: var(--theme-success) !important;
+}
+
+.auth-password-rule.is-passed .react-icon {
+  color: var(--theme-success) !important;
+}
+
+/* ============================================
+   12. STUDENT ID VALIDATION
+   ============================================ */
+
+.auth-input__status.is-valid {
+  color: var(--theme-success) !important;
+}
+
+.auth-input__status.is-invalid {
+  color: var(--theme-danger) !important;
+}
+
+.auth-input__status .react-icon {
+  stroke: currentColor !important;
+}
+
+/* ============================================
+   13. REGISTRATION REQUIREMENTS — checklist
+   ============================================ */
+
+.auth-requirement {
+  background: rgba(var(--theme-primary-rgb), 0.04) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.auth-requirement:hover {
+  background: rgba(var(--theme-primary-rgb), 0.07) !important;
+  border-color: var(--theme-border-strong) !important;
+}
+
+.auth-requirement__icon {
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  color: var(--theme-primary) !important;
+}
+
+.auth-requirement__icon .react-icon {
+  color: var(--theme-primary) !important;
+  stroke: currentColor !important;
+}
+
+.auth-requirement__title {
+  color: var(--theme-text) !important;
+}
+
+.auth-requirement__desc {
+  color: var(--theme-text-muted) !important;
+}
+
+.auth-requirement__desc strong {
+  color: var(--theme-text) !important;
+}
+
+.auth-requirement__desc code {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  color: var(--theme-primary) !important;
+}
+
+.auth-requirement__check {
+  color: var(--theme-success) !important;
+  stroke: currentColor !important;
+}
+
+.auth-requirements-note {
+  background: rgba(var(--theme-accent-rgb), 0.08) !important;
+  border-color: rgba(var(--theme-accent-rgb), 0.25) !important;
+  color: var(--theme-text) !important;
+}
+
+.auth-requirements-note strong {
+  color: var(--theme-accent) !important;
+}
+
+/* ============================================
+   14. MODAL — registration requirements
+   ============================================ */
+
+.register-modal-backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.register-modal {
+  background: var(--theme-glass-bg) !important;
+  border-color: var(--theme-glass-border) !important;
+}
+
+.register-modal__eyebrow {
+  color: var(--theme-accent) !important;
+}
+
+.register-modal__title {
+  color: var(--theme-text) !important;
+}
+
+.register-modal__desc {
+  color: var(--theme-text-muted) !important;
+}
+
+.register-modal__item {
+  background: rgba(var(--theme-surface-rgb, 255, 255, 255), 0.05) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.register-modal__item:hover {
+  background: rgba(var(--theme-primary-rgb), 0.08) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.3) !important;
+}
+
+.register-modal__icon {
+  background: rgba(var(--theme-primary-rgb), 0.15) !important;
+  color: var(--theme-primary) !important;
+}
+
+.register-modal__icon .react-icon {
+  color: var(--theme-primary) !important;
+  stroke: currentColor !important;
+}
+
+.register-modal__label {
+  color: var(--theme-text) !important;
+}
+
+.register-modal__hint {
+  color: var(--theme-text-muted) !important;
+}
+
+.register-modal__hint strong {
+  color: var(--theme-text) !important;
+}
+
+.register-modal__hint code {
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  color: var(--theme-primary) !important;
+}
+
+.register-modal__check {
+  color: var(--theme-success) !important;
+  stroke: currentColor !important;
+}
+
+.register-modal__note {
+  background: rgba(var(--theme-accent-rgb), 0.1) !important;
+  border-color: rgba(var(--theme-accent-rgb), 0.25) !important;
+  color: var(--theme-text) !important;
+}
+
+.register-modal__note strong {
+  color: var(--theme-accent) !important;
+}
+
+.register-modal__btn {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary),
+    var(--theme-primary-hover)
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.register-modal__btn:hover {
+  filter: brightness(1.06);
+}
+
+/* ============================================
+   15. PASSWORD POPOVER — floating rules
+   ============================================ */
+
+.password-popover {
+  background: var(--theme-glass-bg) !important;
+  border-color: var(--theme-glass-border) !important;
+}
+
+.password-popover.is-all-passed {
+  border-color: rgba(var(--theme-success-rgb), 0.4) !important;
+}
+
+.password-popover__title {
+  color: var(--theme-text-muted) !important;
+}
+
+.password-popover__rule.is-pending {
+  color: var(--theme-text-muted) !important;
+}
+
+.password-popover__rule.is-pending .react-icon {
+  color: var(--theme-danger) !important;
+}
+
+.password-popover__rule.is-passed {
+  color: var(--theme-success) !important;
+}
+
+.password-popover__rule.is-passed .react-icon {
+  color: var(--theme-success) !important;
+}
+
+/* ============================================
+   16. FOCUS-VISIBLE — global
+   ============================================ */
+
+.auth-experience :focus-visible {
+  outline: 2px solid var(--theme-primary) !important;
+  outline-offset: 2px;
+}
+
+/* ============================================
+   17. SVG ICON CONSISTENCY — inherit color
+   ============================================ */
+
+.auth-experience svg,
+.auth-experience .react-icon {
+  stroke: currentColor;
+}
+
+/* ============================================
+   18. TEXT SELECTION
+   ============================================ */
+
+.auth-experience ::selection {
+  background: rgba(var(--theme-primary-rgb), 0.25);
+  color: var(--theme-text);
+}

@@ -27,14 +27,14 @@ import {
 } from '../components/auth/passwordRules';
 import '../styles/auth.css';
 
-/* ✅ Password Strength Component */
+/* ✅ Password Strength Component — LAGING NAKALABAS */
 function PasswordStrength({ value }: { value: string }) {
-  if (!value) return null;
+  /* ✅ Walang early return — para laging visible ang rules */
 
   return (
     <ul className="auth-password-rules">
       {PASSWORD_RULES.map((rule) => {
-        const passed = rule.test(value);
+        const passed = value ? rule.test(value) : false;
         return (
           <li
             key={rule.label}
@@ -258,7 +258,7 @@ export default function LoginPage() {
                 <input
                   id="login-password"
                   className={`auth-input auth-input--with-toggle ${
-                    !loginPasswordValid ? 'has-error' : ''
+                    loginPassword && !loginPasswordValid ? 'has-error' : ''
                   }`}
                   type={showLoginPassword ? 'text' : 'password'}
                   autoComplete="current-password"
@@ -281,9 +281,8 @@ export default function LoginPage() {
                 </button>
               </div>
 
-              {loginPassword && !loginPasswordValid && (
-                <PasswordStrength value={loginPassword} />
-              )}
+              {/* ✅ LAGING NAKALABAS — hindi na conditional */}
+              <PasswordStrength value={loginPassword} />
             </div>
 
             {/* FORGOT PASSWORD */}

@@ -45,9 +45,26 @@ interface AppContextValue extends AppState {
   updateProfilePicture: (imageUrl: string | null) => void;
   refreshProducts: () => Promise<void>;
   isLoading: boolean;
+
+  /* ✅ GLOBAL LOGIN LOCK (rate-limit) */
+  loginLockUntil: number | null;
+  isLoginLocked: boolean;
+  lockLogin: (seconds: number) => void;
+  unlockLogin: () => void;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
+
+/* ✅ Storage key para sa login lock */
+const LOGIN_LOCK_KEY = 'sjcm_login_lock_until';
+
+function readLoginLock(): number | null {
+  const stored = readStorage<number | null>(LOGIN_LOCK_KEY, null);
+  if (stored && Date.now() < stored) return stored;
+  // expired na — linisin
+  if (stored) localStorage.removeItem(LOGIN_LOCK_KEY);
+  return null;
+}
 
 function readClientState(): Pick<AppState, 'session' | 'cart'> {
   return {
@@ -70,6 +87,51 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  /* ✅ GLOBAL LOGIN LOCK state — persistent via localStorage */
+  const [loginLockUntil, setLoginLockUntil] = useState<number | null>(
+    () => readLoginLock()
+  );
+  const [lockTick, setLockTick] = useState(0); // para mag-recompute ang isLoginLocked
+
+  /* ✅ I-persist sa localStorage tuwing magbabago */
+  useEffect(() => {
+    if (loginLockUntil) {
+      writeStorage(LOGIN_LOCK_KEY, loginLockUntil);
+    } else {
+      localStorage.removeItem(LOGIN_LOCK_KEY);
+    }
+  }, [loginLockUntil]);
+
+  /* ✅ Auto-unlock kapag na-expire na + periodic re-render */
+  useEffect(() => {
+    if (!loginLockUntil) return;
+
+    const tick = () => {
+      if (Date.now() >= loginLockUntil) {
+        setLoginLockUntil(null);
+      } else {
+        setLockTick((n) => n + 1); // trigger re-render para updated ang isLoginLocked
+      }
+    };
+
+    tick();
+    const id = window.setInterval(tick, 1000);
+    return () => window.clearInterval(id);
+  }, [loginLockUntil]);
+
+  const lockLogin = useCallback((seconds: number) => {
+    setLoginLockUntil(Date.now() + seconds * 1000);
+  }, []);
+
+  const unlockLogin = useCallback(() => {
+    setLoginLockUntil(null);
+  }, []);
+
+  const isLoginLocked =
+    loginLockUntil !== null && Date.now() < loginLockUntil;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  void lockTick; // keeps dependency happy
 
   /* ============================================
      INITIAL LOAD
@@ -126,11 +188,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'orders' },
         (payload) => {
-          // ✅ Invalidate LAHAT ng caches
           invalidateCache('orders_all');
           invalidateCache('orders');
 
-          // ✅ Invalidate user-specific cache
           const userId =
             payload.eventType === 'DELETE'
               ? (payload.old as any)?.user_id
@@ -140,7 +200,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
             invalidateCache(`orders_${userId}`);
           }
 
-          // Update React state (live UI)
           if (payload.eventType === 'INSERT') {
             setOrders((prev) => [mapOrderRow(payload.new), ...prev]);
           } else if (payload.eventType === 'UPDATE') {
@@ -163,7 +222,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'notifications' },
         (payload) => {
-          // ✅ Invalidate user-specific notification cache
           const userId =
             payload.eventType === 'DELETE'
               ? (payload.old as any)?.user_id
@@ -173,7 +231,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
             invalidateCache(`notifications_${userId}`);
           }
 
-          // ✅ Broadcast custom event para sa UI components
           window.dispatchEvent(
             new CustomEvent('notifications-updated', {
               detail: {
@@ -306,7 +363,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
       await updateOrderStatusService(orderId, orderStatus);
 
-      // Auto-create notification para sa user
       const order = orders.find((o) => o.id === orderId);
       if (order) {
         const statusMessages: Record<
@@ -425,6 +481,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       deleteProduct,
       updateProfilePicture,
       refreshProducts: refreshProductsData,
+
+      /* ✅ Global login lock */
+      loginLockUntil,
+      isLoginLocked,
+      lockLogin,
+      unlockLogin,
     }),
     [
       session,
@@ -443,6 +505,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       deleteProduct,
       updateProfilePicture,
       refreshProductsData,
+
+      /* ✅ Dependencies ng login lock */
+      loginLockUntil,
+      isLoginLocked,
+      lockLogin,
+      unlockLogin,
     ]
   );
 

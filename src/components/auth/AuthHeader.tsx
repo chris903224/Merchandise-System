@@ -1,4 +1,6 @@
-import type { FormEvent } from 'react';
+// src/components/auth/AuthHeader.tsx
+
+import { useEffect, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, LockKeyhole, UserRound } from 'lucide-react';
 import { authAssets } from './authAssets';
@@ -8,6 +10,7 @@ interface AuthHeaderProps {
   password: string;
   isSubmitting: boolean;
   isLocked: boolean;
+  lockUntil?: number | null;
   onIdentifierChange: (value: string) => void;
   onPasswordChange: (value: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
@@ -18,13 +21,45 @@ export default function AuthHeader({
   password,
   isSubmitting,
   isLocked,
+  lockUntil,
   onIdentifierChange,
   onPasswordChange,
   onSubmit,
 }: AuthHeaderProps) {
+  /* ✅ Countdown timer kapag naka-lock */
+  const [secondsLeft, setSecondsLeft] = useState(0);
+
+  useEffect(() => {
+    if (!isLocked || !lockUntil) {
+      setSecondsLeft(0);
+      return;
+    }
+
+    const tick = () => {
+      const diff = Math.max(0, Math.ceil((lockUntil - Date.now()) / 1000));
+      setSecondsLeft(diff);
+    };
+
+    tick();
+    const id = window.setInterval(tick, 1000);
+    return () => window.clearInterval(id);
+  }, [isLocked, lockUntil]);
+
+  /* ✅ Auto-clear ang inputs kapag naka-lock */
+  useEffect(() => {
+    if (isLocked) {
+      if (identifier) onIdentifierChange('');
+      if (password) onPasswordChange('');
+    }
+  }, [isLocked, identifier, password, onIdentifierChange, onPasswordChange]);
+
   return (
     <header className="auth-experience__header">
-      <Link to="/" className="auth-brand" aria-label="Saint Jude College Manila home">
+      <Link
+        to="/"
+        className="auth-brand"
+        aria-label="Saint Jude College Manila home"
+      >
         <img
           className="auth-brand__logo"
           src={authAssets.logo}
@@ -35,11 +70,18 @@ export default function AuthHeader({
         <span className="auth-brand__copy">
           <span className="auth-brand__name">Saint Jude College Manila</span>
           <span className="auth-brand__divider" aria-hidden="true" />
-          <span className="auth-brand__tagline"> &bull; Back to Store - &bull; </span>
+          <span className="auth-brand__tagline">
+            {' '}
+            &bull; Back to Store - &bull;{' '}
+          </span>
         </span>
       </Link>
 
-      <form className="auth-quick-login" onSubmit={onSubmit} aria-label="Quick login">
+      <form
+        className="auth-quick-login"
+        onSubmit={onSubmit}
+        aria-label="Quick login"
+      >
         <label className="auth-sr-only" htmlFor="quick-login-username">
           Username
         </label>
@@ -57,6 +99,7 @@ export default function AuthHeader({
             disabled={isLocked}
           />
         </div>
+
         <label className="auth-sr-only" htmlFor="quick-login-password">
           Password
         </label>
@@ -73,13 +116,20 @@ export default function AuthHeader({
             disabled={isLocked}
           />
         </div>
+
         <button
           className="auth-quick-login__submit"
           type="submit"
           disabled={isSubmitting || isLocked}
         >
-          {isSubmitting ? '…' : 'Login'}
-          {!isSubmitting ? <ArrowRight className="react-icon" aria-hidden="true" /> : null}
+          {isLocked
+            ? `Locked (${secondsLeft}s)`
+            : isSubmitting
+              ? '…'
+              : 'Login'}
+          {!isSubmitting && !isLocked ? (
+            <ArrowRight className="react-icon" aria-hidden="true" />
+          ) : null}
         </button>
       </form>
     </header>

@@ -1,6 +1,7 @@
 // src/App.tsx
 
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import SiteLayout from './layout/SiteLayout';
 import HomePage from './pages/HomePage';
 import CatalogPage from './pages/CatalogPage';
@@ -9,7 +10,7 @@ import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import CheckoutSuccessPage from './pages/CheckoutSuccessPage';
 import CheckoutCancelPage from './pages/CheckoutCancelPage';
-import VerifyEmailPage from './pages/VerifyEmailPage'; // ✅ IDAGDAG
+import VerifyEmailPage from './pages/VerifyEmailPage';
 import ConfirmationPage from './pages/ConfirmationPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -20,6 +21,8 @@ import ProfilePage from './pages/ProfilePages';
 import SettingsPage from './pages/SettingsPage';
 import NotificationsPage from './pages/NotificationsPage';
 import FavoritesPage from './pages/FavoritesPage';
+
+import AuthPageTransition from './components/auth/AuthPageTransition';
 
 // ✅ ADMIN PAGES
 import {
@@ -36,16 +39,66 @@ import {
   SettingsPage as AdminSettingsPage,
 } from './pages/admin';
 
+/* ============================================
+   ✅ ANIMATED AUTH ROUTES
+   Hiwalay na wrapper para sa auth pages lang
+============================================ */
+function AnimatedAuthRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <Routes location={location} key={location.pathname}>
+        <Route
+          path="/login"
+          element={
+            <AuthPageTransition>
+              <LoginPage />
+            </AuthPageTransition>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <AuthPageTransition>
+              <RegisterPage />
+            </AuthPageTransition>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <AuthPageTransition>
+              <ForgotPasswordPage />
+            </AuthPageTransition>
+          }
+        />
+      </Routes>
+    </AnimatePresence>
+  );
+}
+
+/* ============================================
+   ✅ DETECT KUNG AUTH PAGE ANG CURRENT ROUTE
+============================================ */
+function useIsAuthRoute() {
+  const location = useLocation();
+  const authPaths = ['/login', '/register', '/forgot-password'];
+  return authPaths.some((path) => location.pathname === path);
+}
+
 export default function App() {
+  const isAuthRoute = useIsAuthRoute();
+
+  /* ✅ Kung nasa auth page, i-render LANG ang animated auth routes
+     (walang SiteLayout, walang ibang routes — para malinis ang transition) */
+  if (isAuthRoute) {
+    return <AnimatedAuthRoutes />;
+  }
+
+  /* ✅ Kung HINDI auth page, normal routes (walang animation — mabilis) */
   return (
     <Routes>
-      {/* ============================================
-          AUTH ROUTES (public)
-          ============================================ */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-
       {/* ============================================
           ADMIN LOGIN (standalone)
           ============================================ */}
@@ -69,7 +122,7 @@ export default function App() {
         {/* ✅ Cancel Page */}
         <Route path="/checkout/cancel" element={<CheckoutCancelPage />} />
 
-        {/* ✅ NEW — Verify Email Page (after order placed) */}
+        {/* ✅ Verify Email Page (after order placed) */}
         <Route path="/verify-email" element={<VerifyEmailPage />} />
 
         <Route path="/confirmation" element={<ConfirmationPage />} />

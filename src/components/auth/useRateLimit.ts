@@ -1,115 +1,160 @@
 // src/components/auth/useRateLimit.ts
 
-import { useEffect, useState } from 'react';
-import {
-  clearRateLimit,
-  checkRateLimit,
-  formatLockoutTime,
-  getActiveLock,
-  RATE_LIMIT_CONFIG,
-  recordFailedAttempt,
-} from '../../data/rateLimit';
+import { useCallback, useEffect, useState } from 'react';
 
-export function useRateLimit(identifier: string) {
-  const [lockedUntil, setLockedUntil] = useState<number | null>(null);
-  const [secondsLeft, setSecondsLeft] = useState(0);
-  const [attemptsRemaining, setAttemptsRemaining] = useState(
-    RATE_LIMIT_CONFIG.MAX_ATTEMPTS
-  );
+/* ============================================
+   ✅ GLOBAL SHARED STATE
+   Naka-share sa LAHAT ng instances ng useRateLimit
+============================================ */
+type LockState = {
+  lockUntil: number | null;
+  attempts: number;
+  identifier: string;
+};
 
-  const isLocked = lockedUntil !== null && secondsLeft > 0;
+const STORAGE_KEY = 'sjcm_rate_limit_state';
 
-  /* ============================================
-     ✅ FIX #1 — Sa MOUNT, i-restore yung active lock
-     kahit walang laman yung email input
-     ============================================ */
-  useEffect(() => {
-    const active = getActiveLock();
-    if (active) {
-      setLockedUntil(active.lockedUntil);
-      setSecondsLeft(Math.ceil((active.lockedUntil - Date.now()) / 1000));
-      setAttemptsRemaining(0);
+function readGlobalLock(): LockState {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return { lockUntil: null, attempts: 0, identifier: '' };
+    const parsed = JSON.parse(raw) as LockState;
+    // linisin kung expired na
+    if (parsed.lockUntil && Date.now() >= parsed.lockUntil) {
+      parsed.lockUntil = null;
+      parsed.attempts = 0;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return parsed;
+  } catch {
+    return { lockUntil: null, attempts: 0, identifier: '' };
+  }
+}
+
+function writeGlobalLock(state: LockState) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // ignore
+  }
+}
+
+/* ✅ Module-level state — shared sa lahat ng hook instances */
+let globalLockState: LockState = readGlobalLock();
+const listeners = new Set<(state: LockState) => void>();
+
+function setGlobalLockState(next: LockState) {
+  globalLockState = next;
+  writeGlobalLock(next);
+  listeners.forEach((fn) => fn(next));
+}
+
+/* ============================================
+   ✅ RATE LIMIT CONFIG
+============================================ */
+export const RATE_LIMIT_CONFIG = {
+  MAX_ATTEMPTS: 5,
+  LOCKOUT_SECONDS: 300, // 5 minutes
+};
+
+/* ============================================
+   ✅ HOOK
+============================================ */
+export function useRateLimit(_key?: string) {
+  const [state, setState] = useState<LockState>(() => readGlobalLock());
+  const [tick, setTick] = useState(0);
+
+  /* ✅ Subscribe sa global changes */
+  useEffect(() => {
+    const listener = (next: LockState) => setState(next);
+    listeners.add(listener);
+    return () => {
+      listeners.delete(listener);
+    };
   }, []);
 
-  /* ============================================
-     Countdown tick
-     ============================================ */
+  /* ✅ Periodic tick para mag-update ang countdown + auto-unlock */
   useEffect(() => {
-    if (!lockedUntil) return;
-
-    const tick = () => {
-      const remaining = Math.ceil((lockedUntil - Date.now()) / 1000);
-      if (remaining <= 0) {
-        setLockedUntil(null);
-        setSecondsLeft(0);
-        setAttemptsRemaining(RATE_LIMIT_CONFIG.MAX_ATTEMPTS);
-        if (identifier) clearRateLimit(identifier);
-        return;
+    const id = window.setInterval(() => {
+      const current = readGlobalLock();
+      if (
+        current.lockUntil !== globalLockState.lockUntil ||
+        current.attempts !== globalLockState.attempts
+      ) {
+        setGlobalLockState(current);
       }
-      setSecondsLeft(remaining);
+      setTick((n) => n + 1);
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  void tick; // for re-render
+  /* eslint-enable @typescript-eslint/no-unused-vars */
+
+  const isLocked =
+    state.lockUntil !== null && Date.now() < state.lockUntil;
+
+  const secondsLeft = isLocked
+    ? Math.max(0, Math.ceil((state.lockUntil! - Date.now()) / 1000))
+    : 0;
+
+  const attemptsRemaining = Math.max(
+    0,
+    RATE_LIMIT_CONFIG.MAX_ATTEMPTS - state.attempts
+  );
+
+  const formatLockoutTime = useCallback((totalSeconds: number) => {
+    const m = Math.floor(totalSeconds / 60);
+    const s = totalSeconds % 60;
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }, []);
+
+  const guard = useCallback(() => {
+    const current = readGlobalLock();
+    if (current.lockUntil && Date.now() < current.lockUntil) {
+      const secs = Math.ceil((current.lockUntil - Date.now()) / 1000);
+      return { allowed: false, secondsUntilUnlock: secs };
+    }
+    return { allowed: true, secondsUntilUnlock: 0 };
+  }, []);
+
+  const recordFailure = useCallback(() => {
+    const current = readGlobalLock();
+    const nextAttempts = current.attempts + 1;
+
+    if (nextAttempts >= RATE_LIMIT_CONFIG.MAX_ATTEMPTS) {
+      const next: LockState = {
+        lockUntil: Date.now() + RATE_LIMIT_CONFIG.LOCKOUT_SECONDS * 1000,
+        attempts: 0, // reset attempts after lockout
+        identifier: current.identifier,
+      };
+      setGlobalLockState(next);
+      return {
+        allowed: false,
+        secondsUntilUnlock: RATE_LIMIT_CONFIG.LOCKOUT_SECONDS,
+        attemptsRemaining: 0,
+      };
+    }
+
+    const next: LockState = {
+      lockUntil: null,
+      attempts: nextAttempts,
+      identifier: current.identifier,
     };
+    setGlobalLockState(next);
+    return {
+      allowed: true,
+      secondsUntilUnlock: 0,
+      attemptsRemaining: RATE_LIMIT_CONFIG.MAX_ATTEMPTS - nextAttempts,
+    };
+  }, []);
 
-    tick();
-    const interval = window.setInterval(tick, 1000);
-    return () => window.clearInterval(interval);
-  }, [lockedUntil, identifier]);
-
-  /* ============================================
-     ✅ FIX #2 — Sync state kapag nagbago ang identifier
-     HUWAG i-reset kung may active lock pa
-     ============================================ */
-  useEffect(() => {
-    if (!identifier.trim()) {
-      // ✅ Check muna kung may active lock bago mag-reset
-      const active = getActiveLock();
-      if (active) {
-        setLockedUntil(active.lockedUntil);
-        setSecondsLeft(Math.ceil((active.lockedUntil - Date.now()) / 1000));
-        setAttemptsRemaining(0);
-        return;
-      }
-      setAttemptsRemaining(RATE_LIMIT_CONFIG.MAX_ATTEMPTS);
-      setLockedUntil(null);
-      setSecondsLeft(0);
-      return;
-    }
-
-    const status = checkRateLimit(identifier);
-    setAttemptsRemaining(status.attemptsRemaining);
-    if (!status.allowed && status.lockedUntil) {
-      setLockedUntil(status.lockedUntil);
-      setSecondsLeft(status.secondsUntilUnlock);
-    } else if (status.allowed) {
-      // ✅ Clear lock state kung allowed na (lock expired)
-      setLockedUntil(null);
-      setSecondsLeft(0);
-    }
-  }, [identifier]);
-
-  const guard = () => checkRateLimit(identifier);
-
-  const recordFailure = () => {
-    const status = recordFailedAttempt(identifier);
-    setAttemptsRemaining(status.attemptsRemaining);
-    if (!status.allowed && status.lockedUntil) {
-      setLockedUntil(status.lockedUntil);
-      setSecondsLeft(status.secondsUntilUnlock);
-    }
-    return status;
-  };
-
-  const clear = () => {
-    clearRateLimit(identifier);
-    setAttemptsRemaining(RATE_LIMIT_CONFIG.MAX_ATTEMPTS);
-    setLockedUntil(null);
-    setSecondsLeft(0);
-  };
+  const clear = useCallback(() => {
+    setGlobalLockState({ lockUntil: null, attempts: 0, identifier: '' });
+  }, []);
 
   return {
     isLocked,
-    lockedUntil,
     secondsLeft,
     attemptsRemaining,
     formatLockoutTime,
