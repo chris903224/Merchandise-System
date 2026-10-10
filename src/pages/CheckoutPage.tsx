@@ -8,7 +8,6 @@ import {
   Lock,
   MapPin,
   CreditCard,
-  Wallet,
   Banknote,
   User,
   Mail,
@@ -22,63 +21,63 @@ import {
   QrCode,
   FileText,
   X,
+  AlertCircle,
+  Loader,
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
 import { formatPrice, isStaffRole, sumCartItems } from '../services';
 import { placeOrder as placeOrderService } from '../services/orders';
+import { createPayMongoCheckout } from '../services/paymongo';
 import { BUILDINGS, BUILDING_NAMES } from '../data/constants';
 import type { Order } from '../types';
 
-/* ============================================
-   TYPES
-   ============================================ */
-
-type PaymentMethod = 'gcash' | 'cod' | 'cop';
-type GcashSubMethod = 'qr' | 'manual';
+type PaymentMethod = 'gcash_paymongo' | 'gcash_manual' | 'cod' | 'cop';
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
   const toast = useToast();
   const { session, cart, setCart } = useApp();
 
-  /* ✅ LOCKED FIELDS — galing sa session */
   const fullName = session?.name || '';
   const studentId = session?.idNumber || '';
   const email = session?.email || '';
   const organization = session?.organization || 'SJCM General';
 
-  /* Editable fields */
   const [phone, setPhone] = useState('');
-  const [building, setBuilding] = useState(BUILDING_NAMES[0] || '');
-  const [room, setRoom] = useState(BUILDINGS[BUILDING_NAMES[0]]?.[0] || '');
+  const [building, setBuilding] = useState('');
+  const [room, setRoom] = useState('');
   const [notes, setNotes] = useState('');
 
-  /* Payment */
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('gcash');
-  const [gcashSubMethod, setGcashSubMethod] = useState<GcashSubMethod | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('gcash_paymongo');
   const [gcashRefNumber, setGcashRefNumber] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  /* ✅ GCash Modal */
-  const [isGcashModalOpen, setIsGcashModalOpen] = useState(false);
+  const [isGcashPayMongoModalOpen, setIsGcashPayMongoModalOpen] = useState(false);
+  const [isGcashManualModalOpen, setIsGcashManualModalOpen] = useState(false);
+  const [isRedirectModalOpen, setIsRedirectModalOpen] = useState(false);
 
-  /* ============================================
-     ✅ AUTO-FILL PHONE from session
-     ============================================ */
+  useEffect(() => {
+    if (!session) navigate('/login', { replace: true });
+  }, [session, navigate]);
+
+  const handlePhoneChange = (value: string) => {
+    const digits = value.replace(/\D/g, '').slice(0, 11);
+    setPhone(digits);
+  };
+
   useEffect(() => {
     if (!session) return;
-
-    // ✅ Priority: session.phone → fetch from Supabase profile
     const sessionPhone = (session as any).phone;
     if (sessionPhone) {
-      setPhone(sessionPhone);
+      const digits = String(sessionPhone).replace(/\D/g, '').slice(0, 11);
+      setPhone(digits);
     } else {
-      // Background fetch from profiles table
       import('../data/storage').then(({ fetchUserProfile }) => {
         fetchUserProfile(session.id).then((profile) => {
           if (profile?.phone) {
-            setPhone(profile.phone);
+            const digits = String(profile.phone).replace(/\D/g, '').slice(0, 11);
+            setPhone(digits);
           }
         });
       });
@@ -93,96 +92,138 @@ export default function CheckoutPage() {
 
   const availableRooms = BUILDINGS[building] || [];
 
-  /* Dynamic placeholder for notes */
   const notesPlaceholder = useMemo(() => {
-    if (paymentMethod === 'gcash') {
-      if (gcashSubMethod === 'qr') {
-        return 'Reference number after payment or notes...';
-      }
-      if (gcashSubMethod === 'manual') {
-        return 'GCash reference number (e.g., 1234 567 8901 2345)...';
-      }
-      return 'Choose your GCash payment method above...';
-    }
-    if (paymentMethod === 'cod') {
-      return 'Delivery landmark, preferred time, or notes for the courier...';
-    }
-    if (paymentMethod === 'cop') {
-      return 'Any special request for your pickup...';
-    }
+    if (paymentMethod === 'gcash_paymongo') return 'Reference number after payment or notes...';
+    if (paymentMethod === 'gcash_manual') return 'GCash reference number (e.g., 1234 567 8901 2345)...';
+    if (paymentMethod === 'cod') return 'Delivery landmark, preferred time, or notes for the courier...';
+    if (paymentMethod === 'cop') return 'Any special request for your pickup...';
     return 'Any additional notes...';
-  }, [paymentMethod, gcashSubMethod]);
+  }, [paymentMethod]);
 
-  /* Building change handler */
   const handleBuildingChange = (newBuilding: string) => {
     setBuilding(newBuilding);
     setRoom(BUILDINGS[newBuilding]?.[0] || '');
   };
 
-  /* ============================================
-     GCASH MODAL HANDLERS
-     ============================================ */
-
-  const openGcashModal = () => {
-    setPaymentMethod('gcash');
-    setIsGcashModalOpen(true);
+  const openGcashPayMongoModal = () => {
+    setPaymentMethod('gcash_paymongo');
+    setIsGcashPayMongoModalOpen(true);
   };
+  const closeGcashPayMongoModal = () => setIsGcashPayMongoModalOpen(false);
 
-  const closeGcashModal = () => {
-    setIsGcashModalOpen(false);
+  const openGcashManualModal = () => {
+    setPaymentMethod('gcash_manual');
+    setIsGcashManualModalOpen(true);
   };
+  const closeGcashManualModal = () => setIsGcashManualModalOpen(false);
 
-  const selectGcashSubMethod = (sub: GcashSubMethod) => {
-    setGcashSubMethod(sub);
-  };
-
-  const confirmGcashSubMethod = () => {
-    if (!gcashSubMethod) {
-      toast('Please choose QR Code or Manual.', 'warning');
-      return;
-    }
-    if (gcashSubMethod === 'manual' && !gcashRefNumber.trim()) {
+  const confirmGcashManual = () => {
+    if (!gcashRefNumber.trim()) {
       toast('Please enter your GCash reference number.', 'warning');
       return;
     }
-    setIsGcashModalOpen(false);
-    toast(
-      `GCash ${gcashSubMethod === 'qr' ? 'QR Code' : 'Manual'} selected.`,
-      'success'
-    );
+    setIsGcashManualModalOpen(false);
+    toast('GCash Manual selected.', 'success');
   };
 
-  /* ✅ Close modal with Escape key */
-  useEffect(() => {
-    if (!isGcashModalOpen) return;
+  const confirmGcashPayMongo = () => {
+    setIsGcashPayMongoModalOpen(false);
+    setIsRedirectModalOpen(true);
+  };
 
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeGcashModal();
-    };
-
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isGcashModalOpen]);
-
-  /* ✅ Lock body scroll kapag bukas yung modal */
-  useEffect(() => {
-    if (isGcashModalOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+  const proceedToPayMongo = async () => {
+    if (!session) {
+      toast('Please sign in to continue.', 'warning');
+      navigate('/login');
+      return;
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isGcashModalOpen]);
+    if (!phone.trim() || phone.length !== 11) {
+      toast('Please enter a valid 11-digit phone number.', 'warning');
+      setIsRedirectModalOpen(false);
+      return;
+    }
+    if (!building.trim() || !room.trim()) {
+      toast('Please select a building and room.', 'warning');
+      setIsRedirectModalOpen(false);
+      return;
+    }
+    if (!notes.trim()) {
+      toast('Please add additional notes.', 'warning');
+      setIsRedirectModalOpen(false);
+      return;
+    }
 
-  /* ============================================
-     REDIRECT
-     ============================================ */
-  if (!session) {
-    navigate('/login');
-    return null;
-  }
+    setIsSubmitting(true);
+    setIsRedirectModalOpen(false);
+
+    try {
+      const orderId = `SJCM-${Date.now()}`;
+      const sessionId = session.id;
+
+      const newOrder: Order = {
+        id: orderId,
+        userId: sessionId,
+        customerName: fullName,
+        studentId: studentId,
+        email: email,
+        phone: phone,
+        items: cart.map((item) => ({
+          id: item.id,
+          name: item.name,
+          organization: item.organization || 'General',
+          price: Number(item.price) || 0,
+          qty: Number(item.qty) || 0,
+          size: item.size || 'N/A',
+        })),
+        totalAmount: subtotal,
+        paymentMethod: 'GCash (PayMongo QR)',
+        paymentRef: null,
+        paymentStatus: 'Pending',
+        orderStatus: 'Pending',
+        claimLocation: `${building} — ${room}`,
+        claimDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+        createdAt: new Date().toISOString(),
+      };
+
+      /* ✅ Save to sessionStorage — idadagdag sa DB pagkatapos ng payment */
+      sessionStorage.setItem('pendingOrder', JSON.stringify(newOrder));
+      sessionStorage.setItem('pendingCart', JSON.stringify(cart));
+      sessionStorage.setItem('pendingOrderId', orderId);
+
+      console.log('[Checkout] Pending order saved:', orderId);
+
+      const timeoutPromise = new Promise<string>((_, reject) =>
+        setTimeout(() => reject(new Error('Request timeout. Please try again.')), 15000)
+      );
+
+      const paymongoPromise = (async (): Promise<string> => {
+        const { checkoutUrl } = await createPayMongoCheckout({
+          orderId: orderId,
+          amount: subtotal,
+          description: `SJCM Order ${orderId} — ${totalItems} item${totalItems > 1 ? 's' : ''}`,
+          email: email,
+          customerName: fullName,
+        });
+        if (!checkoutUrl) throw new Error('No checkout URL received from PayMongo');
+        return checkoutUrl;
+      })();
+
+      const checkoutUrl = await Promise.race([paymongoPromise, timeoutPromise]);
+
+      console.log('[Checkout] Redirecting to:', checkoutUrl);
+      window.location.href = checkoutUrl;
+    } catch (error: any) {
+      console.error('[Checkout] PayMongo error:', error);
+      sessionStorage.removeItem('pendingOrder');
+      sessionStorage.removeItem('pendingCart');
+      sessionStorage.removeItem('pendingOrderId');
+      toast(error?.message || 'Payment gateway error. Please try again.', 'danger');
+      setIsSubmitting(false);
+      setIsRedirectModalOpen(false);
+    }
+  };
+
+  if (!session) return null;
 
   if (cart.length === 0) {
     return (
@@ -204,39 +245,42 @@ export default function CheckoutPage() {
     );
   }
 
-  /* ============================================
-     SUBMIT
-     ============================================ */
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!phone.trim()) {
-      toast('Please enter your phone number.', 'warning');
+    if (!session) {
+      toast('Please sign in to continue.', 'warning');
+      navigate('/login');
       return;
     }
-
-    if (!building.trim() || !room.trim()) {
-      toast('Please select a building and room.', 'warning');
+    if (!phone.trim() || phone.length !== 11) {
+      toast('Please enter a valid 11-digit phone number.', 'warning');
       return;
     }
-
+    if (!building.trim()) {
+      toast('Please select a building.', 'warning');
+      return;
+    }
+    if (!room.trim()) {
+      toast('Please select a room / office.', 'warning');
+      return;
+    }
+    if (!notes.trim()) {
+      toast('Please add additional notes.', 'warning');
+      return;
+    }
     if (isStaffRole(session.role)) {
       toast('Staff and admin accounts cannot place customer orders.', 'warning');
       return;
     }
+    if (paymentMethod === 'gcash_manual' && !gcashRefNumber.trim()) {
+      toast('Please enter your GCash reference number.', 'warning');
+      return;
+    }
 
-    /* GCash validation */
-    if (paymentMethod === 'gcash') {
-      if (!gcashSubMethod) {
-        toast('Please choose a GCash payment method.', 'warning');
-        openGcashModal();
-        return;
-      }
-      if (gcashSubMethod === 'manual' && !gcashRefNumber.trim()) {
-        toast('Please enter your GCash reference number.', 'warning');
-        openGcashModal();
-        return;
-      }
+    if (paymentMethod === 'gcash_paymongo') {
+      setIsRedirectModalOpen(true);
+      return;
     }
 
     setIsSubmitting(true);
@@ -244,25 +288,18 @@ export default function CheckoutPage() {
       const orderId = `SJCM-${Date.now()}`;
 
       const paymentMethodLabel: Record<PaymentMethod, string> = {
-        gcash:
-          gcashSubMethod === 'qr'
-            ? 'GCash (QR Code)'
-            : 'GCash (Manual)',
+        gcash_paymongo: 'GCash (PayMongo QR)',
+        gcash_manual: 'GCash (Manual)',
         cod: 'Cash on Delivery',
         cop: 'Cash on Pickup',
       };
 
       const paymentStatus: Record<PaymentMethod, string> = {
-        gcash: 'Verification Pending',
+        gcash_paymongo: 'Pending',
+        gcash_manual: 'Verification Pending',
         cod: 'Unpaid (COD)',
         cop: 'Unpaid (OTC)',
       };
-
-      const claimLocation = `${building} — ${room}`;
-      const paymentRef =
-        paymentMethod === 'gcash' && gcashSubMethod === 'manual'
-          ? gcashRefNumber
-          : null;
 
       const newOrder: Order = {
         id: orderId,
@@ -281,19 +318,26 @@ export default function CheckoutPage() {
         })),
         totalAmount: subtotal,
         paymentMethod: paymentMethodLabel[paymentMethod],
-        paymentRef: paymentRef,
+        paymentRef: paymentMethod === 'gcash_manual' ? gcashRefNumber : null,
         paymentStatus: paymentStatus[paymentMethod],
         orderStatus: 'Pending',
-        claimLocation: claimLocation,
+        claimLocation: `${building} — ${room}`,
         claimDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
         createdAt: new Date().toISOString(),
       };
 
       await placeOrderService(newOrder);
 
+      /* ✅ Save order ID sa sessionStorage for verification tracking */
+      sessionStorage.setItem('lastOrderId', orderId);
+
       setCart([]);
-      toast('Order placed successfully!', 'success');
-      navigate('/dashboard');
+      toast('Order placed successfully! Check your email to verify.', 'success');
+
+      /* ✅ NEW: Redirect sa verification page imbes na dashboard */
+      navigate(
+        `/verify-email?order=${encodeURIComponent(orderId)}&email=${encodeURIComponent(email)}`
+      );
     } catch (error: any) {
       console.error('Checkout error:', error);
       toast(error?.message || 'Checkout failed. Please try again.', 'danger');
@@ -302,13 +346,9 @@ export default function CheckoutPage() {
     }
   };
 
-  /* ============================================
-     RENDER
-     ============================================ */
   return (
     <main className="checkout-page">
       <div className="checkout-container">
-        {/* HERO */}
         <header className="checkout-hero">
           <Link to="/cart" className="checkout-hero__back">
             <ArrowLeft className="react-icon" aria-hidden="true" />
@@ -329,9 +369,7 @@ export default function CheckoutPage() {
           </div>
         </header>
 
-        {/* FORM */}
         <form className="checkout-body" onSubmit={handleSubmit}>
-          {/* LEFT */}
           <div className="checkout-main">
             {/* Contact Information */}
             <section className="checkout-section">
@@ -340,9 +378,7 @@ export default function CheckoutPage() {
                   <User className="react-icon" aria-hidden="true" />
                 </span>
                 <div>
-                  <h2 className="checkout-section__title">
-                    Contact Information
-                  </h2>
+                  <h2 className="checkout-section__title">Contact Information</h2>
                   <p className="checkout-section__subtitle">
                     Your registered details from login (locked).
                   </p>
@@ -350,7 +386,6 @@ export default function CheckoutPage() {
               </header>
 
               <div className="checkout-grid-2">
-                {/* LOCKED: Full Name */}
                 <div className="field">
                   <label className="field__label">
                     Full Name
@@ -365,7 +400,6 @@ export default function CheckoutPage() {
                   />
                 </div>
 
-                {/* LOCKED: Student ID */}
                 <div className="field">
                   <label className="field__label">
                     Student ID
@@ -380,7 +414,6 @@ export default function CheckoutPage() {
                   />
                 </div>
 
-                {/* LOCKED: Email */}
                 <div className="field">
                   <label className="field__label">
                     Email
@@ -398,7 +431,6 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                {/* LOCKED: Organization */}
                 <div className="field">
                   <label className="field__label">
                     Organization
@@ -413,10 +445,10 @@ export default function CheckoutPage() {
                   />
                 </div>
 
-                {/* ✅ EDITABLE: Phone — auto-filled from session/profile */}
                 <div className="field">
                   <label className="field__label" htmlFor="co-phone">
-                    Phone Number
+                    Phone Number{' '}
+                    <span style={{ color: 'var(--theme-danger)' }}>*</span>
                   </label>
                   <div className="field__icon-wrap">
                     <Phone className="react-icon" aria-hidden="true" />
@@ -424,30 +456,26 @@ export default function CheckoutPage() {
                       id="co-phone"
                       className="field__input field__input--icon"
                       type="tel"
+                      inputMode="numeric"
+                      maxLength={11}
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="09XX XXX XXXX"
+                      onChange={(e) => handlePhoneChange(e.target.value)}
+                      placeholder="09XXXXXXXXX (11 digits)"
                       required
                     />
                   </div>
-                  {!phone && (
-                    <p
-                      style={{
-                        fontSize: 11.5,
-                        color: 'var(--text-muted, #6b7280)',
-                        marginTop: 6,
-                      }}
-                    >
-                      💡 Tip: Save your phone number sa{' '}
-                      <Link
-                        to="/settings"
-                        style={{ color: 'var(--brand, #22915c)', fontWeight: 600 }}
-                      >
-                        Settings
-                      </Link>{' '}
-                      para auto-fill sa susunod.
-                    </p>
-                  )}
+                  <p
+                    style={{
+                      fontSize: 11,
+                      color:
+                        phone.length === 11
+                          ? 'var(--theme-success)'
+                          : 'var(--theme-text-muted)',
+                      marginTop: 4,
+                    }}
+                  >
+                    {phone.length}/11 digits {phone.length === 11 && '✓'}
+                  </p>
                 </div>
               </div>
             </section>
@@ -469,7 +497,8 @@ export default function CheckoutPage() {
               <div className="checkout-grid-2">
                 <div className="field">
                   <label className="field__label" htmlFor="co-building">
-                    Building
+                    Building{' '}
+                    <span style={{ color: 'var(--theme-danger)' }}>*</span>
                   </label>
                   <div className="field__icon-wrap">
                     <Building2 className="react-icon" aria-hidden="true" />
@@ -480,6 +509,7 @@ export default function CheckoutPage() {
                       onChange={(e) => handleBuildingChange(e.target.value)}
                       required
                     >
+                      <option value="">Select building</option>
                       {BUILDING_NAMES.map((b) => (
                         <option key={b} value={b}>
                           {b}
@@ -491,7 +521,8 @@ export default function CheckoutPage() {
 
                 <div className="field">
                   <label className="field__label" htmlFor="co-room">
-                    Room / Office
+                    Room / Office{' '}
+                    <span style={{ color: 'var(--theme-danger)' }}>*</span>
                   </label>
                   <div className="field__icon-wrap">
                     <DoorOpen className="react-icon" aria-hidden="true" />
@@ -501,7 +532,9 @@ export default function CheckoutPage() {
                       value={room}
                       onChange={(e) => setRoom(e.target.value)}
                       required
+                      disabled={!building}
                     >
+                      <option value="">Select room / office</option>
                       {availableRooms.map((r) => (
                         <option key={r} value={r}>
                           {r}
@@ -512,21 +545,20 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              <div className="checkout-pickup-info">
-                <MapPin className="react-icon" aria-hidden="true" />
-                <div>
-                  <p className="checkout-pickup-info__title">
-                    Pickup Location
-                  </p>
-                  <p className="checkout-pickup-info__text">
-                    {building} · {room}
-                  </p>
-                  <p className="checkout-pickup-info__note">
-                    Monday – Friday · 8:00 AM – 4:00 PM. Bring a valid school
-                    ID.
-                  </p>
+              {building && room && (
+                <div className="checkout-pickup-info">
+                  <MapPin className="react-icon" aria-hidden="true" />
+                  <div>
+                    <p className="checkout-pickup-info__title">Pickup Location</p>
+                    <p className="checkout-pickup-info__text">
+                      {building} · {room}
+                    </p>
+                    <p className="checkout-pickup-info__note">
+                      Monday – Friday · 8:00 AM – 4:00 PM. Bring a valid school ID.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </section>
 
             {/* Payment Method */}
@@ -544,41 +576,56 @@ export default function CheckoutPage() {
               </header>
 
               <div className="payment-options">
-                {/* GCash — triggers modal */}
                 <label
                   className={`payment-option ${
-                    paymentMethod === 'gcash' ? 'is-selected' : ''
+                    paymentMethod === 'gcash_paymongo' ? 'is-selected' : ''
                   }`}
                 >
                   <input
                     type="radio"
                     name="payment"
-                    value="gcash"
-                    checked={paymentMethod === 'gcash'}
-                    onChange={() => {
-                      setPaymentMethod('gcash');
-                      openGcashModal();
-                    }}
-                    onClick={openGcashModal}
+                    value="gcash_paymongo"
+                    checked={paymentMethod === 'gcash_paymongo'}
+                    onChange={() => openGcashPayMongoModal()}
+                    onClick={openGcashPayMongoModal}
                   />
                   <span className="payment-option__icon">
-                    <Wallet className="react-icon" aria-hidden="true" />
+                    <QrCode className="react-icon" aria-hidden="true" />
                   </span>
                   <span className="payment-option__copy">
                     <span className="payment-option__title">
-                      GCash / E-Wallet
+                      GCash (PayMongo)
                     </span>
                     <span className="payment-option__description">
-                      {gcashSubMethod === 'qr'
-                        ? '✓ QR Code selected'
-                        : gcashSubMethod === 'manual'
-                        ? '✓ Manual payment selected'
-                        : 'Click to choose QR or manual'}
+                      Scan QR or secure checkout
                     </span>
                   </span>
                 </label>
 
-                {/* COD */}
+                <label
+                  className={`payment-option ${
+                    paymentMethod === 'gcash_manual' ? 'is-selected' : ''
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="gcash_manual"
+                    checked={paymentMethod === 'gcash_manual'}
+                    onChange={() => openGcashManualModal()}
+                    onClick={openGcashManualModal}
+                  />
+                  <span className="payment-option__icon">
+                    <FileText className="react-icon" aria-hidden="true" />
+                  </span>
+                  <span className="payment-option__copy">
+                    <span className="payment-option__title">GCash (Manual)</span>
+                    <span className="payment-option__description">
+                      Enter reference #
+                    </span>
+                  </span>
+                </label>
+
                 <label
                   className={`payment-option ${
                     paymentMethod === 'cod' ? 'is-selected' : ''
@@ -589,25 +636,19 @@ export default function CheckoutPage() {
                     name="payment"
                     value="cod"
                     checked={paymentMethod === 'cod'}
-                    onChange={() => {
-                      setPaymentMethod('cod');
-                      setGcashSubMethod(null);
-                    }}
+                    onChange={() => setPaymentMethod('cod')}
                   />
                   <span className="payment-option__icon">
                     <Banknote className="react-icon" aria-hidden="true" />
                   </span>
                   <span className="payment-option__copy">
-                    <span className="payment-option__title">
-                      Cash on Delivery
-                    </span>
+                    <span className="payment-option__title">Cash on Delivery</span>
                     <span className="payment-option__description">
-                      Delivered to you on campus
+                      Delivered on campus
                     </span>
                   </span>
                 </label>
 
-                {/* COP */}
                 <label
                   className={`payment-option ${
                     paymentMethod === 'cop' ? 'is-selected' : ''
@@ -618,26 +659,20 @@ export default function CheckoutPage() {
                     name="payment"
                     value="cop"
                     checked={paymentMethod === 'cop'}
-                    onChange={() => {
-                      setPaymentMethod('cop');
-                      setGcashSubMethod(null);
-                    }}
+                    onChange={() => setPaymentMethod('cop')}
                   />
                   <span className="payment-option__icon">
                     <Banknote className="react-icon" aria-hidden="true" />
                   </span>
                   <span className="payment-option__copy">
-                    <span className="payment-option__title">
-                      Cash on Pickup
-                    </span>
+                    <span className="payment-option__title">Cash on Pickup</span>
                     <span className="payment-option__description">
-                      Pay at the SJCM supply office
+                      Pay at the supply office
                     </span>
                   </span>
                 </label>
               </div>
 
-              {/* COD Info */}
               {paymentMethod === 'cod' && (
                 <div className="ewallet-info">
                   <p>
@@ -647,13 +682,11 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              {/* COP Info */}
               {paymentMethod === 'cop' && (
                 <div className="ewallet-info">
                   <p>
                     <strong>Cash on Pickup:</strong> Pay in cash when you pick
-                    up your order at the selected office. Bring a valid school
-                    ID.
+                    up your order at the selected office. Bring a valid school ID.
                   </p>
                 </div>
               )}
@@ -666,9 +699,12 @@ export default function CheckoutPage() {
                   <ShieldCheck className="react-icon" aria-hidden="true" />
                 </span>
                 <div>
-                  <h2 className="checkout-section__title">Additional Notes</h2>
+                  <h2 className="checkout-section__title">
+                    Additional Notes{' '}
+                    <span style={{ color: 'var(--theme-danger)' }}>*</span>
+                  </h2>
                   <p className="checkout-section__subtitle">
-                    Optional — any special requests for your order?
+                    Required — any special requests for your order?
                   </p>
                 </div>
               </header>
@@ -680,24 +716,30 @@ export default function CheckoutPage() {
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder={notesPlaceholder}
+                  required
                 />
+                {!notes.trim() && (
+                  <p
+                    style={{
+                      fontSize: 11,
+                      color: 'var(--theme-danger)',
+                      marginTop: 4,
+                    }}
+                  >
+                    ⚠️ Required field — please add notes.
+                  </p>
+                )}
               </div>
             </section>
           </div>
 
-          {/* RIGHT: order summary */}
           <aside className="checkout-summary">
             <h2 className="checkout-summary__title">Order Summary</h2>
 
             <div className="checkout-summary__items">
               {cart.map((item, index) => (
-                <div
-                  className="checkout-summary__item"
-                  key={`${item.id}-${index}`}
-                >
-                  <span className="checkout-summary__item-qty">
-                    {item.qty}×
-                  </span>
+                <div className="checkout-summary__item" key={`${item.id}-${index}`}>
+                  <span className="checkout-summary__item-qty">{item.qty}×</span>
                   <span className="checkout-summary__item-copy">
                     <span className="checkout-summary__item-name">
                       {item.name}
@@ -738,7 +780,13 @@ export default function CheckoutPage() {
               disabled={isSubmitting}
             >
               <Lock className="react-icon" aria-hidden="true" />
-              <span>{isSubmitting ? 'Placing Order...' : 'Place Order'}</span>
+              <span>
+                {isSubmitting
+                  ? 'Processing...'
+                  : paymentMethod === 'gcash_paymongo'
+                  ? 'Proceed to PayMongo'
+                  : 'Place Order'}
+              </span>
               <ArrowRight className="react-icon" aria-hidden="true" />
             </button>
 
@@ -765,34 +813,33 @@ export default function CheckoutPage() {
         </form>
       </div>
 
-      {/* GCASH MODAL */}
-      {isGcashModalOpen && (
+      {/* PAYMONGO MODAL */}
+      {isGcashPayMongoModalOpen && (
         <div
           className="gcash-modal-backdrop"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeGcashModal();
-          }}
+          onClick={(e) =>
+            e.target === e.currentTarget && closeGcashPayMongoModal()
+          }
           role="dialog"
           aria-modal="true"
-          aria-label="GCash payment options"
         >
           <div className="gcash-modal">
             <div className="gcash-modal__header">
               <div className="gcash-modal__title-wrap">
                 <span className="gcash-modal__icon">
-                  <Wallet className="react-icon" aria-hidden="true" />
+                  <QrCode className="react-icon" aria-hidden="true" />
                 </span>
                 <div>
-                  <h2 className="gcash-modal__title">GCash Payment</h2>
+                  <h2 className="gcash-modal__title">PayMongo Checkout</h2>
                   <p className="gcash-modal__subtitle">
-                    Choose how you'd like to pay
+                    Secure payment via PayMongo
                   </p>
                 </div>
               </div>
               <button
                 type="button"
                 className="gcash-modal__close"
-                onClick={closeGcashModal}
+                onClick={closeGcashPayMongoModal}
                 aria-label="Close"
               >
                 <X className="react-icon" aria-hidden="true" />
@@ -800,111 +847,227 @@ export default function CheckoutPage() {
             </div>
 
             <div className="gcash-modal__body">
-              <div className="gcash-modal__options">
-                <button
-                  type="button"
-                  className={`gcash-modal__option ${
-                    gcashSubMethod === 'qr' ? 'is-selected' : ''
-                  }`}
-                  onClick={() => selectGcashSubMethod('qr')}
-                >
-                  <span className="gcash-modal__option-icon">
-                    <QrCode className="react-icon" aria-hidden="true" />
-                  </span>
-                  <span className="gcash-modal__option-copy">
-                    <span className="gcash-modal__option-title">QR Code</span>
-                    <span className="gcash-modal__option-desc">
-                      Scan via PayMongo
-                    </span>
-                  </span>
-                  {gcashSubMethod === 'qr' && (
-                    <Check className="gcash-modal__check" aria-hidden="true" />
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  className={`gcash-modal__option ${
-                    gcashSubMethod === 'manual' ? 'is-selected' : ''
-                  }`}
-                  onClick={() => selectGcashSubMethod('manual')}
-                >
-                  <span className="gcash-modal__option-icon">
-                    <FileText className="react-icon" aria-hidden="true" />
-                  </span>
-                  <span className="gcash-modal__option-copy">
-                    <span className="gcash-modal__option-title">Manual</span>
-                    <span className="gcash-modal__option-desc">
-                      Enter reference #
-                    </span>
-                  </span>
-                  {gcashSubMethod === 'manual' && (
-                    <Check className="gcash-modal__check" aria-hidden="true" />
-                  )}
-                </button>
-              </div>
-
-              {gcashSubMethod === 'qr' && (
-                <div className="gcash-modal__panel gcash-modal__panel--qr">
-                  <div className="gcash-modal__qr-frame">
-                    <QrCode
-                      className="gcash-modal__qr-icon"
-                      aria-hidden="true"
-                    />
-                    <span className="gcash-modal__qr-text">QR Code</span>
-                  </div>
-                  <div className="gcash-modal__qr-info">
-                    <p className="gcash-modal__qr-title">
-                      Scan to pay via PayMongo
-                    </p>
-                    <p className="gcash-modal__qr-desc">
-                      Open your GCash app, tap{' '}
-                      <strong>Scan QR</strong>, and scan the code above.
-                    </p>
-                    <p className="gcash-modal__qr-note">
-                      ⚠️ Mock only — real PayMongo integration coming soon.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {gcashSubMethod === 'manual' && (
-                <div className="gcash-modal__panel gcash-modal__panel--manual">
-                  <div className="field">
-                    <label className="field__label" htmlFor="gcash-ref-modal">
-                      GCash Reference Number
-                    </label>
-                    <input
-                      id="gcash-ref-modal"
-                      className="field__input"
-                      type="text"
-                      value={gcashRefNumber}
-                      onChange={(e) => setGcashRefNumber(e.target.value)}
-                      placeholder="e.g. 1234 567 8901 2345"
-                      autoFocus
-                    />
-                  </div>
-                  <p className="gcash-modal__manual-note">
-                    Send payment to <strong>0917 XXX XXXX</strong> then enter
-                    the reference number above.
+              <div className="gcash-modal__panel gcash-modal__panel--qr">
+                <div className="gcash-modal__qr-info">
+                  <p className="gcash-modal__qr-title">
+                    🔒 Secure Payment via PayMongo
+                  </p>
+                  <p className="gcash-modal__qr-desc">
+                    You'll be redirected to{' '}
+                    <strong>PayMongo's secure checkout</strong> where you can
+                    pay via:
+                  </p>
+                  <ul className="gcash-modal__payment-list">
+                    <li>📱 GCash</li>
+                    <li>💳 Maya (PayMaya)</li>
+                    <li>💳 Cards (Visa, Mastercard, JCB)</li>
+                    <li>📷 QR Ph</li>
+                  </ul>
+                  <p className="gcash-modal__qr-note">
+                    ✅ Your payment is secured by PayMongo. You'll return to
+                    SJCM Store after payment.
                   </p>
                 </div>
-              )}
+              </div>
             </div>
 
             <div className="gcash-modal__footer">
               <button
                 type="button"
                 className="gcash-modal__btn gcash-modal__btn--ghost"
-                onClick={closeGcashModal}
+                onClick={closeGcashPayMongoModal}
               >
                 Cancel
               </button>
               <button
                 type="button"
                 className="gcash-modal__btn gcash-modal__btn--primary"
-                onClick={confirmGcashSubMethod}
-                disabled={!gcashSubMethod}
+                onClick={confirmGcashPayMongo}
+              >
+                <Check className="react-icon" aria-hidden="true" />
+                Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* REDIRECT MODAL */}
+      {isRedirectModalOpen && (
+        <div
+          className="gcash-modal-backdrop"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isSubmitting) {
+              setIsRedirectModalOpen(false);
+            }
+          }}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="gcash-modal">
+            <div className="gcash-modal__header">
+              <div className="gcash-modal__title-wrap">
+                <span className="gcash-modal__icon">
+                  <AlertCircle className="react-icon" aria-hidden="true" />
+                </span>
+                <div>
+                  <h2 className="gcash-modal__title">Ready to Pay?</h2>
+                  <p className="gcash-modal__subtitle">
+                    You'll be redirected to PayMongo
+                  </p>
+                </div>
+              </div>
+              {!isSubmitting && (
+                <button
+                  type="button"
+                  className="gcash-modal__close"
+                  onClick={() => setIsRedirectModalOpen(false)}
+                  aria-label="Close"
+                >
+                  <X className="react-icon" aria-hidden="true" />
+                </button>
+              )}
+            </div>
+
+            <div className="gcash-modal__body">
+              <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+                <p
+                  style={{
+                    fontSize: '0.95rem',
+                    color: 'var(--theme-text)',
+                    marginBottom: '0.75rem',
+                  }}
+                >
+                  You are about to pay:
+                </p>
+                <p
+                  style={{
+                    fontSize: '2rem',
+                    fontWeight: 800,
+                    color: 'var(--theme-primary)',
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    marginBottom: '1rem',
+                  }}
+                >
+                  {formatPrice(subtotal)}
+                </p>
+                <p
+                  style={{
+                    fontSize: '0.82rem',
+                    color: 'var(--theme-text-muted)',
+                    lineHeight: 1.6,
+                  }}
+                >
+                  Click <strong>"Proceed to PayMongo"</strong> to complete your
+                  payment. You'll be redirected to PayMongo's secure checkout
+                  page.
+                </p>
+              </div>
+            </div>
+
+            <div className="gcash-modal__footer">
+              <button
+                type="button"
+                className="gcash-modal__btn gcash-modal__btn--ghost"
+                onClick={() => {
+                  setIsRedirectModalOpen(false);
+                  setIsSubmitting(false);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="gcash-modal__btn gcash-modal__btn--primary"
+                onClick={proceedToPayMongo}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader className="react-icon" aria-hidden="true" />
+                    Redirecting...
+                  </>
+                ) : (
+                  <>
+                    <ArrowRight className="react-icon" aria-hidden="true" />
+                    Proceed to PayMongo
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* GCASH MANUAL MODAL */}
+      {isGcashManualModalOpen && (
+        <div
+          className="gcash-modal-backdrop"
+          onClick={(e) =>
+            e.target === e.currentTarget && closeGcashManualModal()
+          }
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="gcash-modal">
+            <div className="gcash-modal__header">
+              <div className="gcash-modal__title-wrap">
+                <span className="gcash-modal__icon">
+                  <FileText className="react-icon" aria-hidden="true" />
+                </span>
+                <div>
+                  <h2 className="gcash-modal__title">GCash Manual</h2>
+                  <p className="gcash-modal__subtitle">
+                    Enter your reference number
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="gcash-modal__close"
+                onClick={closeGcashManualModal}
+                aria-label="Close"
+              >
+                <X className="react-icon" aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="gcash-modal__body">
+              <div className="gcash-modal__panel gcash-modal__panel--manual">
+                <div className="field">
+                  <label className="field__label" htmlFor="gcash-ref-modal">
+                    GCash Reference Number
+                  </label>
+                  <input
+                    id="gcash-ref-modal"
+                    className="field__input"
+                    type="text"
+                    value={gcashRefNumber}
+                    onChange={(e) => setGcashRefNumber(e.target.value)}
+                    placeholder="e.g. 1234 567 8901 2345"
+                    autoFocus
+                  />
+                </div>
+                <p className="gcash-modal__manual-note">
+                  Send payment to <strong>0917 XXX XXXX</strong> then enter the
+                  reference number above.
+                </p>
+              </div>
+            </div>
+
+            <div className="gcash-modal__footer">
+              <button
+                type="button"
+                className="gcash-modal__btn gcash-modal__btn--ghost"
+                onClick={closeGcashManualModal}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="gcash-modal__btn gcash-modal__btn--primary"
+                onClick={confirmGcashManual}
+                disabled={!gcashRefNumber.trim()}
               >
                 <Check className="react-icon" aria-hidden="true" />
                 Confirm

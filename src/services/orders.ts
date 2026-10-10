@@ -3,6 +3,7 @@
 import { supabase } from '../lib/supabaseClient';
 import type { Order, OrderItem } from '../types';
 import { getCachedData, invalidateCache } from '../utils/cache';
+import { triggerOrderStatusNotifications } from './orderNotifications';
 
 /* ============================================
    PLACE ORDER
@@ -91,20 +92,38 @@ export async function fetchAllOrders(): Promise<Order[]> {
 }
 
 /* ============================================
-   UPDATE ORDER STATUS — with FULL cache invalidation
+   ✅ UPDATE ORDER STATUS — WITH PRODUCT INFO FOR NOTIFICATIONS
    ============================================ */
 
 export async function updateOrderStatus(
   orderId: string,
   status: string
 ): Promise<void> {
-  // ✅ Kunin yung user_id BEFORE update para ma-invalidate yung user cache
-  const { data: existing } = await supabase
+  // ✅ Fetch full order
+  const { data: existing, error: fetchError } = await supabase
     .from('orders')
-    .select('user_id')
+    .select('*')
     .eq('id', orderId)
     .maybeSingle();
 
+  if (fetchError) {
+    console.error('Error fetching order:', fetchError);
+    throw new Error(fetchError.message);
+  }
+
+  if (!existing) {
+    throw new Error('Order not found');
+  }
+
+  const previousStatus = existing.order_status;
+
+  // ✅ Skip kung walang change
+  if (previousStatus === status) {
+    console.log('[Orders] Status unchanged, skipping');
+    return;
+  }
+
+  // ✅ Update order status
   const { error } = await supabase
     .from('orders')
     .update({ order_status: status })
@@ -115,17 +134,122 @@ export async function updateOrderStatus(
     throw new Error(error.message);
   }
 
-  // ✅ Invalidate LAHAT ng caches
+  // ✅ Invalidate caches
   invalidateCache('orders_all');
   invalidateCache('orders');
 
-  if (existing?.user_id) {
+  if (existing.user_id) {
     invalidateCache(`orders_${existing.user_id}`);
+  }
+
+  /* ============================================
+     ✅ EXTRACT PRODUCT INFO FOR NOTIFICATION IMAGES
+     ============================================ */
+  const items = (existing.items ?? []) as OrderItem[];
+  const firstItem = items[0];
+  const productId = firstItem?.id;
+  const productName = firstItem?.name;
+
+  console.log('[Orders] Triggering notification with productId:', productId);
+
+  // ✅ Trigger notifications with productId (para sa product image)
+  try {
+    await triggerOrderStatusNotifications({
+      orderId: existing.id,
+      orderCode: existing.id,
+      userId: existing.user_id,
+      email: existing.email || '',
+      customerName: existing.customer_name,
+      previousStatus: previousStatus as any,
+      newStatus: status as any,
+      claimLocation: existing.claim_location || undefined,
+      productId,
+      productName,
+    });
+  } catch (notifError) {
+    console.error('[Orders] Notification trigger failed:', notifError);
+    // Don't throw — hindi dapat mag-block sa order update
   }
 }
 
 /* ============================================
-   UPDATE PAYMENT STATUS — with FULL cache invalidation
+   ✅ CANCEL ORDER — with stock restoration via trigger
+   ============================================ */
+
+export async function cancelOrder(
+  orderId: string,
+  reason: string = 'Cancelled by user'
+): Promise<void> {
+  // ✅ Fetch current order
+  const { data: order, error: fetchError } = await supabase
+    .from('orders')
+    .select('*')
+    .eq('id', orderId)
+    .single();
+
+  if (fetchError || !order) {
+    throw new Error('Order not found');
+  }
+
+  // ✅ Check kung Pending pa lang
+  if (order.order_status !== 'Pending') {
+    throw new Error(
+      'Cannot cancel — order is already being processed. Please contact the supply office.'
+    );
+  }
+
+  // ✅ Update status to Cancelled
+  // ✅ Supabase trigger `on_order_cancelled` will auto-restore stock
+  const { error: updateError } = await supabase
+    .from('orders')
+    .update({
+      order_status: 'Cancelled',
+      cancellation_reason: reason,
+      cancelled_at: new Date().toISOString(),
+    })
+    .eq('id', orderId);
+
+  if (updateError) {
+    throw new Error(updateError.message);
+  }
+
+  // ✅ Invalidate caches (products too kasi nag-restore ang stock)
+  invalidateCache('orders_all');
+  invalidateCache('orders');
+  invalidateCache(`orders_${order.user_id}`);
+  invalidateCache('products');
+
+  /* ============================================
+     ✅ EXTRACT PRODUCT INFO FOR NOTIFICATION
+     ============================================ */
+  const items = (order.items ?? []) as OrderItem[];
+  const firstItem = items[0];
+  const productId = firstItem?.id;
+  const productName = firstItem?.name;
+
+  console.log('[Order] Cancel notification with productId:', productId);
+
+  // ✅ Send notification (fire-and-forget)
+  try {
+    await triggerOrderStatusNotifications({
+      orderId: order.id,
+      orderCode: order.id,
+      userId: order.user_id,
+      email: order.email || '',
+      customerName: order.customer_name,
+      previousStatus: order.order_status as any,
+      newStatus: 'Cancelled',
+      claimLocation: order.claim_location || undefined,
+      productId,
+      productName,
+    });
+  } catch (err) {
+    console.error('[Order] Cancel notification failed:', err);
+  }
+}
+
+/* ============================================
+   UPDATE PAYMENT STATUS
    ============================================ */
 
 export async function updatePaymentStatus(
@@ -171,7 +295,7 @@ export async function refreshOrders(userId?: string): Promise<Order[]> {
 }
 
 /* ============================================
-   ✅ BAGO — DATE/TIME FORMATTERS
+   ✅ DATE/TIME FORMATTERS
    ============================================ */
 
 /**

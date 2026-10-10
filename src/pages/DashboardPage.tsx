@@ -17,6 +17,7 @@ import {
   Shield,
   ShoppingCart,
   ChevronRight,
+  Lock,
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
@@ -186,9 +187,51 @@ export default function DashboardPage() {
   const [isLoadingOrders, setIsLoadingOrders] = useState(true);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
 
+  /* ✅ GATE — check kung may unverified order */
+  const [isCheckingVerification, setIsCheckingVerification] = useState(true);
+  const [hasPendingVerification, setHasPendingVerification] = useState(false);
+
   /* ✅ BANNER — galing sa Supabase notifications */
   const [pickupNotification, setPickupNotification] =
     useState<Notification | null>(null);
+
+  /* ============================================
+     ✅ GATE 1: CHECK VERIFICATION BEFORE RENDER
+     Kung may unverified order → redirect sa /verify-email
+  ============================================ */
+  useEffect(() => {
+    if (!session) {
+      setIsCheckingVerification(false);
+      return;
+    }
+
+    /* ✅ Get last order ID from sessionStorage */
+    const lastOrderId = sessionStorage.getItem('lastOrderId');
+    const pendingOrderId = sessionStorage.getItem('pendingOrderId');
+    const checkOrderId = lastOrderId || pendingOrderId;
+
+    if (!checkOrderId) {
+      /* Walang pending order — OK lang pumasok */
+      setIsCheckingVerification(false);
+      setHasPendingVerification(false);
+      return;
+    }
+
+    /* ✅ Check kung naka-verify na */
+    const isVerified = sessionStorage.getItem(`order_verified_${checkOrderId}`) === 'true';
+
+    if (!isVerified) {
+      /* ❌ Hindi naka-verify — hindi papasukin */
+      console.log('[Dashboard] Order not verified, redirecting to verify-email');
+      setHasPendingVerification(true);
+      setIsCheckingVerification(false);
+      return;
+    }
+
+    /* ✅ Verified — OK lang pumasok */
+    setHasPendingVerification(false);
+    setIsCheckingVerification(false);
+  }, [session]);
 
   /* Redirect kapag walang session */
   useEffect(() => {
@@ -202,9 +245,9 @@ export default function DashboardPage() {
     }
   }, [session, navigate, toast]);
 
-  /* Fetch orders + products */
+  /* Fetch orders + products — ONLY if verified */
   useEffect(() => {
-    if (!session) {
+    if (!session || hasPendingVerification) {
       setOrders([]);
       setIsLoadingOrders(false);
       return;
@@ -232,11 +275,11 @@ export default function DashboardPage() {
     return () => {
       cancelled = true;
     };
-  }, [session]);
+  }, [session, hasPendingVerification]);
 
   /* ✅ BANNER — fetch latest unread pickup notification */
   useEffect(() => {
-    if (!session?.id) {
+    if (!session?.id || hasPendingVerification) {
       setPickupNotification(null);
       return;
     }
@@ -263,7 +306,6 @@ export default function DashboardPage() {
 
     loadPickupNotification();
 
-    /* ✅ Listen sa real-time updates */
     const handleUpdate = (e: CustomEvent) => {
       const { userId } = e.detail;
       if (!userId || userId === session.id) {
@@ -283,7 +325,7 @@ export default function DashboardPage() {
         handleUpdate as EventListener
       );
     };
-  }, [session?.id]);
+  }, [session?.id, hasPendingVerification]);
 
   const userOrders = useMemo(
     () =>
@@ -320,21 +362,34 @@ export default function DashboardPage() {
       [userOrders]
     );
 
-  /* ✅ Dismiss banner — mark notification as read sa Supabase */
   const handleDismissBanner = async () => {
     if (!pickupNotification) return;
 
-    /* Optimistic update — hide agad */
     setPickupNotification(null);
 
     try {
       await markNotificationAsRead(pickupNotification.id);
     } catch (error) {
       console.error('[Dashboard] Failed to dismiss banner:', error);
-      /* Revert kung nag-fail */
       setPickupNotification(pickupNotification);
     }
   };
+
+  /* ============================================
+     ✅ LOADING STATE — Habang Nag-Check
+  ============================================ */
+  if (isCheckingVerification) {
+    return (
+      <div className="dashboard-shell">
+        <div className="dashboard-main">
+          <div className="dashboard-verify-loading">
+            <Clock3 className="react-icon animate-spin" aria-hidden="true" />
+            <p>Loading your dashboard...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!session) {
     return (
@@ -344,11 +399,79 @@ export default function DashboardPage() {
     );
   }
 
+  /* ============================================
+     ✅ GATE 2: HINDI NAKA-VERIFY — Show Gate Screen
+  ============================================ */
+  if (hasPendingVerification) {
+    const lastOrderId = sessionStorage.getItem('lastOrderId') || sessionStorage.getItem('pendingOrderId');
+    const email = session.email || '';
+
+    return (
+      <div className="dashboard-shell">
+        <div className="dashboard-main">
+          <div className="dashboard-gate">
+            <div className="dashboard-gate__icon">
+              <Lock className="react-icon" aria-hidden="true" />
+            </div>
+
+            <h1 className="dashboard-gate__title">
+              Verify Your Email First
+            </h1>
+
+            <p className="dashboard-gate__description">
+              To protect your account and prevent fake orders, you must
+              verify your email before accessing your order history.
+            </p>
+
+            <div className="dashboard-gate__info">
+              <div className="dashboard-gate__info-item">
+                <span className="dashboard-gate__info-label">Order ID</span>
+                <strong className="dashboard-gate__info-value">
+                  {lastOrderId}
+                </strong>
+              </div>
+              <div className="dashboard-gate__info-item">
+                <span className="dashboard-gate__info-label">
+                  Verification sent to
+                </span>
+                <strong className="dashboard-gate__info-value">
+                  {email.replace(/(.{2}).*@/, '$1***@')}
+                </strong>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className="dashboard-gate__btn dashboard-gate__btn--primary"
+              onClick={() =>
+                navigate(
+                  `/verify-email?order=${encodeURIComponent(lastOrderId || '')}&email=${encodeURIComponent(email)}`
+                )
+              }
+            >
+              <Shield className="react-icon" aria-hidden="true" />
+              <span>Verify Email Now</span>
+            </button>
+
+            <Link to="/catalog" className="dashboard-gate__btn dashboard-gate__btn--ghost">
+              <Store className="react-icon" aria-hidden="true" />
+              <span>Back to Catalog</span>
+            </Link>
+
+            <p className="dashboard-gate__hint">
+              💡 Check your email inbox for the 6-digit verification code.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ============================================
+     ✅ RENDER — User Is Verified
+  ============================================ */
   return (
     <div className="dashboard-shell">
-      {/* ============================================
-          SIDEBAR — compact premium glass
-      ============================================ */}
       <aside className="dashboard-sidebar">
         <div className="dashboard-sidebar__top">
           <nav className="dashboard-sidebar__nav">
@@ -373,12 +496,9 @@ export default function DashboardPage() {
         </div>
       </aside>
 
-      {/* ============================================
-          MAIN
-      ============================================ */}
       <div className="dashboard-main">
         <div className="dashboard-scroll">
-          {/* ✅ BANNER — from Supabase notifications */}
+          {/* BANNER */}
           {pickupNotification ? (
             <div className="notice-banner" role="status">
               <span className="notice-banner__icon">

@@ -1,5 +1,7 @@
 /* ============================================================
    SJCM — Master stylesheet entry (index.css)
+   ✅ HERO-CONSISTENT COLORS — Same colors across all elements
+   ✅ Works on all 10 themes automatically
    ============================================================ */
 
 @import './theme.css';
@@ -21,6 +23,41 @@
 @import './responsive.css';
 @import './orders.css';
 @import './print.css';
+@import './verify-email.css';
+
+/* ============================================================
+   🎨 HERO COLOR TOKENS — SINGLE SOURCE OF TRUTH
+   Lahat ng elemento ay kukuha lang sa mga ito
+   ============================================================ */
+
+:root {
+  /* Hero-mapped colors */
+  --fg-hero-title: var(--theme-text);              /* Hero title */
+  --fg-hero-accent: var(--theme-primary);          /* Hero accent word */
+  --fg-hero-desc: var(--theme-text-muted);         /* Hero description */
+  --fg-hero-kicker: var(--theme-primary);          /* Hero kicker */
+
+  /* Universal mappings — LAHAT ng UI ay gagamit nito */
+  --ui-heading: var(--theme-text);                 /* All headings */
+  --ui-text: var(--theme-text);                    /* Main text */
+  --ui-muted: var(--theme-text-muted);             /* Secondary text */
+  --ui-accent: var(--theme-primary);               /* Accent / price / active */
+  --ui-accent-hover: var(--theme-primary-hover);   /* Hover state */
+  --ui-accent-rgb: var(--theme-primary-rgb);       /* For rgba() */
+  --ui-on-accent: var(--theme-on-primary);         /* Text on accent bg */
+
+  /* Glassy surfaces */
+  --ui-glass: var(--theme-glass-bg);
+  --ui-glass-border: var(--theme-glass-border);
+
+  /* Semantic — para lang sa STATUS */
+  --ui-success: var(--theme-success);
+  --ui-success-rgb: var(--theme-success-rgb);
+  --ui-warning: var(--theme-warning);
+  --ui-warning-rgb: var(--theme-warning-rgb);
+  --ui-danger: var(--theme-danger);
+  --ui-danger-rgb: var(--theme-danger-rgb);
+}
 
 /* ============================================================
    GLASSY BACKGROUND LAYER
@@ -31,9 +68,7 @@ body {
   background-attachment: fixed;
   min-height: 100vh;
   color: var(--theme-text);
-  transition:
-    background 0.5s ease,
-    color 0.3s ease;
+  transition: background 0.5s ease, color 0.3s ease;
 }
 
 body::before {
@@ -65,61 +100,20 @@ body::before {
   z-index: 1;
 }
 
-/* ============================================================
-   THEME-SPECIFIC GLASSY LAYERS
-   ============================================================ */
-
-/* Light themes */
-[data-theme='cream-yellow'] body::before {
-  background-image: url('/campus.png');
-  opacity: 0.08;
-}
-[data-theme='warm-beige'] body::before {
-  background-image: url('/campus.png');
-  opacity: 0.08;
-}
-[data-theme='pure-white'] body::before {
-  background-image: url('/campus.png');
-  opacity: 0.06;
-}
-[data-theme='soft-gray'] body::before {
-  background-image: url('/campus.png');
-  opacity: 0.07;
-}
-[data-theme='pale-blush'] body::before {
-  background-image: url('/campus.png');
-  opacity: 0.08;
-}
-
-/* Dark themes */
-[data-theme='midnight-navy'] body::before {
-  background-image: url('/campus.png');
-  opacity: 0.10;
-  mix-blend-mode: screen;
-}
-[data-theme='matte-black'] body::before {
-  background-image: url('/campus.png');
-  opacity: 0.06;
-  mix-blend-mode: screen;
-}
-[data-theme='charcoal-gray'] body::before {
-  background-image: url('/campus.png');
-  opacity: 0.07;
-  mix-blend-mode: screen;
-}
-[data-theme='deep-forest'] body::before {
-  background-image: url('/campus.png');
-  opacity: 0.09;
-  mix-blend-mode: screen;
-}
-[data-theme='dark-plum'] body::before {
-  background-image: url('/campus.png');
-  opacity: 0.08;
-  mix-blend-mode: screen;
-}
+/* Theme-specific backgrounds */
+[data-theme='cream-yellow'] body::before { background-image: url('/campus.png'); opacity: 0.08; }
+[data-theme='warm-beige'] body::before { background-image: url('/campus.png'); opacity: 0.08; }
+[data-theme='pure-white'] body::before { background-image: url('/campus.png'); opacity: 0.06; }
+[data-theme='soft-gray'] body::before { background-image: url('/campus.png'); opacity: 0.07; }
+[data-theme='pale-blush'] body::before { background-image: url('/campus.png'); opacity: 0.08; }
+[data-theme='midnight-navy'] body::before { background-image: url('/campus.png'); opacity: 0.10; mix-blend-mode: screen; }
+[data-theme='matte-black'] body::before { background-image: url('/campus.png'); opacity: 0.06; mix-blend-mode: screen; }
+[data-theme='charcoal-gray'] body::before { background-image: url('/campus.png'); opacity: 0.07; mix-blend-mode: screen; }
+[data-theme='deep-forest'] body::before { background-image: url('/campus.png'); opacity: 0.09; mix-blend-mode: screen; }
+[data-theme='dark-plum'] body::before { background-image: url('/campus.png'); opacity: 0.08; mix-blend-mode: screen; }
 
 /* ============================================================
-   TRANSPARENT SHELLS
+   ✅ TRANSPARENT SHELLS
    ============================================================ */
 
 .dashboard-shell,
@@ -133,12 +127,246 @@ body::before {
 .auth-shell,
 .register-page,
 .notifications-shell,
-.favorites-page {
+.favorites-page,
+.profile-page,
+.order-details-page {
   background: transparent !important;
 }
 
 /* ============================================================
-   ✅ CONTRAST-SAFE PANELS
+   ✅ HERO — MASTER REFERENCE
+   Lahat ng kulay dito ay ang basehan ng lahat
+   ============================================================ */
+
+.hero-shell {
+  background: transparent;
+  color: var(--ui-text);
+}
+
+.hero-title {
+  color: var(--ui-heading);
+  -webkit-text-fill-color: var(--ui-heading);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.hero-title span {
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  color: var(--ui-accent);
+  -webkit-text-fill-color: var(--ui-accent);
+  text-shadow:
+    0 1px 0 rgba(var(--ui-accent-rgb), 0.15),
+    0 2px 8px rgba(var(--ui-accent-rgb), 0.2);
+  font-weight: 800;
+  font-style: italic;
+}
+
+.hero-lede {
+  color: var(--ui-muted);
+  -webkit-text-fill-color: var(--ui-muted);
+}
+
+.hero-kicker,
+.hero-eyebrow {
+  color: var(--ui-accent);
+  -webkit-text-fill-color: var(--ui-accent);
+}
+
+.hero-bullets {
+  border-top: 1px solid var(--ui-glass-border);
+}
+
+.hero-bullet {
+  color: var(--ui-text);
+  -webkit-text-fill-color: var(--ui-text);
+}
+
+.hero-bullet strong {
+  color: var(--ui-text);
+  -webkit-text-fill-color: var(--ui-text);
+}
+
+.hero-bullet small {
+  color: var(--ui-muted);
+  -webkit-text-fill-color: var(--ui-muted);
+}
+
+.hero-bullet__icon {
+  background: rgba(var(--ui-accent-rgb), 0.08);
+  border: 1px solid rgba(var(--ui-accent-rgb), 0.2);
+  color: var(--ui-accent);
+  -webkit-text-fill-color: var(--ui-accent);
+}
+
+/* Hero photo */
+.hero-photo__frame {
+  background: var(--ui-glass);
+  box-shadow: var(--theme-shadow-md);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.hero-photo__signage {
+  background: var(--ui-glass);
+  border: 1px solid var(--ui-glass-border);
+  color: var(--ui-accent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.hero-photo__overlay {
+  background: var(--ui-glass);
+  border: 1px solid rgba(var(--ui-accent-rgb), 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.hero-photo__eyebrow {
+  color: var(--ui-accent);
+  -webkit-text-fill-color: var(--ui-accent);
+}
+
+.hero-photo__name {
+  color: var(--ui-text);
+  -webkit-text-fill-color: var(--ui-text);
+}
+
+.hero-photo__stock-count {
+  color: var(--ui-muted);
+}
+
+.hero-photo__stock-count strong {
+  color: var(--ui-text);
+}
+
+.hero-photo__link {
+  color: var(--ui-accent);
+  -webkit-text-fill-color: var(--ui-accent);
+}
+
+.hero-carousel__viewport {
+  background: var(--ui-glass);
+  border: 1px solid var(--ui-glass-border);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+}
+
+/* ============================================================
+   ✅ HERO ACTION BUTTONS — Master button style
+   ============================================================ */
+
+.hero-actions .button--primary,
+.hero-actions .btn-primary,
+.hero-actions [class*="--primary"] {
+  background: var(--ui-accent);
+  color: var(--ui-on-accent);
+  -webkit-text-fill-color: var(--ui-on-accent);
+  border: 1px solid var(--ui-accent);
+  transition: all 150ms ease;
+}
+
+.hero-actions .button--primary:hover,
+.hero-actions .btn-primary:hover,
+.hero-actions [class*="--primary"]:hover {
+  background: var(--ui-accent-hover);
+  border-color: var(--ui-accent-hover);
+  color: var(--ui-on-accent);
+  -webkit-text-fill-color: var(--ui-on-accent);
+}
+
+.hero-actions .button--secondary,
+.hero-actions .btn-secondary,
+.hero-actions [class*="--secondary"],
+.hero-actions [class*="--ghost"] {
+  background: transparent;
+  color: var(--ui-text);
+  -webkit-text-fill-color: var(--ui-text);
+  border: 1px solid var(--ui-glass-border);
+  transition: all 150ms ease;
+}
+
+.hero-actions .button--secondary:hover,
+.hero-actions .btn-secondary:hover,
+.hero-actions [class*="--secondary"]:hover,
+.hero-actions [class*="--ghost"]:hover {
+  background: rgba(var(--ui-accent-rgb), 0.08);
+  color: var(--ui-accent);
+  -webkit-text-fill-color: var(--ui-accent);
+  border-color: var(--ui-accent);
+}
+
+/* ============================================================
+   ✅ ALL HEADINGS — Same as hero title
+   ============================================================ */
+
+h1, h2, h3, h4, h5, h6,
+.settings-panel__title,
+.od-card__head-title,
+.profile-card-title,
+.notification-card__title,
+.catalog-card__name,
+.product-info__title,
+.favorites-card__name,
+.dashboard-summary__title,
+.od-rail-card__title,
+.home-section__title,
+.home-card__name,
+.cart-card__title,
+.checkout-card__title,
+.catalog-hero__title,
+.favorites-hero__title,
+.notifications-hero__title {
+  color: var(--ui-heading);
+  -webkit-text-fill-color: var(--ui-heading);
+}
+
+/* ============================================================
+   ✅ ALL MUTED TEXT — Same as hero description
+   ============================================================ */
+
+p, li,
+.settings-panel__subtitle,
+.profile-card-subtitle,
+.notification-card__message,
+.catalog-card__category,
+.favorites-card__category,
+.dashboard-summary__label,
+.od-rail-card__text,
+.home-section__description,
+.home-card__category,
+.cart-card__subtitle,
+.checkout-card__subtitle,
+.catalog-hero__description,
+.favorites-hero__description,
+.notifications-hero__description {
+  color: var(--ui-muted);
+  -webkit-text-fill-color: var(--ui-muted);
+}
+
+/* ============================================================
+   ✅ ALL ACCENT TEXT — Same as hero accent word
+   ============================================================ */
+
+.catalog-card__price,
+.product-card__price,
+.favorites-card__price,
+.home-card__price,
+.cart-item__price,
+.checkout-item__price,
+.order-card__price,
+.home-section__link,
+.home-section__kicker,
+.catalog-hero__kicker,
+.favorites-hero__kicker,
+.notifications-hero__kicker {
+  color: var(--ui-accent);
+  -webkit-text-fill-color: var(--ui-accent);
+}
+
+/* ============================================================
+   ✅ GLASSY PANELS — Same glass effect as hero photo
    ============================================================ */
 
 .settings-panel,
@@ -155,100 +383,486 @@ body::before {
 .favorites-card,
 .notification-card,
 .notifications-container,
-.notification-bell__dropdown {
-  background: var(--theme-surface);
-  color: var(--theme-text);
-  border: 1px solid var(--theme-border);
-  backdrop-filter: blur(8px) saturate(120%);
-  -webkit-backdrop-filter: blur(8px) saturate(120%);
+.notification-bell__dropdown,
+.checkout-card,
+.cart-card,
+.cart-summary,
+.home-card,
+.home-section,
+.home-highlights__panel,
+.order-details-card,
+.order-details-summary {
+  background: var(--ui-glass);
+  color: var(--ui-text);
+  border: 1px solid var(--ui-glass-border);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+  box-shadow: var(--theme-shadow-sm);
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Panel headers */
+/* Panel headers — same glass */
 .settings-panel__header,
 .od-card__head,
 .profile-card-header,
 .notifications-header,
-.notifications-toolbar {
-  background: var(--theme-surface-2);
-  color: var(--theme-text);
-  border-bottom: 1px solid var(--theme-border);
-  backdrop-filter: blur(6px) saturate(120%);
-  -webkit-backdrop-filter: blur(6px) saturate(120%);
+.notifications-toolbar,
+.checkout-card__header,
+.cart-card__header,
+.order-details-card__header,
+.home-section__header {
+  background: var(--ui-glass);
+  color: var(--ui-text);
+  border-bottom: 1px solid var(--ui-glass-border);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
 }
 
-/* Text contrast — guaranteed readable */
-.settings-panel__title,
-.od-card__head-title,
-.profile-card-title,
-.notification-card__title,
-.catalog-card__name,
-.product-info__title,
-.favorites-card__name,
-.dashboard-summary__title,
-.od-rail-card__title {
-  color: var(--theme-text);
-}
+/* ============================================================
+   ✅ SIDEBARS — Same glass
+   ============================================================ */
 
-.settings-panel__subtitle,
-.profile-card-subtitle,
-.notification-card__message,
-.catalog-card__category,
-.favorites-card__category,
-.dashboard-summary__label,
-.od-rail-card__text {
-  color: var(--theme-text-muted);
-}
-
-/* Sidebars */
 .settings-sidebar,
 .profile-sidebar,
 .order-sidebar-nav,
 .notifications-sidebar {
-  background: var(--theme-surface);
-  backdrop-filter: blur(12px) saturate(130%);
-  -webkit-backdrop-filter: blur(12px) saturate(130%);
-  border-color: var(--theme-border);
+  background: var(--ui-glass);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-color: var(--ui-glass-border);
 }
 
 /* ============================================================
-   ✅ DARK MODE PANEL OVERRIDES
+   ✅ NAV ITEMS — Accent-based (same as hero)
    ============================================================ */
 
-[data-theme-mode='dark'] .settings-panel,
-[data-theme-mode='dark'] .dashboard-sidebar,
-[data-theme-mode='dark'] .dashboard-summary__card,
-[data-theme-mode='dark'] .order-card,
-[data-theme-mode='dark'] .od-card,
-[data-theme-mode='dark'] .od-rail-card,
-[data-theme-mode='dark'] .profile-card,
-[data-theme-mode='dark'] .profile-side__card,
-[data-theme-mode='dark'] .catalog-card,
-[data-theme-mode='dark'] .product-card,
-[data-theme-mode='dark'] .product-related__card,
-[data-theme-mode='dark'] .favorites-card,
-[data-theme-mode='dark'] .notification-card,
-[data-theme-mode='dark'] .notifications-container,
-[data-theme-mode='dark'] .notification-bell__dropdown {
-  background: var(--theme-surface);
-  color: var(--theme-text);
-  border-color: var(--theme-border);
+.profile-sidebar__item,
+.profile-nav-item,
+.dashboard-sidebar__item,
+.settings-nav-item {
+  background: transparent;
+  color: var(--ui-muted);
+  border: 1px solid transparent;
+  transition: all 150ms ease;
 }
 
-[data-theme-mode='dark'] .settings-panel__header,
-[data-theme-mode='dark'] .od-card__head,
-[data-theme-mode='dark'] .profile-card-header,
-[data-theme-mode='dark'] .notifications-header,
-[data-theme-mode='dark'] .notifications-toolbar {
-  background: var(--theme-surface-2);
-  border-bottom-color: var(--theme-border);
+.profile-sidebar__item:hover,
+.profile-nav-item:hover,
+.dashboard-sidebar__item:hover,
+.settings-nav-item:hover {
+  background: rgba(var(--ui-accent-rgb), 0.08);
+  color: var(--ui-text);
+  border-color: rgba(var(--ui-accent-rgb), 0.2);
 }
 
-[data-theme-mode='dark'] .settings-sidebar,
-[data-theme-mode='dark'] .profile-sidebar,
-[data-theme-mode='dark'] .order-sidebar-nav,
-[data-theme-mode='dark'] .notifications-sidebar {
-  background: var(--theme-surface);
-  border-color: var(--theme-border);
+.profile-sidebar__item.is-active,
+.profile-nav-item.is-active,
+.dashboard-sidebar__item.is-active,
+.settings-nav-item.is-active {
+  background: rgba(var(--ui-accent-rgb), 0.15);
+  color: var(--ui-accent);
+  border-color: rgba(var(--ui-accent-rgb), 0.3);
+}
+
+.profile-sidebar__item.is-cart {
+  background: linear-gradient(135deg, var(--ui-accent), var(--ui-accent-hover));
+  color: var(--ui-on-accent);
+  border: none;
+}
+
+/* ============================================================
+   ✅ ALL BUTTONS — Same as hero buttons
+   ============================================================ */
+
+button[class*="--primary"],
+button[class*="__cta"],
+button[class*="button--primary"],
+a[class*="--primary"],
+a[class*="__cta"],
+a[class*="button--primary"],
+.catalog-card__cta,
+.catalog-card__btn,
+.product-card__btn,
+.favorites-card__btn,
+.favorites-card__cta,
+.home-card__cta,
+.select-options-btn,
+.favorites-empty__cta,
+.catalog-empty__cta,
+.product-info__cta,
+.cart-summary__btn--primary,
+.checkout-btn--primary {
+  background: var(--ui-accent);
+  color: var(--ui-on-accent);
+  -webkit-text-fill-color: var(--ui-on-accent);
+  border: 1px solid var(--ui-accent);
+  transition: all 150ms ease;
+}
+
+button[class*="--primary"]:hover:not(:disabled),
+button[class*="__cta"]:hover:not(:disabled),
+button[class*="button--primary"]:hover:not(:disabled),
+a[class*="--primary"]:hover,
+a[class*="__cta"]:hover:not(.is-disabled),
+a[class*="button--primary"]:hover,
+.catalog-card__cta:hover:not(.is-disabled),
+.catalog-card__btn:hover:not(:disabled),
+.product-card__btn:hover:not(:disabled),
+.favorites-card__btn:hover:not(:disabled),
+.favorites-card__cta:hover:not(.is-disabled),
+.home-card__cta:hover,
+.select-options-btn:hover:not(:disabled),
+.favorites-empty__cta:hover,
+.catalog-empty__cta:hover,
+.product-info__cta:hover,
+.cart-summary__btn--primary:hover:not(:disabled),
+.checkout-btn--primary:hover:not(:disabled) {
+  background: var(--ui-accent-hover);
+  border-color: var(--ui-accent-hover);
+  color: var(--ui-on-accent);
+  -webkit-text-fill-color: var(--ui-on-accent);
+}
+
+/* Ghost / Secondary buttons */
+button[class*="--ghost"],
+button[class*="--secondary"],
+a[class*="--ghost"],
+a[class*="--secondary"],
+.cart-summary__btn--ghost,
+.checkout-btn--secondary {
+  background: transparent;
+  color: var(--ui-text);
+  -webkit-text-fill-color: var(--ui-text);
+  border: 1px solid var(--ui-glass-border);
+  transition: all 150ms ease;
+}
+
+button[class*="--ghost"]:hover:not(:disabled),
+button[class*="--secondary"]:hover:not(:disabled),
+a[class*="--ghost"]:hover,
+a[class*="--secondary"]:hover,
+.cart-summary__btn--ghost:hover:not(:disabled),
+.checkout-btn--secondary:hover:not(:disabled) {
+  background: rgba(var(--ui-accent-rgb), 0.08);
+  color: var(--ui-accent);
+  -webkit-text-fill-color: var(--ui-accent);
+  border-color: var(--ui-accent);
+}
+
+/* ============================================================
+   ✅ BUTTON TEXT CASCADE — All inherit
+   ============================================================ */
+
+button > span,
+button > svg,
+button > *,
+a[class*="btn"] > span,
+a[class*="btn"] > *,
+a[class*="cta"] > span,
+a[class*="cta"] > * {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+/* ============================================================
+   ✅ INPUTS — Glassy + accent focus (same as hero)
+   ============================================================ */
+
+input,
+textarea,
+select,
+.settings-input,
+.cart-input,
+.checkout-input,
+.order-details-input {
+  background: var(--ui-glass);
+  color: var(--ui-text);
+  border: 1px solid var(--ui-glass-border);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--ui-accent);
+  outline: 2px solid rgba(var(--ui-accent-rgb), 0.2);
+  outline-offset: 2px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--ui-muted);
+  opacity: 0.7;
+}
+
+/* ============================================================
+   ✅ LOCKED FIELDS — Accent-tinted
+   ============================================================ */
+
+.profile-field-locked,
+.settings-field__input--locked,
+input[readonly],
+input:disabled {
+  background: rgba(var(--ui-accent-rgb), 0.06);
+  color: var(--ui-muted);
+  -webkit-text-fill-color: var(--ui-muted);
+  border: 1px solid var(--ui-glass-border);
+  font-style: italic;
+  cursor: not-allowed;
+}
+
+.settings-field__lock,
+.profile-locked-badge,
+.locked-badge {
+  background: rgba(var(--ui-accent-rgb), 0.15);
+  color: var(--ui-accent);
+  border: 1px solid rgba(var(--ui-accent-rgb), 0.3);
+}
+
+/* ============================================================
+   ✅ BADGES — Same accent (unless semantic)
+   ============================================================ */
+
+/* Generic badge — uses ACCENT (same as hero) */
+.catalog-card__badge,
+.favorites-card__badge,
+.product-card__badge,
+.product-media__badge,
+.product-related__badge,
+.home-card__badge,
+.favorites-card__stock {
+  background: var(--ui-accent);
+  color: var(--ui-on-accent);
+  -webkit-text-fill-color: var(--ui-on-accent);
+  border: none;
+  font-weight: 800;
+  text-transform: uppercase;
+  text-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* ✅ EXCEPTION: In-stock badge — stays success (semantic) */
+.catalog-card__stock,
+.in-stock-badge,
+.stock-badge,
+.product-stock-badge {
+  background: var(--ui-success);
+  color: var(--theme-on-success, #FFFFFF);
+  -webkit-text-fill-color: var(--theme-on-success, #FFFFFF);
+}
+
+/* ============================================================
+   ✅ STATUS BADGES — Semantic (unchanged)
+   ============================================================ */
+
+.status-badge.is-completed,
+.order-status-badge.is-completed,
+.od-status-badge.is-completed {
+  background: rgba(var(--ui-success-rgb), 0.15);
+  color: var(--ui-success);
+  border: 1px solid rgba(var(--ui-success-rgb), 0.3);
+}
+
+.status-badge.is-processing,
+.order-status-badge.is-processing,
+.od-status-badge.is-processing {
+  background: rgba(var(--ui-warning-rgb), 0.15);
+  color: var(--ui-warning);
+  border: 1px solid rgba(var(--ui-warning-rgb), 0.3);
+}
+
+.status-badge.is-cancelled,
+.order-status-badge.is-cancelled,
+.od-status-badge.is-cancelled {
+  background: rgba(var(--ui-danger-rgb), 0.15);
+  color: var(--ui-danger);
+  border: 1px solid rgba(var(--ui-danger-rgb), 0.3);
+}
+
+/* ============================================================
+   ✅ CATALOG / FAVORITES / HOME CARD MEDIA
+   ============================================================ */
+
+.catalog-card__media,
+.product-card__media,
+.favorites-card__media,
+.home-card__media,
+.cart-item__media,
+.checkout-item__media {
+  background: var(--ui-glass);
+  border-bottom: 1px solid var(--ui-glass-border);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.catalog-card__body,
+.product-card__body,
+.favorites-card__body,
+.home-card__body {
+  background: transparent;
+  color: var(--ui-text);
+}
+
+/* ============================================================
+   ✅ NOTIFICATION CARDS — Glassy + accent
+   ============================================================ */
+
+.notification-card,
+.notifications-container,
+.notifications-panel,
+.notifications-list__item,
+.notification-item {
+  background: var(--ui-glass);
+  color: var(--ui-text);
+  border: 1px solid var(--ui-glass-border);
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+}
+
+.notifications-header,
+.notification-card__header,
+.notifications-panel__header {
+  background: var(--ui-glass);
+  color: var(--ui-text);
+  border-bottom: 1px solid var(--ui-glass-border);
+}
+
+.notification-card__title,
+.notifications-header__title,
+.notification-item__title {
+  color: var(--ui-heading);
+  -webkit-text-fill-color: var(--ui-heading);
+}
+
+.notification-card__message,
+.notification-card__desc,
+.notification-item__message,
+.notification-item__desc {
+  color: var(--ui-muted);
+  -webkit-text-fill-color: var(--ui-muted);
+}
+
+.notification-card__time,
+.notification-card__date,
+.notification-item__time {
+  color: var(--ui-muted);
+  opacity: 0.7;
+}
+
+/* Icon — accent tinted (same as hero bullet icon) */
+.notification-card__icon,
+.notification-item__icon,
+.notifications-header__icon,
+.notification-bell__icon {
+  background: rgba(var(--ui-accent-rgb), 0.12);
+  color: var(--ui-accent);
+  -webkit-text-fill-color: var(--ui-accent);
+  border: 1px solid rgba(var(--ui-accent-rgb), 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 50%;
+}
+
+.notification-card.is-unread,
+.notification-item.is-unread,
+.notifications-list__item.is-unread {
+  background: rgba(var(--ui-accent-rgb), 0.08);
+  border-left: 3px solid var(--ui-accent);
+}
+
+/* Badge — stays DANGER (semantic) */
+.notification-bell__badge,
+.notifications-badge {
+  background: var(--ui-danger);
+  color: var(--theme-on-danger, #FFFFFF);
+  font-weight: 700;
+  border: 2px solid var(--ui-glass-border);
+}
+
+.notification-bell__dropdown {
+  background: var(--ui-glass);
+  border: 1px solid var(--ui-glass-border);
+  box-shadow: var(--theme-shadow-lg);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+}
+
+/* ============================================================
+   ✅ BRAND CARD (SJCM STORE) — Accent-based
+   ============================================================ */
+
+.profile-brand-card,
+.profile-side__brand,
+.settings-brand-card,
+.sjcm-brand-card {
+  background: linear-gradient(135deg, var(--ui-accent), var(--ui-accent-hover));
+  color: var(--ui-on-accent);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 1rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.profile-brand-card__title,
+.settings-brand-card__title,
+.sjcm-brand-card__name {
+  color: var(--ui-on-accent);
+  -webkit-text-fill-color: var(--ui-on-accent);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.profile-brand-card__subtitle,
+.settings-brand-card__subtitle {
+  color: var(--ui-on-accent);
+  -webkit-text-fill-color: var(--ui-on-accent);
+  opacity: 0.85;
+}
+
+.profile-brand-card__tagline,
+.settings-brand-card__tagline {
+  color: var(--ui-on-accent);
+  -webkit-text-fill-color: var(--ui-on-accent);
+  opacity: 0.75;
+  font-style: italic;
+}
+
+/* ============================================================
+   ✅ QUEUE / LIVE BADGE — Accent-based
+   ============================================================ */
+
+.queue-badge,
+.live-badge {
+  background: rgba(var(--ui-accent-rgb), 0.12);
+  border: 1px solid rgba(var(--ui-accent-rgb), 0.3);
+  color: var(--ui-accent);
+  -webkit-text-fill-color: var(--ui-accent);
+  position: relative;
+  overflow: hidden;
+}
+
+.queue-badge::after,
+.live-badge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+  animation: queue-shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes queue-shimmer {
+  0%, 100% { left: -100%; }
+  50% { left: 100%; }
 }
 
 /* ============================================================
@@ -274,76 +888,13 @@ body::before {
   .settings-sidebar,
   .profile-sidebar,
   .order-sidebar-nav,
-  .notifications-sidebar {
+  .notifications-sidebar,
+  .home-card,
+  .home-section,
+  .home-highlights__panel {
     background: var(--theme-surface);
-    color: var(--theme-text);
+    color: var(--ui-text);
   }
-}
-
-/* ============================================================
-   ✅ EXTRA CONTRAST SAFETY
-   ============================================================ */
-
-h1, h2, h3, h4, h5, h6,
-.settings-hero__title,
-.dashboard-hero__title,
-.od-hero__id,
-.profile-name,
-.catalog-hero__title,
-.notifications-hero__title,
-.favorites-hero__title {
-  color: var(--theme-text);
-}
-
-p,
-span,
-li,
-.settings-hero__description,
-.dashboard-hero__description,
-.profile-meta-row,
-.catalog-hero__description,
-.notifications-hero__description,
-.favorites-hero__description {
-  color: var(--theme-text-muted);
-}
-
-input::placeholder,
-textarea::placeholder {
-  color: var(--theme-text-subtle, var(--theme-text-muted));
-  opacity: 0.7;
-}
-
-input,
-textarea,
-select {
-  background: var(--theme-surface);
-  color: var(--theme-text);
-  border: 1px solid var(--theme-border);
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-  border-color: var(--theme-primary);
-  outline: 2px solid rgba(var(--theme-primary-rgb), 0.2);
-  outline-offset: 2px;
-}
-
-/* ============================================================
-   ✅ GLOBAL CONTRAST SAFETY NET
-   Prevents invisible text on any theme
-   ============================================================ */
-
-button[class*="cta"],
-button[class*="btn"],
-a[class*="cta"],
-a[class*="btn"] {
-  color: var(--theme-on-primary);
-}
-
-[style*="background: var(--sjcm-green)"],
-[style*="background: var(--theme-primary)"] {
-  color: var(--theme-on-primary);
 }
 
 /* ============================================================
@@ -351,7 +902,7 @@ a[class*="btn"] {
    ============================================================ */
 
 :where(button, a, input, select, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--theme-primary);
+  outline: 2px solid var(--ui-accent);
   outline-offset: 2px;
   border-radius: 0.4rem;
 }
@@ -362,14 +913,9 @@ a[class*="btn"] {
   filter: grayscale(0.3);
 }
 
-::placeholder {
-  color: var(--theme-text-subtle, var(--theme-text-muted));
-  opacity: 0.7;
-}
-
 ::selection {
-  background: rgba(var(--theme-primary-rgb), 0.25);
-  color: var(--theme-text);
+  background: rgba(var(--ui-accent-rgb), 0.25);
+  color: var(--ui-text);
 }
 
 /* ============================================================
@@ -378,9 +924,9 @@ a[class*="btn"] {
 
 [data-theme-mode='dark'] .catalog-card__image,
 [data-theme-mode='dark'] .product-media__image,
-[data-theme-mode='dark'] .product-related__image {
+[data-theme-mode='dark'] .product-related__image,
+[data-theme-mode='dark'] .favorites-card__image {
   filter: brightness(0.94) contrast(1.04);
-  transition: filter 200ms ease, transform 300ms ease;
 }
 
 [data-theme-mode='dark'] .catalog-card:hover .catalog-card__image,
@@ -389,12 +935,13 @@ a[class*="btn"] {
 }
 
 [data-theme-mode='light'] .catalog-card__image,
-[data-theme-mode='light'] .product-media__image {
+[data-theme-mode='light'] .product-media__image,
+[data-theme-mode='light'] .favorites-card__image {
   filter: none;
 }
 
 /* ============================================================
-   ✅ THEME GRID (Settings page)
+   ✅ THEME GRID (Settings)
    ============================================================ */
 
 .theme-grid {
@@ -402,7 +949,6 @@ a[class*="btn"] {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.65rem;
   margin-top: 0.5rem;
-  max-width: 100%;
 }
 
 .theme-card {
@@ -431,38 +977,19 @@ a[class*="btn"] {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(255, 255, 255, 0.08) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0) 100%);
   pointer-events: none;
   z-index: 1;
 }
 
-.theme-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 0.75rem;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
-  pointer-events: none;
-  z-index: 2;
-}
-
 .theme-card:hover {
   transform: translateY(-2px);
-  box-shadow:
-    0 12px 24px -8px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .theme-card.is-active {
   border-color: #10b981;
-  box-shadow:
-    0 0 0 2px rgba(16, 185, 129, 0.25),
-    0 12px 24px -8px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25), 0 12px 24px -8px rgba(16, 185, 129, 0.3);
 }
 
 .theme-card__emoji {
@@ -470,13 +997,11 @@ a[class*="btn"] {
   line-height: 1;
   position: relative;
   z-index: 3;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
 }
 
 .theme-card__label {
   position: relative;
   z-index: 3;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.25);
   font-size: 0.72rem;
   font-weight: 600;
   line-height: 1.2;
@@ -516,84 +1041,52 @@ a[class*="btn"] {
   z-index: 4;
 }
 
-.theme-card__check .react-icon {
-  width: 0.7rem;
-  height: 0.7rem;
-  stroke-width: 3;
-}
-
 @keyframes theme-check-pop {
   from { opacity: 0; transform: scale(0.5); }
   to { opacity: 1; transform: scale(1); }
 }
 
 @media (max-width: 640px) {
-  .theme-grid {
-    grid-template-columns: 1fr;
-  }
+  .theme-grid { grid-template-columns: 1fr; }
 }
+
 /* ============================================================
-   ✅ FIX: Button text color cascade
-   Siguraduhin na ang lahat ng descendants ng button
-   ay sumusunod sa --theme-on-primary
-============================================================ */
+   ✅ HOME CARDS — Responsive
+   ============================================================ */
 
-.catalog-card__cta,
-.catalog-card__cta *,
-.catalog-card__cta span,
-.catalog-card__cta svg {
-  color: var(--theme-on-primary) !important;
+.home-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+  gap: 1rem;
+  align-items: stretch;
 }
 
-.catalog-card__cta:hover,
-.catalog-card__cta:hover *,
-.catalog-card__cta:hover span,
-.catalog-card__cta:hover svg {
-  color: var(--theme-on-primary) !important;
+@media (min-width: 1400px) { .home-cards { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+@media (min-width: 1024px) and (max-width: 1399px) { .home-cards { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 768px) and (max-width: 1023px) { .home-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 767px) { .home-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .home-cards { grid-template-columns: 1fr; } }
+
+/* ============================================================
+   ✅ SPAN inherit (para gumana ang button text colors)
+   ============================================================ */
+
+span {
+  color: inherit;
 }
 
-/* Same fix para sa iba pang colored buttons */
-.catalog-empty__cta,
-.catalog-empty__cta *,
-.catalog-empty__cta span,
-.catalog-empty__cta svg {
-  color: var(--theme-on-primary) !important;
+/* ============================================================
+   ✅ OTP VERIFY PAGE
+   ============================================================ */
+
+.otp-modal__btn--primary,
+.otp-modal__btn--primary * {
+  color: var(--ui-on-accent) !important;
+  -webkit-text-fill-color: var(--ui-on-accent) !important;
 }
 
-.product-info__cta,
-.product-info__cta *,
-.product-info__cta span,
-.product-info__cta svg {
-  color: var(--theme-on-primary) !important;
-}
-
-.product-variant.is-selected,
-.product-variant.is-selected * {
-  color: var(--theme-on-primary) !important;
-}
-
-.catalog-category.is-active .catalog-category__icon,
-.catalog-category.is-active .catalog-category__icon * {
-  color: var(--theme-on-primary) !important;
-}
-
-.catalog-category.is-active .catalog-category__count {
-  color: var(--theme-on-primary) !important;
-}
-
-.catalog-pagination__btn.is-active {
-  color: var(--theme-on-primary) !important;
-}
-
-.catalog-card__badge {
-  color: var(--theme-on-accent) !important;
-}
-
-.product-media__badge,
-.product-related__badge {
-  color: var(--theme-on-accent) !important;
-}
-
-.product-not-found__cta {
-  color: var(--theme-on-primary) !important;
+.otp-modal__btn--ghost,
+.otp-modal__btn--ghost * {
+  color: var(--ui-text) !important;
+  -webkit-text-fill-color: var(--ui-text) !important;
 }

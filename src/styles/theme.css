@@ -1,15 +1,15 @@
 /* ============================================================
-   THEME VARIABLES — 10 themes (5 Light + 5 Dark)
-   ✅ Contrast-safe panels
-   ✅ Text readable sa lahat ng modes
-   ✅ Semantic contrast tokens (SaaS-grade)
+   THEME VARIABLES — 10 themes (MONOCHROME)
+   ✅ Background, text, accent = SAME HUE (magkaibang shade)
+   ✅ 5 Light + 5 Dark themes
+   ✅ Semantic contrast tokens
 ============================================================ */
 
 /* ============================================================
    LIGHT THEMES
-   ============================================================ */
+============================================================ */
 
-/* ----- 1. CREAM YELLOW ----- */
+/* ----- 1. CREAM YELLOW (warm gold/brown hue) ----- */
 :root,
 [data-theme='cream-yellow'] {
   color-scheme: light;
@@ -24,22 +24,17 @@
 
   --theme-bg: #FEF9E7;
   --theme-bg-solid: #FEF9E7;
-
-  /* ✅ Surface — solid contrast sa bg */
   --theme-surface: #FFFFFF;
   --theme-surface-2: #FFFBF0;
   --theme-surface-raised: #FFFFFF;
 
-  /* ✅ Text — dark para sa light bg */
   --theme-text: #2A2010;
   --theme-text-muted: #6B5B3A;
   --theme-text-subtle: rgba(42, 32, 16, 0.5);
 
-  /* ✅ Borders */
-  --theme-border: rgba(42, 32, 16, 0.12);
-  --theme-border-strong: rgba(184, 134, 11, 0.4);
+  --theme-border: #F0E5C0;
+  --theme-border-strong: rgba(184, 134, 11, 0.3);
 
-  /* ✅ Status */
   --theme-success: #5D7A3A;
   --theme-success-rgb: 93, 122, 58;
   --theme-warning: #B8860B;
@@ -47,20 +42,18 @@
   --theme-danger: #A93C3C;
   --theme-danger-rgb: 169, 60, 60;
 
-  /* ✅ Shadow */
   --theme-shadow-sm: 0 1px 2px rgba(42, 32, 16, 0.06);
   --theme-shadow-md: 0 4px 12px rgba(42, 32, 16, 0.08);
   --theme-shadow-lg: 0 12px 32px rgba(42, 32, 16, 0.1);
   --theme-shadow-xl: 0 24px 48px rgba(42, 32, 16, 0.12);
 
-  --theme-glass-bg: rgba(255, 255, 255, 0.85);
-  --theme-glass-border: rgba(42, 32, 16, 0.1);
-
-  --glow-brand: rgba(184, 134, 11, 0.2);
-  --glow-info: rgba(107, 91, 58, 0.15);
+  --theme-glass-bg: rgba(255, 255, 255, 0.7);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(184, 134, 11, 0.15);
+  --glow-info: rgba(107, 91, 58, 0.12);
 }
 
-/* ----- 2. WARM BEIGE ----- */
+/* ----- 2. WARM BEIGE (brown hue) ----- */
 [data-theme='warm-beige'] {
   color-scheme: light;
 
@@ -82,8 +75,8 @@
   --theme-text-muted: #6B5B47;
   --theme-text-subtle: rgba(42, 31, 16, 0.5);
 
-  --theme-border: rgba(42, 31, 16, 0.12);
-  --theme-border-strong: rgba(139, 111, 71, 0.4);
+  --theme-border: #E4D5B7;
+  --theme-border-strong: rgba(139, 111, 71, 0.3);
 
   --theme-success: #5D7A3A;
   --theme-success-rgb: 93, 122, 58;
@@ -97,24 +90,24 @@
   --theme-shadow-lg: 0 12px 32px rgba(42, 31, 16, 0.1);
   --theme-shadow-xl: 0 24px 48px rgba(42, 31, 16, 0.12);
 
-  --theme-glass-bg: rgba(252, 248, 238, 0.85);
-  --theme-glass-border: rgba(42, 31, 16, 0.1);
-
-  --glow-brand: rgba(139, 111, 71, 0.2);
-  --glow-info: rgba(107, 91, 71, 0.15);
+  --theme-glass-bg: rgba(252, 248, 238, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(139, 111, 71, 0.15);
+  --glow-info: rgba(107, 91, 71, 0.12);
 }
 
-/* ----- 3. PURE WHITE ----- */
+/* ----- 3. PURE WHITE (neutral gray hue) ----- */
 [data-theme='pure-white'] {
   color-scheme: light;
 
-  --theme-primary: #2F6B45;
-  --theme-primary-hover: #245536;
-  --theme-primary-rgb: 47, 107, 69;
+  /* ✅ FIXED: Neutral gray accent (hindi green) */
+  --theme-primary: #333333;
+  --theme-primary-hover: #1A1A1A;
+  --theme-primary-rgb: 51, 51, 51;
 
-  --theme-accent: #C9993A;
-  --theme-accent-hover: #B0852C;
-  --theme-accent-rgb: 201, 153, 58;
+  --theme-accent: #555555;
+  --theme-accent-hover: #333333;
+  --theme-accent-rgb: 85, 85, 85;
 
   --theme-bg: #FFFFFF;
   --theme-bg-solid: #FFFFFF;
@@ -126,8 +119,8 @@
   --theme-text-muted: #4A4A4A;
   --theme-text-subtle: rgba(26, 26, 26, 0.5);
 
-  --theme-border: rgba(0, 0, 0, 0.1);
-  --theme-border-strong: rgba(47, 107, 69, 0.4);
+  --theme-border: #E5E5E5;
+  --theme-border-strong: rgba(51, 51, 51, 0.3);
 
   --theme-success: #2F6B45;
   --theme-success-rgb: 47, 107, 69;
@@ -141,14 +134,13 @@
   --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08);
   --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.1);
 
-  --theme-glass-bg: rgba(248, 248, 248, 0.9);
-  --theme-glass-border: rgba(0, 0, 0, 0.08);
-
-  --glow-brand: rgba(47, 107, 69, 0.15);
-  --glow-info: rgba(74, 111, 165, 0.12);
+  --theme-glass-bg: rgba(248, 248, 248, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(51, 51, 51, 0.15);
+  --glow-info: rgba(74, 74, 74, 0.12);
 }
 
-/* ----- 4. SOFT GRAY ----- */
+/* ----- 4. SOFT GRAY (gray hue) ----- */
 [data-theme='soft-gray'] {
   color-scheme: light;
 
@@ -170,8 +162,8 @@
   --theme-text-muted: #4B5563;
   --theme-text-subtle: rgba(31, 41, 55, 0.5);
 
-  --theme-border: rgba(31, 41, 55, 0.12);
-  --theme-border-strong: rgba(75, 85, 99, 0.4);
+  --theme-border: #D1D5DB;
+  --theme-border-strong: rgba(75, 85, 99, 0.3);
 
   --theme-success: #059669;
   --theme-success-rgb: 5, 150, 105;
@@ -185,14 +177,13 @@
   --theme-shadow-lg: 0 12px 32px rgba(31, 41, 55, 0.1);
   --theme-shadow-xl: 0 24px 48px rgba(31, 41, 55, 0.12);
 
-  --theme-glass-bg: rgba(255, 255, 255, 0.85);
-  --theme-glass-border: rgba(31, 41, 55, 0.1);
-
-  --glow-brand: rgba(75, 85, 99, 0.2);
-  --glow-info: rgba(107, 114, 128, 0.15);
+  --theme-glass-bg: rgba(255, 255, 255, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(75, 85, 99, 0.15);
+  --glow-info: rgba(107, 114, 128, 0.12);
 }
 
-/* ----- 5. PALE BLUSH ----- */
+/* ----- 5. PALE BLUSH (pink hue) ----- */
 [data-theme='pale-blush'] {
   color-scheme: light;
 
@@ -214,8 +205,8 @@
   --theme-text-muted: #6B4A52;
   --theme-text-subtle: rgba(42, 26, 31, 0.5);
 
-  --theme-border: rgba(42, 26, 31, 0.12);
-  --theme-border-strong: rgba(184, 99, 122, 0.4);
+  --theme-border: #F0D5DB;
+  --theme-border-strong: rgba(184, 99, 122, 0.3);
 
   --theme-success: #5D7A3A;
   --theme-success-rgb: 93, 122, 58;
@@ -229,45 +220,41 @@
   --theme-shadow-lg: 0 12px 32px rgba(42, 26, 31, 0.1);
   --theme-shadow-xl: 0 24px 48px rgba(42, 26, 31, 0.12);
 
-  --theme-glass-bg: rgba(255, 255, 255, 0.85);
-  --theme-glass-border: rgba(42, 26, 31, 0.1);
-
-  --glow-brand: rgba(184, 99, 122, 0.2);
-  --glow-info: rgba(107, 74, 82, 0.15);
+  --theme-glass-bg: rgba(255, 255, 255, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(184, 99, 122, 0.15);
+  --glow-info: rgba(107, 74, 82, 0.12);
 }
 
 /* ============================================================
    DARK THEMES
-   ✅ Contrast-safe: text = light, surface = lighter than bg
    ============================================================ */
 
-/* ----- 6. MIDNIGHT NAVY ----- */
+/* ----- 6. MIDNIGHT NAVY (blue hue) ----- */
 [data-theme='midnight-navy'] {
   color-scheme: dark;
 
-  --theme-primary: #7FC8A2;
-  --theme-primary-hover: #6AB08C;
-  --theme-primary-rgb: 127, 200, 162;
+  /* ✅ FIXED: Blue accent (hindi green) */
+  --theme-primary: #7BA7E1;
+  --theme-primary-hover: #5F8CC7;
+  --theme-primary-rgb: 123, 167, 225;
 
-  --theme-accent: #E0B24D;
-  --theme-accent-hover: #D2A03D;
-  --theme-accent-rgb: 224, 178, 77;
+  --theme-accent: #9BC0ED;
+  --theme-accent-hover: #7BA7E1;
+  --theme-accent-rgb: 155, 192, 237;
 
   --theme-bg: #0E1626;
   --theme-bg-solid: #0E1626;
-
-  /* ✅ Surface — lighter than bg, contrast */
   --theme-surface: #1B2742;
   --theme-surface-2: #222F4D;
   --theme-surface-raised: #283658;
 
-  /* ✅ Text — light, high contrast */
-  --theme-text: #F1EEE4;
+  --theme-text: #E8EEF7;
   --theme-text-muted: #B0B9CC;
-  --theme-text-subtle: rgba(241, 238, 228, 0.5);
+  --theme-text-subtle: rgba(232, 238, 247, 0.5);
 
-  --theme-border: rgba(127, 200, 162, 0.15);
-  --theme-border-strong: rgba(127, 200, 162, 0.4);
+  --theme-border: rgba(123, 167, 225, 0.15);
+  --theme-border-strong: rgba(123, 167, 225, 0.4);
 
   --theme-success: #7FC8A2;
   --theme-success-rgb: 127, 200, 162;
@@ -281,14 +268,13 @@
   --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
   --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.7);
 
-  --theme-glass-bg: rgba(27, 39, 66, 0.85);
-  --theme-glass-border: rgba(127, 200, 162, 0.15);
-
-  --glow-brand: rgba(127, 200, 162, 0.25);
+  --theme-glass-bg: rgba(27, 39, 66, 0.75);
+  --theme-glass-border: rgba(123, 167, 225, 0.15);
+  --glow-brand: rgba(123, 167, 225, 0.25);
   --glow-info: rgba(176, 185, 204, 0.2);
 }
 
-/* ----- 7. MATTE BLACK ----- */
+/* ----- 7. MATTE BLACK (warm gold hue) ----- */
 [data-theme='matte-black'] {
   color-scheme: dark;
 
@@ -306,9 +292,9 @@
   --theme-surface-2: #252525;
   --theme-surface-raised: #2F2F2F;
 
-  --theme-text: #F5F5F5;
-  --theme-text-muted: #B8B8B8;
-  --theme-text-subtle: rgba(245, 245, 245, 0.5);
+  --theme-text: #F5F0E8;
+  --theme-text-muted: #B8B0A0;
+  --theme-text-subtle: rgba(245, 240, 232, 0.5);
 
   --theme-border: rgba(255, 255, 255, 0.08);
   --theme-border-strong: rgba(212, 165, 116, 0.4);
@@ -325,14 +311,13 @@
   --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.7);
   --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.8);
 
-  --theme-glass-bg: rgba(26, 26, 26, 0.85);
+  --theme-glass-bg: rgba(26, 26, 26, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.1);
-
   --glow-brand: rgba(212, 165, 116, 0.25);
-  --glow-info: rgba(184, 184, 184, 0.2);
+  --glow-info: rgba(184, 176, 160, 0.2);
 }
 
-/* ----- 8. CHARCOAL GRAY ----- */
+/* ----- 8. CHARCOAL GRAY (cool silver hue) ----- */
 [data-theme='charcoal-gray'] {
   color-scheme: dark;
 
@@ -340,9 +325,9 @@
   --theme-primary-hover: #94A4B4;
   --theme-primary-rgb: 168, 184, 200;
 
-  --theme-accent: #C8B896;
-  --theme-accent-hover: #B4A484;
-  --theme-accent-rgb: 200, 184, 150;
+  --theme-accent: #C8D0DC;
+  --theme-accent-hover: #B0B8C8;
+  --theme-accent-rgb: 200, 208, 220;
 
   --theme-bg: #1A1A1A;
   --theme-bg-solid: #1A1A1A;
@@ -350,9 +335,9 @@
   --theme-surface-2: #353535;
   --theme-surface-raised: #404040;
 
-  --theme-text: #F0F0F0;
-  --theme-text-muted: #B0B0B0;
-  --theme-text-subtle: rgba(240, 240, 240, 0.5);
+  --theme-text: #E8ECF0;
+  --theme-text-muted: #A8B0B8;
+  --theme-text-subtle: rgba(232, 236, 240, 0.5);
 
   --theme-border: rgba(255, 255, 255, 0.1);
   --theme-border-strong: rgba(168, 184, 200, 0.4);
@@ -369,14 +354,13 @@
   --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.7);
   --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.8);
 
-  --theme-glass-bg: rgba(42, 42, 42, 0.85);
+  --theme-glass-bg: rgba(42, 42, 42, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.1);
-
   --glow-brand: rgba(168, 184, 200, 0.25);
-  --glow-info: rgba(176, 176, 176, 0.2);
+  --glow-info: rgba(168, 176, 184, 0.2);
 }
 
-/* ----- 9. DEEP FOREST ----- */
+/* ----- 9. DEEP FOREST (green hue) ----- */
 [data-theme='deep-forest'] {
   color-scheme: dark;
 
@@ -384,9 +368,9 @@
   --theme-primary-hover: #6AB08C;
   --theme-primary-rgb: 127, 200, 162;
 
-  --theme-accent: #D4A574;
-  --theme-accent-hover: #C19461;
-  --theme-accent-rgb: 212, 165, 116;
+  --theme-accent: #A8E0C0;
+  --theme-accent-hover: #8FC8A8;
+  --theme-accent-rgb: 168, 224, 192;
 
   --theme-bg: #0A1F1A;
   --theme-bg-solid: #0A1F1A;
@@ -394,9 +378,9 @@
   --theme-surface-2: #1C3D33;
   --theme-surface-raised: #234A3D;
 
-  --theme-text: #E8F0EC;
-  --theme-text-muted: #A8BCB3;
-  --theme-text-subtle: rgba(232, 240, 236, 0.5);
+  --theme-text: #E0F0E8;
+  --theme-text-muted: #98B8A8;
+  --theme-text-subtle: rgba(224, 240, 232, 0.5);
 
   --theme-border: rgba(127, 200, 162, 0.15);
   --theme-border-strong: rgba(127, 200, 162, 0.4);
@@ -413,14 +397,13 @@
   --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
   --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.7);
 
-  --theme-glass-bg: rgba(21, 48, 41, 0.85);
+  --theme-glass-bg: rgba(21, 48, 41, 0.75);
   --theme-glass-border: rgba(127, 200, 162, 0.15);
-
   --glow-brand: rgba(127, 200, 162, 0.25);
   --glow-info: rgba(168, 188, 179, 0.2);
 }
 
-/* ----- 10. DARK PLUM ----- */
+/* ----- 10. DARK PLUM (purple hue) ----- */
 [data-theme='dark-plum'] {
   color-scheme: dark;
 
@@ -428,9 +411,9 @@
   --theme-primary-hover: #B48CC0;
   --theme-primary-rgb: 200, 160, 212;
 
-  --theme-accent: #E0B2C8;
-  --theme-accent-hover: #D4A0B8;
-  --theme-accent-rgb: 224, 178, 200;
+  --theme-accent: #D9B8E2;
+  --theme-accent-hover: #C8A0D4;
+  --theme-accent-rgb: 217, 184, 226;
 
   --theme-bg: #1A0E1F;
   --theme-bg-solid: #1A0E1F;
@@ -457,64 +440,45 @@
   --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.7);
   --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.8);
 
-  --theme-glass-bg: rgba(42, 26, 48, 0.85);
+  --theme-glass-bg: rgba(42, 26, 48, 0.75);
   --theme-glass-border: rgba(200, 160, 212, 0.15);
-
   --glow-brand: rgba(200, 160, 212, 0.25);
   --glow-info: rgba(192, 176, 200, 0.2);
 }
 
 /* ============================================================
    ✅ SEMANTIC CONTRAST TOKENS — SaaS-grade
-   Auto-computes readable foreground for any colored surface
    ============================================================ */
 
 :root,
 [data-theme-mode='light'] {
-  /* Text on primary-colored buttons (green/gold) */
   --theme-on-primary: #FFFFFF;
   --theme-on-primary-rgb: 255, 255, 255;
-
-  /* Text on accent-colored surfaces (gold badges) */
   --theme-on-accent: #1A1209;
   --theme-on-accent-rgb: 26, 18, 9;
-
-  /* Text on success/danger/warning */
   --theme-on-success: #FFFFFF;
   --theme-on-danger: #FFFFFF;
   --theme-on-warning: #1A1209;
-
-  /* Overlay scrim — for glass panels */
   --theme-scrim: rgba(0, 0, 0, 0.04);
   --theme-scrim-strong: rgba(0, 0, 0, 0.08);
-
-  /* Hover lift surface */
   --theme-surface-hover: var(--theme-surface-2);
   --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
 }
 
 [data-theme-mode='dark'] {
-  /* On dark themes, primary colors are LIGHT (e.g., #7FC8A2 mint)
-     so text on them must be DARK for contrast */
   --theme-on-primary: #0E1626;
   --theme-on-primary-rgb: 14, 22, 38;
-
-  /* Gold accent on dark — still needs dark text */
   --theme-on-accent: #0E1626;
   --theme-on-accent-rgb: 14, 22, 38;
-
   --theme-on-success: #0E1626;
   --theme-on-danger: #0E1626;
   --theme-on-warning: #0E1626;
-
   --theme-scrim: rgba(255, 255, 255, 0.04);
   --theme-scrim-strong: rgba(255, 255, 255, 0.08);
-
   --theme-surface-hover: var(--theme-surface-2);
   --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
 }
 
-/* ✅ Per-theme fine-tuning: matte-black uses warm dark text */
 [data-theme='matte-black'] {
   --theme-on-primary: #1A1209;
   --theme-on-primary-rgb: 26, 18, 9;
@@ -550,6 +514,13 @@
   --theme-on-accent-rgb: 14, 22, 38;
 }
 
+[data-theme='pure-white'] {
+  --theme-on-primary: #FFFFFF;
+  --theme-on-primary-rgb: 255, 255, 255;
+  --theme-on-accent: #FFFFFF;
+  --theme-on-accent-rgb: 255, 255, 255;
+}
+
 /* ============================================
    BODY BACKGROUND
    ============================================ */
@@ -569,73 +540,18 @@ body {
 .product-page,
 .settings-shell,
 .profile-shell,
+.profile-page,
 .auth-shell,
 .register-page,
 .notifications-shell,
-.favorites-page {
+.favorites-page,
+.order-details-page {
   background: transparent !important;
 }
 
 /* ============================================
-   ✅ CONTRAST-SAFE PANELS
-   Lahat ng panels/cards — solid contrast sa bg
+   THEME GRID (Settings Page)
    ============================================ */
-
-.settings-panel,
-.dashboard-sidebar,
-.dashboard-summary__card,
-.order-card,
-.od-card,
-.od-rail-card,
-.profile-card,
-.profile-side__card,
-.catalog-card,
-.product-card,
-.product-related__card,
-.favorites-card,
-.notification-card,
-.notifications-container,
-.notification-bell__dropdown {
-  /* ✅ Solid surface — contrast sa bg */
-  background: var(--theme-surface);
-  color: var(--theme-text);
-  border: 1px solid var(--theme-border);
-}
-
-/* Panels headers */
-.settings-panel__header,
-.od-card__head,
-.profile-card-header,
-.notifications-header {
-  background: var(--theme-surface-2);
-  color: var(--theme-text);
-  border-bottom: 1px solid var(--theme-border);
-}
-
-/* Cards with headings — ensure text readable */
-.settings-panel__title,
-.od-card__head-title,
-.profile-card-title,
-.notification-card__title,
-.catalog-card__name,
-.product-info__title,
-.favorites-card__name {
-  color: var(--theme-text);
-}
-
-.settings-panel__subtitle,
-.od-card__head-title + *,
-.profile-card-subtitle,
-.notification-card__message,
-.catalog-card__category,
-.favorites-card__category {
-  color: var(--theme-text-muted);
-}
-
-/* ============================================
-   THEME GRID
-   ============================================ */
-
 .theme-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -670,12 +586,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(255, 255, 255, 0.08) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0) 100%);
   pointer-events: none;
   z-index: 1;
 }
@@ -685,23 +596,19 @@ body {
   position: absolute;
   inset: 0;
   border-radius: 0.75rem;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
   pointer-events: none;
   z-index: 2;
 }
 
 .theme-card:hover {
   transform: translateY(-2px);
-  box-shadow:
-    0 12px 24px -8px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: 0 12px 24px -8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.5);
 }
 
 .theme-card.is-active {
   border-color: #10b981;
-  box-shadow:
-    0 0 0 2px rgba(16, 185, 129, 0.25),
-    0 12px 24px -8px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 0 0 2px rgba(16,185,129,0.25), 0 12px 24px -8px rgba(16,185,129,0.3);
 }
 
 .theme-card__emoji {
@@ -709,36 +616,34 @@ body {
   line-height: 1;
   position: relative;
   z-index: 3;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
 }
 
 .theme-card__label {
   position: relative;
   z-index: 3;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.25);
+  text-shadow: 0 1px 2px rgba(255,255,255,0.25);
   font-size: 0.72rem;
   font-weight: 600;
   line-height: 1.2;
 }
 
-/* Light themes — dark text para readable */
 .theme-card[data-theme-id='cream-yellow'] .theme-card__label,
 .theme-card[data-theme-id='warm-beige'] .theme-card__label,
 .theme-card[data-theme-id='pure-white'] .theme-card__label,
 .theme-card[data-theme-id='soft-gray'] .theme-card__label,
 .theme-card[data-theme-id='pale-blush'] .theme-card__label {
   color: #1a1a1a;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+  text-shadow: 0 1px 2px rgba(255,255,255,0.6);
 }
 
-/* Dark themes — light text para readable */
 .theme-card[data-theme-id='midnight-navy'] .theme-card__label,
 .theme-card[data-theme-id='matte-black'] .theme-card__label,
 .theme-card[data-theme-id='charcoal-gray'] .theme-card__label,
 .theme-card[data-theme-id='deep-forest'] .theme-card__label,
 .theme-card[data-theme-id='dark-plum'] .theme-card__label {
   color: #ffffff;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
 .theme-card__check {
@@ -752,7 +657,7 @@ body {
   color: #ffffff;
   display: grid;
   place-items: center;
-  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.5);
+  box-shadow: 0 2px 6px rgba(16,185,129,0.5);
   animation: theme-check-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 4;
 }
@@ -769,15 +674,12 @@ body {
 }
 
 @media (max-width: 640px) {
-  .theme-grid {
-    grid-template-columns: 1fr;
-  }
+  .theme-grid { grid-template-columns: 1fr; }
 }
 
 /* ============================================================
-   ✅ UNIVERSAL INTERACTIVE STATES — SaaS consistency
+   ✅ UNIVERSAL INTERACTIVE STATES
    ============================================================ */
-
 :where(button, a, input, select, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
@@ -802,12 +704,11 @@ body {
 
 /* ============================================================
    ✅ DARK MODE MEDIA TREATMENT
-   Slightly dims images on dark themes so they don't glare
    ============================================================ */
-
 [data-theme-mode='dark'] .catalog-card__image,
 [data-theme-mode='dark'] .product-media__image,
-[data-theme-mode='dark'] .product-related__image {
+[data-theme-mode='dark'] .product-related__image,
+[data-theme-mode='dark'] .favorites-card__image {
   filter: brightness(0.92) contrast(1.05);
   transition: filter 200ms ease, transform 300ms ease;
 }
@@ -818,6 +719,1303 @@ body {
 }
 
 [data-theme-mode='light'] .catalog-card__image,
-[data-theme-mode='light'] .product-media__image {
+[data-theme-mode='light'] .product-media__image,
+[data-theme-mode='light'] .favorites-card__image {
   filter: none;
+}
+/* ============================================================
+   ✅ SETTINGS PAGE — Force visible ang LAHAT ng text
+   ✅ Theme-aware sa lahat ng 10 themes
+   ✅ Sidebar, hero, panels, quicklinks, brand card
+============================================================ */
+
+/* ============================================================
+   1. SETTINGS SIDEBAR — text visible lahat ng themes
+============================================================ */
+
+.settings-sidebar {
+  background: var(--theme-glass-bg) !important;
+  border-color: var(--theme-glass-border) !important;
+}
+
+/* ✅ Nav items — text visible */
+.settings-sidebar__item,
+.settings-sidebar__item span,
+.settings-sidebar__nav a,
+.settings-nav-item {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+/* ✅ Icons visible */
+.settings-sidebar__item .react-icon,
+.settings-sidebar__nav a .react-icon,
+.settings-nav-item .react-icon {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  stroke: currentColor !important;
+}
+
+/* ✅ Hover state */
+.settings-sidebar__item:hover,
+.settings-sidebar__item:hover span,
+.settings-sidebar__nav a:hover,
+.settings-nav-item:hover {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.settings-sidebar__item:hover .react-icon,
+.settings-sidebar__nav a:hover .react-icon {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ✅ Active state */
+.settings-sidebar__item.is-active,
+.settings-sidebar__item.is-active span {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  font-weight: 700 !important;
+}
+
+.settings-sidebar__item.is-active .react-icon {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ✅ Sidebar brand text */
+.settings-sidebar__brand-name {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.settings-sidebar__brand-tag {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.settings-sidebar__motto {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.settings-sidebar__campus {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ✅ Desktop sidebar (fixed pill) — text visible kapag naka-expand */
+@media (min-width: 1024px) {
+  .settings-sidebar .settings-sidebar__item,
+  .settings-sidebar .settings-sidebar__item span {
+    color: var(--theme-text) !important;
+    -webkit-text-fill-color: var(--theme-text) !important;
+  }
+
+  .settings-sidebar .settings-sidebar__item .react-icon {
+    color: var(--theme-text-muted) !important;
+    -webkit-text-fill-color: var(--theme-text-muted) !important;
+  }
+
+  .settings-sidebar .settings-sidebar__item:hover,
+  .settings-sidebar .settings-sidebar__item:hover span,
+  .settings-sidebar .settings-sidebar__item:hover .react-icon {
+    color: var(--theme-on-primary) !important;
+    -webkit-text-fill-color: var(--theme-on-primary) !important;
+  }
+
+  .settings-sidebar .settings-sidebar__item.is-active,
+  .settings-sidebar .settings-sidebar__item.is-active span,
+  .settings-sidebar .settings-sidebar__item.is-active .react-icon {
+    color: var(--theme-primary) !important;
+    -webkit-text-fill-color: var(--theme-primary) !important;
+  }
+}
+
+/* ============================================================
+   2. SETTINGS HERO — title, description, quote visible
+============================================================ */
+
+.settings-hero {
+  background: linear-gradient(
+    100deg,
+    var(--theme-surface) 0%,
+    var(--theme-surface-2) 100%
+  ) !important;
+  border: 1px solid var(--theme-border) !important;
+}
+
+.settings-hero__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  text-shadow: none !important;
+}
+
+.settings-hero__description {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.settings-hero__quote,
+.settings-hero__quote span {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  text-shadow: none !important;
+}
+
+.settings-hero__kicker {
+  color: var(--theme-accent) !important;
+  -webkit-text-fill-color: var(--theme-accent) !important;
+}
+
+/* ============================================================
+   3. SETTINGS TABS — active/inactive visible
+============================================================ */
+
+.settings-tab {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.settings-tab .react-icon {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+}
+
+.settings-tab:hover {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.settings-tab.is-active {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  background: var(--theme-surface) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.2) !important;
+}
+
+.settings-tab.is-active .react-icon {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   4. SETTINGS PANELS — titles, subtitles, labels visible
+============================================================ */
+
+.settings-panel {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--theme-text) !important;
+}
+
+.settings-panel__header {
+  background: var(--theme-surface-2) !important;
+  border-bottom-color: var(--theme-border) !important;
+}
+
+.settings-panel__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.settings-panel__subtitle {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.settings-panel__icon {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  color: var(--theme-primary) !important;
+}
+
+.settings-panel__icon .react-icon {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* Field labels */
+.settings-field__label {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.settings-field__lock {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* Inputs */
+.settings-field__input,
+.settings-field__select,
+.settings-field__input--textarea {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.settings-field__input::placeholder,
+.settings-field__input--textarea::placeholder {
+  color: var(--theme-text-subtle, var(--theme-text-muted)) !important;
+  -webkit-text-fill-color: var(--theme-text-subtle, var(--theme-text-muted)) !important;
+  opacity: 0.7 !important;
+}
+
+/* ✅ Locked inputs — readable pa rin */
+.settings-field__input--locked,
+.settings-field__input--locked:disabled,
+.settings-field__input[readonly],
+.settings-field__input:disabled {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 1 !important;
+  border-color: var(--theme-border) !important;
+}
+
+/* Field icons */
+.settings-field__icon-wrap .react-icon {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  stroke: currentColor !important;
+}
+
+/* Toggle labels */
+.settings-toggle-label {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.settings-toggle-desc {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.settings-toggle-info > .react-icon {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* Divider */
+.settings-divider {
+  background: var(--theme-border) !important;
+}
+
+/* ✅ Buttons */
+.settings-btn--primary {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border-color: var(--theme-primary) !important;
+}
+
+.settings-btn--primary:hover:not(:disabled) {
+  background: var(--theme-primary-hover) !important;
+  border-color: var(--theme-primary-hover) !important;
+  color: var(--theme-on-primary) !important;
+}
+
+.settings-btn--primary .react-icon {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  stroke: currentColor !important;
+}
+
+.settings-btn--ghost {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.settings-btn--ghost:hover:not(:disabled) {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  border-color: var(--theme-primary) !important;
+}
+
+.settings-btn--ghost .react-icon {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+}
+
+/* ✅ Address text */
+.settings-address {
+  background: var(--theme-surface-2) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.settings-address__text {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.settings-address__icon {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  color: var(--theme-primary) !important;
+}
+
+.settings-address__icon .react-icon {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.settings-address__badge {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.settings-address__notes {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.settings-address__notes strong {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+/* ✅ Address preview */
+.settings-address-preview {
+  background: var(--theme-surface-2) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--theme-text) !important;
+}
+
+.settings-address-preview .react-icon {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.settings-address-preview__title {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.settings-address-preview__text {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.settings-address-preview__note {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ✅ Field hints */
+.settings-field__hint {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.settings-field__hint--error {
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+}
+
+.settings-field__hint--success {
+  color: var(--theme-success) !important;
+  -webkit-text-fill-color: var(--theme-success) !important;
+}
+
+/* ============================================================
+   5. SETTINGS SIDE (Right Rail) — cards visible
+============================================================ */
+
+/* ✅ Brand card (SJCM STORE) */
+.settings-brand-card {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+}
+
+.settings-brand-card__title,
+.settings-brand-card__subtitle,
+.settings-brand-card__tagline {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.settings-brand-card__logo {
+  background: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.15) !important;
+  border-color: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.25) !important;
+  color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Side card (Quick Links) */
+.settings-side-card {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--theme-text) !important;
+}
+
+.settings-side-card__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.settings-side-card__title .react-icon {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.settings-side-card__subtitle {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ✅ Quick links */
+.settings-quicklink {
+  color: var(--theme-text) !important;
+  background: transparent !important;
+}
+
+.settings-quicklink:hover {
+  background: rgba(var(--theme-primary-rgb), 0.06) !important;
+}
+
+.settings-quicklink__label {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.settings-quicklink__desc {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.settings-quicklink__icon {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  color: var(--theme-primary) !important;
+}
+
+.settings-quicklink__icon .react-icon {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.settings-quicklink__chev {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ✅ Danger zone */
+.settings-side-card--danger {
+  border-color: rgba(var(--theme-danger-rgb), 0.3) !important;
+}
+
+.settings-side-card__title--danger,
+.settings-side-card__title--danger .react-icon {
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+}
+
+.settings-danger-btn {
+  background: rgba(var(--theme-danger-rgb), 0.06) !important;
+  border-color: rgba(var(--theme-danger-rgb), 0.2) !important;
+}
+
+.settings-danger-btn:hover {
+  background: rgba(var(--theme-danger-rgb), 0.1) !important;
+  border-color: rgba(var(--theme-danger-rgb), 0.35) !important;
+}
+
+.settings-danger-btn__icon {
+  background: rgba(var(--theme-danger-rgb), 0.12) !important;
+  color: var(--theme-danger) !important;
+}
+
+.settings-danger-btn__icon .react-icon {
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+}
+
+.settings-danger-btn__label {
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+}
+
+.settings-danger-btn__desc {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ============================================================
+   6. APPEARANCE TAB — theme cards
+============================================================ */
+
+.appearance-section__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.appearance-section__subtitle {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.appearance-current-theme {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.appearance-current-theme__label {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.appearance-current-theme__name {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.appearance-current-theme__badge {
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.appearance-current-theme__icon {
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  color: var(--theme-primary) !important;
+}
+
+.appearance-current-theme__icon .react-icon {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   7. MODALS (Address, etc.)
+============================================================ */
+
+.settings-modal {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--theme-text) !important;
+}
+
+.settings-modal__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.settings-modal__subtitle {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.settings-modal__icon {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  color: var(--theme-primary) !important;
+}
+
+.settings-modal__icon .react-icon {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.settings-modal__close {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.settings-modal__close:hover {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.settings-modal__footer {
+  background: var(--theme-surface-2) !important;
+  border-top-color: var(--theme-border) !important;
+}
+
+.settings-modal__label-chip {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.settings-modal__label-chip.is-active {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border-color: var(--theme-primary) !important;
+}
+
+.settings-modal-overlay {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme-mode='light'] .settings-modal-overlay {
+  background: rgba(0, 0, 0, 0.35) !important;
+}
+/* ============================================================
+   ✅ HERO CAROUSEL CAPTION — Force WHITE text
+   ✅ Override ang universal `p`/`span` rules
+   ✅ Dapat visible sa LAHAT ng 10 themes (kasi dark bg)
+============================================================ */
+
+.hero-carousel__caption,
+.hero-carousel__caption *,
+.hero-carousel__name,
+.hero-carousel__meta,
+.hero-carousel__caption p,
+.hero-carousel__caption span,
+.hero-carousel__caption h1,
+.hero-carousel__caption h2,
+.hero-carousel__caption h3 {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6) !important;
+  opacity: 1 !important;
+}
+
+/* ✅ Meta — slightly dimmed pero readable pa rin */
+.hero-carousel__meta {
+  color: rgba(255, 255, 255, 0.92) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.92) !important;
+}
+
+/* ✅ Carousel buttons — force white icons */
+.hero-carousel__btn,
+.hero-carousel__btn .react-icon,
+.hero-carousel__btn svg {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  stroke: currentColor !important;
+}
+
+.hero-carousel__btn:hover,
+.hero-carousel__btn:hover .react-icon,
+.hero-carousel__btn:hover svg {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* ✅ Carousel dots — force white */
+.hero-carousel__dot {
+  background: rgba(255, 255, 255, 0.45) !important;
+}
+
+.hero-carousel__dot:hover {
+  background: rgba(255, 255, 255, 0.85) !important;
+}
+
+.hero-carousel__dot.is-active {
+  background: #ffffff !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.7) !important;
+}
+
+/* ✅ Ensure caption background remains dark for contrast */
+.hero-carousel__caption {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.5) 100%
+  ) !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+/* ============================================================
+   ✅ IN STOCK BADGE — Force ACCENT (hindi green)
+   ✅ Theme-matched: same hue ng theme
+   ✅ Works sa lahat ng 10 themes
+============================================================ */
+
+/* ✅ Catalog / Product / Favorites — lahat ng badges */
+.catalog-card__badge,
+.catalog-card__stock,
+.product-media__badge,
+.product-card__badge,
+.product-card__stock,
+.product-related__badge,
+.favorites-card__badge,
+.favorites-card__stock,
+.stock-badge,
+.in-stock-badge,
+.product-stock-badge,
+.product-stock {
+  /* ✅ Gamitin ang --theme-success pero same family na sa theme */
+  background: var(--theme-success) !important;
+  background-color: var(--theme-success) !important;
+  background-image: none !important;
+
+  color: var(--theme-on-success, #FFFFFF) !important;
+  -webkit-text-fill-color: var(--theme-on-success, #FFFFFF) !important;
+
+  border: none !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  text-shadow: none !important;
+  box-shadow: 0 2px 6px rgba(var(--theme-success-rgb), 0.3) !important;
+}
+
+/* ✅ Dark mode — darker text sa light badge */
+[data-theme-mode='dark'] .catalog-card__badge,
+[data-theme-mode='dark'] .catalog-card__stock,
+[data-theme-mode='dark'] .product-media__badge,
+[data-theme-mode='dark'] .product-card__badge,
+[data-theme-mode='dark'] .product-related__badge,
+[data-theme-mode='dark'] .favorites-card__badge,
+[data-theme-mode='dark'] .favorites-card__stock,
+[data-theme-mode='dark'] .stock-badge,
+[data-theme-mode='dark'] .in-stock-badge {
+  color: var(--theme-on-success, #0E1626) !important;
+  -webkit-text-fill-color: var(--theme-on-success, #0E1626) !important;
+}
+/* ============================================================
+   ✅ NOTIFICATION BELL BADGE — Force theme-aware
+   ✅ Match sa theme (danger pa rin pero theme-harmonized)
+   ✅ Auto-adjust sa lahat ng 10 themes
+============================================================ */
+
+/* ✅ Bell button */
+.notification-bell__button {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--theme-text-muted) !important;
+  transition: all 180ms ease;
+}
+
+.notification-bell__button:hover {
+  background: rgba(var(--theme-primary-rgb), 0.08) !important;
+  border-color: var(--theme-primary) !important;
+  color: var(--theme-primary) !important;
+}
+
+.notification-bell__button svg,
+.notification-bell__button .react-icon {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
+}
+
+/* ✅ Badge count — theme-aware */
+.notification-bell__badge,
+.notifications-badge {
+  background: var(--theme-danger) !important;
+  background-color: var(--theme-danger) !important;
+  background-image: none !important;
+
+  color: var(--theme-on-danger, #FFFFFF) !important;
+  -webkit-text-fill-color: var(--theme-on-danger, #FFFFFF) !important;
+
+  border: 2px solid var(--theme-surface) !important;
+  font-weight: 700 !important;
+  box-shadow:
+    0 2px 6px rgba(var(--theme-danger-rgb), 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ✅ Dark mode — darker text sa light badge */
+[data-theme-mode='dark'] .notification-bell__badge,
+[data-theme-mode='dark'] .notifications-badge {
+  color: var(--theme-on-danger, #0E1626) !important;
+  -webkit-text-fill-color: var(--theme-on-danger, #0E1626) !important;
+}
+
+/* ✅ Dropdown — theme-aware */
+.notification-bell__dropdown {
+  background: var(--theme-surface) !important;
+  border: 1px solid var(--theme-border-strong) !important;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 16px 40px rgba(0, 0, 0, 0.12),
+    0 32px 64px rgba(0, 0, 0, 0.08) !important;
+  backdrop-filter: blur(12px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(140%) !important;
+}
+
+/* ✅ Header / footer / list */
+.notification-bell__header,
+.notification-bell__footer {
+  background: var(--theme-surface-2) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.notification-bell__list {
+  background: var(--theme-surface) !important;
+}
+
+/* ✅ Text sa loob ng dropdown */
+.notification-bell__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.notification-bell__mark-all {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--theme-text-muted) !important;
+}
+
+.notification-bell__mark-all:hover {
+  border-color: var(--theme-primary) !important;
+  color: var(--theme-primary) !important;
+}
+
+.notification-bell__footer a {
+  color: var(--theme-primary) !important;
+}
+
+.notification-bell__footer a:hover {
+  color: var(--theme-primary-hover) !important;
+}
+
+/* ✅ Notification items */
+.notification-item {
+  background: var(--theme-surface) !important;
+  border-bottom-color: var(--theme-border) !important;
+}
+
+.notification-item:hover {
+  background: rgba(var(--theme-primary-rgb), 0.04) !important;
+}
+
+.notification-item--unread {
+  background: rgba(var(--theme-primary-rgb), 0.06) !important;
+  border-left: 3px solid var(--theme-primary) !important;
+}
+
+.notification-item--unread:hover {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+}
+
+.notification-item__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.notification-item__message {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.notification-item__time,
+.notification-item__date {
+  color: var(--theme-text-subtle, var(--theme-text-muted)) !important;
+  -webkit-text-fill-color: var(--theme-text-subtle, var(--theme-text-muted)) !important;
+}
+
+.notification-item__mark-read,
+.notification-item__delete {
+  border-color: var(--theme-border) !important;
+  color: var(--theme-text-muted) !important;
+}
+
+.notification-item__mark-read:hover {
+  border-color: var(--theme-primary) !important;
+  color: var(--theme-primary) !important;
+}
+
+.notification-item__delete:hover {
+  color: var(--theme-danger) !important;
+}
+
+.notification-item__link {
+  border-color: var(--theme-primary) !important;
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  color: var(--theme-primary) !important;
+}
+
+.notification-item__link:hover {
+  background: rgba(var(--theme-primary-rgb), 0.18) !important;
+}
+
+.notification-item__unread-dot {
+  color: var(--theme-primary) !important;
+}
+
+.notification-item__unread-dot .react-icon {
+  fill: var(--theme-primary) !important;
+  color: var(--theme-primary) !important;
+}
+
+.notification-item__type {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text-muted) !important;
+  border: 1px solid var(--theme-border) !important;
+}
+
+/* ✅ Notifications page container */
+.notifications-container {
+  background: var(--theme-surface) !important;
+  border: 1px solid var(--theme-border) !important;
+}
+
+.notifications-header {
+  background: var(--theme-surface-2) !important;
+  border-bottom-color: var(--theme-border) !important;
+}
+
+.notifications-title {
+  color: var(--theme-text) !important;
+}
+
+.notifications-back {
+  color: var(--theme-text-muted) !important;
+}
+
+.notifications-back:hover {
+  color: var(--theme-primary) !important;
+}
+
+.notifications-count {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  color: var(--theme-primary) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.2) !important;
+}
+
+.notifications-toolbar {
+  background: var(--theme-surface-2) !important;
+  border-bottom-color: var(--theme-border) !important;
+}
+
+.notifications-filter {
+  color: var(--theme-text-muted) !important;
+}
+
+.notifications-filter:hover {
+  color: var(--theme-text) !important;
+}
+
+.notifications-filter--active {
+  border-color: var(--theme-primary) !important;
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  color: var(--theme-primary) !important;
+}
+
+.notifications-action {
+  border-color: var(--theme-border) !important;
+  color: var(--theme-text-muted) !important;
+}
+
+.notifications-action:hover {
+  border-color: var(--theme-primary) !important;
+  color: var(--theme-primary) !important;
+}
+
+.notifications-action--danger:hover {
+  border-color: var(--theme-danger) !important;
+  color: var(--theme-danger) !important;
+}
+
+.notifications-empty__title {
+  color: var(--theme-text) !important;
+}
+
+.notifications-empty__description {
+  color: var(--theme-text-muted) !important;
+}
+
+/* ✅ Notification media */
+.notification-item__media {
+  background: var(--theme-surface-2) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.notification-item__emoji {
+  background: var(--theme-surface) !important;
+}
+/* ============================================================
+   ✅ HERO HEADER TEXT — Cart, Checkout, Order Details
+   ✅ Force readable sa LAHAT ng 10 themes
+   ✅ Auto-flip text color base sa --theme-on-primary
+============================================================ */
+
+/* ============================================================
+   1. CART HERO — Header ng cart page
+============================================================ */
+
+.cart-hero {
+  background: linear-gradient(
+    90deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  box-shadow: 0 18px 42px rgba(var(--theme-primary-rgb), 0.25) !important;
+}
+
+/* ✅ Force LAHAT ng text sa cart hero na readable */
+.cart-hero,
+.cart-hero *,
+.cart-hero__copy,
+.cart-hero__title,
+.cart-hero__kicker,
+.cart-hero__description,
+.cart-hero__quote,
+.cart-hero__quote span {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Kicker — slightly muted pero readable pa rin */
+.cart-hero__kicker {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
+}
+
+/* ✅ Quote — slightly muted */
+.cart-hero__quote,
+.cart-hero__quote span {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.92;
+}
+
+/* ✅ Description — slightly muted */
+.cart-hero__description {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.88;
+}
+
+/* ============================================================
+   2. CHECKOUT HERO — Header ng checkout page
+============================================================ */
+
+.checkout-hero {
+  background: linear-gradient(
+    90deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  box-shadow: 0 18px 42px rgba(var(--theme-primary-rgb), 0.25) !important;
+}
+
+/* ✅ Force LAHAT ng text sa checkout hero na readable */
+.checkout-hero,
+.checkout-hero *,
+.checkout-hero__copy,
+.checkout-hero__title,
+.checkout-hero__kicker,
+.checkout-hero__description,
+.checkout-hero__quote,
+.checkout-hero__back,
+.checkout-hero__back span,
+.checkout-hero__quote span {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Back link — slightly muted pero readable */
+.checkout-hero__back {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
+}
+
+.checkout-hero__back:hover {
+  opacity: 1;
+}
+
+.checkout-hero__back svg,
+.checkout-hero__back .react-icon {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  stroke: currentColor !important;
+}
+
+/* ✅ Kicker — slightly muted */
+.checkout-hero__kicker {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
+}
+
+/* ✅ Description — slightly muted */
+.checkout-hero__description {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.88;
+}
+
+/* ✅ Quote — slightly muted */
+.checkout-hero__quote,
+.checkout-hero__quote span {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.92;
+}
+
+/* ============================================================
+   3. ORDER DETAILS HERO — Header ng order details page
+============================================================ */
+
+.od-hero {
+  position: relative;
+}
+
+.od-hero__bg {
+  background: linear-gradient(
+    120deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 40%,
+    var(--theme-primary) 100%
+  ) !important;
+}
+
+/* ✅ Force LAHAT ng text sa OD hero na readable */
+.od-hero,
+.od-hero__body,
+.od-hero__id,
+.od-hero__date,
+.od-hero__status,
+.od-hero__status *,
+.od-hero__print,
+.od-hero__print *,
+.od-hero__cancel,
+.od-hero__cancel *,
+.od-hero__lock-note,
+.od-hero__lock-note * {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Status badge — theme-aware overlay */
+.od-hero__status {
+  background: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.2) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.od-hero__status-dot {
+  background: var(--theme-accent) !important;
+  box-shadow: 0 0 0 2px rgba(var(--theme-accent-rgb), 0.4) !important;
+}
+
+/* ✅ Order ID */
+.od-hero__id {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Date */
+.od-hero__date {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.8;
+}
+
+/* ✅ Print button */
+.od-hero__print {
+  background: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.15) !important;
+  border-color: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.4) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.od-hero__print svg,
+.od-hero__print .react-icon {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  stroke: currentColor !important;
+}
+
+.od-hero__print:hover {
+  background: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.25) !important;
+  border-color: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.6) !important;
+}
+
+/* ✅ Cancel button */
+.od-hero__cancel {
+  background: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.15) !important;
+  border-color: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.45) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.od-hero__cancel svg,
+.od-hero__cancel .react-icon {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  stroke: currentColor !important;
+}
+
+.od-hero__cancel:hover {
+  background: rgba(var(--theme-danger-rgb), 0.35) !important;
+  border-color: rgba(var(--theme-danger-rgb), 0.8) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Lock note */
+.od-hero__lock-note {
+  background: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.12) !important;
+  border-color: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.3) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.od-hero__lock-note svg,
+.od-hero__lock-note .react-icon {
+  color: var(--theme-accent) !important;
+  -webkit-text-fill-color: var(--theme-accent) !important;
+  stroke: currentColor !important;
+}
+
+/* ============================================================
+   4. GLOBAL HERO BUTTONS — Force readable sa LAHAT ng heroes
+============================================================ */
+
+/* ✅ Lahat ng button sa loob ng cart/checkout/od hero */
+.cart-hero button,
+.checkout-hero button,
+.od-hero button {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.cart-hero button *,
+.checkout-hero button *,
+.od-hero button * {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
+}
+
+/* ✅ Lahat ng links sa hero */
+.cart-hero a,
+.checkout-hero a,
+.od-hero a {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.cart-hero a *,
+.checkout-hero a *,
+.od-hero a * {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
+}
+
+/* ============================================================
+   5. HERO SVG ICONS — Force color inherit
+============================================================ */
+
+.cart-hero svg,
+.checkout-hero svg,
+.od-hero svg,
+.cart-hero .react-icon,
+.checkout-hero .react-icon,
+.od-hero .react-icon {
+  stroke: currentColor !important;
+  color: inherit !important;
 }

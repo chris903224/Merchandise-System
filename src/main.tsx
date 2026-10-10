@@ -8,6 +8,7 @@ import { ensureSeeded } from './data/seed';
 import { applyTheme, getStoredTheme } from './theme';
 import './styles/index.css';
 
+
 /**
  * Seeding is async because passwords are hashed with the Web Crypto API, so the
  * app mounts only once localStorage holds a consistent data set.

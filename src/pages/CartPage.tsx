@@ -249,7 +249,7 @@ export default function CartPage() {
                         />
                       </label>
 
-                      {/* ITO ANG BINAGO: Image na imbes na Package icon */}
+                      {/* Image na imbes na Package icon */}
                       <Link
                         to={`/products/${encodeURIComponent(item.id)}`}
                         className="cart-item__media"
@@ -280,15 +280,13 @@ export default function CartPage() {
                           {item.organization || 'General'}
                         </p>
 
+                        {/* ✅ FIXED: Tinanggal ang hardcoded na "Maroon" color tag */}
                         <div className="cart-item__tags">
                           {item.size && (
                             <span className="cart-item__tag">
                               Size: <strong>{item.size}</strong>
                             </span>
                           )}
-                          <span className="cart-item__tag">
-                            Color: <strong>Maroon</strong>
-                          </span>
                         </div>
 
                         <p className="cart-item__price">

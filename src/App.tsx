@@ -7,6 +7,9 @@ import CatalogPage from './pages/CatalogPage';
 import ProductPage from './pages/ProductPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
+import CheckoutSuccessPage from './pages/CheckoutSuccessPage';
+import CheckoutCancelPage from './pages/CheckoutCancelPage';
+import VerifyEmailPage from './pages/VerifyEmailPage'; // ✅ IDAGDAG
 import ConfirmationPage from './pages/ConfirmationPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -21,7 +24,7 @@ import FavoritesPage from './pages/FavoritesPage';
 // ✅ ADMIN PAGES
 import {
   AdminLayout,
-  AdminLoginPage,                              // ✅ BAGO
+  AdminLoginPage,
   DashboardPage as AdminDashboardPage,
   ProductsPage as AdminProductsPage,
   OrdersPage as AdminOrdersPage,
@@ -44,8 +47,7 @@ export default function App() {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
       {/* ============================================
-          ADMIN LOGIN (standalone — walang sidebar/topbar)
-          ✅ IMPORTANT: Dapat nasa TAAS ng /admin/* routes
+          ADMIN LOGIN (standalone)
           ============================================ */}
       <Route path="/admin/login" element={<AdminLoginPage />} />
 
@@ -59,7 +61,19 @@ export default function App() {
         <Route path="/catalog" element={<CatalogPage />} />
         <Route path="/products/:id" element={<ProductPage />} />
         <Route path="/cart" element={<CartPage />} />
+
+        {/* ✅ CHECKOUT ROUTES */}
         <Route path="/checkout" element={<CheckoutPage />} />
+
+        {/* ✅ Success Page (after PayMongo payment) */}
+        <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
+
+        {/* ✅ Cancel Page */}
+        <Route path="/checkout/cancel" element={<CheckoutCancelPage />} />
+
+        {/* ✅ NEW — Verify Email Page (after order placed) */}
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
+
         <Route path="/confirmation" element={<ConfirmationPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/orders/:id" element={<OrderDetailsPage />} />
@@ -70,7 +84,7 @@ export default function App() {
       </Route>
 
       {/* ============================================
-          ADMIN DASHBOARD (protected — may sidebar + topbar)
+          ADMIN DASHBOARD (protected)
           ============================================ */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminDashboardPage />} />
