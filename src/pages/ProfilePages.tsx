@@ -1,6 +1,6 @@
 // src/pages/ProfilePage.tsx
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   User,
@@ -22,8 +22,6 @@ import {
   Package,
   Lock,
   Building2,
-  Menu,
-  X,
   Store,
   ShoppingCart,
   Shield,
@@ -56,6 +54,7 @@ const activityIcon = {
   security: Lock,
 };
 
+/* ✅ SAME SA SETTINGS — simple sideNavItems */
 const sideNavItems = [
   { to: '/', label: 'Home', icon: Home, end: true },
   { to: '/catalog', label: 'Shop', icon: Store },
@@ -77,15 +76,8 @@ export default function ProfilePage() {
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [coverPhoto, setCoverPhoto] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<ProfileTab>('info');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isSidebarPinned, setIsSidebarPinned] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
-  const sidebarRef = useRef<HTMLElement>(null);
-  const hoverZoneRef = useRef<HTMLDivElement>(null);
-  const closeTimerRef = useRef<number | null>(null);
-
-  // Profile fields — may setters
   const [courseStrand, setCourseStrand] = useState('');
   const [yearLevel, setYearLevel] = useState('');
   const [dob, setDob] = useState('');
@@ -97,7 +89,7 @@ export default function ProfilePage() {
   const [shippingAddress] = useState<string | null>(null);
 
   /* ============================================
-     LOAD PROFILE — fresh from Supabase every mount
+     LOAD PROFILE
      ============================================ */
   useEffect(() => {
     if (!session) {
@@ -105,30 +97,23 @@ export default function ProfilePage() {
       return;
     }
 
-    /* ✅ Set from session FIRST (instant display) */
     setName(session.name || '');
     setEmail(session.email || '');
     setOrganization(session.organization || '');
     setIdNumber(session.idNumber || '');
     setProfilePicture(session.profilePicture || null);
 
-    // Prefill from session kung meron na
     if ((session as any).course) setCourseStrand((session as any).course);
     if ((session as any).yearLevel) setYearLevel((session as any).yearLevel);
     if ((session as any).dateOfBirth) setDob((session as any).dateOfBirth);
     if ((session as any).phone) setPhone((session as any).phone);
 
-    /* ✅ Fetch FRESH from Supabase */
     const loadProfile = async () => {
       try {
-        // Fetch avatar + cover
         const { avatar_url, cover_url } = await fetchProfileImages(session.id);
         if (avatar_url) setProfilePicture(avatar_url);
-        if (cover_url) {
-          setCoverPhoto(cover_url);
-        }
+        if (cover_url) setCoverPhoto(cover_url);
 
-        // Fetch course, year, DOB, phone
         const profile = await fetchUserProfile(session.id);
         if (profile) {
           if (profile.course_strand) setCourseStrand(profile.course_strand);
@@ -151,49 +136,10 @@ export default function ProfilePage() {
     void loadProfile();
   }, [session, navigate]);
 
-  /* Hover-to-open sidebar */
-  useEffect(() => {
-    const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
-    if (!isDesktop()) return;
-
-    const openSidebar = () => {
-      if (closeTimerRef.current) {
-        window.clearTimeout(closeTimerRef.current);
-        closeTimerRef.current = null;
-      }
-      setIsSidebarOpen(true);
-    };
-
-    const scheduleClose = () => {
-      if (isSidebarPinned) return;
-      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
-      closeTimerRef.current = window.setTimeout(() => {
-        setIsSidebarOpen(false);
-      }, 150);
-    };
-
-    const zone = hoverZoneRef.current;
-    const sidebar = sidebarRef.current;
-    if (!zone || !sidebar) return;
-
-    zone.addEventListener('mouseenter', openSidebar);
-    sidebar.addEventListener('mouseenter', openSidebar);
-    sidebar.addEventListener('mouseleave', scheduleClose);
-    zone.addEventListener('mouseleave', scheduleClose);
-
-    return () => {
-      zone.removeEventListener('mouseenter', openSidebar);
-      sidebar.removeEventListener('mouseenter', openSidebar);
-      sidebar.removeEventListener('mouseleave', scheduleClose);
-      zone.removeEventListener('mouseleave', scheduleClose);
-      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
-    };
-  }, [isSidebarPinned, session]);
-
   if (!session) return null;
 
   /* ============================================
-     HANDLERS — Supabase upload
+     HANDLERS
      ============================================ */
 
   const validateFile = (file: File): boolean => {
@@ -323,42 +269,10 @@ export default function ProfilePage() {
     : undefined;
 
   return (
-    <div className={`profile-shell ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
-      <div ref={hoverZoneRef} className="profile-hover-zone" aria-hidden="true" />
-
-      <aside
-        ref={sidebarRef}
-        className={`profile-sidebar ${isSidebarOpen ? 'is-open' : ''}`}
-      >
+    <div className="profile-shell">
+      {/* ✅ SIDEBAR — SIMPLE LANG, SAME SA SETTINGS */}
+      <aside className="profile-sidebar">
         <div className="profile-sidebar__top">
-          <button
-            type="button"
-            className="profile-sidebar__pin"
-            onClick={() => setIsSidebarPinned((p) => !p)}
-            aria-label={isSidebarPinned ? 'Unpin sidebar' : 'Pin sidebar'}
-            title={isSidebarPinned ? 'Unpin sidebar' : 'Pin sidebar'}
-          >
-            {isSidebarPinned ? (
-              <X className="react-icon" />
-            ) : (
-              <ChevronRight className="react-icon" />
-            )}
-          </button>
-
-          <Link
-            to="/"
-            className="profile-sidebar__brand"
-            onClick={() => setIsSidebarOpen(false)}
-          >
-            <span className="profile-sidebar__brand-mark">SJ</span>
-            <span className="profile-sidebar__brand-copy">
-              <span className="profile-sidebar__brand-name">SJCM STORE</span>
-              <span className="profile-sidebar__brand-tag">
-                Official School Merchandise
-              </span>
-            </span>
-          </Link>
-
           <nav className="profile-sidebar__nav">
             {sideNavItems.map((item) => {
               const Icon = item.icon;
@@ -367,10 +281,10 @@ export default function ProfilePage() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`profile-sidebar__item ${isActive ? 'is-active' : ''}`}
-                  onClick={() => setIsSidebarOpen(false)}
+                  className={`profile-sidebar__item ${
+                    isActive ? 'is-active' : ''
+                  }`}
                   data-label={item.label}
-                  title={item.label}
                 >
                   <Icon className="react-icon" aria-hidden="true" />
                   <span>{item.label}</span>
@@ -379,35 +293,9 @@ export default function ProfilePage() {
             })}
           </nav>
         </div>
-
-        <div className="profile-sidebar__bottom">
-          <p className="profile-sidebar__motto">"Faith • Excellence • Service"</p>
-          <p className="profile-sidebar__campus">Saint Jude College</p>
-        </div>
       </aside>
 
-      {isSidebarOpen ? (
-        <div
-          className="profile-backdrop"
-          onClick={() => setIsSidebarOpen(false)}
-          aria-hidden="true"
-        />
-      ) : null}
-
       <div className="profile-main-wrap">
-        <button
-          type="button"
-          className="profile-mobile-menu"
-          aria-label="Toggle navigation"
-          onClick={() => setIsSidebarOpen((p) => !p)}
-        >
-          {isSidebarOpen ? (
-            <X className="react-icon" />
-          ) : (
-            <Menu className="react-icon" />
-          )}
-        </button>
-
         <main className="profile-page">
           <div className="profile-container">
             <div className="profile-layout">
@@ -479,7 +367,9 @@ export default function ProfilePage() {
                     type="button"
                     role="tab"
                     aria-selected={activeTab === 'info'}
-                    className={`profile-tab ${activeTab === 'info' ? 'is-active' : ''}`}
+                    className={`profile-tab ${
+                      activeTab === 'info' ? 'is-active' : ''
+                    }`}
                     onClick={() => setActiveTab('info')}
                   >
                     Personal Info
@@ -488,7 +378,9 @@ export default function ProfilePage() {
                     type="button"
                     role="tab"
                     aria-selected={activeTab === 'security'}
-                    className={`profile-tab ${activeTab === 'security' ? 'is-active' : ''}`}
+                    className={`profile-tab ${
+                      activeTab === 'security' ? 'is-active' : ''
+                    }`}
                     onClick={() => setActiveTab('security')}
                   >
                     Account Security
@@ -497,7 +389,9 @@ export default function ProfilePage() {
                     type="button"
                     role="tab"
                     aria-selected={activeTab === 'school'}
-                    className={`profile-tab ${activeTab === 'school' ? 'is-active' : ''}`}
+                    className={`profile-tab ${
+                      activeTab === 'school' ? 'is-active' : ''
+                    }`}
                     onClick={() => setActiveTab('school')}
                   >
                     School Information
@@ -514,7 +408,8 @@ export default function ProfilePage() {
                             Personal Information
                           </h2>
                           <p className="profile-card-subtitle">
-                            Manage your personal details and contact information.
+                            Manage your personal details and contact
+                            information.
                           </p>
                         </div>
                         <Link to="/settings" className="profile-edit-btn">
@@ -530,7 +425,10 @@ export default function ProfilePage() {
                               <img src={profilePicture} alt={displayName} />
                             ) : (
                               <div className="profile-photo-fallback">
-                                <User className="react-icon" aria-hidden="true" />
+                                <User
+                                  className="react-icon"
+                                  aria-hidden="true"
+                                />
                               </div>
                             )}
                             <button
@@ -540,7 +438,10 @@ export default function ProfilePage() {
                               disabled={isUploading}
                               aria-label="Change photo"
                             >
-                              <Camera className="react-icon" aria-hidden="true" />
+                              <Camera
+                                className="react-icon"
+                                aria-hidden="true"
+                              />
                             </button>
                           </div>
                           <button
@@ -549,20 +450,31 @@ export default function ProfilePage() {
                             onClick={handleProfilePictureUpload}
                             disabled={isUploading}
                           >
-                            <Camera className="react-icon" aria-hidden="true" />
+                            <Camera
+                              className="react-icon"
+                              aria-hidden="true"
+                            />
                             {isUploading ? 'Uploading…' : 'Change Photo'}
                           </button>
                         </div>
 
                         <div className="profile-form-grid">
                           <div className="profile-form-group">
-                            <label className="profile-form-label">Full Name</label>
-                            <p className="profile-form-value">{displayName}</p>
+                            <label className="profile-form-label">
+                              Full Name
+                            </label>
+                            <p className="profile-form-value">
+                              {displayName}
+                            </p>
                           </div>
 
                           <div className="profile-form-group">
-                            <label className="profile-form-label">Student ID</label>
-                            <p className="profile-form-value">{idNumber || 'N/A'}</p>
+                            <label className="profile-form-label">
+                              Student ID
+                            </label>
+                            <p className="profile-form-value">
+                              {idNumber || 'N/A'}
+                            </p>
                           </div>
 
                           <div className="profile-form-group">
@@ -570,24 +482,34 @@ export default function ProfilePage() {
                               Course / Strand
                             </label>
                             <p className="profile-form-value">
-                              {courseStrand ? getCourseLabel(courseStrand) : 'N/A'}
+                              {courseStrand
+                                ? getCourseLabel(courseStrand)
+                                : 'N/A'}
                             </p>
                           </div>
 
                           <div className="profile-form-group">
-                            <label className="profile-form-label">Year Level</label>
-                            <p className="profile-form-value">{yearLevel || 'N/A'}</p>
+                            <label className="profile-form-label">
+                              Year Level
+                            </label>
+                            <p className="profile-form-value">
+                              {yearLevel || 'N/A'}
+                            </p>
                           </div>
 
                           <div className="profile-form-group">
                             <label className="profile-form-label">
                               Date of Birth
                             </label>
-                            <p className="profile-form-value">{dob || 'N/A'}</p>
+                            <p className="profile-form-value">
+                              {dob || 'N/A'}
+                            </p>
                           </div>
 
                           <div className="profile-form-group">
-                            <label className="profile-form-label">School Year</label>
+                            <label className="profile-form-label">
+                              School Year
+                            </label>
                             <p className="profile-form-value">
                               {schoolYear || 'N/A'}
                             </p>
@@ -598,7 +520,10 @@ export default function ProfilePage() {
                               Email Address
                             </label>
                             <div className="profile-form-field">
-                              <Mail className="react-icon" aria-hidden="true" />
+                              <Mail
+                                className="react-icon"
+                                aria-hidden="true"
+                              />
                               <span>{email}</span>
                             </div>
                           </div>
@@ -608,7 +533,10 @@ export default function ProfilePage() {
                               Phone Number
                             </label>
                             <div className="profile-form-field">
-                              <Phone className="react-icon" aria-hidden="true" />
+                              <Phone
+                                className="react-icon"
+                                aria-hidden="true"
+                              />
                               <span>{phone || 'N/A'}</span>
                             </div>
                           </div>
@@ -620,7 +548,10 @@ export default function ProfilePage() {
                       <div className="profile-card-header">
                         <div>
                           <h2 className="profile-card-title">
-                            <MapPin className="react-icon" aria-hidden="true" />
+                            <MapPin
+                              className="react-icon"
+                              aria-hidden="true"
+                            />
                             Shipping Address
                           </h2>
                           <p className="profile-card-subtitle">
@@ -638,7 +569,9 @@ export default function ProfilePage() {
                           <Home className="react-icon" aria-hidden="true" />
                         </div>
                         {shippingAddress ? (
-                          <p className="profile-address-text">{shippingAddress}</p>
+                          <p className="profile-address-text">
+                            {shippingAddress}
+                          </p>
                         ) : (
                           <p className="profile-address-text profile-address-text-empty">
                             No shipping address on file yet.
@@ -664,7 +597,10 @@ export default function ProfilePage() {
                           Password and login settings live in Settings.
                         </p>
                       </div>
-                      <Link to="/settings#security" className="profile-edit-btn">
+                      <Link
+                        to="/settings#security"
+                        className="profile-edit-btn"
+                      >
                         <ChevronRight
                           className="react-icon"
                           aria-hidden="true"
@@ -704,7 +640,10 @@ export default function ProfilePage() {
                       <div className="profile-form-group">
                         <label className="profile-form-label">Campus</label>
                         <div className="profile-form-field">
-                          <Building2 className="react-icon" aria-hidden="true" />
+                          <Building2
+                            className="react-icon"
+                            aria-hidden="true"
+                          />
                           <span>{campus || 'N/A'}</span>
                         </div>
                       </div>
@@ -717,21 +656,31 @@ export default function ProfilePage() {
                             aria-hidden="true"
                           />
                           <span>
-                            {program || (courseStrand ? getCourseLabel(courseStrand) : 'N/A')}
+                            {program ||
+                              (courseStrand
+                                ? getCourseLabel(courseStrand)
+                                : 'N/A')}
                           </span>
                         </div>
                       </div>
 
                       <div className="profile-form-group">
-                        <label className="profile-form-label">Year Level</label>
+                        <label className="profile-form-label">
+                          Year Level
+                        </label>
                         <div className="profile-form-field">
-                          <Calendar className="react-icon" aria-hidden="true" />
+                          <Calendar
+                            className="react-icon"
+                            aria-hidden="true"
+                          />
                           <span>{yearLevel || 'N/A'}</span>
                         </div>
                       </div>
 
                       <div className="profile-form-group">
-                        <label className="profile-form-label">School Year</label>
+                        <label className="profile-form-label">
+                          School Year
+                        </label>
                         <div className="profile-form-field">
                           <CalendarRange
                             className="react-icon"
@@ -759,7 +708,10 @@ export default function ProfilePage() {
                 <div className="profile-side__card">
                   <div className="profile-side__header">
                     <div className="profile-side__title">
-                      <ShieldCheck className="react-icon" aria-hidden="true" />
+                      <ShieldCheck
+                        className="react-icon"
+                        aria-hidden="true"
+                      />
                       Account Status
                     </div>
                     {allVerified && (
@@ -770,7 +722,9 @@ export default function ProfilePage() {
                     {statusChecks.map((check) => (
                       <li key={check.label} className="profile-status-item">
                         <CircleCheck
-                          className={`react-icon ${check.met ? 'is-met' : 'is-pending'}`}
+                          className={`react-icon ${
+                            check.met ? 'is-met' : 'is-pending'
+                          }`}
                           aria-hidden="true"
                         />
                         <span>{check.label}</span>
@@ -839,7 +793,9 @@ export default function ProfilePage() {
                     )}
                   </div>
                   {recentActivity.length === 0 ? (
-                    <p className="profile-empty-note">No recent activity yet.</p>
+                    <p className="profile-empty-note">
+                      No recent activity yet.
+                    </p>
                   ) : (
                     <ul className="profile-activity-list">
                       {recentActivity.map((item) => {
@@ -849,7 +805,10 @@ export default function ProfilePage() {
                             <span
                               className={`profile-activity-icon profile-activity-icon--${item.kind}`}
                             >
-                              <Icon className="react-icon" aria-hidden="true" />
+                              <Icon
+                                className="react-icon"
+                                aria-hidden="true"
+                              />
                             </span>
                             <span className="profile-activity-text">
                               <span className="profile-activity-label">

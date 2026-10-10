@@ -1,5 +1,6 @@
 /* ============================================================
    NAV AVATAR + DROPDOWN MENU — theme-driven
+   ✅ 100% theme-aware — match sa 10 color palettes
    ============================================================ */
 
 /* ===== Profile Avatar ===== */
@@ -23,7 +24,7 @@
 }
 
 .nav-avatar:hover {
-  background-color: rgba(var(--theme-primary-rgb), 0.06);
+  background-color: rgba(var(--theme-primary-rgb), 0.08);
 }
 
 .nav-avatar > :first-child {
@@ -52,6 +53,7 @@
   border: 2px solid var(--theme-border);
 }
 
+/* ✅ Avatar initials — theme-aware text color */
 .nav-avatar-initials {
   width: 36px;
   height: 36px;
@@ -64,7 +66,9 @@
     var(--theme-primary),
     var(--theme-primary-hover)
   );
-  color: #ffffff;
+  /* ✅ Auto-flip: white sa dark themes, dark sa light themes */
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
   font-weight: 600;
   font-size: 14px;
   border: 2px solid var(--theme-border);
@@ -91,7 +95,7 @@
   background: var(--theme-surface);
   border: 1px solid var(--theme-border);
   border-radius: 12px;
-  box-shadow: 0 12px 32px -12px rgba(var(--theme-primary-rgb), 0.2);
+  box-shadow: 0 12px 32px -12px rgba(var(--theme-primary-rgb), 0.25);
   padding: 12px 0;
   z-index: 1000;
   animation: dropdownFadeIn 0.15s ease;
@@ -141,6 +145,7 @@
   border: 2px solid var(--theme-border);
 }
 
+/* ✅ Dropdown initials — theme-aware text color */
 .nav-dropdown-initials {
   width: 48px;
   height: 48px;
@@ -153,7 +158,9 @@
     var(--theme-primary),
     var(--theme-primary-hover)
   );
-  color: #ffffff;
+  /* ✅ Auto-flip */
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
   font-weight: 600;
   font-size: 18px;
   text-transform: uppercase;
@@ -213,7 +220,7 @@
 }
 
 .nav-dropdown-item:hover {
-  background-color: rgba(var(--theme-primary-rgb), 0.06);
+  background-color: rgba(var(--theme-primary-rgb), 0.08);
   color: var(--theme-primary);
 }
 
@@ -228,21 +235,27 @@
   color: var(--theme-primary);
 }
 
+/* ✅ Danger item — theme-aware danger color */
 .nav-dropdown-item--danger {
-  color: #9c3737;
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
 }
 
 .nav-dropdown-item--danger .react-icon {
-  color: #9c3737;
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+  stroke: currentColor !important;
 }
 
 .nav-dropdown-item--danger:hover {
-  background-color: rgba(156, 55, 55, 0.08);
-  color: #9c3737;
+  background-color: rgba(var(--theme-danger-rgb), 0.1) !important;
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
 }
 
 .nav-dropdown-item--danger:hover .react-icon {
-  color: #9c3737;
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
 }
 
 /* ===== Dropdown header link ===== */
@@ -255,10 +268,12 @@
 }
 
 .nav-dropdown-header-link:hover {
-  background-color: rgba(var(--theme-primary-rgb), 0.06);
+  background-color: rgba(var(--theme-primary-rgb), 0.08);
 }
+
 /* ============================================
    SIDEBAR TOGGLE — menu button sa navbar
+   ✅ Theme-aware + fixed positioning
    ============================================ */
 
 .site-nav__left {
@@ -269,6 +284,8 @@
 }
 
 .nav-sidebar-toggle {
+  /* ✅ IDAGDAG — para gumana yung ::after dot */
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -276,7 +293,7 @@
   height: 2.35rem;
   border: 1px solid var(--theme-border);
   border-radius: var(--radius-sm);
-  background: rgba(var(--theme-primary-rgb), 0.06);
+  background: rgba(var(--theme-primary-rgb), 0.08);
   color: var(--theme-primary);
   cursor: pointer;
   transition: all 0.18s ease;
@@ -284,7 +301,7 @@
 }
 
 .nav-sidebar-toggle:hover {
-  background: rgba(var(--theme-primary-rgb), 0.12);
+  background: rgba(var(--theme-primary-rgb), 0.15);
   border-color: var(--theme-primary);
   transform: scale(1.05);
 }
@@ -296,9 +313,12 @@
 .nav-sidebar-toggle .react-icon {
   width: 1rem;
   height: 1rem;
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
 }
 
-/* Optional: badge indicator (parang notification dot) */
+/* ✅ Badge dot — theme-aware */
 .nav-sidebar-toggle::after {
   content: '';
   position: absolute;
@@ -315,7 +335,11 @@
 .nav-sidebar-toggle:hover::after {
   opacity: 1;
 }
-/* Container ng brand */
+
+/* ============================================
+   BRAND LOGO — theme-aware
+   ============================================ */
+
 .brand {
   display: flex;
   align-items: center;
@@ -327,14 +351,14 @@
 .brand__logo {
   width: 48px;
   height: 48px;
-  border-radius: 50%;      
-  object-fit: cover;         
+  border-radius: 50%;
+  object-fit: cover;
   display: block;
   flex-shrink: 0;
-  background: transparent;   
-  box-shadow: none;          
-  padding: 0;                
-  border: none;             
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  border: none;
 }
 
 /* Responsive — mas maliit sa mobile */
@@ -343,4 +367,65 @@
     height: 36px;
     max-width: 140px;
   }
-} 
+}
+
+/* ============================================
+   ✅ EXTRA — Force theme-aware text sa lahat ng nav items
+   ============================================ */
+
+/* ✅ Notification bell — theme-aware */
+.notification-bell {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.notification-bell__button {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--theme-text-muted) !important;
+}
+
+.notification-bell__button:hover {
+  background: rgba(var(--theme-primary-rgb), 0.08) !important;
+  border-color: var(--theme-primary) !important;
+  color: var(--theme-primary) !important;
+}
+
+.notification-bell__button svg,
+.notification-bell__button .react-icon {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
+}
+
+/* ============================================
+   ✅ THEME-AWARE — Cart icon, catalog icon, etc.
+   Lahat ng nav icons — auto-flip
+   ============================================ */
+
+.site-nav__link,
+.site-nav__item,
+.nav-link {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  transition: color 0.15s ease;
+}
+
+.site-nav__link:hover,
+.site-nav__item:hover,
+.nav-link:hover {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.site-nav__link .react-icon,
+.site-nav__item .react-icon,
+.nav-link .react-icon,
+.site-nav__link svg,
+.site-nav__item svg,
+.nav-link svg {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
+}

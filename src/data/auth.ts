@@ -18,7 +18,6 @@ export interface AuthUser {
   emailVerified: boolean;
 }
 
-/** Shape returned by Supabase auth — user may be null */
 interface SupabaseAuthUser {
   id: string;
   email?: string;
@@ -38,28 +37,104 @@ export interface RegisterPayload {
 }
 
 // ============================================
-// REGISTER
+// ✅ CUSTOM ERROR TYPES
+// ============================================
+
+export class EmailAlreadyRegisteredError extends Error {
+  constructor(message = 'This email is already registered. Please sign in instead.') {
+    super(message);
+    this.name = 'EmailAlreadyRegisteredError';
+  }
+}
+
+export class StudentIdAlreadyRegisteredError extends Error {
+  constructor(message = 'This Student ID is already registered. Please sign in instead or contact support.') {
+    super(message);
+    this.name = 'StudentIdAlreadyRegisteredError';
+  }
+}
+
+// ============================================
+// ✅ REGISTER — with pre-check
 // ============================================
 
 /**
- * Creates a new Supabase user. Supabase automatically sends a
- * 6-digit OTP to the user's email for verification.
+ * Creates a new Supabase user.
+ * ✅ Pre-checks kung existing na yung email o student ID bago mag-signUp.
+ * ✅ Supabase automatically sends a 6-digit OTP to the user's email.
  */
 export async function registerUser(payload: RegisterPayload) {
+  const normalizedEmail = payload.email.trim().toLowerCase();
+  const normalizedStudentId = payload.studentId.trim();
+
+  /* ============================================
+     ✅ PRE-CHECK #1: Existing email?
+     ============================================ */
+  const { data: existingEmail, error: emailCheckError } = await supabase
+    .from('profiles')
+    .select('id, email')
+    .ilike('email', normalizedEmail)
+    .maybeSingle();
+
+  if (emailCheckError) {
+    // Log pero hindi i-block yung registration kung may error sa check
+    console.warn('[registerUser] Email pre-check failed:', emailCheckError);
+  }
+
+  if (existingEmail) {
+    throw new EmailAlreadyRegisteredError();
+  }
+
+  /* ============================================
+     ✅ PRE-CHECK #2: Existing student ID?
+     ============================================ */
+  const { data: existingStudentId, error: studentIdCheckError } = await supabase
+    .from('profiles')
+    .select('id, student_id')
+    .eq('student_id', normalizedStudentId)
+    .maybeSingle();
+
+  if (studentIdCheckError) {
+    console.warn('[registerUser] Student ID pre-check failed:', studentIdCheckError);
+  }
+
+  if (existingStudentId) {
+    throw new StudentIdAlreadyRegisteredError();
+  }
+
+  /* ============================================
+     ✅ PROCEED: signUp
+     ============================================ */
   const { data, error } = await supabase.auth.signUp({
-    email: payload.email.trim().toLowerCase(),
+    email: normalizedEmail,
     password: payload.password,
     options: {
       data: {
         name: payload.name.trim(),
         role: 'Student',
-        student_id: payload.studentId.trim(),
+        student_id: normalizedStudentId,
       },
     },
   });
 
-  if (error) throw new Error(error.message);
-  if (!data.user) throw new Error('Registration failed. Please try again.');
+  if (error) {
+    /* ✅ Handle specific Supabase errors */
+    const message = error.message.toLowerCase();
+
+    if (
+      message.includes('already registered') ||
+      message.includes('already exists') ||
+      message.includes('user already registered')
+    ) {
+      throw new EmailAlreadyRegisteredError();
+    }
+
+    throw new Error(error.message);
+  }
+
+  if (!data.user) {
+    throw new Error('Registration failed. Please try again.');
+  }
 
   return data;
 }
@@ -68,10 +143,6 @@ export async function registerUser(payload: RegisterPayload) {
 // VERIFY OTP
 // ============================================
 
-/**
- * Verifies the 6-digit OTP from the registration email.
- * On success, Supabase creates a session automatically.
- */
 export async function verifyOtp(
   email: string,
   token: string,
@@ -153,10 +224,6 @@ export async function getCurrentSession() {
 // ✅ PASSWORD RESET — STEP 1: Send reset code
 // ============================================
 
-/**
- * Sends a 6-digit password reset OTP to the user's email.
- * Uses Supabase's built-in "recovery" flow.
- */
 export async function sendPasswordResetEmail(email: string): Promise<void> {
   const { error } = await supabase.auth.resetPasswordForEmail(
     email.trim().toLowerCase(),
@@ -169,11 +236,6 @@ export async function sendPasswordResetEmail(email: string): Promise<void> {
 // ✅ PASSWORD RESET — STEP 2: Verify reset OTP
 // ============================================
 
-/**
- * Verifies the 6-digit reset OTP.
- * On success, Supabase creates a temporary session which allows
- * the user to update their password in step 3.
- */
 export async function verifyPasswordResetOtp(
   email: string,
   token: string,
@@ -199,11 +261,6 @@ export async function verifyPasswordResetOtp(
 // ✅ PASSWORD RESET — STEP 3: Update password
 // ============================================
 
-/**
- * Updates the currently-authenticated user's password.
- * Must be called right after verifyPasswordResetOtp() while
- * the temporary recovery session is still active.
- */
 export async function updatePassword(newPassword: string): Promise<void> {
   const { error } = await supabase.auth.updateUser({
     password: newPassword,
@@ -216,13 +273,7 @@ export async function updatePassword(newPassword: string): Promise<void> {
 // ✅ PASSWORD RESET — Resend reset code
 // ============================================
 
-/**
- * Resends a password reset OTP to the given email.
- * Supabase's `resend` doesn't support `type: 'recovery'`,
- * so we re-call `resetPasswordForEmail`.
- */
 export async function resendPasswordResetEmail(email: string): Promise<void> {
-  // Same as the initial send — Supabase allows re-sending
   await sendPasswordResetEmail(email);
 }
 

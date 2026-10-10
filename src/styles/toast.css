@@ -1,34 +1,306 @@
-.toast-stack {
-  position: fixed;
-  right: 1.25rem;
-  bottom: 1.25rem;
-  z-index: 80;
-  display: grid;
-  gap: 0.5rem;
-  width: min(calc(100% - 2.5rem), 22rem);
-  pointer-events: none;
+/* ============================================================
+   ✅ TOAST — PREMIUM GLASSMORPHISM
+   ✅ Semi-transparent + strong blur + premium shadow
+   ✅ Text 100% readable sa lahat ng 10 themes
+============================================================ */
+
+/* ============================================
+   TOAST STACK CONTAINER — Bottom Center
+   ============================================ */
+
+.toast-stack,
+#app-toast-container {
+  position: fixed !important;
+  bottom: 24px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+
+  display: flex !important;
+  flex-direction: column-reverse !important;
+  gap: 12px !important;
+
+  z-index: 9999 !important;
+  pointer-events: none !important;
+
+  max-width: calc(100vw - 32px) !important;
+  width: auto !important;
+  align-items: center !important;
 }
+
+/* ============================================
+   ✅ TOAST ITEM — GLASSMORPHISM BASE
+   ============================================ */
 
 .toast {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.6rem;
-  padding: 0.8rem 0.9rem;
-  border: 1px solid var(--color-line-strong);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-raised);
-  box-shadow: var(--shadow-hover);
-  color: var(--color-text);
-  font-size: 0.76rem;
-  pointer-events: auto;
-  transform: translateY(0);
-  transition: opacity 220ms var(--ease-standard), transform 220ms var(--ease-standard);
+  /* ✅ GLASSY — semi-transparent + strong blur */
+  background: rgba(var(--theme-surface-rgb, 255, 255, 255), 0.15) !important;
+  background-color: rgba(var(--theme-surface-rgb, 255, 255, 255), 0.15) !important;
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0.08) 100%
+  ) !important;
+
+  /* ✅ STRONG BLUR — glassy effect */
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+
+  /* ✅ Glass border + inner highlight */
+  border: 1px solid rgba(var(--theme-surface-rgb, 255, 255, 255), 0.25) !important;
+  border-radius: 16px !important;
+
+  /* ✅ Premium shadow — 3-layer */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 2px 8px rgba(0, 0, 0, 0.15) !important;
+
+  /* ✅ Padding */
+  padding: 14px 20px !important;
+
+  /* ✅ Text — solid color para readable */
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  /* ✅ Strong text shadow para kitang-kita sa glass */
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    0 0 1px rgba(0, 0, 0, 0.2) !important;
+
+  /* ✅ Font */
+  font-family: var(--font-ui, 'Manrope', system-ui, sans-serif) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+
+  /* ✅ Layout */
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+
+  /* ✅ Animation */
+  animation: toastGlassSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+
+  /* ✅ Allow clicks sa toast mismo */
+  pointer-events: auto !important;
+
+  /* ✅ Max width */
+  max-width: 480px !important;
+
+  /* ✅ Word break */
+  word-break: break-word !important;
+
+  /* ✅ Transition */
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.3s ease;
 }
 
-.toast--entering,
-.toast--leaving { opacity: 0; transform: translateY(0.5rem); }
+/* ✅ Hover — slight lift */
+.toast:hover {
+  transform: translateY(-2px) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08),
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
 
-.toast--success svg { color: var(--color-success); }
-.toast--warning svg { color: var(--color-warning); }
-.toast--danger svg { color: var(--color-danger); }
-.toast--info svg { color: var(--color-info); }
+/* ✅ Icon */
+.toast .react-icon {
+  width: 20px !important;
+  height: 20px !important;
+  flex-shrink: 0 !important;
+  stroke: currentColor !important;
+  stroke-width: 2.2 !important;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3)) !important;
+}
+
+/* ✅ Text content */
+.toast > span {
+  flex: 1 !important;
+  line-height: 1.45 !important;
+}
+
+/* ============================================
+   ✅ ANIMATION
+   ============================================ */
+
+@keyframes toastGlassSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.9);
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    backdrop-filter: blur(20px);
+  }
+}
+
+/* ============================================
+   ✅ TOAST VARIANTS — Glassy + Tinted Colors
+   ============================================ */
+
+/* ✅ SUCCESS — green glassy */
+.toast--success {
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--theme-success) 30%, transparent) 0%,
+      color-mix(in srgb, var(--theme-success) 15%, transparent) 100%
+    ) !important;
+  border-color: color-mix(in srgb, var(--theme-success) 50%, transparent) !important;
+}
+
+.toast--success .react-icon {
+  color: var(--theme-success) !important;
+  -webkit-text-fill-color: var(--theme-success) !important;
+}
+
+.toast--success > span {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+/* ✅ DANGER — red glassy */
+.toast--danger {
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--theme-danger) 30%, transparent) 0%,
+      color-mix(in srgb, var(--theme-danger) 15%, transparent) 100%
+    ) !important;
+  border-color: color-mix(in srgb, var(--theme-danger) 50%, transparent) !important;
+}
+
+.toast--danger .react-icon {
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+}
+
+.toast--danger > span {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+/* ✅ WARNING — amber glassy */
+.toast--warning {
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--theme-warning) 30%, transparent) 0%,
+      color-mix(in srgb, var(--theme-warning) 15%, transparent) 100%
+    ) !important;
+  border-color: color-mix(in srgb, var(--theme-warning) 50%, transparent) !important;
+}
+
+.toast--warning .react-icon {
+  color: var(--theme-warning) !important;
+  -webkit-text-fill-color: var(--theme-warning) !important;
+}
+
+.toast--warning > span {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+/* ✅ INFO — primary glassy */
+.toast--info {
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--theme-primary) 30%, transparent) 0%,
+      color-mix(in srgb, var(--theme-primary) 15%, transparent) 100%
+    ) !important;
+  border-color: color-mix(in srgb, var(--theme-primary) 50%, transparent) !important;
+}
+
+.toast--info .react-icon {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.toast--info > span {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+/* ============================================
+   ✅ FALLBACK — Walang backdrop-filter support
+   ============================================ */
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .toast {
+    background: var(--theme-surface) !important;
+    color: var(--theme-text) !important;
+    border-color: var(--theme-border) !important;
+  }
+
+  .toast--success {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-success) !important;
+  }
+
+  .toast--danger {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-danger) !important;
+  }
+
+  .toast--warning {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-warning) !important;
+  }
+
+  .toast--info {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-primary) !important;
+  }
+}
+
+/* ============================================
+   ✅ RESPONSIVE — Mobile
+   ============================================ */
+
+@media (max-width: 640px) {
+  .toast-stack,
+  #app-toast-container {
+    bottom: 16px !important;
+    left: 16px !important;
+    right: 16px !important;
+    transform: none !important;
+    max-width: none !important;
+    width: auto !important;
+    align-items: stretch !important;
+  }
+
+  .toast {
+    max-width: 100% !important;
+    font-size: 13px !important;
+    padding: 12px 16px !important;
+    border-radius: 14px !important;
+  }
+
+  .toast .react-icon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
+
+/* ============================================
+   ✅ REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none !important;
+  }
+
+  .toast:hover {
+    transform: none !important;
+  }
+}

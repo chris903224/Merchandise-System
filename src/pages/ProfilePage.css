@@ -1,10 +1,12 @@
 /* src/pages/ProfilePage.css
    SJCM Store — Profile page
-   Theme-driven: lahat ng colors ay naka-map sa global theme variables.
+   ✅ Clean — walang duplicate
+   ✅ Theme-aware sa lahat ng 10 themes
+   ✅ Sidebar same sa settings/dashboard (compact + hover expand)
 */
 
 /* ============================================================
-   PROFILE PAGE — THEME-DRIVEN
+   PROFILE PAGE — BASE
 ============================================================ */
 
 .profile-page {
@@ -125,10 +127,6 @@
   align-items: flex-end;
   box-shadow: var(--shadow-card);
   transition: background 0.4s ease;
-}
-
-.profile-cover.has-cover-photo {
-  background-image: var(--cover-photo);
 }
 
 .profile-cover-overlay {
@@ -258,6 +256,7 @@
   margin: 0;
   color: #ffffff;
   line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
 }
 
 .profile-status-pill {
@@ -289,7 +288,8 @@
   gap: 8px;
   flex-wrap: wrap;
   font-size: 0.88rem;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
 }
 
 .profile-meta-dot {
@@ -303,9 +303,9 @@
 
 .profile-tabs {
   display: flex;
-  gap: 4px;
-  border-bottom: 1px solid var(--line-200);
-  padding: 0 4px;
+  gap: 1.5rem;
+  border-bottom: 1px solid var(--theme-border);
+  margin-bottom: 1.5rem;
 }
 
 .profile-tab {
@@ -313,21 +313,17 @@
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
-  padding: 12px 6px;
+  padding: 0.75rem 0;
   margin-bottom: -1px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  color: var(--ink-400);
+  color: var(--theme-text-muted);
   cursor: pointer;
   transition: color 0.15s ease, border-color 0.15s ease;
 }
 
-.profile-tab + .profile-tab {
-  margin-left: 14px;
-}
-
 .profile-tab:hover {
-  color: var(--theme-primary);
+  color: var(--theme-text);
 }
 
 .profile-tab.is-active {
@@ -338,16 +334,14 @@
 /* ===== Cards ===== */
 
 .profile-card {
-  background: var(--white);
-  border: 1px solid var(--line-200);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  padding: 22px 24px;
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 1rem;
+  box-shadow: var(--theme-shadow-md);
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+  color: var(--theme-text);
   transition: background 0.3s ease, border-color 0.3s ease;
-}
-
-.profile-card + .profile-card {
-  margin-top: 0;
 }
 
 .profile-card-header {
@@ -356,6 +350,8 @@
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 20px;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .profile-card-title {
@@ -363,9 +359,10 @@
   align-items: center;
   gap: 8px;
   margin: 0;
-  font-size: 1.05rem;
+  font-family: var(--font-display, 'Fraunces', serif);
+  font-size: 1.1rem;
   font-weight: 700;
-  color: var(--ink-900);
+  color: var(--theme-text);
 }
 
 .profile-card-title .react-icon {
@@ -375,26 +372,28 @@
 }
 
 .profile-card-subtitle {
-  margin: 4px 0 0;
-  font-size: 0.85rem;
-  color: var(--ink-600);
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  color: var(--theme-text-muted);
 }
+
+/* ===== Edit button ===== */
 
 .profile-edit-btn {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
   border-radius: 999px;
-  border: 1px solid var(--theme-accent);
-  background: var(--theme-surface-2);
-  color: var(--theme-primary);
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  transition: all 150ms ease;
+  background: var(--theme-surface-2);
+  color: var(--theme-primary);
+  border: 1px solid var(--theme-border-strong);
 }
 
 .profile-edit-btn .react-icon {
@@ -403,8 +402,11 @@
 }
 
 .profile-edit-btn:hover {
-  background: var(--theme-accent);
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-on-primary);
+  border-color: var(--theme-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .profile-edit-btn:active {
@@ -432,8 +434,8 @@
   height: 110px;
   border-radius: var(--radius-md);
   overflow: hidden;
-  background: var(--cream-100);
-  border: 1px solid var(--line-200);
+  background: var(--theme-surface-2);
+  border: 1px solid var(--theme-border);
 }
 
 .profile-photo-thumb img {
@@ -449,7 +451,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--ink-400);
+  color: var(--theme-text-muted);
 }
 
 .profile-photo-fallback .react-icon {
@@ -488,9 +490,9 @@
   gap: 6px;
   padding: 7px 14px;
   border-radius: 999px;
-  border: 1px solid var(--line-200);
-  background: var(--white);
-  color: var(--ink-900);
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-text);
   font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
@@ -507,6 +509,8 @@
   color: var(--theme-primary);
 }
 
+/* ===== Form grid ===== */
+
 .profile-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -515,21 +519,28 @@
 
 .profile-form-group {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.profile-form-label {
+.profile-form-label,
+label.profile-form-label {
   display: block;
-  font-size: 0.76rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--ink-400);
-  margin-bottom: 4px;
+  color: var(--theme-text-muted);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.profile-form-value {
+.profile-form-value,
+.profile-info-value {
   margin: 0;
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--ink-900);
+  color: var(--theme-text);
+  word-break: break-word;
 }
 
 .profile-form-field {
@@ -538,7 +549,7 @@
   gap: 8px;
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--ink-900);
+  color: var(--theme-text);
 }
 
 .profile-form-field .react-icon {
@@ -556,8 +567,8 @@
   gap: 14px;
   padding: 16px;
   border-radius: var(--radius-md);
-  background: var(--cream-100);
-  border: 1px solid var(--line-200);
+  background: var(--theme-surface-2);
+  border: 1px solid var(--theme-border);
 }
 
 .profile-address-icon {
@@ -565,7 +576,7 @@
   width: 38px;
   height: 38px;
   border-radius: var(--radius-sm);
-  background: var(--theme-surface-2);
+  background: var(--theme-surface);
   color: var(--theme-primary);
   display: flex;
   align-items: center;
@@ -581,23 +592,23 @@
   margin: 0;
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--ink-900);
+  color: var(--theme-text);
   line-height: 1.5;
 }
 
 .profile-address-text-empty {
   font-weight: 500;
-  color: var(--ink-600);
+  color: var(--theme-text-muted);
 }
 
 .profile-empty-note {
   margin: 0;
   font-size: 0.85rem;
-  color: var(--ink-600);
+  color: var(--theme-text-muted);
 }
 
 /* ============================================================
-   APP SHELL
+   PROFILE SHELL
 ============================================================ */
 
 .profile-shell {
@@ -615,7 +626,8 @@
 }
 
 /* ============================================================
-   THEME-DRIVEN SIDEBAR (base styles)
+   SIDEBAR — BASE (mobile-first, minimal)
+   Desktop rules ay nasa @media (min-width: 1024px) sa dulo
 ============================================================ */
 
 .profile-sidebar {
@@ -760,23 +772,6 @@
   text-transform: uppercase;
 }
 
-.profile-sidebar__pin {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  color: inherit;
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
-  z-index: 2;
-}
-
-.profile-sidebar__pin:hover {
-  opacity: 1;
-}
-
 .profile-backdrop {
   display: none;
 }
@@ -801,17 +796,17 @@
   width: 2.5rem;
   height: 2.5rem;
   place-items: center;
-  border: 1px solid var(--line-200);
+  border: 1px solid var(--theme-border);
   border-radius: 0.6rem;
-  background: var(--white);
-  color: var(--ink-900);
+  background: var(--theme-surface);
+  color: var(--theme-text);
   cursor: pointer;
   box-shadow: 0 8px 20px rgba(var(--theme-primary-rgb), 0.12);
   transition: all 0.16s ease;
 }
 
 .profile-mobile-menu:hover {
-  background: var(--cream-100);
+  background: var(--theme-surface-2);
 }
 
 .profile-main-wrap .profile-page {
@@ -840,8 +835,8 @@
 }
 
 .profile-side__card {
-  background: var(--white);
-  border: 1px solid var(--line-200);
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   padding: 1rem 1.15rem;
@@ -859,7 +854,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--ink-900);
+  color: var(--theme-text);
   font-family: var(--font-display);
   font-size: 0.92rem;
   font-weight: 700;
@@ -909,7 +904,7 @@
   gap: 0.6rem;
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--ink-900);
+  color: var(--theme-text);
 }
 
 .profile-status-item .react-icon {
@@ -923,7 +918,7 @@
 }
 
 .profile-status-item .react-icon.is-pending {
-  color: var(--ink-400);
+  color: var(--theme-text-muted);
 }
 
 .profile-quick-actions {
@@ -943,7 +938,7 @@
 }
 
 .profile-quick-action:hover {
-  background: var(--cream-100);
+  background: var(--theme-surface-2);
 }
 
 .profile-quick-action:hover .profile-quick-action__chev {
@@ -992,20 +987,20 @@
 }
 
 .profile-quick-action__label {
-  color: var(--ink-900);
+  color: var(--theme-text);
   font-size: 0.85rem;
   font-weight: 700;
 }
 
 .profile-quick-action__desc {
-  color: var(--ink-600);
+  color: var(--theme-text-muted);
   font-size: 0.72rem;
 }
 
 .profile-quick-action__chev {
   width: 0.9rem !important;
   height: 0.9rem !important;
-  color: var(--ink-400);
+  color: var(--theme-text-muted);
   transition: transform 0.15s ease;
 }
 
@@ -1027,7 +1022,7 @@
 }
 
 .profile-activity-item:hover {
-  background: var(--cream-100);
+  background: var(--theme-surface-2);
 }
 
 .profile-activity-icon {
@@ -1067,20 +1062,20 @@
 }
 
 .profile-activity-label {
-  color: var(--ink-900);
+  color: var(--theme-text);
   font-size: 0.82rem;
   font-weight: 600;
 }
 
 .profile-activity-time {
-  color: var(--ink-600);
+  color: var(--theme-text-muted);
   font-size: 0.7rem;
 }
 
 .profile-activity-chevron {
   width: 0.8rem !important;
   height: 0.8rem !important;
-  color: var(--ink-400);
+  color: var(--theme-text-muted);
 }
 
 /* ============================================================
@@ -1105,22 +1100,7 @@
 }
 
 /* ============================================================
-   HOVER ZONE (hindi na kailangan pero iniwan para safety)
-============================================================ */
-
-.profile-hover-zone {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 20px;
-  height: 100vh;
-  z-index: 60;
-  pointer-events: auto;
-  display: none;
-}
-
-/* ============================================================
-   RESPONSIVE — LAYOUT
+   RESPONSIVE — MOBILE/TABLET
 ============================================================ */
 
 @media (max-width: 980px) {
@@ -1187,298 +1167,278 @@
 }
 
 /* ============================================================
-   MINI RAIL — PREMIUM GLASS
-   ✅ Compact by default (4rem), expand sa hover
-   ✅ Content uurong kapag nag-expand ang sidebar
-   ✅ Text visible sa hover, icon-only sa default
+   ✅ DESKTOP SIDEBAR — COMPACT PILL
+   ✅ Same EXACT sa settings/dashboard
+   ✅ Compact 4rem default, hover lang mag-expand
 ============================================================ */
 
 @media (min-width: 1024px) {
-
   /* ============================================
-     CONTAINER — compact pill, expand sa hover
+     ✅ PROFILE SIDEBAR — EXACT SAME SA SETTINGS
+     ✅ May !important para manalo sa base styles
   ============================================ */
+
   .profile-sidebar {
-    position: fixed;
-    top: 50%;
-    left: 1.25rem;
-    transform: translateY(-50%);
+    position: fixed !important;
+    top: 50% !important;
+    left: 1.25rem !important;
+    transform: translateY(-50%) !important;
 
-    /* ✅ Compact by default */
-    width: 4rem;
-    height: auto;
-    padding: 0.75rem 0.5rem;
+    /* ✅ COMPACT 4rem */
+    width: 4rem !important;
+    min-width: 4rem !important;
+    max-width: 4rem !important;
+    height: auto !important;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 0;
+    padding: 0.75rem 0.5rem !important;
 
-    /* ✨ Frosted glass */
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.85) 0%,
-      rgba(255, 255, 255, 0.65) 50%,
-      rgba(255, 255, 255, 0.75) 100%
-    );
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    gap: 0 !important;
 
-    border: 1px solid rgba(255, 255, 255, 0.75);
-    border-radius: 1.25rem;
+    background: var(--theme-glass-bg) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+
+    border: 1px solid var(--theme-glass-border) !important;
+    border-radius: 1.25rem !important;
 
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
       inset 0 -1px 0 rgba(0, 0, 0, 0.04),
       0 1px 3px rgba(0, 0, 0, 0.04),
       0 4px 12px rgba(0, 0, 0, 0.06),
       0 16px 40px rgba(0, 0, 0, 0.08),
-      0 32px 80px rgba(var(--theme-primary-rgb), 0.06);
+      0 32px 80px rgba(var(--theme-primary-rgb), 0.06) !important;
 
-    overflow: visible;
-    z-index: 50;
-    contain: layout;
+    overflow: visible !important;
+    z-index: 50 !important;
+    contain: layout !important;
 
     transition:
       width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
       padding 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
       box-shadow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
       background 0.5s ease,
-      border-color 0.5s ease;
+      border-color 0.5s ease !important;
   }
 
-  /* ✅ HOVER — EXPAND pakanan */
   .profile-sidebar:hover {
-    width: fit-content;
-    padding: 0.75rem 0.65rem;
+    width: fit-content !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 0.75rem 0.65rem !important;
 
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.95) 0%,
-      rgba(255, 255, 255, 0.8) 50%,
-      rgba(255, 255, 255, 0.9) 100%
-    );
-    border-color: rgba(var(--theme-primary-rgb), 0.2);
+    background: var(--theme-surface) !important;
+    border-color: rgba(var(--theme-primary-rgb), 0.2) !important;
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
       inset 0 -1px 0 rgba(0, 0, 0, 0.04),
       0 1px 3px rgba(0, 0, 0, 0.04),
       0 8px 20px rgba(0, 0, 0, 0.08),
       0 24px 56px rgba(0, 0, 0, 0.1),
-      0 40px 100px rgba(var(--theme-primary-rgb), 0.1);
+      0 40px 100px rgba(var(--theme-primary-rgb), 0.1) !important;
   }
 
-  /* ===== Groups ===== */
-  .profile-sidebar .profile-sidebar__top {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    width: 100%;
-    align-items: center;
-    contain: layout;
-  }
-
-  .profile-sidebar .profile-sidebar__nav {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    margin: 0;
-    width: 100%;
-    align-items: center;
-    contain: layout;
-  }
-
-  /* ✅ Sa hover — align sa start (para text left-aligned) */
-  .profile-sidebar:hover .profile-sidebar__top,
-  .profile-sidebar:hover .profile-sidebar__nav {
-    align-items: stretch;
-  }
-
-  /* Hide brand at ibang text */
+  /* ✅ FORCE HIDE — Hindi ito dapat lumabas */
   .profile-sidebar .profile-sidebar__brand,
   .profile-sidebar .profile-sidebar__brand-copy,
   .profile-sidebar .profile-sidebar__motto,
   .profile-sidebar .profile-sidebar__campus,
   .profile-sidebar .profile-sidebar__bottom,
   .profile-sidebar .profile-sidebar__pin {
-    display: none;
+    display: none !important;
+  }
+
+  /* ✅ GROUPS — Center align */
+  .profile-sidebar .profile-sidebar__top,
+  .profile-sidebar .profile-sidebar__nav {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.35rem !important;
+    width: 100% !important;
+    align-items: center !important;
+    contain: layout !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .profile-sidebar:hover .profile-sidebar__top,
+  .profile-sidebar:hover .profile-sidebar__nav {
+    align-items: stretch !important;
   }
 
   /* ============================================
-     NAV ITEM — compact icon-only by default
+     ✅ NAV ITEM — EXACT SAME SA SETTINGS
+     ✅ 2.75rem × 2.75rem SQUARE, padding 0, justify center
   ============================================ */
-    .profile-sidebar .profile-sidebar__item {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;         /* ✅ BINAGO: center → flex-start */
-    gap: 0;
+  .profile-sidebar .profile-sidebar__item {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;   /* ✅ CENTER */
+    gap: 0 !important;
 
-    /* ✅ BINAGO: padding instead of 0 */
-    padding: 0 0.8rem;                   /* 0.8rem left + right = center icon sa 2.75rem */
-    position: relative;
+    padding: 0 !important;                 /* ✅ ZERO PADDING */
+    position: relative !important;
 
-    width: 2.75rem;
-    min-width: 2.75rem;
-    max-width: 2.75rem;
-    height: 2.75rem;
-    min-height: 2.75rem;
-    max-height: 2.75rem;
-    flex: 0 0 2.75rem;
+    /* ✅ EXACT SIZE — 2.75rem SQUARE */
+    width: 2.75rem !important;
+    min-width: 2.75rem !important;
+    max-width: 2.75rem !important;
+    height: 2.75rem !important;
+    min-height: 2.75rem !important;
+    max-height: 2.75rem !important;
+    flex: 0 0 2.75rem !important;
 
-    border-radius: 0.75rem;
-    margin: 0;
+    border-radius: 0.75rem !important;
+    margin: 0 !important;
 
-    background: transparent;
-    border: 1px solid transparent;
-    color: var(--theme-text-muted);
-    font-size: 0.85rem;
-    font-weight: 500;
-    text-decoration: none;
-    white-space: nowrap;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    color: var(--theme-text-muted) !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
 
-    overflow: hidden;
-    z-index: 1;
+    overflow: hidden !important;
+    z-index: 1 !important;
 
     transition:
       background 0.25s ease,
       color 0.25s ease,
-      width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-      padding 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-      gap 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-      transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+      padding 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+      transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
   }
 
-  /* Icon */
   .profile-sidebar .profile-sidebar__item .react-icon {
-    width: 1.15rem;
-    height: 1.15rem;
-    color: var(--theme-text-muted);
-    flex-shrink: 0;
-    position: relative;
-    z-index: 2;
-
-    transition: color 0.2s ease, transform 0.3s ease;
+    width: 1.15rem !important;
+    height: 1.15rem !important;
+    color: var(--theme-text-muted) !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+    z-index: 2 !important;
+    transition: color 0.2s ease, transform 0.3s ease !important;
   }
 
-.profile-sidebar .profile-sidebar__item span {
-  display: inline-block;
-  width: 0;                          /* ✅ BINAGO */
-  max-width: 0;
-  min-width: 0;                      /* ✅ IDINAGDAG */
-  opacity: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  position: relative;
-  z-index: 2;
-  pointer-events: none;
+  /* ✅ TEXT — hidden by default */
+  .profile-sidebar .profile-sidebar__item span {
+    display: inline-block !important;
+    width: 0 !important;
+    max-width: 0 !important;
+    min-width: 0 !important;
+    opacity: 0 !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    position: relative !important;
+    z-index: 2 !important;
+    pointer-events: none !important;
+    color: inherit !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
 
-  color: inherit;
-  font-weight: 500;
-  font-size: 0.85rem;
+    transition:
+      width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.2s ease,
+      margin-left 0.3s ease !important;
+  }
 
-  transition:
-    width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-    opacity 0.2s ease,
-    margin-left 0.3s ease;
-}
   /* ============================================
-     HOVER sa CONTAINER — lahat lumalabas text
+     ✅ HOVER CONTAINER — Text lumalabas
   ============================================ */
   .profile-sidebar:hover .profile-sidebar__item {
-    width: auto;
-    min-width: 0;
-    max-width: none;
-    padding: 0.55rem 0.85rem;
-    justify-content: flex-start;
-    gap: 0.65rem;
-    background: rgba(255, 255, 255, 0.4);
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 0.55rem 0.85rem !important;   /* ✅ SAME SA SETTINGS */
+    gap: 0.65rem !important;
+    justify-content: flex-start !important;
+    background: rgba(var(--theme-primary-rgb), 0.06) !important;
+    border-color: var(--theme-glass-border) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
   }
 
   .profile-sidebar:hover .profile-sidebar__item span {
-    max-width: 200px;
-    opacity: 1;
-    margin-left: 0;
+    width: auto !important;
+    max-width: 200px !important;
+    opacity: 1 !important;
+    margin-left: 0 !important;
   }
 
   /* ============================================
-     HOVER sa INDIVIDUAL ITEM — glow + lift
+     ✅ HOVER INDIVIDUAL ITEM
   ============================================ */
   .profile-sidebar .profile-sidebar__item:hover {
     background: linear-gradient(
       135deg,
       var(--theme-primary) 0%,
       var(--theme-primary-hover) 100%
-    );
-    border-color: transparent;
-    color: #ffffff;
-    transform: translateX(3px);
+    ) !important;
+    border-color: transparent !important;
+    color: var(--theme-on-primary) !important;
+    transform: translateX(3px) !important;
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.25),
       inset 0 -1px 0 rgba(0, 0, 0, 0.15),
       0 4px 8px rgba(var(--theme-primary-rgb), 0.25),
-      0 12px 32px rgba(var(--theme-primary-rgb), 0.35);
-    z-index: 100;
+      0 12px 32px rgba(var(--theme-primary-rgb), 0.35) !important;
+    z-index: 100 !important;
   }
 
   .profile-sidebar .profile-sidebar__item:hover .react-icon {
-    color: #ffffff;
-    transform: scale(1.15) rotate(-6deg);
+    color: var(--theme-on-primary) !important;
+    transform: scale(1.15) rotate(-6deg) !important;
   }
 
   .profile-sidebar .profile-sidebar__item:hover span {
-    color: #ffffff;
-    font-weight: 600;
+    color: var(--theme-on-primary) !important;
+    font-weight: 600 !important;
   }
 
   /* ============================================
-     ACTIVE — green bar + glow
+     ✅ ACTIVE STATE
   ============================================ */
   .profile-sidebar .profile-sidebar__item.is-active {
-    background: rgba(var(--theme-primary-rgb), 0.12);
-    color: var(--theme-primary);
+    background: rgba(var(--theme-primary-rgb), 0.12) !important;
+    color: var(--theme-primary) !important;
   }
 
-  .profile-sidebar .profile-sidebar__item.is-active .react-icon {
-    color: var(--theme-primary);
-  }
-
+  .profile-sidebar .profile-sidebar__item.is-active .react-icon,
   .profile-sidebar .profile-sidebar__item.is-active span {
-    color: var(--theme-primary);
-    font-weight: 700;
+    color: var(--theme-primary) !important;
+    font-weight: 700 !important;
   }
 
-  /* ✅ Active bar sa loob (default) */
   .profile-sidebar .profile-sidebar__item.is-active::before {
-    content: '';
-    position: absolute;
-    left: -0.4rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 60%;
-    background: var(--theme-primary);
-    border-radius: 0 3px 3px 0;
-    z-index: 3;
-    transition: left 0.3s ease;
+    content: '' !important;
+    position: absolute !important;
+    left: -0.4rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 3px !important;
+    height: 60% !important;
+    background: var(--theme-primary) !important;
+    border-radius: 0 3px 3px 0 !important;
+    z-index: 3 !important;
+    transition: left 0.3s ease !important;
   }
 
-  /* ✅ Sa hover ng container — bar sa loob ng pill */
   .profile-sidebar:hover .profile-sidebar__item.is-active::before {
-    left: 0;
-    height: 65%;
+    left: 0 !important;
+    height: 65% !important;
     background: linear-gradient(
       180deg,
       var(--theme-accent) 0%,
       var(--theme-primary) 100%
-    );
-    border-radius: 0 4px 4px 0;
+    ) !important;
+    border-radius: 0 4px 4px 0 !important;
     box-shadow:
       0 0 8px rgba(var(--theme-primary-rgb), 0.5),
-      0 0 16px rgba(var(--theme-primary-rgb), 0.3);
-    animation: profileActiveBarGlow 2s ease-in-out infinite;
+      0 0 16px rgba(var(--theme-primary-rgb), 0.3) !important;
+    animation: profileActiveBarGlow 2s ease-in-out infinite !important;
   }
 
   @keyframes profileActiveBarGlow {
@@ -1494,465 +1454,22 @@
     }
   }
 
-  /* ============================================
-     ✅ MAIN CONTENT OFFSET — uurong kapag nag-expand ang sidebar
-  ============================================ */
-
-  /* Base offset — compact sidebar */
+  /* ✅ MAIN OFFSET */
   .profile-main-wrap {
-    margin-left: 6rem;                       /* 4rem sidebar + 1.25rem left + gap */
-    transition: margin-left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    margin-left: 6rem !important;
+    transition: margin-left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
   }
 
-  /* ✅ Kapag HOVER ang sidebar — uurong ang content */
   body:has(.profile-sidebar:hover) .profile-main-wrap {
-    margin-left: 16rem;
+    margin-left: 16rem !important;
   }
 
-  /* ✅ Kapag naka-pin/open ang sidebar */
-  .profile-shell.is-sidebar-open .profile-main-wrap {
-    margin-left: 16rem;
-  }
-
-  /* ✅ Main content container — natural flow */
   .profile-main {
-    min-width: 0;
+    min-width: 0 !important;
   }
 
-  /* Mobile menu at backdrop — hindi kailangan sa desktop */
   .profile-mobile-menu,
   .profile-backdrop {
-    display: none;
+    display: none !important;
   }
-}
-/* ============================================
-   PROFILE HEADER TEXT OVER COVER PHOTO
-   ✅ Fix: Make text white with shadow for readability
-============================================================ */
-
-/* Target the main name (e.g., "CHRISTIAN JR. VILLANUEVA") */
-.profile-header__name,
-.profile-cover__name,
-.profile-name {
-  color: #ffffff !important; /* Force white text */
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9); /* Heavy shadow for contrast */
-  font-weight: 700;
-}
-
-/* Target the subtitle (e.g., "Student • SJCM General • @npe.villanueva.sjc") */
-.profile-header__subtitle,
-.profile-header__meta,
-.profile-cover__subtitle,
-.profile-subtitle {
-  color: rgba(255, 255, 255, 0.95) !important; /* Slightly off-white */
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.9);
-}
-
-/* Optional: If there is an "Active" badge next to the name, ensure it stays readable */
-.profile-header__badge,
-.status-badge.is-active {
-  background: rgba(0, 0, 0, 0.6) !important; /* Dark background for the badge */
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(4px);
-}
-/* ============================================
-   PROFILE META ROW — FIXED FOR COVER PHOTO
-   ✅ Removes dark background block
-   ✅ Forces white text with shadow
-============================================================ */
-
-/* Target the container row */
-.profile-meta-row {
-  /* Remove any background color creating the dark block */
-  background: transparent !important;
-  background-color: transparent !important;
-  
-  /* Force white text */
-  color: #ffffff !important;
-  
-  /* Add strong shadow for readability over any image */
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.95);
-  
-  /* Ensure no padding/border is creating a visible box */
-  padding: 0 !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* Target the individual spans inside the row (Student, SJCM General, etc.) */
-.profile-meta-row span {
-  color: #ffffff !important;
-  text-shadow: inherit;
-  background: transparent !important;
-}
-
-/* Target the separator dots (•) */
-.profile-meta-dot {
-  color: rgba(255, 255, 255, 0.7) !important;
-  background: transparent !important;
-}
-
-/* ============================================
-   ACTIVE BADGE FIX (The green "Active" pill)
-   ✅ Make it readable over the dark background
-============================================================ */
-.profile-active-badge, 
-.profile-header__badge {
-  background: rgba(0, 0, 0, 0.6) !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  backdrop-filter: blur(8px);
-  text-shadow: none; 
-  padding: 0.2rem 0.65rem;
-  border-radius: 999px;
-}
-
-/* The green dot inside the Active badge */
-.profile-active-badge .dot,
-.profile-header__badge .dot {
-  background: #10b981 !important; 
-  box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
-}
-
-/* ============================================
-   NAME FIX (Main title)
-============================================================ */
-.profile-name {
-  color: #ffffff !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.95);
-  font-weight: 700;
-}
-/* ============================================================
-   PROFILE PAGE — FULLY THEME-COMPATIBLE (10 Themes)
-   ✅ Fixes unreadable text in Light & Dark Mode
-   ✅ Fixes "Edit Profile" button contrast
-   ✅ Uses theme variables for all surfaces, text, and borders
-============================================================ */
-
-/* ============================================
-   1. PAGE CONTAINER & TYPOGRAPHY
-============================================================ */
-.profile-page {
-  background: transparent;
-  color: var(--theme-text);
-  padding: 1.5rem;
-  font-family: var(--font-body, 'Inter', sans-serif);
-}
-
-.profile-page * {
-  box-sizing: border-box;
-}
-
-/* ============================================
-   2. PROFILE CARDS (Personal Info, Quick Actions, etc.)
-============================================================ */
-.profile-card {
-  background: var(--theme-surface);
-  border: 1px solid var(--theme-border);
-  border-radius: 1rem;
-  box-shadow: var(--theme-shadow-md);
-  padding: 1.5rem;
-  margin-bottom: 1.25rem;
-  color: var(--theme-text);
-}
-
-.profile-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1.25rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--theme-border);
-}
-
-.profile-card-title {
-  margin: 0;
-  font-family: var(--font-display, 'Fraunces', serif);
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--theme-text);
-}
-
-.profile-card-subtitle {
-  margin: 0.25rem 0 0;
-  font-size: 0.8rem;
-  color: var(--theme-text-muted);
-}
-
-/* ============================================
-   3. FORM LABELS & VALUES (Fixing invisible text)
-============================================================ */
-.profile-form-label,
-label.profile-form-label {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--theme-text-muted); /* ✅ Was hardcoded --ink-400 */
-  margin-bottom: 0.25rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.profile-form-value,
-.profile-info-value {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--theme-text); /* ✅ Ensures text is visible in dark mode */
-  margin: 0;
-  word-break: break-word;
-}
-
-/* If using a grid for info rows */
-.profile-form-grid,
-.profile-info-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
-}
-
-.profile-form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-/* ============================================
-   4. BUTTONS (Fixing the "Edit Profile" button)
-============================================================ */
-.profile-edit-btn,
-.profile-card-header .profile-edit-btn,
-a.profile-edit-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 1rem;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 150ms ease;
-  
-  /* ✅ Replaced hardcoded #252525 and #1A1209 */
-  background: var(--theme-surface-2);
-  color: var(--theme-primary);
-  border: 1px solid var(--theme-border-strong);
-}
-
-.profile-edit-btn:hover {
-  background: var(--theme-primary);
-  color: var(--theme-on-primary);
-  border-color: var(--theme-primary);
-  transform: translateY(-1px);
-  box-shadow: var(--theme-shadow-sm);
-}
-
-/* Secondary button variant (like "Add" or "Change Photo") */
-.profile-btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 0.85rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  background: transparent;
-  color: var(--theme-text-muted);
-  border: 1px solid var(--theme-border);
-  transition: all 150ms ease;
-}
-
-.profile-btn-secondary:hover {
-  background: var(--theme-surface-2);
-  color: var(--theme-text);
-  border-color: var(--theme-text-muted);
-}
-
-/* ============================================
-   5. TABS (Personal Info, Account Security, etc.)
-============================================================ */
-.profile-tabs {
-  display: flex;
-  gap: 1.5rem;
-  border-bottom: 1px solid var(--theme-border);
-  margin-bottom: 1.5rem;
-}
-
-.profile-tab {
-  padding: 0.75rem 0;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--theme-text-muted);
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  cursor: pointer;
-  transition: all 150ms ease;
-}
-
-.profile-tab:hover {
-  color: var(--theme-text);
-}
-
-.profile-tab.is-active {
-  color: var(--theme-primary);
-  border-bottom-color: var(--theme-primary);
-}
-
-/* ============================================
-   6. COVER PHOTO & HEADER TEXT (Keep white with shadow)
-============================================================ */
-.profile-header__name,
-.profile-name {
-  color: #ffffff !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.95);
-  font-weight: 700;
-  margin: 0;
-}
-
-.profile-meta-row {
-  background: transparent !important;
-  color: #ffffff !important;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.95);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-}
-
-.profile-meta-row span {
-  color: #ffffff !important;
-  background: transparent !important;
-}
-
-.profile-meta-dot {
-  color: rgba(255, 255, 255, 0.7) !important;
-  background: transparent !important;
-}
-
-/* Active Badge */
-.profile-active-badge {
-  background: rgba(0, 0, 0, 0.6) !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  backdrop-filter: blur(8px);
-  text-shadow: none;
-  padding: 0.2rem 0.65rem;
-  border-radius: 999px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.profile-active-badge .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #10b981 !important;
-  box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
-}
-
-/* ============================================
-   7. QUICK ACTIONS & SUMMARY LISTS
-============================================================ */
-.profile-action-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--theme-border);
-  text-decoration: none;
-  color: inherit;
-  transition: background 150ms ease;
-}
-
-.profile-action-item:last-child {
-  border-bottom: none;
-}
-
-.profile-action-item:hover {
-  background: var(--theme-surface-2);
-  border-radius: 0.5rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-}
-
-.profile-action-icon {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 0.5rem;
-  display: grid;
-  place-items: center;
-  background: var(--theme-surface-2);
-  color: var(--theme-primary);
-  flex-shrink: 0;
-}
-
-.profile-action-text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.profile-action-text strong {
-  font-size: 0.85rem;
-  color: var(--theme-text);
-}
-
-.profile-action-text span {
-  font-size: 0.72rem;
-  color: var(--theme-text-muted);
-}
-
-.profile-action-arrow {
-  color: var(--theme-text-muted);
-  transition: transform 150ms ease;
-}
-
-.profile-action-item:hover .profile-action-arrow {
-  transform: translateX(3px);
-  color: var(--theme-primary);
-}
-
-/* ============================================
-   8. AVATAR & PHOTO UPLOAD
-============================================================ */
-.profile-avatar-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.profile-avatar {
-  width: 120px;
-  height: 120px;
-  border-radius: 1rem;
-  object-fit: cover;
-  border: 3px solid var(--theme-surface);
-  box-shadow: var(--theme-shadow-lg);
-}
-
-.profile-avatar-edit {
-  position: absolute;
-  bottom: -0.5rem;
-  right: -0.5rem;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: var(--theme-primary);
-  color: var(--theme-on-primary);
-  border: 2px solid var(--theme-surface);
-  cursor: pointer;
-  box-shadow: var(--theme-shadow-md);
-  transition: all 150ms ease;
-}
-
-.profile-avatar-edit:hover {
-  background: var(--theme-primary-hover);
-  transform: scale(1.05);
 }

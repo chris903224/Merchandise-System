@@ -23,18 +23,30 @@ import { useApp, useProducts } from '../store';
 import ProductImage from '../components/ProductImage';
 import { formatPrice } from '../services';
 
+
+const HIDDEN_FROM_HERO_CAROUSEL: string[] = [
+    'prod-1791456074389-cegm',      
+  
+]
 export default function HomePage() {
   const { session } = useApp();
   const products = useProducts();
 
   /* =========================================================
      HERO CAROUSEL — dynamic from products
-     ✅ Filter: products na may image at may stock
-     ✅ Show max 5 slides
+     ✅ Filter: products na may image, may stock, at HINDI hidden
+     ✅ Show max 5 slides 
   ========================================================== */
   const carouselProducts = useMemo(() => {
     return products
-      .filter((p) => p.image && p.image.trim() !== '' && Number(p.stock) > 0)
+      .filter((p) => {
+        // ✅ Skip kung nasa hidden list (hero carousel only)
+        if (HIDDEN_FROM_HERO_CAROUSEL.includes(p.id)) return false;
+        // ✅ Skip kung walang image o walang stock
+        if (!p.image || p.image.trim() === '') return false;
+        if (Number(p.stock) <= 0) return false;
+        return true;
+      })
       .slice(0, 5);
   }, [products]);
 

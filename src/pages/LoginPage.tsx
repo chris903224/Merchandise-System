@@ -5,10 +5,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   AlertCircle,
   ArrowRight,
+  Check,
   Eye,
   EyeOff,
   LockKeyhole,
   UserRound,
+  X,
 } from 'lucide-react';
 import AuthCard from '../components/auth/AuthCard';
 import AuthHeader from '../components/auth/AuthHeader';
@@ -19,17 +21,65 @@ import { useRateLimit } from '../components/auth/useRateLimit';
 import { useApp } from '../store';
 import { useToast } from '../toast';
 import { loginUser, mapSupabaseUser } from '../data/auth';
+import {
+  isStrongPassword,
+  PASSWORD_RULES,
+} from '../components/auth/passwordRules';
 import '../styles/auth.css';
+
+/* ✅ Password Strength Component */
+function PasswordStrength({ value }: { value: string }) {
+  if (!value) return null;
+
+  return (
+    <ul className="auth-password-rules">
+      {PASSWORD_RULES.map((rule) => {
+        const passed = rule.test(value);
+        return (
+          <li
+            key={rule.label}
+            className={`auth-password-rule ${
+              passed ? 'is-passed' : 'is-pending'
+            }`}
+          >
+            {passed ? (
+              <Check className="react-icon" aria-hidden="true" />
+            ) : (
+              <X className="react-icon" aria-hidden="true" />
+            )}
+            <span>{rule.label}</span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const toast = useToast();
   const { signIn } = useApp();
 
+  /* ============================================
+     ✅ TOP HEADER FORM — INDEPENDENT STATE
+     ============================================ */
+  const [headerIdentifier, setHeaderIdentifier] = useState('');
+  const [headerPassword, setHeaderPassword] = useState('');
+  const [isHeaderSubmitting, setIsHeaderSubmitting] = useState(false);
+
+  /* ============================================
+     ✅ BOTTOM CARD FORM — INDEPENDENT STATE
+     ============================================ */
   const [loginIdentifier, setLoginIdentifier] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [isLoginSubmitting, setIsLoginSubmitting] = useState(false);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
+
+  /* ============================================
+     ✅ SHARED RATE LIMIT
+     Parehong key para mag-share ng lock status
+     ============================================ */
+  const sharedRateLimitKey = headerIdentifier || loginIdentifier;
 
   const {
     isLocked,
@@ -40,11 +90,17 @@ export default function LoginPage() {
     guard,
     recordFailure,
     clear,
-  } = useRateLimit(loginIdentifier);
+  } = useRateLimit(sharedRateLimitKey);
 
-  const handleLoginSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+  /* ============================================
+     ✅ SHARED LOGIN HANDLER
+     ============================================ */
+  const performLogin = async (
+    identifier: string,
+    password: string,
+    setSubmitting: (v: boolean) => void,
+    clearFormState: () => void
+  ) => {
     const status = guard();
     if (!status.allowed) {
       toast(
@@ -54,9 +110,18 @@ export default function LoginPage() {
       return;
     }
 
-    setIsLoginSubmitting(true);
+    /* ✅ STRONG PASSWORD CHECK */
+    if (!isStrongPassword(password)) {
+      toast(
+        'Password must start with uppercase letter, contain number and special character, and be at least 8 characters.',
+        'warning'
+      );
+      return;
+    }
+
+    setSubmitting(true);
     try {
-      const result = await loginUser(loginIdentifier, loginPassword);
+      const result = await loginUser(identifier, password);
       const user = mapSupabaseUser(result.user);
       const appRole = user.role === 'Staff' ? 'School Staff' : user.role;
 
@@ -88,22 +153,51 @@ export default function LoginPage() {
         );
       }
     } finally {
-      setIsLoginSubmitting(false);
+      setSubmitting(false);
+      clearFormState();
     }
   };
+
+  /* ✅ TOP HEADER SUBMIT */
+  const handleHeaderSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await performLogin(
+      headerIdentifier,
+      headerPassword,
+      setIsHeaderSubmitting,
+      () => {}
+    );
+  };
+
+  /* ✅ BOTTOM CARD SUBMIT */
+  const handleLoginSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await performLogin(
+      loginIdentifier,
+      loginPassword,
+      setIsLoginSubmitting,
+      () => {}
+    );
+  };
+
+  /* ✅ Live validation */
+  const loginPasswordValid = loginPassword
+    ? isStrongPassword(loginPassword)
+    : true;
 
   return (
     <main className="auth-experience">
       <AuthBackground />
 
+      {/* ✅ INDEPENDENT HEADER STATE */}
       <AuthHeader
-        identifier={loginIdentifier}
-        password={loginPassword}
-        isSubmitting={isLoginSubmitting}
+        identifier={headerIdentifier}
+        password={headerPassword}
+        isSubmitting={isHeaderSubmitting}
         isLocked={isLocked}
-        onIdentifierChange={setLoginIdentifier}
-        onPasswordChange={setLoginPassword}
-        onSubmit={(event) => void handleLoginSubmit(event)}
+        onIdentifierChange={setHeaderIdentifier}
+        onPasswordChange={setHeaderPassword}
+        onSubmit={(event) => void handleHeaderSubmit(event)}
       />
 
       <div className="auth-experience__content">
@@ -163,7 +257,9 @@ export default function LoginPage() {
                 <LockKeyhole className="react-icon" aria-hidden="true" />
                 <input
                   id="login-password"
-                  className="auth-input auth-input--with-toggle"
+                  className={`auth-input auth-input--with-toggle ${
+                    !loginPasswordValid ? 'has-error' : ''
+                  }`}
                   type={showLoginPassword ? 'text' : 'password'}
                   autoComplete="current-password"
                   required
@@ -184,9 +280,13 @@ export default function LoginPage() {
                   )}
                 </button>
               </div>
+
+              {loginPassword && !loginPasswordValid && (
+                <PasswordStrength value={loginPassword} />
+              )}
             </div>
 
-            {/* ✅ FORGOT PASSWORD — bagong row */}
+            {/* FORGOT PASSWORD */}
             <div className="auth-forgot-row">
               <Link to="/forgot-password" className="auth-forgot-link">
                 Forgot password?
@@ -197,7 +297,7 @@ export default function LoginPage() {
             <button
               className="auth-submit"
               type="submit"
-              disabled={isLoginSubmitting || isLocked}
+              disabled={isLoginSubmitting || isLocked || !loginPasswordValid}
             >
               {isLoginSubmitting ? 'Logging in…' : 'Login'}
               <ArrowRight className="react-icon" aria-hidden="true" />

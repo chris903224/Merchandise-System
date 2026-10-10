@@ -1077,5 +1077,5 @@ export default function CheckoutPage() {
         </div>
       )}
     </main>
-  );
+  );  
 }
