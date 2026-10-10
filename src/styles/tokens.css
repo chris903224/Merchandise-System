@@ -10,7 +10,7 @@
 ============================================================ */
 
 /* ----- 1. CREAM YELLOW (default light) ----- */
-:root,
+
 [data-theme='cream-yellow'] {
   color-scheme: light;
 
@@ -235,6 +235,7 @@
 ============================================================ */
 
 /* ----- 6. MIDNIGHT NAVY (blue hue) ----- */
+:root,
 [data-theme='midnight-navy'] {
   color-scheme: dark;
 
