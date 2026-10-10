@@ -1,5 +1,5 @@
 /* ============================================================
-   THEME VARIABLES — 10 themes (MONOCHROME)
+   TOKENS — Theme Variables (10 themes)
    Light: Cream Yellow, Warm Beige, Pure White, Soft Gray, Pale Blush
    Dark: Midnight Navy, Matte Black, Charcoal Gray, Deep Forest, Dark Plum
    ✅ Background + text + accent + SUCCESS = SAME HUE
@@ -10,7 +10,7 @@
 ============================================================ */
 
 /* ----- 1. CREAM YELLOW (default light) ----- */
-
+:root,
 [data-theme='cream-yellow'] {
   color-scheme: light;
 
@@ -35,7 +35,6 @@
   --theme-border: #F0E5C0;
   --theme-border-strong: rgba(184, 134, 11, 0.3);
 
-  /* ✅ SUCCESS — dark gold (same warm hue) */
   --theme-success: #8B6914;
   --theme-success-rgb: 139, 105, 20;
   --theme-warning: #B8860B;
@@ -79,7 +78,6 @@
   --theme-border: #E4D5B7;
   --theme-border-strong: rgba(139, 111, 71, 0.3);
 
-  /* ✅ SUCCESS — dark brown (same hue) */
   --theme-success: #6B5636;
   --theme-success-rgb: 107, 86, 54;
   --theme-warning: #A67C52;
@@ -98,7 +96,7 @@
   --glow-info: rgba(107, 91, 71, 0.12);
 }
 
-/* ----- 3. PURE WHITE (neutral gray hue) ----- */
+/* ----- 3. PURE WHITE ----- */
 [data-theme='pure-white'] {
   color-scheme: light;
 
@@ -123,7 +121,6 @@
   --theme-border: #E5E5E5;
   --theme-border-strong: rgba(51, 51, 51, 0.3);
 
-  /* ✅ SUCCESS — dark gray (neutral) */
   --theme-success: #2A2A2A;
   --theme-success-rgb: 42, 42, 42;
   --theme-warning: #C9993A;
@@ -142,7 +139,7 @@
   --glow-info: rgba(74, 74, 74, 0.12);
 }
 
-/* ----- 4. SOFT GRAY (gray hue) ----- */
+/* ----- 4. SOFT GRAY ----- */
 [data-theme='soft-gray'] {
   color-scheme: light;
 
@@ -167,7 +164,6 @@
   --theme-border: #D1D5DB;
   --theme-border-strong: rgba(75, 85, 99, 0.3);
 
-  /* ✅ SUCCESS — dark gray-blue */
   --theme-success: #374151;
   --theme-success-rgb: 55, 65, 81;
   --theme-warning: #D97706;
@@ -186,7 +182,7 @@
   --glow-info: rgba(107, 114, 128, 0.12);
 }
 
-/* ----- 5. PALE BLUSH (pink hue) ----- */
+/* ----- 5. PALE BLUSH ----- */
 [data-theme='pale-blush'] {
   color-scheme: light;
 
@@ -211,7 +207,6 @@
   --theme-border: #F0D5DB;
   --theme-border-strong: rgba(184, 99, 122, 0.3);
 
-  /* ✅ SUCCESS — dark pink (same hue) */
   --theme-success: #8B4A5C;
   --theme-success-rgb: 139, 74, 92;
   --theme-warning: #D48A9C;
@@ -234,8 +229,7 @@
    DARK — 5 VARIANTS
 ============================================================ */
 
-/* ----- 6. MIDNIGHT NAVY (blue hue) ----- */
-:root,
+/* ----- 6. MIDNIGHT NAVY ----- */
 [data-theme='midnight-navy'] {
   color-scheme: dark;
 
@@ -260,7 +254,6 @@
   --theme-border: rgba(123, 167, 225, 0.15);
   --theme-border-strong: rgba(123, 167, 225, 0.4);
 
-  /* ✅ SUCCESS — same blue as primary */
   --theme-success: #7BA7E1;
   --theme-success-rgb: 123, 167, 225;
   --theme-warning: #E0B24D;
@@ -279,7 +272,7 @@
   --glow-info: rgba(176, 185, 204, 0.2);
 }
 
-/* ----- 7. MATTE BLACK (warm gold hue) ----- */
+/* ----- 7. MATTE BLACK ----- */
 [data-theme='matte-black'] {
   color-scheme: dark;
 
@@ -304,7 +297,6 @@
   --theme-border: rgba(255, 255, 255, 0.08);
   --theme-border-strong: rgba(212, 165, 116, 0.4);
 
-  /* ✅ SUCCESS — same warm gold */
   --theme-success: #D4A574;
   --theme-success-rgb: 212, 165, 116;
   --theme-warning: #E5B584;
@@ -323,7 +315,7 @@
   --glow-info: rgba(184, 176, 160, 0.2);
 }
 
-/* ----- 8. CHARCOAL GRAY (cool silver hue) ----- */
+/* ----- 8. CHARCOAL GRAY ----- */
 [data-theme='charcoal-gray'] {
   color-scheme: dark;
 
@@ -348,7 +340,6 @@
   --theme-border: rgba(255, 255, 255, 0.1);
   --theme-border-strong: rgba(168, 184, 200, 0.4);
 
-  /* ✅ SUCCESS — same cool silver */
   --theme-success: #A8B8C8;
   --theme-success-rgb: 168, 184, 200;
   --theme-warning: #C8B896;
@@ -367,7 +358,7 @@
   --glow-info: rgba(168, 176, 184, 0.2);
 }
 
-/* ----- 9. DEEP FOREST (green hue) ----- */
+/* ----- 9. DEEP FOREST ----- */
 [data-theme='deep-forest'] {
   color-scheme: dark;
 
@@ -392,7 +383,6 @@
   --theme-border: rgba(127, 200, 162, 0.15);
   --theme-border-strong: rgba(127, 200, 162, 0.4);
 
-  /* ✅ SUCCESS — same green */
   --theme-success: #7FC8A2;
   --theme-success-rgb: 127, 200, 162;
   --theme-warning: #D4A574;
@@ -411,7 +401,7 @@
   --glow-info: rgba(168, 188, 179, 0.2);
 }
 
-/* ----- 10. DARK PLUM (purple hue) ----- */
+/* ----- 10. DARK PLUM ----- */
 [data-theme='dark-plum'] {
   color-scheme: dark;
 
@@ -436,7 +426,6 @@
   --theme-border: rgba(200, 160, 212, 0.15);
   --theme-border-strong: rgba(200, 160, 212, 0.4);
 
-  /* ✅ SUCCESS — same purple */
   --theme-success: #C8A0D4;
   --theme-success-rgb: 200, 160, 212;
   --theme-warning: #E0B2C8;
@@ -456,7 +445,7 @@
 }
 
 /* ============================================================
-   ✅ SEMANTIC CONTRAST TOKENS — SaaS-grade
+   ✅ SEMANTIC CONTRAST TOKENS
 ============================================================ */
 
 :root,
@@ -494,7 +483,7 @@
   --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
 }
 
-/* ✅ Per-theme on-success — same hue bg → matching text */
+/* Per-theme on-* overrides */
 [data-theme='matte-black'] {
   --theme-on-primary: #1A1209;
   --theme-on-primary-rgb: 26, 18, 9;
