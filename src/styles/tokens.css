@@ -1,7 +1,7 @@
 /* ============================================================
    TOKENS — Theme Variables (10 themes)
    Light: Cream Yellow, Warm Beige, Pure White, Soft Gray, Pale Blush
-   Dark: Midnight Navy, Matte Black, Charcoal Gray, Deep Forest, Dark Plum
+   Dark: Midnight Navy (default), Matte Black, Charcoal Gray, Deep Forest, Dark Plum
    ✅ Background + text + accent + SUCCESS = SAME HUE
 ============================================================ */
 
@@ -9,8 +9,7 @@
    LIGHT — 5 VARIANTS
 ============================================================ */
 
-/* ----- 1. CREAM YELLOW (default light) ----- */
-:root,
+/* ----- 1. CREAM YELLOW ----- */
 [data-theme='cream-yellow'] {
   color-scheme: light;
 
@@ -229,7 +228,8 @@
    DARK — 5 VARIANTS
 ============================================================ */
 
-/* ----- 6. MIDNIGHT NAVY ----- */
+/* ----- 6. MIDNIGHT NAVY (DEFAULT) ----- */
+:root,
 [data-theme='midnight-navy'] {
   color-scheme: dark;
 
@@ -446,26 +446,10 @@
 
 /* ============================================================
    ✅ SEMANTIC CONTRAST TOKENS
+   Default = dark (para sa Midnight Navy)
 ============================================================ */
 
 :root,
-[data-theme-mode='light'] {
-  --theme-on-primary: #FFFFFF;
-  --theme-on-primary-rgb: 255, 255, 255;
-  --theme-on-accent: #1A1209;
-  --theme-on-accent-rgb: 26, 18, 9;
-  --theme-on-success: #FFFFFF;
-  --theme-on-success-rgb: 255, 255, 255;
-  --theme-on-danger: #FFFFFF;
-  --theme-on-danger-rgb: 255, 255, 255;
-  --theme-on-warning: #1A1209;
-  --theme-on-warning-rgb: 26, 18, 9;
-  --theme-scrim: rgba(0, 0, 0, 0.04);
-  --theme-scrim-strong: rgba(0, 0, 0, 0.08);
-  --theme-surface-hover: var(--theme-surface-2);
-  --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
-}
-
 [data-theme-mode='dark'] {
   --theme-on-primary: #0E1626;
   --theme-on-primary-rgb: 14, 22, 38;
@@ -479,6 +463,23 @@
   --theme-on-warning-rgb: 14, 22, 38;
   --theme-scrim: rgba(255, 255, 255, 0.04);
   --theme-scrim-strong: rgba(255, 255, 255, 0.08);
+  --theme-surface-hover: var(--theme-surface-2);
+  --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
+}
+
+[data-theme-mode='light'] {
+  --theme-on-primary: #FFFFFF;
+  --theme-on-primary-rgb: 255, 255, 255;
+  --theme-on-accent: #1A1209;
+  --theme-on-accent-rgb: 26, 18, 9;
+  --theme-on-success: #FFFFFF;
+  --theme-on-success-rgb: 255, 255, 255;
+  --theme-on-danger: #FFFFFF;
+  --theme-on-danger-rgb: 255, 255, 255;
+  --theme-on-warning: #1A1209;
+  --theme-on-warning-rgb: 26, 18, 9;
+  --theme-scrim: rgba(0, 0, 0, 0.04);
+  --theme-scrim-strong: rgba(0, 0, 0, 0.08);
   --theme-surface-hover: var(--theme-surface-2);
   --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
 }
