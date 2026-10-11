@@ -16,6 +16,7 @@ import {
 import { useApp } from '../store';
 import { useToast } from '../toast';
 import ProductImage from '../components/ProductImage';
+import MobileCartItem from '../components/catalog/MobileCartItem';
 import { formatPrice, isStaffRole, sumCartItems } from '../services';
 
 export default function CartPage() {
@@ -50,7 +51,8 @@ export default function CartPage() {
     });
   }, [itemKeys]);
 
-  const allSelected = itemKeys.length > 0 && itemKeys.every((k) => selectedKeys.has(k));
+  const allSelected =
+    itemKeys.length > 0 && itemKeys.every((k) => selectedKeys.has(k));
   const someSelected = selectedKeys.size > 0 && !allSelected;
   const selectedCount = selectedKeys.size;
 
@@ -92,16 +94,16 @@ export default function CartPage() {
 
     const product = products.find((candidate) => candidate.id === item.id);
     if (product) {
-      // Check per-size stock
       const sizeStocks = (product as any).sizeStocks ?? {};
-      const sizeStock = item.size && sizeStocks[item.size] !== undefined
-        ? Number(sizeStocks[item.size])
-        : Number(product.stock);
+      const sizeStock =
+        item.size && sizeStocks[item.size] !== undefined
+          ? Number(sizeStocks[item.size])
+          : Number(product.stock);
 
       if (newQty > sizeStock) {
         toast(
           `Stock limit reached for size ${item.size}. Only ${sizeStock} available.`,
-          'warning'
+          'warning',
         );
         return;
       }
@@ -226,117 +228,157 @@ export default function CartPage() {
                 </Link>
               </div>
             ) : (
-              <ul className="cart-list">
-                {cart.map((item, index) => {
-                  const itemKey = getItemKey(item);
-                  const itemTotal =
-                    (Number(item.price) || 0) * (Number(item.qty) || 0);
-                  const isSelected = selectedKeys.has(itemKey);
+              <>
+                {/* ✅ DESKTOP CART LIST — retained */}
+                <ul className="cart-list desktop-only">
+                  {cart.map((item, index) => {
+                    const itemKey = getItemKey(item);
+                    const itemTotal =
+                      (Number(item.price) || 0) * (Number(item.qty) || 0);
+                    const isSelected = selectedKeys.has(itemKey);
+                    const product = products.find((p) => p.id === item.id);
 
-                  // Kunin ang product details para sa image
-                  const product = products.find((p) => p.id === item.id);
-
-                  return (
-                    <li
-                      className={`cart-item ${isSelected ? 'is-selected' : ''}`}
-                      key={itemKey}
-                    >
-                      <label className="cart-item__select" aria-label="Select item">
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => handleToggleItem(itemKey)}
-                        />
-                      </label>
-
-                      {/* Image na imbes na Package icon */}
-                      <Link
-                        to={`/products/${encodeURIComponent(item.id)}`}
-                        className="cart-item__media"
-                        aria-label={`View ${item.name}`}
+                    return (
+                      <li
+                        className={`cart-item ${
+                          isSelected ? 'is-selected' : ''
+                        }`}
+                        key={itemKey}
                       >
-                        {product ? (
-                          <ProductImage
-                            product={product}
-                            className="cart-item__image"
-                            width={120}
-                            height={120}
+                        <label
+                          className="cart-item__select"
+                          aria-label="Select item"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => handleToggleItem(itemKey)}
                           />
-                        ) : (
-                          <Package className="react-icon" aria-hidden="true" />
-                        )}
-                      </Link>
+                        </label>
 
-                      <div className="cart-item__details">
                         <Link
                           to={`/products/${encodeURIComponent(item.id)}`}
-                          className="cart-item__name-link"
+                          className="cart-item__media"
+                          aria-label={`View ${item.name}`}
                         >
-                          <p className="cart-item__name" title={item.name}>
-                            {item.name}
-                          </p>
-                        </Link>
-                        <p className="cart-item__org">
-                          {item.organization || 'General'}
-                        </p>
-
-                        {/* ✅ FIXED: Tinanggal ang hardcoded na "Maroon" color tag */}
-                        <div className="cart-item__tags">
-                          {item.size && (
-                            <span className="cart-item__tag">
-                              Size: <strong>{item.size}</strong>
-                            </span>
+                          {product ? (
+                            <ProductImage
+                              product={product}
+                              className="cart-item__image"
+                              width={120}
+                              height={120}
+                            />
+                          ) : (
+                            <Package
+                              className="react-icon"
+                              aria-hidden="true"
+                            />
                           )}
+                        </Link>
+
+                        <div className="cart-item__details">
+                          <Link
+                            to={`/products/${encodeURIComponent(item.id)}`}
+                            className="cart-item__name-link"
+                          >
+                            <p
+                              className="cart-item__name"
+                              title={item.name}
+                            >
+                              {item.name}
+                            </p>
+                          </Link>
+                          <p className="cart-item__org">
+                            {item.organization || 'General'}
+                          </p>
+
+                          <div className="cart-item__tags">
+                            {item.size && (
+                              <span className="cart-item__tag">
+                                Size: <strong>{item.size}</strong>
+                              </span>
+                            )}
+                          </div>
+
+                          <p className="cart-item__price">
+                            {formatPrice(item.price)}
+                          </p>
                         </div>
 
-                        <p className="cart-item__price">
-                          {formatPrice(item.price)}
-                        </p>
-                      </div>
+                        <div className="cart-item__qty">
+                          <button
+                            type="button"
+                            className="cart-item__qty-btn"
+                            onClick={() => updateQty(index, -1)}
+                            aria-label="Decrease quantity"
+                          >
+                            <Minus
+                              className="react-icon"
+                              aria-hidden="true"
+                            />
+                          </button>
+                          <span className="cart-item__qty-value">
+                            {item.qty}
+                          </span>
+                          <button
+                            type="button"
+                            className="cart-item__qty-btn"
+                            onClick={() => updateQty(index, 1)}
+                            aria-label="Increase quantity"
+                          >
+                            <Plus
+                              className="react-icon"
+                              aria-hidden="true"
+                            />
+                          </button>
+                        </div>
 
-                      <div className="cart-item__qty">
+                        <div className="cart-item__total">
+                          {formatPrice(itemTotal)}
+                        </div>
+
                         <button
                           type="button"
-                          className="cart-item__qty-btn"
-                          onClick={() => updateQty(index, -1)}
-                          aria-label="Decrease quantity"
+                          className="cart-item__remove"
+                          onClick={() => removeItem(index)}
+                          aria-label={`Remove ${item.name}`}
                         >
-                          <Minus className="react-icon" aria-hidden="true" />
+                          <Trash2
+                            className="react-icon"
+                            aria-hidden="true"
+                          />
                         </button>
-                        <span className="cart-item__qty-value">{item.qty}</span>
-                        <button
-                          type="button"
-                          className="cart-item__qty-btn"
-                          onClick={() => updateQty(index, 1)}
-                          aria-label="Increase quantity"
-                        >
-                          <Plus className="react-icon" aria-hidden="true" />
-                        </button>
-                      </div>
+                      </li>
+                    );
+                  })}
+                </ul>
 
-                      <div className="cart-item__total">
-                        {formatPrice(itemTotal)}
-                      </div>
-
-                      <button
-                        type="button"
-                        className="cart-item__remove"
-                        onClick={() => removeItem(index)}
-                        aria-label={`Remove ${item.name}`}
-                      >
-                        <Trash2 className="react-icon" aria-hidden="true" />
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
+                {/* ✅ MOBILE CART LIST — TikTok style */}
+                <ul className="mobile-cart-list mobile-only">
+                  {cart.map((item, index) => (
+                    <MobileCartItem
+                      key={getItemKey(item)}
+                      item={item}
+                      product={products.find((p) => p.id === item.id)}
+                      isSelected={selectedKeys.has(getItemKey(item))}
+                      onToggleSelect={() =>
+                        handleToggleItem(getItemKey(item))
+                      }
+                      onUpdateQty={(delta) => updateQty(index, delta)}
+                      onRemove={() => removeItem(index)}
+                    />
+                  ))}
+                </ul>
+              </>
             )}
 
             {cart.length > 0 && (
               <div className="cart-note">
                 <ShieldCheck className="react-icon" aria-hidden="true" />
                 <div>
-                  <p className="cart-note__title">All items are official SJCM merchandise.</p>
+                  <p className="cart-note__title">
+                    All items are official SJCM merchandise.
+                  </p>
                   <p className="cart-note__text">
                     Unauthorized sellers are not allowed on campus.
                   </p>
@@ -391,8 +433,12 @@ export default function CartPage() {
                 <MapPin className="react-icon" aria-hidden="true" />
               </span>
               <span className="cart-summary__pickup-copy">
-                <span className="cart-summary__pickup-label">Pickup Location</span>
-                <span className="cart-summary__pickup-title">SJCM Campus</span>
+                <span className="cart-summary__pickup-label">
+                  Pickup Location
+                </span>
+                <span className="cart-summary__pickup-title">
+                  SJCM Campus
+                </span>
                 <span className="cart-summary__pickup-note">
                   Please bring a valid school ID for pickup.
                 </span>

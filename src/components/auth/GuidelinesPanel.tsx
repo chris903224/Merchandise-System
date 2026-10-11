@@ -43,31 +43,37 @@ function GuidelineIcon({ icon }: { icon: GuidelineItem['icon'] }) {
         ? ShieldCheck
         : icon === 'review'
           ? FileText
-          : icon === 'support'
-            ? HelpCircle
-            : ShieldCheck;
+          : HelpCircle;
 
   return <Icon className="react-icon" aria-hidden="true" />;
 }
 
 export default function GuidelinesPanel() {
-  const [openId, setOpenId] = useState<GuidelineItem['id'] | null>('account');
+  /* ✅ DEFAULT: null — lahat naka-close */
+  const [openId, setOpenId] = useState<GuidelineItem['id'] | null>(null);
 
   return (
-    <section className="auth-guidelines" aria-labelledby="auth-guidelines-title">
+    <section
+      className="auth-guidelines"
+      aria-labelledby="auth-guidelines-title"
+    >
       <header className="auth-section-heading">
         <p className="auth-section-heading__eyebrow">Start here</p>
         <h2 id="auth-guidelines-title">System Guidelines</h2>
         <p>Keep your SJCM account secure and ready for campus pickup.</p>
       </header>
 
-      <div className="auth-guidelines__list">
-        {guidelines.map((item) => {
+      <ol className="auth-guidelines__list">
+        {guidelines.map((item, index) => {
           const isOpen = item.id === openId;
           const panelId = `guideline-panel-${item.id}`;
+          const number = String(index + 1).padStart(2, '0');
 
           return (
-            <article className={`auth-guideline ${isOpen ? 'is-open' : ''}`} key={item.id}>
+            <li
+              key={item.id}
+              className={`auth-guideline ${isOpen ? 'is-open' : ''}`}
+            >
               <button
                 id={`${panelId}-trigger`}
                 className="auth-guideline__trigger"
@@ -76,11 +82,15 @@ export default function GuidelinesPanel() {
                 aria-controls={panelId}
                 onClick={() => setOpenId(isOpen ? null : item.id)}
               >
+                <span className="auth-guideline__number">{number}</span>
                 <span className="auth-guideline__icon">
                   <GuidelineIcon icon={item.icon} />
                 </span>
                 <span className="auth-guideline__label">{item.label}</span>
-                <ChevronDown className="auth-guideline__chevron" aria-hidden="true" />
+                <ChevronDown
+                  className="auth-guideline__chevron"
+                  aria-hidden="true"
+                />
               </button>
               <div
                 id={panelId}
@@ -91,10 +101,10 @@ export default function GuidelinesPanel() {
               >
                 <p>{item.body}</p>
               </div>
-            </article>
+            </li>
           );
         })}
-      </div>
+      </ol>
     </section>
   );
 }

@@ -233,7 +233,7 @@ export default function LoginPage() {
           >
             {/* USERNAME */}
             <div className="auth-field">
-              <label htmlFor="login-username">Username</label>
+              <label htmlFor="login-username">Email Address</label>
               <div className="auth-input-wrap">
                 <UserRound className="react-icon" aria-hidden="true" />
                 <input

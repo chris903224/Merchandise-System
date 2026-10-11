@@ -1,7 +1,7 @@
 // src/pages/RegisterPage.tsx
 
 import { useEffect, useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
   Check,
@@ -690,8 +690,10 @@ export default function RegisterPage() {
                 <ArrowRight className="react-icon" aria-hidden="true" />
               </button>
 
+              {/* ✅ FIXED: Gamit ang <Link> imbes na <a href> para smooth transition */}
               <p className="auth-card__switch">
-                Already have an account? <a href="/login">Sign in</a>
+                Already have an account?{' '}
+                <Link to="/login">Sign in</Link>
               </p>
             </form>
           )}

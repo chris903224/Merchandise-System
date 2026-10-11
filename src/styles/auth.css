@@ -1,13 +1,14 @@
 /* ==========================================================================
    Saint Jude College Manila — Auth Experience
-   ✅ THEME-AWARE — auto-adjust sa lahat ng 10 themes
-   ✅ Glass effect, premium look
+   ✅ THEME-AWARE (10 themes)
+   ✅ Glass effect + premium look
+   ✅ Smooth transitions (350-500ms)
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 /* ==========================================================================
-   BODY BACKGROUND — Campus photo glass
+   1. BODY BACKGROUND
    ========================================================================== */
 
 body:has(.auth-experience) {
@@ -19,48 +20,40 @@ body:has(.auth-experience) {
   background-attachment: fixed !important;
 }
 
-.auth-experience {
-  /* ============================================
-     ✅ THEME-MAPPED VARIABLES
-     Yung lahat ng colors ay kumukuha sa theme variables
-  ============================================ */
+/* ==========================================================================
+   2. PAGE WRAPPER
+   ========================================================================== */
 
-  /* Backgrounds */
+.auth-experience {
+  /* Theme-mapped variables */
   --ink: var(--theme-bg-solid);
   --pine-900: var(--theme-bg-solid);
   --pine-800: var(--theme-surface);
   --pine-700: var(--theme-surface-2);
   --pine-600: var(--theme-surface-raised, var(--theme-surface-2));
 
-  /* Brand colors (accent) */
   --brand-500: var(--theme-primary);
   --brand-400: var(--theme-primary);
   --brand-300: var(--theme-primary-hover);
 
-  /* Accent / gold */
   --gold-400: var(--theme-accent);
   --gold-300: var(--theme-accent);
 
-  /* Text colors */
   --cream-100: var(--theme-text);
   --cream-200: var(--theme-text-muted);
   --sage-300: var(--theme-text-muted);
   --sage-500: var(--theme-text-subtle, var(--theme-text-muted));
 
-  /* Borders */
   --hairline: var(--theme-border);
   --hairline-strong: var(--theme-border-strong);
 
-  /* Glass fills */
   --glass-fill: var(--theme-glass-bg);
   --glass-fill-soft: var(--theme-glass-bg);
 
-  /* Semantic */
   --danger-400: var(--theme-danger);
   --warning-400: var(--theme-warning);
   --success-400: var(--theme-success);
 
-  /* Shadows */
   --shadow-deep: var(--theme-shadow-xl);
   --radius-xl: 30px;
   --radius-lg: 22px;
@@ -76,14 +69,29 @@ body:has(.auth-experience) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(20px, 3.2vw, 40px);
-  padding: clamp(18px, 3vw, 40px) clamp(16px, 4vw, 56px) clamp(48px, 6vw, 88px);
+  justify-content: center;
+  gap: clamp(16px, 2.6vw, 32px);
+  padding: clamp(16px, 2.5vw, 32px) clamp(16px, 4vw, 56px) clamp(40px, 5vw, 72px);
 
   background: transparent !important;
-
   color: var(--theme-text);
   font-family: var(--font-ui);
   overflow-x: hidden;
+
+  /* ✅ 92.5% zoom */
+  zoom: 0.925;
+}
+
+/* ✅ Fallback sa Firefox */
+@supports not (zoom: 1) {
+  .auth-experience {
+    zoom: normal;
+    transform: scale(0.925);
+    transform-origin: top center;
+    width: 108.108%;
+    margin-left: -4.054%;
+    min-height: 108.108vh;
+  }
 }
 
 /* ✅ Campus photo overlay */
@@ -100,7 +108,7 @@ body:has(.auth-experience) {
   pointer-events: none;
 }
 
-/* ✅ Theme-aware tint overlay — para readable yung form */
+/* ✅ Theme-aware tint overlay */
 .auth-experience::after {
   content: '';
   position: fixed;
@@ -137,7 +145,9 @@ body:has(.auth-experience) {
   pointer-events: none;
 }
 
-/* ----------------------------- header / quick login ------------------- */
+/* ==========================================================================
+   3. HEADER / QUICK LOGIN
+   ========================================================================== */
 
 .auth-experience__header {
   width: min(1180px, 100%);
@@ -151,9 +161,7 @@ body:has(.auth-experience) {
   background: var(--theme-glass-bg);
   backdrop-filter: blur(22px) saturate(140%);
   -webkit-backdrop-filter: blur(22px) saturate(140%);
-  box-shadow:
-    var(--theme-shadow-lg),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: var(--theme-shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .auth-brand {
@@ -173,6 +181,17 @@ body:has(.auth-experience) {
   border: 1px solid var(--theme-border-strong);
   box-shadow: 0 0 0 4px rgba(var(--theme-primary-rgb), 0.08);
   flex-shrink: 0;
+  transition:
+    box-shadow 450ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 400ms ease;
+}
+
+.auth-brand:hover .auth-brand__logo {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 0 6px rgba(var(--theme-primary-rgb), 0.12),
+    0 8px 20px -8px rgba(var(--theme-primary-rgb), 0.4);
 }
 
 .auth-brand__copy {
@@ -214,6 +233,7 @@ body:has(.auth-experience) {
   }
 }
 
+/* ✅ Quick login */
 .auth-quick-login {
   display: flex;
   align-items: center;
@@ -245,16 +265,25 @@ body:has(.auth-experience) {
   font-family: var(--font-ui);
   font-size: 13px;
   outline: none;
-  transition: border-color 0.18s ease, background 0.18s ease;
+  transition:
+    border-color 350ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 350ms ease,
+    box-shadow 350ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .auth-quick-login__input::placeholder {
   color: var(--theme-text-muted);
 }
 
+.auth-quick-login__input:hover:not(:disabled) {
+  border-color: var(--theme-border-strong);
+  background: rgba(var(--theme-primary-rgb), 0.07);
+}
+
 .auth-quick-login__input:focus-visible {
   border-color: var(--theme-primary);
   background: rgba(var(--theme-primary-rgb), 0.08);
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.18);
 }
 
 .auth-quick-login__input:disabled {
@@ -265,11 +294,7 @@ body:has(.auth-experience) {
   padding: 10px 22px;
   border-radius: 999px;
   border: none;
-  background: linear-gradient(
-    135deg,
-    var(--theme-primary),
-    var(--theme-primary-hover)
-  );
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
   color: var(--theme-on-primary);
   font-family: var(--font-ui);
   font-weight: 700;
@@ -278,24 +303,43 @@ body:has(.auth-experience) {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
   box-shadow: 0 8px 20px -8px rgba(var(--theme-primary-rgb), 0.65);
+
+  transition:
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 400ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .auth-quick-login__submit .react-icon {
   width: 14px;
   height: 14px;
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .auth-quick-login__submit:hover:not(:disabled) {
-  filter: brightness(1.06);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow:
+    0 16px 32px -10px rgba(var(--theme-primary-rgb), 0.7),
+    0 6px 12px -6px rgba(var(--theme-primary-rgb), 0.5);
+}
+
+.auth-quick-login__submit:hover:not(:disabled) .react-icon {
+  transform: translateX(4px);
+}
+
+.auth-quick-login__submit:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+  transition-duration: 120ms;
 }
 
 .auth-quick-login__submit:disabled {
   opacity: 0.55;
   cursor: not-allowed;
   box-shadow: none;
+  transform: none;
+  filter: none;
 }
 
 @media (max-width: 720px) {
@@ -304,7 +348,9 @@ body:has(.auth-experience) {
   }
 }
 
-/* ------------------------------- content grid --------------------------- */
+/* ==========================================================================
+   4. CONTENT GRID
+   ========================================================================== */
 
 .auth-experience__content {
   width: min(1180px, 100%);
@@ -316,15 +362,38 @@ body:has(.auth-experience) {
   background: var(--theme-glass-bg);
   backdrop-filter: blur(28px) saturate(150%);
   -webkit-backdrop-filter: blur(28px) saturate(150%);
-  box-shadow:
-    var(--theme-shadow-xl),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: var(--theme-shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   overflow: hidden;
+  max-height: 680px;
+  min-height: 560px;
 }
 
 .auth-experience__content > * {
   position: relative;
   padding: clamp(26px, 2.8vw, 40px);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--theme-primary-rgb), 0.2) transparent;
+}
+
+.auth-experience__content > *::-webkit-scrollbar {
+  width: 6px;
+}
+
+.auth-experience__content > *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.auth-experience__content > *::-webkit-scrollbar-thumb {
+  background: rgba(var(--theme-primary-rgb), 0.2);
+  border-radius: 3px;
+}
+
+.auth-experience__content > *::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--theme-primary-rgb), 0.35);
 }
 
 .auth-experience__content > *:not(:last-child) {
@@ -334,14 +403,26 @@ body:has(.auth-experience) {
 @media (max-width: 1080px) {
   .auth-experience__content {
     grid-template-columns: 1fr;
+    max-height: none;
+    min-height: 0;
+    height: auto;
   }
   .auth-experience__content > *:not(:last-child) {
     border-right: none;
     border-bottom: 1px solid var(--theme-border);
   }
+  .auth-experience {
+    justify-content: flex-start;
+  }
 }
 
-/* ------------------------------- guidelines ----------------------------- */
+/* ==========================================================================
+   5. GUIDELINES PANEL
+   ========================================================================== */
+
+.auth-experience__content > .auth-guidelines {
+  justify-content: flex-start;
+}
 
 .auth-section-heading {
   margin-bottom: 20px;
@@ -384,7 +465,17 @@ body:has(.auth-experience) {
   border-radius: var(--radius-md);
   background: rgba(var(--theme-primary-rgb), 0.03);
   overflow: hidden;
-  transition: border-color 0.2s ease, background 0.2s ease;
+  transition:
+    border-color 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.auth-guideline:hover:not(.is-open) {
+  transform: translateX(2px);
+  border-color: var(--theme-border-strong);
+  box-shadow: 0 4px 12px -6px rgba(var(--theme-primary-rgb), 0.2);
 }
 
 .auth-guideline.is-open {
@@ -406,6 +497,7 @@ body:has(.auth-experience) {
   font-weight: 600;
   text-align: left;
   cursor: pointer;
+  transition: color 350ms ease, background-color 350ms ease;
 }
 
 .auth-guideline__icon {
@@ -436,8 +528,8 @@ body:has(.auth-experience) {
   width: 16px;
   height: 16px;
   color: var(--theme-text-muted);
-  transition: transform 0.2s ease;
   flex-shrink: 0;
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .auth-guideline.is-open .auth-guideline__chevron {
@@ -449,25 +541,27 @@ body:has(.auth-experience) {
   padding: 0 14px 15px 58px;
 }
 
-.auth-guideline__content p {
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--theme-text-muted);
-}
 
-/* -------------------------------- marquee -------------------------------- */
+
+/* ==========================================================================
+   6. IMAGE MARQUEE
+   ========================================================================== */
+
+.auth-experience__content > .auth-marquee {
+  justify-content: center;
+  align-items: center;
+}
 
 .auth-marquee {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .auth-marquee__viewport {
   width: 100%;
-  max-height: 460px;
+  max-height: 400px;
   overflow: hidden;
   border-radius: var(--radius-lg);
   mask-image: linear-gradient(180deg, transparent, black 8%, black 92%, transparent);
@@ -481,7 +575,7 @@ body:has(.auth-experience) {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   animation: auth-marquee-scroll 22s linear infinite;
 }
 
@@ -496,12 +590,22 @@ body:has(.auth-experience) {
   border: 1px solid var(--theme-border);
   box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.6);
   flex-shrink: 0;
+  transition:
+    transform 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 400ms ease;
+}
+
+.auth-marquee__card:hover {
+  transform: scale(1.03);
+  border-color: var(--theme-border-strong);
+  box-shadow: 0 20px 40px -18px rgba(0, 0, 0, 0.7);
 }
 
 .auth-marquee__card img {
   display: block;
   width: 100%;
-  height: 152px;
+  height: 130px;
   object-fit: cover;
   filter: saturate(0.92) contrast(1.02);
 }
@@ -527,7 +631,14 @@ body:has(.auth-experience) {
   }
 }
 
-/* --------------------------------- auth card ----------------------------- */
+/* ==========================================================================
+   7. AUTH CARD
+   ========================================================================== */
+
+.auth-experience__content > .auth-card {
+  justify-content: center;
+  height: 100%;
+}
 
 .auth-card {
   position: relative;
@@ -540,6 +651,19 @@ body:has(.auth-experience) {
   border-radius: var(--radius-lg);
   overflow: hidden;
   isolation: isolate;
+  transition:
+    box-shadow 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) and (min-width: 1024px) {
+  .auth-card:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 24px 48px -16px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(var(--theme-primary-rgb), 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
 }
 
 .auth-card::before {
@@ -569,11 +693,7 @@ body:has(.auth-experience) {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--theme-on-accent);
-  background: linear-gradient(
-    135deg,
-    var(--theme-accent),
-    var(--theme-accent)
-  );
+  background: var(--theme-accent);
   padding: 5px 12px;
   border-radius: 999px;
   margin-bottom: 14px;
@@ -598,7 +718,7 @@ body:has(.auth-experience) {
 .auth-card__body {
   position: relative;
   z-index: 1;
-  flex: 1;
+  flex: 0 0 auto;
 }
 
 .auth-card__switch {
@@ -610,19 +730,42 @@ body:has(.auth-experience) {
   text-align: center;
 }
 
+.auth-card__switch a,
 .auth-card__switch button {
-  background: none;
-  border: none;
-  padding: 0;
-  font: inherit;
-  font-weight: 700;
   color: var(--theme-accent);
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  text-decoration: none;
+  position: relative;
+  transition: color 350ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ----------------------------------- forms -------------------------------- */
+.auth-card__switch a::after,
+.auth-card__switch button::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.auth-card__switch a:hover::after,
+.auth-card__switch button:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.auth-card__switch a:hover,
+.auth-card__switch button:hover {
+  color: var(--theme-primary);
+}
+
+/* ==========================================================================
+   8. FORM
+   ========================================================================== */
 
 .auth-form {
   display: flex;
@@ -634,6 +777,10 @@ body:has(.auth-experience) {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+.auth-field__relative {
+  position: relative;
 }
 
 .auth-field-grid {
@@ -668,33 +815,10 @@ body:has(.auth-experience) {
   height: 17px;
   color: var(--theme-text-muted);
   pointer-events: none;
-}
-/* ✅ Icons sa loob ng input */
-.auth-input-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.auth-input-wrap > .react-icon {
-  position: absolute;
-  left: 14px;
-  width: 17px;
-  height: 17px;
-  color: var(--theme-text-muted);
-  pointer-events: none;
   z-index: 1;
 }
 
-/* ✅ Padding sa input para hindi matakpan ng icon */
-.auth-input {
-  padding-left: 42px;
-}
-
-.auth-input--with-toggle {
-  padding-right: 42px;
-}
-
+/* ✅ Input */
 .auth-input {
   width: 100%;
   padding: 12px 14px 12px 42px;
@@ -705,17 +829,28 @@ body:has(.auth-experience) {
   font-family: var(--font-ui);
   font-size: 14px;
   outline: none;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+
+  transition:
+    border-color 350ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 350ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 350ms ease,
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .auth-input::placeholder {
   color: var(--theme-text-muted);
 }
 
+.auth-input:hover:not(:disabled):not(:focus) {
+  border-color: var(--theme-border-strong);
+  background: rgba(var(--theme-primary-rgb), 0.06);
+}
+
 .auth-input:focus-visible {
   border-color: var(--theme-primary);
   background: rgba(var(--theme-primary-rgb), 0.06);
   box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.18);
+  transform: translateY(-1px);
 }
 
 .auth-input:disabled {
@@ -723,7 +858,28 @@ body:has(.auth-experience) {
 }
 
 .auth-input.has-error {
-  border-color: var(--theme-danger);
+  border-color: var(--theme-danger) !important;
+  box-shadow: 0 0 0 3px rgba(var(--theme-danger-rgb), 0.15);
+}
+
+.auth-input.has-error:not(:focus) {
+  animation: auth-shake 0.3s ease;
+}
+
+.auth-input.is-valid {
+  border-color: var(--theme-success) !important;
+  background: rgba(var(--theme-success-rgb), 0.04) !important;
+}
+
+.auth-input.is-valid:focus-visible {
+  border-color: var(--theme-success) !important;
+  box-shadow: 0 0 0 3px rgba(var(--theme-success-rgb), 0.18) !important;
+}
+
+@keyframes auth-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
 }
 
 .auth-input--with-toggle {
@@ -746,6 +902,12 @@ body:has(.auth-experience) {
   letter-spacing: 0.65em;
 }
 
+.auth-input--otp:focus-visible {
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.22);
+}
+
+/* ✅ Password toggle */
 .auth-password-toggle {
   position: absolute;
   right: 10px;
@@ -758,12 +920,25 @@ body:has(.auth-experience) {
   background: none;
   color: var(--theme-text-muted);
   cursor: pointer;
-  transition: color 0.15s ease, background 0.15s ease;
+  transition:
+    color 350ms ease,
+    background-color 350ms ease,
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .auth-password-toggle:hover {
   color: var(--theme-text);
   background: rgba(var(--theme-primary-rgb), 0.06);
+  transform: scale(1.15);
+  transition:
+    transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    color 350ms ease,
+    background-color 350ms ease;
+}
+
+.auth-password-toggle:active {
+  transform: scale(0.92);
+  transition-duration: 120ms;
 }
 
 .auth-password-toggle .react-icon {
@@ -771,15 +946,61 @@ body:has(.auth-experience) {
   height: 17px;
 }
 
+/* ✅ Error / Hint */
 .auth-error {
   font-size: 12px;
   color: var(--theme-danger);
+  animation: auth-error-slide 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes auth-error-slide {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .auth-hint {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--theme-text-muted);
+  line-height: 1.4;
 }
+
+.auth-hint strong {
+  color: var(--theme-text);
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.auth-hint--success {
+  color: var(--theme-success);
+  font-weight: 600;
+  font-size: 11.5px;
+  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.auth-hint--error {
+  color: var(--theme-danger);
+  font-weight: 600;
+  font-size: 11.5px;
+  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.auth-hint--success .react-icon,
+.auth-hint--error .react-icon {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2.8;
+}
+
+/* ==========================================================================
+   9. SUBMIT BUTTON — SINGLE SOURCE OF TRUTH
+   ========================================================================== */
 
 .auth-submit {
   display: inline-flex;
@@ -790,29 +1011,45 @@ body:has(.auth-experience) {
   padding: 13px 20px;
   border-radius: 999px;
   border: none;
-  background: linear-gradient(
-    135deg,
-    var(--theme-primary),
-    var(--theme-primary-hover)
-  );
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
   color: var(--theme-on-primary);
   font-family: var(--font-ui);
   font-weight: 700;
   font-size: 14.5px;
   cursor: pointer;
   box-shadow: 0 14px 30px -12px rgba(var(--theme-primary-rgb), 0.65);
-  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+
+  transition:
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 300ms ease;
+
+  will-change: transform, box-shadow;
 }
 
 .auth-submit .react-icon {
   width: 17px;
   height: 17px;
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .auth-submit:hover:not(:disabled) {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
-  box-shadow: 0 18px 34px -12px rgba(var(--theme-primary-rgb), 0.75);
+  transform: translateY(-3px);
+  filter: brightness(1.1);
+  box-shadow:
+    0 24px 48px -14px rgba(var(--theme-primary-rgb), 0.75),
+    0 10px 20px -8px rgba(var(--theme-primary-rgb), 0.55);
+}
+
+.auth-submit:hover:not(:disabled) .react-icon {
+  transform: translateX(4px);
+}
+
+.auth-submit:active:not(:disabled) {
+  transform: translateY(1px) scale(0.97);
+  transition-duration: 100ms;
+  box-shadow: 0 6px 14px -8px rgba(var(--theme-primary-rgb), 0.5);
 }
 
 .auth-submit:disabled {
@@ -820,10 +1057,19 @@ body:has(.auth-experience) {
   cursor: not-allowed;
   box-shadow: none;
   transform: none;
+  filter: none;
 }
+
+/* ==========================================================================
+   10. TEXT BUTTON + FORGOT LINK
+   ========================================================================== */
 
 .auth-text-button {
   align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   background: none;
   border: none;
   font-family: var(--font-ui);
@@ -833,13 +1079,44 @@ body:has(.auth-experience) {
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 3px;
+  transition: color 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.auth-text-button .react-icon {
+  width: 13px;
+  height: 13px;
 }
 
 .auth-text-button:hover {
-  color: var(--theme-text);
+  color: var(--theme-primary);
 }
 
-/* ------------------------------- callouts / OTP --------------------------- */
+.auth-forgot-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -4px;
+  margin-bottom: -2px;
+}
+
+.auth-forgot-link {
+  display: block;
+  align-self: flex-end;
+  margin-top: -6px;
+  margin-bottom: 2px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--theme-accent);
+  text-decoration: none;
+  transition: color 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.auth-forgot-link:hover {
+  color: var(--theme-primary);
+}
+
+/* ==========================================================================
+   11. CALLOUTS / STAGE ICON / OTP
+   ========================================================================== */
 
 .auth-callout {
   display: flex;
@@ -851,6 +1128,10 @@ body:has(.auth-experience) {
   line-height: 1.5;
   margin-bottom: 16px;
   border: 1px solid;
+  transition:
+    background-color 400ms ease,
+    border-color 400ms ease,
+    box-shadow 400ms ease;
 }
 
 .auth-callout .react-icon {
@@ -885,11 +1166,17 @@ body:has(.auth-experience) {
     rgba(var(--theme-accent-rgb), 0.16)
   );
   color: var(--theme-primary);
+  animation: auth-stage-pulse 0.6s ease-out;
 }
 
 .auth-stage-icon .react-icon {
   width: 26px;
   height: 26px;
+}
+
+@keyframes auth-stage-pulse {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .auth-otp-meta {
@@ -917,6 +1204,11 @@ body:has(.auth-experience) {
   font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
+  transition: color 350ms ease;
+}
+
+.auth-otp-meta button:hover:not(:disabled) {
+  color: var(--theme-primary);
 }
 
 .auth-otp-meta button:disabled {
@@ -929,7 +1221,9 @@ body:has(.auth-experience) {
   height: 13px;
 }
 
-/* ---------------------------------- success -------------------------------- */
+/* ==========================================================================
+   12. SUCCESS STAGE
+   ========================================================================== */
 
 .auth-success {
   display: flex;
@@ -938,6 +1232,7 @@ body:has(.auth-experience) {
   gap: 8px;
   padding: 30px 0;
   text-align: center;
+  animation: auth-stage-fade-in 0.32s ease-out;
 }
 
 .auth-success__icon {
@@ -945,6 +1240,9 @@ body:has(.auth-experience) {
   height: 52px;
   color: var(--theme-success);
   margin-bottom: 6px;
+  transition:
+    transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    color 400ms ease;
 }
 
 .auth-success p {
@@ -960,122 +1258,14 @@ body:has(.auth-experience) {
   color: var(--theme-text-muted);
 }
 
-/* ------------------------------------ misc ---------------------------------- */
-
-.auth-sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.auth-experience :focus-visible {
-  outline: 2px solid var(--theme-accent);
-  outline-offset: 2px;
+@keyframes auth-stage-fade-in {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 /* ==========================================================================
-   FORGOT PASSWORD — additions
+   13. PASSWORD STRENGTH RULES
    ========================================================================== */
-
-.auth-forgot-link {
-  display: block;
-  align-self: flex-end;
-  margin-top: -6px;
-  margin-bottom: 2px;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--theme-accent);
-  text-decoration: none;
-  transition: color 0.15s ease, text-decoration-color 0.15s ease;
-}
-
-.auth-forgot-link:hover {
-  color: var(--theme-text);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.auth-text-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.auth-text-button .react-icon {
-  width: 13px;
-  height: 13px;
-}
-
-.auth-otp-meta button:disabled + .auth-hint,
-.auth-otp-meta + .auth-hint {
-  display: block;
-  margin-top: 6px;
-  text-align: right;
-  font-size: 11.5px;
-  color: var(--theme-text-muted);
-}
-
-.auth-input--otp:focus-visible {
-  border-color: var(--theme-primary);
-  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.22);
-}
-
-.auth-stage-icon {
-  animation: auth-stage-pulse 0.6s ease-out;
-}
-
-@keyframes auth-stage-pulse {
-  0% {
-    transform: scale(0.85);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.auth-form,
-.auth-success {
-  animation: auth-stage-fade-in 0.32s ease-out;
-}
-
-@keyframes auth-stage-fade-in {
-  0% {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .auth-stage-icon,
-  .auth-form,
-  .auth-success {
-    animation: none;
-  }
-}
-
-/* ✅ Forgot password row */
-.auth-forgot-row {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: -4px;
-  margin-bottom: -2px;
-}
-/* ============================================
-   ✅ PASSWORD STRENGTH RULES
-   ============================================ */
 
 .auth-password-rules {
   list-style: none;
@@ -1086,6 +1276,9 @@ body:has(.auth-experience) {
   border: 1px solid var(--theme-border);
   display: grid;
   gap: 6px;
+  transition:
+    opacity 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .auth-password-rule {
@@ -1095,7 +1288,7 @@ body:has(.auth-experience) {
   font-size: 12px;
   line-height: 1.4;
   color: var(--theme-text-muted);
-  transition: color 0.2s ease;
+  transition: color 400ms ease;
 }
 
 .auth-password-rule .react-icon {
@@ -1105,7 +1298,6 @@ body:has(.auth-experience) {
   stroke-width: 2.5;
 }
 
-/* ✅ FAILED state */
 .auth-password-rule.is-pending {
   color: var(--theme-text-muted);
 }
@@ -1114,7 +1306,6 @@ body:has(.auth-experience) {
   color: var(--theme-danger);
 }
 
-/* ✅ PASSED state */
 .auth-password-rule.is-passed {
   color: var(--theme-success);
 }
@@ -1123,15 +1314,9 @@ body:has(.auth-experience) {
   color: var(--theme-success);
 }
 
-/* ✅ Error state sa input */
-.auth-input.has-error {
-  border-color: var(--theme-danger) !important;
-  box-shadow: 0 0 0 3px rgba(var(--theme-danger-rgb), 0.15);
-}
-
-/* ============================================================
-   ✅ STUDENT ID VALIDATION STYLES
-   ============================================================ */
+/* ==========================================================================
+   14. STUDENT ID VALIDATION
+   ========================================================================== */
 
 .auth-field__required {
   color: var(--theme-danger);
@@ -1139,7 +1324,6 @@ body:has(.auth-experience) {
   font-weight: 700;
 }
 
-/* ✅ Valid/Invalid status icon */
 .auth-input__status {
   position: absolute;
   right: 12px;
@@ -1170,47 +1354,16 @@ body:has(.auth-experience) {
 }
 
 @keyframes auth-status-pop {
-  0% {
-    transform: translateY(-50%) scale(0.5);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(-50%) scale(1);
-    opacity: 1;
-  }
+  0% { transform: translateY(-50%) scale(0.5); opacity: 0; }
+  100% { transform: translateY(-50%) scale(1); opacity: 1; }
 }
 
-/* ✅ Valid input — green border */
-.auth-input.is-valid {
-  border-color: var(--theme-success);
-  background: rgba(var(--theme-success-rgb), 0.04);
-}
-
-.auth-input.is-valid:focus-visible {
-  border-color: var(--theme-success);
-  box-shadow: 0 0 0 3px rgba(var(--theme-success-rgb), 0.18);
-}
-
-/* ✅ Hint row */
 .auth-hint-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   margin-top: 4px;
-}
-
-.auth-hint {
-  font-size: 11.5px;
-  color: var(--theme-text-muted);
-  line-height: 1.4;
-}
-
-.auth-hint strong {
-  color: var(--theme-text);
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 700;
-  letter-spacing: 0.02em;
 }
 
 .auth-hint--counter {
@@ -1225,27 +1378,9 @@ body:has(.auth-experience) {
   color: var(--theme-success);
 }
 
-.auth-hint--success {
-  color: var(--theme-success);
-  font-weight: 600;
-  font-size: 11.5px;
-  margin-top: 4px;
-  display: block;
-}
-
-/* ✅ Shake kapag nag-paste ng invalid */
-@keyframes auth-shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
-}
-
-.auth-input.has-error:not(:focus) {
-  animation: auth-shake 0.3s ease;
-}
-/* ============================================================
-   ✅ REGISTRATION REQUIREMENTS PANEL
-   ============================================================ */
+/* ==========================================================================
+   15. REGISTRATION REQUIREMENTS PANEL
+   ========================================================================== */
 
 .auth-requirement-list {
   list-style: none;
@@ -1263,12 +1398,18 @@ body:has(.auth-experience) {
   border-radius: var(--radius-sm);
   border: 1px solid var(--theme-border);
   background: rgba(var(--theme-primary-rgb), 0.04);
-  transition: border-color 0.2s ease, background 0.2s ease;
+  transition:
+    border-color 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .auth-requirement:hover {
   border-color: var(--theme-border-strong);
   background: rgba(var(--theme-primary-rgb), 0.07);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -8px rgba(var(--theme-primary-rgb), 0.2);
 }
 
 .auth-requirement__icon {
@@ -1333,7 +1474,6 @@ body:has(.auth-experience) {
   margin-top: 2px;
 }
 
-/* ✅ Requirements Note / Tip */
 .auth-requirements-note {
   margin-top: 16px;
   padding: 12px 14px;
@@ -1349,9 +1489,10 @@ body:has(.auth-experience) {
   color: var(--theme-accent);
   font-weight: 700;
 }
-/* ============================================================
-   ✅ REGISTER REQUIREMENTS MODAL — Center Popup
-   ============================================================ */
+
+/* ==========================================================================
+   16. REGISTER MODAL
+   ========================================================================== */
 
 .register-modal-backdrop {
   position: fixed;
@@ -1360,12 +1501,9 @@ body:has(.auth-experience) {
   display: grid;
   place-items: center;
   padding: 20px;
-
-  /* ✅ Glassy dark overlay */
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px) saturate(120%);
   -webkit-backdrop-filter: blur(8px) saturate(120%);
-
   animation: registerModalFadeIn 0.25s ease-out;
 }
 
@@ -1379,39 +1517,23 @@ body:has(.auth-experience) {
   max-width: 480px;
   max-height: calc(100vh - 40px);
   overflow-y: auto;
-
-  /* ✅ Glassy modal bg */
   background: var(--theme-glass-bg);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
-
   border: 1px solid var(--theme-glass-border);
   border-radius: 24px;
-
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.15),
     0 24px 64px rgba(0, 0, 0, 0.4),
     0 8px 24px rgba(0, 0, 0, 0.25);
-
   padding: 28px 24px 24px;
-
   animation: registerModalPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes registerModalPop {
-  from {
-    opacity: 0;
-    transform: scale(0.9) translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+  from { opacity: 0; transform: scale(0.9) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
-
-/* ============================================
-   HEADER
-   ============================================ */
 
 .register-modal__header {
   text-align: center;
@@ -1447,10 +1569,6 @@ body:has(.auth-experience) {
   margin-right: auto;
 }
 
-/* ============================================
-   REQUIREMENTS LIST
-   ============================================ */
-
 .register-modal__list {
   list-style: none;
   margin: 0 0 16px;
@@ -1464,18 +1582,21 @@ body:has(.auth-experience) {
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-
-  /* ✅ Glassy item */
   background: rgba(var(--theme-surface-rgb, 255, 255, 255), 0.05);
   border: 1px solid var(--theme-border);
   border-radius: 12px;
-
-  transition: border-color 0.2s ease, background 0.2s ease;
+  transition:
+    border-color 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .register-modal__item:hover {
   background: rgba(var(--theme-primary-rgb), 0.08);
   border-color: rgba(var(--theme-primary-rgb), 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -8px rgba(var(--theme-primary-rgb), 0.2);
 }
 
 .register-modal__icon {
@@ -1485,7 +1606,6 @@ body:has(.auth-experience) {
   height: 36px;
   flex-shrink: 0;
   border-radius: 10px;
-
   background: rgba(var(--theme-primary-rgb), 0.15);
   color: var(--theme-primary);
 }
@@ -1531,7 +1651,6 @@ body:has(.auth-experience) {
   letter-spacing: 0.02em;
 }
 
-/* ✅ Check icon — green */
 .register-modal__check {
   width: 20px;
   height: 20px;
@@ -1539,10 +1658,6 @@ body:has(.auth-experience) {
   color: var(--theme-success);
   stroke-width: 2.5;
 }
-
-/* ============================================
-   NOTE / TIP
-   ============================================ */
 
 .register-modal__note {
   padding: 12px 14px;
@@ -1560,10 +1675,6 @@ body:has(.auth-experience) {
   font-weight: 700;
 }
 
-/* ============================================
-   FOOTER — Continue button
-   ============================================ */
-
 .register-modal__footer {
   display: flex;
   justify-content: center;
@@ -1574,133 +1685,100 @@ body:has(.auth-experience) {
   padding: 14px 24px;
   border: none;
   border-radius: 999px;
-
-  /* ✅ Solid primary button */
-  background: linear-gradient(
-    135deg,
-    var(--theme-primary),
-    var(--theme-primary-hover)
-  );
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
   color: var(--theme-on-primary);
   -webkit-text-fill-color: var(--theme-on-primary);
-
   font-family: var(--font-ui);
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.01em;
-
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.15),
     0 12px 28px -10px rgba(var(--theme-primary-rgb), 0.6);
+
+  transition:
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 400ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .register-modal__btn:hover {
-  filter: brightness(1.06);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  filter: brightness(1.08);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    0 16px 32px -10px rgba(var(--theme-primary-rgb), 0.7);
+    0 20px 40px -12px rgba(var(--theme-primary-rgb), 0.7);
 }
 
 .register-modal__btn:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
+  transition-duration: 120ms;
 }
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
 
 @media (max-width: 640px) {
   .register-modal {
     border-radius: 20px;
     padding: 24px 20px 20px;
   }
-
   .register-modal__title {
     font-size: 20px;
   }
-
   .register-modal__list {
     gap: 6px;
   }
-
   .register-modal__item {
     padding: 10px 12px;
   }
-
   .register-modal__icon {
     width: 32px;
     height: 32px;
   }
-
   .register-modal__icon .react-icon {
     width: 16px;
     height: 16px;
   }
-
   .register-modal__check {
     width: 18px;
     height: 18px;
   }
 }
-/* ============================================================
-   ✅ PASSWORD RULES — FLOATING POPOVER
-   ✅ Nasa labas ng panel — hindi nag-a-adjust ng layout
-============================================================ */
 
-/* ✅ Relative wrapper */
-.auth-field__relative {
-  position: relative;
-}
+/* ==========================================================================
+   17. PASSWORD POPOVER
+   ========================================================================== */
 
-/* ✅ Popover — absolute positioning */
 .password-popover {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
   right: 0;
   z-index: 100;
-
   background: var(--theme-glass-bg);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-
   border: 1px solid var(--theme-glass-border);
   border-radius: 12px;
-
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.12),
     0 12px 32px rgba(0, 0, 0, 0.25),
     0 4px 12px rgba(0, 0, 0, 0.15);
-
   padding: 12px 14px;
-
   animation: passwordPopoverIn 0.2s ease-out;
   pointer-events: none;
+  transition:
+    opacity 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes passwordPopoverIn {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* ✅ Success state — green tint */
 .password-popover.is-all-passed {
   border-color: rgba(var(--theme-success-rgb), 0.4);
-  background: color-mix(
-    in srgb,
-    var(--theme-success) 12%,
-    var(--theme-glass-bg)
-  );
+  background: color-mix(in srgb, var(--theme-success) 12%, var(--theme-glass-bg));
 }
 
 .password-popover__header {
@@ -1736,6 +1814,7 @@ body:has(.auth-experience) {
   font-size: 11.5px;
   line-height: 1.3;
   font-weight: 500;
+  transition: color 400ms ease;
 }
 
 .password-popover__rule .react-icon {
@@ -1762,348 +1841,1086 @@ body:has(.auth-experience) {
   color: var(--theme-success);
 }
 
-/* ============================================
-   ✅ CONFIRM PASSWORD MATCH
-   ============================================ */
-
-.auth-hint--success,
-.auth-hint--error {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11.5px;
-  font-weight: 600;
-  margin-top: 6px;
-}
-
-.auth-hint--success {
-  color: var(--theme-success);
-}
-
-.auth-hint--error {
-  color: var(--theme-danger);
-}
-
-.auth-hint--success .react-icon,
-.auth-hint--error .react-icon {
-  width: 12px;
-  height: 12px;
-  stroke-width: 2.8;
-}
-
-.auth-input.is-valid {
-  border-color: var(--theme-success) !important;
-  background: rgba(var(--theme-success-rgb), 0.04) !important;
-}
-
-.auth-input.is-valid:focus-visible {
-  border-color: var(--theme-success) !important;
-  box-shadow: 0 0 0 3px rgba(var(--theme-success-rgb), 0.18) !important;
-}
-
 @media (max-width: 480px) {
   .password-popover {
     font-size: 11px;
     padding: 10px 12px;
   }
-
   .password-popover__rule {
     font-size: 11px;
   }
 }
+
 /* ==========================================================================
-   ✅ ADD-ON — 92.5% SCALE (zoom out)
-   Idagdag lang sa dulo ng auth.css
+   18. MISC
    ========================================================================== */
 
-/* ✅ Buong auth experience — 92.5% scale */
-.auth-experience {
-  zoom: 0.925;
-  -moz-transform: scale(0.925);
-  -moz-transform-origin: top center;
-}
-
-/* ✅ Fallback para sa browsers na walang `zoom` support */
-@supports not (zoom: 1) {
-  .auth-experience {
-    zoom: normal;
-    transform: scale(0.925);
-    transform-origin: top center;
-    width: 108.108%;       /* ✅ 1 / 0.925 ≈ 1.08108 */
-    margin-left: -4.054%;
-    min-height: 108.108vh;
-  }
-} 
-/* ==========================================================================
-   ✅ ADD-ON — SUBTLE COMPACT (hindi sobrang liit)
-   Idagdag lang sa dulo ng auth.css
-   ========================================================================== */
-
-/* ============================================
-   ✅ BUONG PAGE — bahagyang compact lang
-   ============================================ */
-
-.auth-experience {
-  gap: clamp(16px, 2.6vw, 32px);   /* ✅ Bahagyang maliit lang sa dating 20-40px */
-  padding-top: clamp(16px, 2.5vw, 32px);
-  padding-bottom: clamp(40px, 5vw, 72px);  /* ✅ Bahagyang maliit lang sa 48-88px */
-  justify-content: center;
-}
-
-/* ============================================
-   ✅ GLASS PANEL — moderate height
-   ============================================ */
-
-.auth-experience__content {
-  /* ✅ Hindi sobrang liit — bahagyang compact lang */
-  max-height: 680px;
-  min-height: 560px;
+.auth-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
   overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
-/* ✅ Bawat cell — internal scroll lang kung sobrang haba */
-.auth-experience__content > * {
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(var(--theme-primary-rgb), 0.2) transparent;
+.auth-experience :focus-visible {
+  outline: 2px solid var(--theme-accent);
+  outline-offset: 2px;
 }
 
-.auth-experience__content > *::-webkit-scrollbar {
-  width: 6px;
-}
+/* ==========================================================================
+   19. REDUCED MOTION — accessibility
+   ========================================================================== */
 
-.auth-experience__content > *::-webkit-scrollbar-track {
-  background: transparent;
-}
+@media (prefers-reduced-motion: reduce) {
+  .auth-input,
+  .auth-quick-login__input,
+  .auth-submit,
+  .auth-quick-login__submit,
+  .register-modal__btn,
+  .auth-text-button,
+  .auth-forgot-link,
+  .auth-card__switch a,
+  .auth-card__switch button,
+  .auth-password-toggle,
+  .auth-guideline,
+  .auth-guideline__chevron,
+  .auth-guideline__content,
+  .auth-card,
+  .auth-marquee__card,
+  .auth-requirement,
+  .register-modal__item,
+  .auth-brand__logo,
+  .auth-callout,
+  .password-popover,
+  .auth-password-rules,
+  .auth-success__icon {
+    transition-duration: 0.01ms !important;
+  }
 
-.auth-experience__content > *::-webkit-scrollbar-thumb {
-  background: rgba(var(--theme-primary-rgb), 0.2);
-  border-radius: 3px;
-}
-
-/* ============================================
-   ✅ IMAGE MARQUEE — bahagyang liit lang
-   ============================================ */
-
-.auth-marquee__viewport {
-  max-height: 400px;   /* ✅ Mula 460px — 60px lang binawasan */
-}
-
-.auth-marquee__card img {
-  height: 130px;       /* ✅ Mula 152px — 22px lang binawasan */
-}
-
-.auth-marquee__track {
-  gap: 12px;           /* ✅ Mula 14px */
-}
-
-.auth-marquee {
-  gap: 14px;           /* ✅ Mula 16px */
-}
-
-/* ============================================
-   ✅ MOBILE
-   ============================================ */
-
-@media (max-width: 1080px) {
-  .auth-experience__content {
-    max-height: none;
-    min-height: 0;
-    height: auto;
+  .auth-card:hover,
+  .auth-marquee__card:hover,
+  .auth-brand:hover .auth-brand__logo,
+  .auth-requirement:hover,
+  .register-modal__item:hover {
+    transform: none !important;
   }
 }
 /* ==========================================================================
-   ✅ FINAL ADD-ON — CONSOLIDATED
-   Isang add-on lang para walang conflict
+   ✅ GUIDELINE ICONS — consistent size + stroke
    ========================================================================== */
 
-/* ============================================
-   1. BUONG PAGE — 92.5% zoom + compact + centered
-   ============================================ */
-
-.auth-experience {
-  /* ✅ Zoom 92.5% */
-  zoom: 0.925;
-
-  /* ✅ Compact spacing */
-  gap: clamp(16px, 2.6vw, 32px);
-  padding-top: clamp(16px, 2.5vw, 32px);
-  padding-bottom: clamp(40px, 5vw, 72px);
-
-  /* ✅ Centered vertically */
-  justify-content: center;
-  min-height: 100vh;
+.auth-guideline__icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    150deg,
+    rgba(var(--theme-primary-rgb), 0.28),
+    rgba(var(--theme-accent-rgb), 0.14)
+  );
+  color: var(--theme-primary);
 }
 
-/* ✅ Fallback sa Firefox at browsers na walang zoom */
-@supports not (zoom: 1) {
-  .auth-experience {
-    zoom: normal;
-    transform: scale(0.925);
-    transform-origin: top center;
-    width: 108.108%;
-    margin-left: -4.054%;
-    min-height: 108.108vh;
-  }
+/* ✅ Force consistent icon size */
+.auth-guideline__icon .react-icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-/* ============================================
-   2. GLASS PANEL — fixed height + internal scroll
-   ============================================ */
-
-.auth-experience__content {
-  max-height: 680px;
-  min-height: 560px;
-  overflow: hidden;
+/* ✅ Chevron — consistent din */
+.auth-guideline__chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--theme-text-muted);
+  flex-shrink: 0;
+  stroke-width: 2;
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ✅ Bawat cell — scroll kung mahaba */
-.auth-experience__content > * {
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(var(--theme-primary-rgb), 0.2) transparent;
+.auth-guideline.is-open .auth-guideline__chevron {
+  transform: rotate(180deg);
+  color: var(--theme-accent);
 }
+/* ==========================================================================
+   ✅ FIX — Guidelines items — palakihin para pantay sa panel
+   Hindi mag-laktaw-laktaw — evenly distributed
+   ========================================================================== */
 
-.auth-experience__content > *::-webkit-scrollbar {
-  width: 6px;
-}
-
-.auth-experience__content > *::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.auth-experience__content > *::-webkit-scrollbar-thumb {
-  background: rgba(var(--theme-primary-rgb), 0.2);
-  border-radius: 3px;
-}
-
-.auth-experience__content > *::-webkit-scrollbar-thumb:hover {
-  background: rgba(var(--theme-primary-rgb), 0.35);
-}
-
-/* ============================================
-   3. IMAGE MARQUEE — bahagyang liit
-   ============================================ */
-
-.auth-marquee__viewport {
-  max-height: 400px;
-}
-
-.auth-marquee__card img {
-  height: 130px;
-}
-
-.auth-marquee__track {
-  gap: 12px;
-}
-
-.auth-marquee {
-  gap: 14px;
-}
-
-/* ============================================
-   4. INNER COLUMN CENTERING (para sa forgot password)
-   ✅ Gamitin ang flexbox sa LOOB ng cell, hindi sa cell mismo
-   ============================================ */
-
-/* ✅ Guidelines — top-aligned */
+/* ✅ Column — flex para mag-fill */
 .auth-experience__content > .auth-guidelines {
-  /* Same, pero walang flex — normal flow */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-bottom: clamp(26px, 2.8vw, 40px);
+  gap: 0;                          /* ✅ Walang gap sa column */
 }
 
-/* ✅ Marquee — center ang content */
-.auth-experience__content > .auth-marquee {
-  justify-content: center;
+/* ✅ Heading — fixed sa taas */
+.auth-experience__content > .auth-guidelines .auth-section-heading {
+  flex-shrink: 0;
+  margin-bottom: 20px;
 }
 
-/* ✅ Auth card — center ang content */
-.auth-experience__content > .auth-card {
-  justify-content: center;
+/* ✅ List — punuin ang natitirang space */
+.auth-experience__content > .auth-guidelines .auth-guidelines__list {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;                       /* ✅ Consistent gap */
+  min-height: 0;
+}
+
+/* ✅ Bawat guideline — MAG-FILL ng pantay na space */
+.auth-experience__content > .auth-guidelines .auth-guideline {
+  flex: 1 1 0;                     /* ✅ LAHAT pantay ang height */
+  display: flex;
+  flex-direction: column;
+  min-height: 60px;                /* ✅ Minimum height para hindi sobrang liit */
+}
+
+/* ✅ Trigger — mag-fill ng height */
+.auth-experience__content > .auth-guidelines .auth-guideline__trigger {
+  flex: 1 1 auto;
+  padding: 18px 16px;              /* ✅ Mas malaking padding */
+  align-items: center;
+}
+
+/* ✅ Icon — mas malaki */
+.auth-experience__content > .auth-guidelines .auth-guideline__icon {
+  width: 36px;                     /* ✅ Mula 32px */
+  height: 36px;
+}
+
+.auth-experience__content > .auth-guidelines .auth-guideline__icon .react-icon {
+  width: 18px;                     /* ✅ Mula 16px */
+  height: 18px;
+}
+
+/* ✅ Label — mas malaki */
+.auth-experience__content > .auth-guidelines .auth-guideline__label {
+  font-size: 14.5px;               /* ✅ Mula 13.5px */
+}
+
+/* ✅ Kapag OPEN — mas malaki pa para mag-fill */
+.auth-experience__content > .auth-guidelines .auth-guideline.is-open {
+  flex: 2 1 0;                     /* ✅ Dalawang beses ang laki kapag open */
+}
+
+/* ✅ Content ng open — normal */
+.auth-experience__content > .auth-guidelines .auth-guideline__content {
+  flex: 0 0 auto;
+  padding: 0 16px 16px 60px;       /* ✅ Adjust padding */
+}
+
+/* ==========================================================================
+   ✅ GUIDELINES — Smooth hover + contrast para sa lahat ng 10 themes
+   ✅ Light themes: dark contrast
+   ✅ Dark themes: light contrast
+   ========================================================================== */
+
+/* ============================================
+   1. GUIDELINE ITEMS — base state
+   ============================================ */
+
+.auth-guideline {
+  border: 1px solid var(--theme-border);
+  border-radius: var(--radius-md);
+  background: rgba(var(--theme-primary-rgb), 0.03);
+  overflow: hidden;
+  position: relative;
+  transition:
+    border-color 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ✅ HOVER — maliwanag na border + glow + lift */
+.auth-guideline:hover:not(.is-open) {
+  border-color: var(--theme-primary);
+  background: rgba(var(--theme-primary-rgb), 0.08);
+  transform: translateX(2px);
+  box-shadow:
+    0 6px 20px -8px rgba(var(--theme-primary-rgb), 0.4),
+    0 0 0 1px rgba(var(--theme-primary-rgb), 0.15);
+}
+
+/* ✅ IS-OPEN — naka-highlight */
+.auth-guideline.is-open {
+  border-color: var(--theme-border-strong);
+  background: rgba(var(--theme-primary-rgb), 0.06);
+  box-shadow:
+    0 4px 16px -8px rgba(var(--theme-primary-rgb), 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ✅ HOVER sa OPEN state — mas maliwanag pa */
+.auth-guideline.is-open:hover {
+  border-color: var(--theme-primary);
+  background: rgba(var(--theme-primary-rgb), 0.1);
 }
 
 /* ============================================
-   5. MOBILE — auto height
+   2. TRIGGER — smooth hover sa loob
    ============================================ */
 
-@media (max-width: 1080px) {
-  .auth-experience {
-    justify-content: flex-start;
-  }
+.auth-guideline__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 16px;
+  background: none;
+  border: none;
+  color: var(--theme-text);
+  font-family: var(--font-ui);
+  font-size: 14.5px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    color 350ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
 
-  .auth-experience__content {
-    max-height: none;
-    min-height: 0;
-    height: auto;
+/* ✅ HOVER sa trigger — text lightens/darkens base sa theme */
+.auth-guideline__trigger:hover {
+  color: var(--theme-primary);
+}
+
+/* ✅ HOVER sa trigger — icon glow din */
+.auth-guideline:hover .auth-guideline__icon {
+  transform: scale(1.08);
+  background: linear-gradient(
+    150deg,
+    rgba(var(--theme-primary-rgb), 0.45),
+    rgba(var(--theme-accent-rgb), 0.25)
+  );
+  box-shadow:
+    0 0 0 4px rgba(var(--theme-primary-rgb), 0.15),
+    0 4px 12px -4px rgba(var(--theme-primary-rgb), 0.4);
+  color: var(--theme-primary);
+}
+
+/* ============================================
+   3. ICON — smooth transition
+   ============================================ */
+
+.auth-guideline__icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    150deg,
+    rgba(var(--theme-primary-rgb), 0.28),
+    rgba(var(--theme-accent-rgb), 0.14)
+  );
+  color: var(--theme-primary);
+  transition:
+    transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 400ms ease,
+    box-shadow 400ms ease,
+    color 350ms ease;
+}
+
+.auth-guideline__icon .react-icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke-width 350ms ease;
+}
+
+/* ✅ HOVER — icon mas makapal */
+.auth-guideline:hover .auth-guideline__icon .react-icon {
+  stroke-width: 2.5;
+}
+
+/* ============================================
+   4. CHEVRON — rotate smooth
+   ============================================ */
+
+.auth-guideline__chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--theme-text-muted);
+  flex-shrink: 0;
+  stroke-width: 2;
+  transition:
+    transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 350ms ease;
+}
+
+.auth-guideline:hover .auth-guideline__chevron {
+  color: var(--theme-primary);
+}
+
+.auth-guideline.is-open .auth-guideline__chevron {
+  transform: rotate(180deg);
+  color: var(--theme-accent);
+}
+
+/* ============================================
+   5. LABEL — hover maliwanag
+   ============================================ */
+
+.auth-guideline__label {
+  flex: 1;
+  transition: color 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.auth-guideline:hover .auth-guideline__label {
+  color: var(--theme-primary);
+}
+
+.auth-guideline.is-open .auth-guideline__label {
+  color: var(--theme-text);
+  font-weight: 700;
+}
+
+/* ============================================
+   6. CONTENT (kapag open)
+   ============================================ */
+
+.auth-guideline__content {
+  padding: 0 16px 16px 60px;
+  animation: guideline-content-in 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+
+
+
+@keyframes guideline-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   7. LIGHT THEMES — dark contrast para sa hover
+   ============================================ */
+
+/* ✅ Kapag LIGHT mode, mas dark yung text at border sa hover */
+[data-theme-mode='light'] .auth-guideline:hover:not(.is-open) {
+  border-color: var(--theme-primary);
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  box-shadow:
+    0 6px 20px -8px rgba(var(--theme-primary-rgb), 0.5),
+    0 0 0 2px rgba(var(--theme-primary-rgb), 0.2);
+}
+
+[data-theme-mode='light'] .auth-guideline__trigger:hover {
+  color: var(--theme-primary);
+}
+
+[data-theme-mode='light'] .auth-guideline:hover .auth-guideline__icon {
+  background: linear-gradient(
+    150deg,
+    rgba(var(--theme-primary-rgb), 0.5),
+    rgba(var(--theme-accent-rgb), 0.3)
+  );
+  color: var(--theme-primary-hover);
+  box-shadow:
+    0 0 0 5px rgba(var(--theme-primary-rgb), 0.2),
+    0 4px 14px -4px rgba(var(--theme-primary-rgb), 0.5);
+}
+
+[data-theme-mode='light'] .auth-guideline:hover .auth-guideline__label {
+  color: var(--theme-primary-hover);
+}
+
+[data-theme-mode='light'] .auth-guideline.is-open {
+  border-color: var(--theme-primary);
+  background: rgba(var(--theme-primary-rgb), 0.08);
+}
+
+/* ============================================
+   8. DARK THEMES — light contrast para sa hover
+   ============================================ */
+
+[data-theme-mode='dark'] .auth-guideline:hover:not(.is-open) {
+  border-color: var(--theme-primary);
+  background: rgba(var(--theme-primary-rgb), 0.12);
+  box-shadow:
+    0 6px 20px -8px rgba(var(--theme-primary-rgb), 0.6),
+    0 0 0 2px rgba(var(--theme-primary-rgb), 0.25);
+}
+
+[data-theme-mode='dark'] .auth-guideline__trigger:hover {
+  color: var(--theme-primary);
+}
+
+[data-theme-mode='dark'] .auth-guideline:hover .auth-guideline__icon {
+  background: linear-gradient(
+    150deg,
+    rgba(var(--theme-primary-rgb), 0.6),
+    rgba(var(--theme-accent-rgb), 0.4)
+  );
+  color: var(--theme-bg-solid);
+  box-shadow:
+    0 0 0 5px rgba(var(--theme-primary-rgb), 0.3),
+    0 4px 16px -4px rgba(var(--theme-primary-rgb), 0.7);
+}
+
+[data-theme-mode='dark'] .auth-guideline:hover .auth-guideline__icon .react-icon {
+  color: var(--theme-bg-solid);
+  stroke: currentColor;
+}
+
+[data-theme-mode='dark'] .auth-guideline:hover .auth-guideline__label {
+  color: var(--theme-primary);
+}
+
+[data-theme-mode='dark'] .auth-guideline.is-open {
+  border-color: var(--theme-primary);
+  background: rgba(var(--theme-primary-rgb), 0.1);
 }
 /* ==========================================================================
-   ✅ FIX — FORGOT PASSWORD CARD CENTERING
-   I-center ang card content sa loob ng column
+   ✅ GUIDELINES — FULLY THEME-AWARE PREMIUM
+   Lahat ng colors = galing sa theme variables (10 themes)
+   Fonts: Fraunces (display) + Manrope (UI) + IBM Plex Mono (numbers)
    ========================================================================== */
 
-/* ✅ Ang auth card mismo — gawing flex container */
-.auth-experience__content > .auth-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;    /* ✅ Vertical center ng content */
-  align-items: stretch;
+/* ============================================
+   1. SECTION HEADING — editorial typography
+   ============================================ */
+
+.auth-section-heading {
+  margin-bottom: 28px;
 }
 
-/* ✅ Ang inner body ng card — i-center */
-.auth-card__body {
+.auth-section-heading__eyebrow {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--theme-accent);
+  margin-bottom: 10px;
+  opacity: 0.95;
+}
+
+.auth-section-heading h2 {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.2vw, 30px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  color: var(--theme-text);
+  margin: 0 0 10px;
+  font-variation-settings: 'opsz' 144;
+}
+
+.auth-section-heading p {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--theme-text-muted);
+  max-width: 38ch;
+  letter-spacing: 0.002em;
+}
+
+/* ============================================
+   2. LIST — editorial stack
+   ============================================ */
+
+.auth-guidelines__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+/* ✅ Subtle vertical timeline — uses theme border */
+.auth-guidelines__list::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 24px;
+  bottom: 24px;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--theme-border) 12%,
+    var(--theme-border) 88%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================
+   3. GUIDELINE ITEM
+   ============================================ */
+
+.auth-guideline {
+  position: relative;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  z-index: 1;
+  transition:
+    background-color 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.auth-guideline:hover:not(.is-open) {
+  background: rgba(var(--theme-primary-rgb), 0.04);
+}
+
+.auth-guideline.is-open {
+  background: rgba(var(--theme-primary-rgb), 0.05);
+}
+
+/* ============================================
+   4. TRIGGER
+   ============================================ */
+
+.auth-guideline__trigger {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 32px 36px 1fr 20px;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 14px 18px 0;
+  background: none;
+  border: none;
+  color: var(--theme-text);
+  font-family: var(--font-ui);
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  text-align: left;
+  cursor: pointer;
+  transition: color 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.auth-guideline__trigger:focus-visible {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: -4px;
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================
+   5. NUMBER — editorial index
+   ✅ Default: theme border + muted text
+   ✅ Open: theme primary fill
+   ============================================ */
+
+.auth-guideline__number {
+  display: flex;
+  align-items: center;
   justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--theme-text-muted);
+  background: var(--theme-bg-solid);
+  border: 1px solid var(--theme-border);
+  border-radius: 50%;
+  transition:
+    background-color 350ms ease,
+    border-color 350ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 350ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 350ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ✅ Header — same */
-.auth-card__header {
-  /* Walang binago — normal flow */
+.auth-guideline:hover .auth-guideline__number {
+  border-color: var(--theme-primary);
+  color: var(--theme-primary);
+  background: rgba(var(--theme-primary-rgb), 0.08);
 }
 
-/* ✅ Responsive — sa mobile, top-aligned */
-@media (max-width: 1080px) {
-  .auth-experience__content > .auth-card {
-    justify-content: flex-start;
+/* ✅ Open — filled with primary */
+.auth-guideline.is-open .auth-guideline__number {
+  background: var(--theme-primary);
+  border-color: var(--theme-primary);
+  color: var(--theme-on-primary);
+  box-shadow:
+    0 0 0 3px rgba(var(--theme-primary-rgb), 0.15),
+    0 4px 12px -4px rgba(var(--theme-primary-rgb), 0.5);
+}
+
+/* ============================================
+   6. ICON — inline subtle
+   ============================================ */
+
+.auth-guideline__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  color: var(--theme-text-muted);
+  transition: color 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.auth-guideline__icon .react-icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.auth-guideline:hover .auth-guideline__icon,
+.auth-guideline.is-open .auth-guideline__icon {
+  color: var(--theme-primary);
+}
+
+/* ============================================
+   7. LABEL
+   ============================================ */
+
+.auth-guideline__label {
+  font-family: var(--font-ui);
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  line-height: 1.35;
+  color: var(--theme-text);
+  transition: color 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.auth-guideline:hover .auth-guideline__label {
+  color: var(--theme-primary);
+}
+
+.auth-guideline.is-open .auth-guideline__label {
+  color: var(--theme-text);
+  font-weight: 700;
+}
+
+/* ============================================
+   8. CHEVRON
+   ============================================ */
+
+.auth-guideline__chevron {
+  width: 18px;
+  height: 18px;
+  color: var(--theme-text-muted);
+  stroke-width: 2;
+  flex-shrink: 0;
+  transition:
+    transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 350ms ease;
+}
+
+.auth-guideline:hover .auth-guideline__chevron {
+  color: var(--theme-primary);
+}
+
+.auth-guideline.is-open .auth-guideline__chevron {
+  transform: rotate(180deg);
+  color: var(--theme-primary);
+}
+
+/* ============================================
+   9. CONTENT — indented body
+   ============================================ */
+
+.auth-guideline__content {
+  padding: 0 32px 22px 82px;
+  animation: guideline-content-in 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.auth-guideline__content p {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: 0.002em;
+  color: var(--theme-text-muted);
+  max-width: 55ch;
+}
+
+@keyframes guideline-content-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   10. DIVIDER between items
+   ============================================ */
+
+.auth-guideline:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 82px;
+  right: 14px;
+  height: 1px;
+  background: var(--theme-border);
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity 350ms ease;
+}
+
+.auth-guideline.is-open::after {
+  opacity: 0;
+}
+
+/* ============================================
+   11. COLUMN FILL (register column)
+   ============================================ */
+
+.auth-experience__content > .auth-guidelines {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-bottom: clamp(26px, 2.8vw, 40px);
+}
+
+.auth-experience__content > .auth-guidelines .auth-section-heading {
+  flex-shrink: 0;
+}
+
+.auth-experience__content > .auth-guidelines .auth-guidelines__list {
+  flex: 1 1 auto;
+  justify-content: flex-start;
+  min-height: 0;
+}
+
+/* ==========================================================================
+   ✅ PER-THEME COLOR MATCHING
+   Kada theme = sariling primary color sa lahat ng interactive state
+   ========================================================================== */
+
+/* ----- 1. CREAM YELLOW (warm gold) ----- */
+[data-theme='cream-yellow'] .auth-guideline:hover:not(.is-open),
+[data-theme='cream-yellow'] .auth-guideline.is-open {
+  background: rgba(184, 134, 11, 0.1);
+}
+[data-theme='cream-yellow'] .auth-guideline:hover .auth-guideline__number {
+  border-color: #966C09;
+  color: #966C09;
+  background: rgba(184, 134, 11, 0.12);
+}
+[data-theme='cream-yellow'] .auth-guideline.is-open .auth-guideline__number {
+  background: #B8860B;
+  border-color: #B8860B;
+  color: #FFFFFF;
+  box-shadow:
+    0 0 0 3px rgba(184, 134, 11, 0.18),
+    0 4px 12px -4px rgba(184, 134, 11, 0.55);
+}
+[data-theme='cream-yellow'] .auth-guideline:hover .auth-guideline__label,
+[data-theme='cream-yellow'] .auth-guideline:hover .auth-guideline__icon,
+[data-theme='cream-yellow'] .auth-guideline.is-open .auth-guideline__icon,
+[data-theme='cream-yellow'] .auth-guideline.is-open .auth-guideline__chevron {
+  color: #966C09;
+}
+
+/* ----- 2. WARM BEIGE (brown) ----- */
+[data-theme='warm-beige'] .auth-guideline:hover:not(.is-open),
+[data-theme='warm-beige'] .auth-guideline.is-open {
+  background: rgba(139, 111, 71, 0.1);
+}
+[data-theme='warm-beige'] .auth-guideline:hover .auth-guideline__number {
+  border-color: #705A38;
+  color: #705A38;
+  background: rgba(139, 111, 71, 0.12);
+}
+[data-theme='warm-beige'] .auth-guideline.is-open .auth-guideline__number {
+  background: #8B6F47;
+  border-color: #8B6F47;
+  color: #FFFFFF;
+  box-shadow:
+    0 0 0 3px rgba(139, 111, 71, 0.18),
+    0 4px 12px -4px rgba(139, 111, 71, 0.55);
+}
+[data-theme='warm-beige'] .auth-guideline:hover .auth-guideline__label,
+[data-theme='warm-beige'] .auth-guideline:hover .auth-guideline__icon,
+[data-theme='warm-beige'] .auth-guideline.is-open .auth-guideline__icon,
+[data-theme='warm-beige'] .auth-guideline.is-open .auth-guideline__chevron {
+  color: #705A38;
+}
+
+/* ----- 3. PURE WHITE (dark gray) ----- */
+[data-theme='pure-white'] .auth-guideline:hover:not(.is-open),
+[data-theme='pure-white'] .auth-guideline.is-open {
+  background: rgba(51, 51, 51, 0.06);
+}
+[data-theme='pure-white'] .auth-guideline:hover .auth-guideline__number {
+  border-color: #1A1A1A;
+  color: #1A1A1A;
+  background: rgba(51, 51, 51, 0.08);
+}
+[data-theme='pure-white'] .auth-guideline.is-open .auth-guideline__number {
+  background: #1A1A1A;
+  border-color: #1A1A1A;
+  color: #FFFFFF;
+  box-shadow:
+    0 0 0 3px rgba(51, 51, 51, 0.18),
+    0 4px 12px -4px rgba(51, 51, 51, 0.55);
+}
+[data-theme='pure-white'] .auth-guideline:hover .auth-guideline__label,
+[data-theme='pure-white'] .auth-guideline:hover .auth-guideline__icon,
+[data-theme='pure-white'] .auth-guideline.is-open .auth-guideline__icon,
+[data-theme='pure-white'] .auth-guideline.is-open .auth-guideline__chevron {
+  color: #1A1A1A;
+}
+
+/* ----- 4. SOFT GRAY (gray-blue) ----- */
+[data-theme='soft-gray'] .auth-guideline:hover:not(.is-open),
+[data-theme='soft-gray'] .auth-guideline.is-open {
+  background: rgba(75, 85, 99, 0.1);
+}
+[data-theme='soft-gray'] .auth-guideline:hover .auth-guideline__number {
+  border-color: #374151;
+  color: #374151;
+  background: rgba(75, 85, 99, 0.12);
+}
+[data-theme='soft-gray'] .auth-guideline.is-open .auth-guideline__number {
+  background: #4B5563;
+  border-color: #4B5563;
+  color: #FFFFFF;
+  box-shadow:
+    0 0 0 3px rgba(75, 85, 99, 0.18),
+    0 4px 12px -4px rgba(75, 85, 99, 0.55);
+}
+[data-theme='soft-gray'] .auth-guideline:hover .auth-guideline__label,
+[data-theme='soft-gray'] .auth-guideline:hover .auth-guideline__icon,
+[data-theme='soft-gray'] .auth-guideline.is-open .auth-guideline__icon,
+[data-theme='soft-gray'] .auth-guideline.is-open .auth-guideline__chevron {
+  color: #374151;
+}
+
+/* ----- 5. PALE BLUSH (pink) ----- */
+[data-theme='pale-blush'] .auth-guideline:hover:not(.is-open),
+[data-theme='pale-blush'] .auth-guideline.is-open {
+  background: rgba(184, 99, 122, 0.1);
+}
+[data-theme='pale-blush'] .auth-guideline:hover .auth-guideline__number {
+  border-color: #9C5062;
+  color: #9C5062;
+  background: rgba(184, 99, 122, 0.12);
+}
+[data-theme='pale-blush'] .auth-guideline.is-open .auth-guideline__number {
+  background: #B8637A;
+  border-color: #B8637A;
+  color: #FFFFFF;
+  box-shadow:
+    0 0 0 3px rgba(184, 99, 122, 0.18),
+    0 4px 12px -4px rgba(184, 99, 122, 0.55);
+}
+[data-theme='pale-blush'] .auth-guideline:hover .auth-guideline__label,
+[data-theme='pale-blush'] .auth-guideline:hover .auth-guideline__icon,
+[data-theme='pale-blush'] .auth-guideline.is-open .auth-guideline__icon,
+[data-theme='pale-blush'] .auth-guideline.is-open .auth-guideline__chevron {
+  color: #9C5062;
+}
+
+/* ----- 6. MIDNIGHT NAVY (blue) ----- */
+[data-theme='midnight-navy'] .auth-guideline:hover:not(.is-open),
+[data-theme='midnight-navy'] .auth-guideline.is-open {
+  background: rgba(123, 167, 225, 0.1);
+}
+[data-theme='midnight-navy'] .auth-guideline:hover .auth-guideline__number {
+  border-color: #7BA7E1;
+  color: #7BA7E1;
+  background: rgba(123, 167, 225, 0.15);
+}
+[data-theme='midnight-navy'] .auth-guideline.is-open .auth-guideline__number {
+  background: #7BA7E1;
+  border-color: #7BA7E1;
+  color: #0E1626;
+  box-shadow:
+    0 0 0 3px rgba(123, 167, 225, 0.2),
+    0 4px 12px -4px rgba(123, 167, 225, 0.6);
+}
+[data-theme='midnight-navy'] .auth-guideline:hover .auth-guideline__label,
+[data-theme='midnight-navy'] .auth-guideline:hover .auth-guideline__icon,
+[data-theme='midnight-navy'] .auth-guideline.is-open .auth-guideline__icon,
+[data-theme='midnight-navy'] .auth-guideline.is-open .auth-guideline__chevron {
+  color: #7BA7E1;
+}
+
+/* ----- 7. MATTE BLACK (warm gold) ----- */
+[data-theme='matte-black'] .auth-guideline:hover:not(.is-open),
+[data-theme='matte-black'] .auth-guideline.is-open {
+  background: rgba(212, 165, 116, 0.1);
+}
+[data-theme='matte-black'] .auth-guideline:hover .auth-guideline__number {
+  border-color: #D4A574;
+  color: #D4A574;
+  background: rgba(212, 165, 116, 0.15);
+}
+[data-theme='matte-black'] .auth-guideline.is-open .auth-guideline__number {
+  background: #D4A574;
+  border-color: #D4A574;
+  color: #1A1209;
+  box-shadow:
+    0 0 0 3px rgba(212, 165, 116, 0.2),
+    0 4px 12px -4px rgba(212, 165, 116, 0.6);
+}
+[data-theme='matte-black'] .auth-guideline:hover .auth-guideline__label,
+[data-theme='matte-black'] .auth-guideline:hover .auth-guideline__icon,
+[data-theme='matte-black'] .auth-guideline.is-open .auth-guideline__icon,
+[data-theme='matte-black'] .auth-guideline.is-open .auth-guideline__chevron {
+  color: #D4A574;
+}
+
+/* ----- 8. CHARCOAL GRAY (cool silver) ----- */
+[data-theme='charcoal-gray'] .auth-guideline:hover:not(.is-open),
+[data-theme='charcoal-gray'] .auth-guideline.is-open {
+  background: rgba(168, 184, 200, 0.1);
+}
+[data-theme='charcoal-gray'] .auth-guideline:hover .auth-guideline__number {
+  border-color: #A8B8C8;
+  color: #A8B8C8;
+  background: rgba(168, 184, 200, 0.15);
+}
+[data-theme='charcoal-gray'] .auth-guideline.is-open .auth-guideline__number {
+  background: #A8B8C8;
+  border-color: #A8B8C8;
+  color: #1A1A1A;
+  box-shadow:
+    0 0 0 3px rgba(168, 184, 200, 0.2),
+    0 4px 12px -4px rgba(168, 184, 200, 0.6);
+}
+[data-theme='charcoal-gray'] .auth-guideline:hover .auth-guideline__label,
+[data-theme='charcoal-gray'] .auth-guideline:hover .auth-guideline__icon,
+[data-theme='charcoal-gray'] .auth-guideline.is-open .auth-guideline__icon,
+[data-theme='charcoal-gray'] .auth-guideline.is-open .auth-guideline__chevron {
+  color: #A8B8C8;
+}
+
+/* ----- 9. DEEP FOREST (green) ----- */
+[data-theme='deep-forest'] .auth-guideline:hover:not(.is-open),
+[data-theme='deep-forest'] .auth-guideline.is-open {
+  background: rgba(127, 200, 162, 0.1);
+}
+[data-theme='deep-forest'] .auth-guideline:hover .auth-guideline__number {
+  border-color: #7FC8A2;
+  color: #7FC8A2;
+  background: rgba(127, 200, 162, 0.15);
+}
+[data-theme='deep-forest'] .auth-guideline.is-open .auth-guideline__number {
+  background: #7FC8A2;
+  border-color: #7FC8A2;
+  color: #0A1F1A;
+  box-shadow:
+    0 0 0 3px rgba(127, 200, 162, 0.2),
+    0 4px 12px -4px rgba(127, 200, 162, 0.6);
+}
+[data-theme='deep-forest'] .auth-guideline:hover .auth-guideline__label,
+[data-theme='deep-forest'] .auth-guideline:hover .auth-guideline__icon,
+[data-theme='deep-forest'] .auth-guideline.is-open .auth-guideline__icon,
+[data-theme='deep-forest'] .auth-guideline.is-open .auth-guideline__chevron {
+  color: #7FC8A2;
+}
+
+/* ----- 10. DARK PLUM (purple) ----- */
+[data-theme='dark-plum'] .auth-guideline:hover:not(.is-open),
+[data-theme='dark-plum'] .auth-guideline.is-open {
+  background: rgba(200, 160, 212, 0.1);
+}
+[data-theme='dark-plum'] .auth-guideline:hover .auth-guideline__number {
+  border-color: #C8A0D4;
+  color: #C8A0D4;
+  background: rgba(200, 160, 212, 0.15);
+}
+[data-theme='dark-plum'] .auth-guideline.is-open .auth-guideline__number {
+  background: #C8A0D4;
+  border-color: #C8A0D4;
+  color: #1A0E1F;
+  box-shadow:
+    0 0 0 3px rgba(200, 160, 212, 0.2),
+    0 4px 12px -4px rgba(200, 160, 212, 0.6);
+}
+[data-theme='dark-plum'] .auth-guideline:hover .auth-guideline__label,
+[data-theme='dark-plum'] .auth-guideline:hover .auth-guideline__icon,
+[data-theme='dark-plum'] .auth-guideline.is-open .auth-guideline__icon,
+[data-theme='dark-plum'] .auth-guideline.is-open .auth-guideline__chevron {
+  color: #C8A0D4;
+}
+
+/* ============================================
+   12. REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-guideline,
+  .auth-guideline__trigger,
+  .auth-guideline__number,
+  .auth-guideline__icon,
+  .auth-guideline__chevron,
+  .auth-guideline__label,
+  .auth-guideline__content {
+    transition-duration: 0.01ms !important;
+    animation: none !important;
   }
 }
 /* ==========================================================================
-   ✅ FIX v2 — FORGOT PASSWORD FULL CENTERING
+   ✅ FIX — Guidelines TOP-ALIGNED, walang stretch
+   Balik sa natural flow — walang malalaking gaps
    ========================================================================== */
 
-/* ✅ Siguraduhin na ang column ay nagbibigay ng buong height sa card */
-.auth-experience__content > * {
+/* ✅ Guidelines column — natural, top-aligned */
+.auth-experience__content > .auth-guidelines {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  justify-content: flex-start;    /* ✅ Sa taas */
+  height: auto;                    /* ✅ Hindi nag-fi-fill */
+  min-height: 0;
 }
 
-/* ✅ Ang auth card — buong height ng column */
-.auth-experience__content > .auth-card {
+/* ✅ List — natural flow, tight gap */
+.auth-experience__content > .auth-guidelines .auth-guidelines__list {
+  flex: 0 0 auto;                  /* ✅ Hindi mag-fill */
   display: flex;
   flex-direction: column;
-  justify-content: center !important;   /* ✅ Force center */
-  height: 100%;                          /* ✅ Fill ang column height */
-  min-height: 100%;
+  justify-content: flex-start;
+  gap: 6px;                        /* ✅ Tight gap lang */
+  min-height: 0;
 }
 
-/* ✅ Inner body — normal flow (hindi na kailangan ng center) */
-.auth-card__body {
-  flex: 0 0 auto;   /* ✅ Huwag mag-stretch */
+/* ✅ Bawat guideline — natural height (WALANG stretch) */
+.auth-experience__content > .auth-guidelines .auth-guideline {
+  flex: 0 0 auto;                  /* ✅ Walang stretch */
+  min-height: 0;                   /* ✅ Walang minimum */
 }
 
-/* ✅ Header — walang extra margin */
-.auth-card__header {
-  margin-bottom: 22px;
+/* ✅ Trigger — natural padding */
+.auth-experience__content > .auth-guidelines .auth-guideline__trigger {
+  flex: 0 0 auto;
+  padding: 14px 14px 14px 0;       /* ✅ Tight padding */
 }
 
-/* ✅ Responsive */
-@media (max-width: 1080px) {
-  .auth-experience__content > .auth-card {
-    height: auto;
-    min-height: 0;
-    justify-content: flex-start !important;
-  }
+/* ✅ Open item — normal lang, hindi nag-grow */
+.auth-experience__content > .auth-guidelines .auth-guideline.is-open {
+  flex: 0 0 auto;                  /* ✅ Hindi nag-grow */
 }
+
