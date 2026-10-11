@@ -13,7 +13,7 @@ interface MobileTopBarProps {
 }
 
 export default function MobileTopBar({
-  title = 'SJCM Store',
+ 
   showBack = false,
   showSearch = false,
   onBack,
