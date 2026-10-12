@@ -3,16 +3,22 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { CheckCircle, Package, Loader, XCircle } from 'lucide-react';
-import { fetchOrders } from '../services/orders';
-import { placeOrder as placeOrderService } from '../services/orders';
+import { fetchOrderById, placeOrder, updateOrderStatus } from '../services/orders';
+import { useApp } from '../store';
 
 export default function CheckoutSuccessPage() {
   const [searchParams] = useSearchParams();
-  const orderId = searchParams.get('order_id');
+  const orderId =
+    searchParams.get('order_id') ||
+    searchParams.get('ref') ||
+    searchParams.get('reference');
   const sessionId = searchParams.get('session_id');
 
   const [isVerifying, setIsVerifying] = useState(true);
   const [isPaid, setIsPaid] = useState(false);
+
+  // ✅ IDAGDAG — para ma-clear ang cart
+  const { setCart } = useApp();
 
   useEffect(() => {
     const verify = async () => {
@@ -20,27 +26,45 @@ export default function CheckoutSuccessPage() {
         console.log('[Success] Order ID:', orderId);
         console.log('[Success] Session ID:', sessionId);
 
-        // ✅ Step 1: Update order status from 'Pending' to 'Paid'
-        if (orderId) {
-          // Fetch existing orders (localStorage-based)
-          const orders = await fetchOrders('');
-          const existingOrder = orders.find((o) => o.id === orderId);
+        if (!orderId) {
+          console.warn('[Success] Walang order_id sa URL');
+          setIsVerifying(false);
+          return;
+        }
 
-          if (existingOrder) {
-            // ✅ Update order status
-            const updatedOrder = {
-              ...existingOrder,
-              paymentStatus: 'Paid',
-              orderStatus: 'Processing',
-              paymentRef: sessionId || existingOrder.paymentRef,
-            };
+        // ✅ Hanapin ang existing order sa Supabase via ID
+        const existingOrder = await fetchOrderById(orderId);
 
-            await placeOrderService(updatedOrder);
-            console.log('[Success] Order updated:', orderId);
-            setIsPaid(true);
-          } else {
-            console.warn('[Success] Order not found in DB');
+        if (existingOrder) {
+          console.log('[Success] Order found:', existingOrder.id);
+          console.log('[Success] Current status:', existingOrder.orderStatus);
+
+          // ✅ Update order — maging 'Paid' at 'Processing'
+          const updatedOrder = {
+            ...existingOrder,
+            paymentStatus: 'Paid',
+            orderStatus: 'Processing',
+            paymentRef: sessionId || existingOrder.paymentRef,
+          };
+
+          await placeOrder(updatedOrder);
+          console.log('[Success] ✅ Order updated to Paid:', orderId);
+
+          // ✅ I-CLEAR ANG CART — dito safe na kasi bayad na
+          setCart([]);
+          console.log('[Success] ✅ Cart cleared!');
+
+          // ✅ Trigger notification
+          try {
+            await updateOrderStatus(orderId, 'Processing');
+          } catch (err) {
+            console.warn('[Success] Notification trigger failed:', err);
           }
+
+          setIsPaid(true);
+        } else {
+          console.warn('[Success] ❌ Order not found:', orderId);
+          setIsPaid(false);
         }
       } catch (error) {
         console.error('[Success] Verify failed:', error);
@@ -50,7 +74,7 @@ export default function CheckoutSuccessPage() {
     };
 
     void verify();
-  }, [orderId, sessionId]);
+  }, [orderId, sessionId, setCart]);   // ✅ IDAGDAG ang setCart sa deps
 
   return (
     <main className="checkout-page">

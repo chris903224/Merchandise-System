@@ -3,12 +3,13 @@
 import { useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { XCircle, ArrowLeft, ShoppingBag } from 'lucide-react';
+import { useApp } from '../store';
 
 /* ============================================
    ✅ CHECKOUT CANCEL PAGE
-   - Cleans up pending order from sessionStorage
-   - Shows cancel state
-   - Redirects user back to checkout or catalog
+   - I-restore ang cart mula sa backup
+   - Cleanup pending keys (legacy)
+   - Redirect user back to cart or catalog
 ============================================================ */
 
 export default function CheckoutCancelPage() {
@@ -16,12 +17,30 @@ export default function CheckoutCancelPage() {
   const navigate = useNavigate();
   const orderId = searchParams.get('order_id');
 
+  // ✅ IDAGDAG — para ma-restore ang cart
+  const { setCart } = useApp();
+
   useEffect(() => {
-    /* ✅ Cleanup sessionStorage — walang naka-save sa DB kaya safe lang */
+    /* ✅ I-RESTORE ANG CART MULA SA BACKUP */
+    const backup = sessionStorage.getItem('cartBackup');
+    if (backup) {
+      try {
+        setCart(JSON.parse(backup));
+        console.log('[Cancel] ✅ Cart restored from backup');
+      } catch (e) {
+        console.error('[Cancel] Failed to restore cart:', e);
+      }
+      sessionStorage.removeItem('cartBackup');
+      sessionStorage.removeItem('backupOrderId');
+    } else {
+      console.log('[Cancel] No cartBackup found — nothing to restore');
+    }
+
+    /* ✅ Cleanup legacy pending keys (kung may natira) */
     sessionStorage.removeItem('pendingOrder');
     sessionStorage.removeItem('pendingCart');
     sessionStorage.removeItem('pendingOrderId');
-  }, []);
+  }, [setCart]);
 
   return (
     <main className="checkout-page">
@@ -33,7 +52,8 @@ export default function CheckoutCancelPage() {
           />
           <h1 className="checkout-cancel__title">Payment Cancelled</h1>
           <p className="checkout-cancel__desc">
-            Order {orderId || ''} was not completed. Your cart is still saved.
+            Order {orderId || ''} was not completed.
+            Your cart has been restored.
           </p>
           <p className="checkout-cancel__hint">
             You can try again or continue shopping.
@@ -43,10 +63,10 @@ export default function CheckoutCancelPage() {
             <button
               type="button"
               className="button button--primary button--pill"
-              onClick={() => navigate('/checkout')}
+              onClick={() => navigate('/cart')}
             >
               <ArrowLeft className="react-icon" aria-hidden="true" />
-              <span>Try Again</span>
+              <span>Back to Cart</span>
             </button>
 
             <Link

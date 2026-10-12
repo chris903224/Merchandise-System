@@ -3,10 +3,10 @@
 import { createClient } from '@supabase/supabase-js';
 
 /* ============================================================
-   ✅ SUPABASE CLIENT
-   - Single export
-   - No self-import
-   - Proper TypeScript types
+   ✅ SUPABASE CLIENTS
+   - supabase → para sa USER
+   - supabaseAdmin → para sa ADMIN (separate storage)
+   - Isolated sessions — hindi na mag-o-overwrite
 ============================================================ */
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -18,14 +18,30 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
+/* ============================================
+   ✅ USER CLIENT — sb-user-auth-token
+============================================ */
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
+    storageKey: 'sb-user-auth-token',
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: false, // OTP flow — hindi magic link
+    detectSessionInUrl: false,
+  },
+});
+
+/* ============================================
+   ✅ ADMIN CLIENT — sb-admin-auth-token
+============================================ */
+export const supabaseAdmin = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    storageKey: 'sb-admin-auth-token',
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: false,
   },
 });
 
 if (import.meta.env.DEV) {
-  console.log('[Supabase] Client initialized:', supabaseUrl);
+  console.log('[Supabase] Clients initialized:', supabaseUrl);
 }

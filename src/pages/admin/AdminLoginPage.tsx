@@ -13,12 +13,18 @@ import {
 } from 'lucide-react';
 import { useToast } from '../../toast';
 import { useAdminStore } from '../../store/adminStore';
-import { loginUser, mapSupabaseUser } from '../../data/auth';
+
+// ✅ GAMITIN ang loginAdmin — separate Supabase client
+import { loginAdmin, mapSupabaseUser } from '../../data/auth';
+
+// ✅ IDAGDAG — para sa session cleanup
+import { supabase, supabaseAdmin } from '../../lib/supabaseClient';
+
 import '../../styles/admin/admin.css';
 
 /* ============================================
    HELPERS
-   ============================================ */
+============================================ */
 
 function isStaffRole(role: string): boolean {
   const normalized = role.toLowerCase().trim();
@@ -32,7 +38,7 @@ function isStaffRole(role: string): boolean {
 
 /* ============================================
    COMPONENT
-   ============================================ */
+============================================ */
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
@@ -48,6 +54,7 @@ export default function AdminLoginPage() {
   // ✅ Kung may existing admin session → redirect sa /admin
   useEffect(() => {
     if (session) {
+      console.log('[AdminLogin] ✅ Session detected — redirecting to /admin');
       navigate('/admin', { replace: true });
     }
   }, [session, navigate]);
@@ -63,8 +70,46 @@ export default function AdminLoginPage() {
 
     setIsSubmitting(true);
     try {
-      const result = await loginUser(email, password);
+      // ============================================
+      // ✅ STEP 1: CLEAR LAHAT NG SESSIONS
+      // Bago mag-admin login — para walang conflict
+      // ============================================
+      console.log('[AdminLogin] 🧹 Clearing all sessions...');
+
+      try {
+        await Promise.all([
+          supabase.auth.signOut().catch(() => {}),
+          supabaseAdmin.auth.signOut().catch(() => {}),
+        ]);
+      } catch (e) {
+        console.warn('[AdminLogin] Sign out warning:', e);
+      }
+
+      // Clear custom sessions
+      localStorage.removeItem('sjcm_session');
+      localStorage.removeItem('sjcm_admin_auth');
+      localStorage.removeItem('sjcm:last-login-email');
+
+      // Clear all Supabase keys
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith('sb-')) {
+          localStorage.removeItem(key);
+        }
+      });
+
+      console.log('[AdminLogin] ✅ All sessions cleared');
+
+      // ============================================
+      // ✅ STEP 2: LOGIN AS ADMIN
+      // ============================================
+      const result = await loginAdmin(email, password);
       const user = mapSupabaseUser(result.user);
+
+      console.log('[AdminLogin] ✅ Logged in:', {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      });
 
       // ✅ Block kung hindi staff/admin
       if (!isStaffRole(user.role)) {
@@ -74,7 +119,9 @@ export default function AdminLoginPage() {
         return;
       }
 
-      // ✅ Save admin session
+      // ============================================
+      // ✅ STEP 3: SAVE ADMIN SESSION
+      // ============================================
       const adminSession = {
         user: {
           id: user.id,
@@ -89,14 +136,22 @@ export default function AdminLoginPage() {
 
       setSession(adminSession);
 
+      console.log('[AdminLogin] ✅ Admin session saved:', user.email);
       toast(`Welcome back, ${user.name}.`, 'success');
-      navigate('/admin', { replace: true });
+
+      // ============================================
+      // ✅ STEP 4: FORCE REDIRECT
+      // Gamitin ang window.location.href — full reload
+      // ============================================
+      setTimeout(() => {
+        console.log('[AdminLogin] 🚀 Redirecting to /admin...');
+        window.location.href = '/admin';
+      }, 300);
     } catch (err) {
       const message =
         err instanceof Error ? err.message : 'Login failed. Please try again.';
       setError(message);
       toast(message, 'danger');
-    } finally {
       setIsSubmitting(false);
     }
   };

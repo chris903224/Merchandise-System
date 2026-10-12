@@ -1,12 +1,12 @@
 // src/services/orderNotifications.ts
 
 import { supabase } from '../lib/supabaseClient';
-import { createNotification } from './notifications';
+import { createUserNotification } from './userNotifications';   // ✅ PALITAN
 import type { NotificationType } from '../types/notification';
 
 /* ============================================================
    ✅ ORDER NOTIFICATION ORCHESTRATOR
-   Updated: Product images sa notifications
+   Uses user_notifications table
 ============================================================ */
 
 export type OrderStatus =
@@ -33,7 +33,7 @@ type TriggerParams = {
 
 /* ============================================
    ✅ MAIN TRIGGER
-   ============================================ */
+============================================ */
 
 export async function triggerOrderStatusNotifications(
   params: TriggerParams
@@ -61,7 +61,7 @@ export async function triggerOrderStatusNotifications(
   /* 1️⃣ Order Updates */
   if (orderUpdatesOn && params.newStatus !== 'Pending') {
     try {
-      await createNotification(params.userId, {
+      await createUserNotification(params.userId, {   // ✅ PALITAN
         type: getNotificationType(params.newStatus),
         title: getStatusTitle(params.newStatus),
         message: getStatusMessage(params.newStatus, params.orderCode),
@@ -86,7 +86,7 @@ export async function triggerOrderStatusNotifications(
   /* 2️⃣ Ready for Delivery */
   if (readyForDeliveryOn && isDeliveryStatus && !orderUpdatesOn) {
     try {
-      await createNotification(params.userId, {
+      await createUserNotification(params.userId, {   // ✅ PALITAN
         type: 'pickup',
         title:
           params.newStatus === 'Out for Delivery'
@@ -170,7 +170,7 @@ export async function triggerOrderStatusNotifications(
 
 /* ============================================
    ✅ HELPERS
-   ============================================ */
+============================================ */
 
 function getNotificationType(status: OrderStatus): NotificationType {
   if (status === 'Cancelled') return 'system';

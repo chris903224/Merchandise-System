@@ -1,5 +1,6 @@
 // src/App.tsx
 
+import { useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import SiteLayout from './layout/SiteLayout';
@@ -24,6 +25,10 @@ import FavoritesPage from './pages/FavoritesPage';
 
 import AuthPageTransition from './components/auth/AuthPageTransition';
 
+// ✅ Para sa global notification loading
+import { useNotificationStore } from './store/notificationStore';
+import { useApp } from './store';
+
 // ✅ ADMIN PAGES
 import {
   AdminLayout,
@@ -38,6 +43,47 @@ import {
   ProfilePage as AdminProfilePage,
   SettingsPage as AdminSettingsPage,
 } from './pages/admin';
+
+/* ============================================
+   ✅ GLOBAL NOTIFICATION LOADER
+   - Nag-l-load ng notifications sa buong app
+   - FORCE REFRESH — bypass empty cache
+   - Naka-subscribe sa real-time updates
+   - Auto-cleanup kapag nag-logout
+============================================ */
+function GlobalNotificationLoader() {
+  const { session, isLoading } = useApp();
+
+  useEffect(() => {
+    if (isLoading) {
+      console.log('[GlobalNotif] ⏳ Waiting for app to finish loading...');
+      return;
+    }
+
+    if (!session?.id) {
+      console.log('[GlobalNotif] ⚠️ No session — resetting notifications');
+      useNotificationStore.getState().reset();
+      return;
+    }
+
+    console.log('[GlobalNotif] 🔔 Loading notifications for user:', session.id);
+
+    // ✅ FORCE REFRESH — bypass empty cache
+    void useNotificationStore
+      .getState()
+      .loadNotifications(session.id, true);   // ← true = force refresh
+
+    // ✅ Subscribe sa real-time updates
+    useNotificationStore.getState().subscribeToRealtime(session.id);
+
+    return () => {
+      console.log('[GlobalNotif] 🧹 Cleaning up subscription');
+      useNotificationStore.getState().unsubscribeFromRealtime();
+    };
+  }, [session?.id, isLoading]);
+
+  return null;   // Logic lang — walang UI
+}
 
 /* ============================================
    ✅ ANIMATED AUTH ROUTES
@@ -90,70 +136,68 @@ function useIsAuthRoute() {
 export default function App() {
   const isAuthRoute = useIsAuthRoute();
 
-  /* ✅ Kung nasa auth page, i-render LANG ang animated auth routes
-     (walang SiteLayout, walang ibang routes — para malinis ang transition) */
+  /* ✅ Kung nasa auth page, i-render LANG ang animated auth routes */
   if (isAuthRoute) {
     return <AnimatedAuthRoutes />;
   }
 
-  /* ✅ Kung HINDI auth page, normal routes (walang animation — mabilis) */
+  /* ✅ Kung HINDI auth page, normal routes */
   return (
-    <Routes>
-      {/* ============================================
-          ADMIN LOGIN (standalone)
-          ============================================ */}
-      <Route path="/admin/login" element={<AdminLoginPage />} />
+    <>
+      {/* ✅ GLOBAL NOTIFICATION LOADER */}
+      <GlobalNotificationLoader />
 
-      {/* ============================================
-          MAIN APP ROUTES — may SiteLayout
-          ============================================ */}
-      <Route element={<SiteLayout />}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/catalog" element={<CatalogPage />} />
-        <Route path="/products/:id" element={<ProductPage />} />
-        <Route path="/cart" element={<CartPage />} />
+      <Routes>
+        {/* ============================================
+            ADMIN LOGIN (standalone)
+            ============================================ */}
+        <Route path="/admin/login" element={<AdminLoginPage />} />
 
-        {/* ✅ CHECKOUT ROUTES */}
-        <Route path="/checkout" element={<CheckoutPage />} />
+        {/* ============================================
+            MAIN APP ROUTES — may SiteLayout
+            ============================================ */}
+        <Route element={<SiteLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/catalog" element={<CatalogPage />} />
+          <Route path="/products/:id" element={<ProductPage />} />
+          <Route path="/cart" element={<CartPage />} />
 
-        {/* ✅ Success Page (after PayMongo payment) */}
-        <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
+          {/* ✅ CHECKOUT ROUTES */}
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
+          <Route path="/checkout/cancel" element={<CheckoutCancelPage />} />
+          <Route path="/verify-email" element={<VerifyEmailPage />} />
 
-        {/* ✅ Cancel Page */}
-        <Route path="/checkout/cancel" element={<CheckoutCancelPage />} />
+          <Route path="/confirmation" element={<ConfirmationPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/orders/:id" element={<OrderDetailsPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="/favorites" element={<FavoritesPage />} />
+        </Route>
 
-        {/* ✅ Verify Email Page (after order placed) */}
-        <Route path="/verify-email" element={<VerifyEmailPage />} />
+        {/* ============================================
+            ADMIN DASHBOARD (protected)
+            ============================================ */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboardPage />} />
+          <Route path="products" element={<AdminProductsPage />} />
+          <Route path="orders" element={<AdminOrdersPage />} />
+          <Route path="payments" element={<AdminPaymentsPage />} />
+          <Route path="paymongo" element={<AdminPayMongoPage />} />
+          <Route path="orgs" element={<AdminOrganizationsPage />} />
+          <Route path="console" element={<AdminConsolePage />} />
+          <Route path="profile" element={<AdminProfilePage />} />
+          <Route path="settings" element={<AdminSettingsPage />} />
+          <Route path="*" element={<Navigate to="/admin" replace />} />
+        </Route>
 
-        <Route path="/confirmation" element={<ConfirmationPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/orders/:id" element={<OrderDetailsPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/notifications" element={<NotificationsPage />} />
-        <Route path="/favorites" element={<FavoritesPage />} />
-      </Route>
-
-      {/* ============================================
-          ADMIN DASHBOARD (protected)
-          ============================================ */}
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<AdminDashboardPage />} />
-        <Route path="products" element={<AdminProductsPage />} />
-        <Route path="orders" element={<AdminOrdersPage />} />
-        <Route path="payments" element={<AdminPaymentsPage />} />
-        <Route path="paymongo" element={<AdminPayMongoPage />} />
-        <Route path="orgs" element={<AdminOrganizationsPage />} />
-        <Route path="console" element={<AdminConsolePage />} />
-        <Route path="profile" element={<AdminProfilePage />} />
-        <Route path="settings" element={<AdminSettingsPage />} />
-        <Route path="*" element={<Navigate to="/admin" replace />} />
-      </Route>
-
-      {/* ============================================
-          FALLBACK
-          ============================================ */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* ============================================
+            FALLBACK
+            ============================================ */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   );
 }

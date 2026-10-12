@@ -1,6 +1,6 @@
 // src/data/auth.ts
 
-import { supabase } from '../lib/supabaseClient';
+import { supabase, supabaseAdmin } from '../lib/supabaseClient';
 
 // ============================================
 // TYPES
@@ -58,18 +58,11 @@ export class StudentIdAlreadyRegisteredError extends Error {
 // ✅ REGISTER — with pre-check
 // ============================================
 
-/**
- * Creates a new Supabase user.
- * ✅ Pre-checks kung existing na yung email o student ID bago mag-signUp.
- * ✅ Supabase automatically sends a 6-digit OTP to the user's email.
- */
 export async function registerUser(payload: RegisterPayload) {
   const normalizedEmail = payload.email.trim().toLowerCase();
   const normalizedStudentId = payload.studentId.trim();
 
-  /* ============================================
-     ✅ PRE-CHECK #1: Existing email?
-     ============================================ */
+  /* ✅ PRE-CHECK #1: Existing email? */
   const { data: existingEmail, error: emailCheckError } = await supabase
     .from('profiles')
     .select('id, email')
@@ -77,7 +70,6 @@ export async function registerUser(payload: RegisterPayload) {
     .maybeSingle();
 
   if (emailCheckError) {
-    // Log pero hindi i-block yung registration kung may error sa check
     console.warn('[registerUser] Email pre-check failed:', emailCheckError);
   }
 
@@ -85,9 +77,7 @@ export async function registerUser(payload: RegisterPayload) {
     throw new EmailAlreadyRegisteredError();
   }
 
-  /* ============================================
-     ✅ PRE-CHECK #2: Existing student ID?
-     ============================================ */
+  /* ✅ PRE-CHECK #2: Existing student ID? */
   const { data: existingStudentId, error: studentIdCheckError } = await supabase
     .from('profiles')
     .select('id, student_id')
@@ -102,9 +92,7 @@ export async function registerUser(payload: RegisterPayload) {
     throw new StudentIdAlreadyRegisteredError();
   }
 
-  /* ============================================
-     ✅ PROCEED: signUp
-     ============================================ */
+  /* ✅ PROCEED: signUp */
   const { data, error } = await supabase.auth.signUp({
     email: normalizedEmail,
     password: payload.password,
@@ -118,7 +106,6 @@ export async function registerUser(payload: RegisterPayload) {
   });
 
   if (error) {
-    /* ✅ Handle specific Supabase errors */
     const message = error.message.toLowerCase();
 
     if (
@@ -178,7 +165,7 @@ export async function resendOtp(email: string) {
 }
 
 // ============================================
-// LOGIN
+// ✅ LOGIN — USER (regular)
 // ============================================
 
 export async function loginUser(
@@ -202,7 +189,31 @@ export async function loginUser(
 }
 
 // ============================================
-// LOGOUT
+// ✅ LOGIN — ADMIN (separate client)
+// ============================================
+
+export async function loginAdmin(
+  email: string,
+  password: string,
+): Promise<VerifyOtpResult> {
+  const { data, error } = await supabaseAdmin.auth.signInWithPassword({
+    email: email.trim().toLowerCase(),
+    password,
+  });
+
+  if (error) throw new Error(error.message);
+  if (!data.user || !data.session) {
+    throw new Error('Login failed. Please try again.');
+  }
+
+  return {
+    user: data.user,
+    session: data.session,
+  };
+}
+
+// ============================================
+// ✅ LOGOUT — USER
 // ============================================
 
 export async function logoutUser() {
@@ -211,13 +222,50 @@ export async function logoutUser() {
 }
 
 // ============================================
-// GET CURRENT SESSION
+// ✅ LOGOUT — ADMIN
+// ============================================
+
+export async function logoutAdmin() {
+  const { error } = await supabaseAdmin.auth.signOut();
+  if (error) throw new Error(error.message);
+}
+
+// ============================================
+// ✅ GET CURRENT SESSION — USER
 // ============================================
 
 export async function getCurrentSession() {
   const { data, error } = await supabase.auth.getSession();
   if (error) throw new Error(error.message);
   return data.session;
+}
+
+// ============================================
+// ✅ GET CURRENT SESSION — ADMIN
+// ============================================
+
+export async function getCurrentAdminSession() {
+  const { data, error } = await supabaseAdmin.auth.getSession();
+  if (error) throw new Error(error.message);
+  return data.session;
+}
+
+// ============================================
+// ✅ GET USER
+// ============================================
+
+export async function getCurrentUser() {
+  const { data: { user } } = await supabase.auth.getUser();
+  return user;
+}
+
+// ============================================
+// ✅ GET ADMIN
+// ============================================
+
+export async function getCurrentAdmin() {
+  const { data: { user } } = await supabaseAdmin.auth.getUser();
+  return user;
 }
 
 // ============================================

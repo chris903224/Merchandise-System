@@ -17,35 +17,41 @@ export default function NotificationBell({ className = '' }: NotificationBellPro
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { session } = useApp();
   const products = useProducts();
-  const {
-    notifications,
-    unreadCount,
-    markAsRead,
-    markAllAsRead,
-    deleteNotification,
-    loadNotifications,
-    subscribeToRealtime,
-    unsubscribeFromRealtime,
-  } = useNotificationStore();
+
+  // ✅ INDIVIDUAL SELECTORS — para hindi mag-r-render buong object
+  const notifications = useNotificationStore((s) => s.notifications);
+  const unreadCount = useNotificationStore((s) => s.unreadCount);
+  const isLoading = useNotificationStore((s) => s.isLoading);
+  const markAsRead = useNotificationStore((s) => s.markAsRead);
+  const markAllAsRead = useNotificationStore((s) => s.markAllAsRead);
+  const deleteNotification = useNotificationStore((s) => s.deleteNotification);
+  const loadNotifications = useNotificationStore((s) => s.loadNotifications);
+  const subscribeToRealtime = useNotificationStore((s) => s.subscribeToRealtime);
+  const unsubscribeFromRealtime = useNotificationStore((s) => s.unsubscribeFromRealtime);
 
   // ============================================
-  // LOAD NOTIFICATIONS ON MOUNT
-  // ============================================
-  useEffect(() => {
-    if (session?.id) {
-      void loadNotifications(session.id);
-    }
-  }, [session?.id, loadNotifications]);
-
-  // ============================================
-  // REAL-TIME SUBSCRIPTION via store
+  // LOAD NOTIFICATIONS ON MOUNT — FORCE REFRESH
   // ============================================
   useEffect(() => {
     if (!session?.id) return;
 
+    console.log('[NotificationBell] 🔔 Mounted — loading notifications');
+    
+    // ✅ FORCE REFRESH — bypass empty cache
+    void loadNotifications(session.id, true);
+  }, [session?.id, loadNotifications]);
+
+  // ============================================
+  // REAL-TIME SUBSCRIPTION
+  // ============================================
+  useEffect(() => {
+    if (!session?.id) return;
+
+    console.log('[NotificationBell] 📡 Subscribing to realtime');
     subscribeToRealtime(session.id);
 
     return () => {
+      console.log('[NotificationBell] 🧹 Unsubscribing');
       unsubscribeFromRealtime();
     };
   }, [session?.id, subscribeToRealtime, unsubscribeFromRealtime]);
@@ -80,7 +86,6 @@ export default function NotificationBell({ className = '' }: NotificationBellPro
     void markAsRead(id);
   };
 
-  // ✅ FIX: pass session.id to markAllAsRead
   const handleMarkAllAsRead = () => {
     if (!session?.id) return;
     void markAllAsRead(session.id);
@@ -104,9 +109,6 @@ export default function NotificationBell({ className = '' }: NotificationBellPro
     return `${diffDays}d ago`;
   };
 
-  // ============================================
-  // FIND PRODUCT FROM NOTIFICATION METADATA
-  // ============================================
   const getNotificationProduct = (notification: Notification) => {
     const productId = notification.metadata?.productId;
     if (!productId) return null;
@@ -134,6 +136,14 @@ export default function NotificationBell({ className = '' }: NotificationBellPro
     };
     return colors[type] || 'var(--color-text-muted)';
   };
+
+  // ✅ Debug log
+  console.log('[NotificationBell] Render:', {
+    notifications: notifications.length,
+    unread: unreadCount,
+    isLoading,
+    sessionId: session?.id,
+  });
 
   return (
     <div className={`notification-bell ${className}`} ref={dropdownRef}>
@@ -169,7 +179,9 @@ export default function NotificationBell({ className = '' }: NotificationBellPro
           {notifications.length === 0 ? (
             <div className="notification-bell__empty">
               <Bell className="react-icon" aria-hidden="true" />
-              <p>No notifications yet</p>
+              <p>
+                {isLoading ? 'Loading notifications...' : 'No notifications yet'}
+              </p>
             </div>
           ) : (
             <div className="notification-bell__list">

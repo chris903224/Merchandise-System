@@ -1,7 +1,7 @@
 // src/pages/admin/AdminLayout.tsx
 
 import { useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { AdminSidebar, AdminTopbar, AdminToastStack } from '../../components/admin';
 import { useAdminStore } from '../../store/adminStore';
 import { readAdminSession } from '../../services/admin';
@@ -9,25 +9,41 @@ import '../../styles/admin/admin.css';
 
 export default function AdminLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { session, setSession } = useAdminStore();
 
   useEffect(() => {
-    // ✅ Session guard — redirect sa /admin/login kung walang session
+    // ✅ I-check ang stored session
     const stored = readAdminSession();
 
-    if (!stored && !session) {
+    console.log('[AdminLayout] Session check:', {
+      hasStoreSession: !!session,
+      hasStoredSession: !!stored,
+      currentPath: location.pathname,
+    });
+
+    // ✅ Kung WALANG session sa store at WALANG stored session
+    // → redirect sa login
+    if (!session && !stored) {
+      console.log('[AdminLayout] ❌ No session — redirecting to /admin/login');
       navigate('/admin/login', { replace: true });
       return;
     }
 
-    // ✅ Hydrate store mula localStorage kung wala pa sa memory
+    // ✅ Kung may stored session pero walang store session
+    // → hydrate ang store
     if (stored && !session) {
+      console.log('[AdminLayout] 🔄 Hydrating session from storage');
       setSession(stored);
     }
-  }, [navigate, session, setSession]);
 
-  // Hindi pa naka-load yung session — render nothing
-  if (!session && !readAdminSession()) {
+    // ✅ Kung may session (store or stored) — allow access
+    console.log('[AdminLayout] ✅ Access granted');
+  }, [navigate, session, setSession, location.pathname]);
+
+  // ✅ Render nothing habang nag-w-wait ng session
+  const stored = readAdminSession();
+  if (!session && !stored) {
     return null;
   }
 

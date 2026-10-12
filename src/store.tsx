@@ -18,12 +18,12 @@ import {
   fetchAllOrders,
   updateOrderStatus as updateOrderStatusService,
 } from './services/orders';
-import { createNotification } from './services/notifications';
+import { createUserNotification } from './services/userNotifications';   // ✅ PALITAN
 import { invalidateCache } from './utils/cache';
 
 /* ============================================
    TYPES
-   ============================================ */
+============================================ */
 
 interface AppState {
   session: SessionUser | null;
@@ -61,7 +61,6 @@ const LOGIN_LOCK_KEY = 'sjcm_login_lock_until';
 function readLoginLock(): number | null {
   const stored = readStorage<number | null>(LOGIN_LOCK_KEY, null);
   if (stored && Date.now() < stored) return stored;
-  // expired na — linisin
   if (stored) localStorage.removeItem(LOGIN_LOCK_KEY);
   return null;
 }
@@ -75,7 +74,7 @@ function readClientState(): Pick<AppState, 'session' | 'cart'> {
 
 /* ============================================
    PROVIDER
-   ============================================ */
+============================================ */
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<SessionUser | null>(
@@ -92,7 +91,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [loginLockUntil, setLoginLockUntil] = useState<number | null>(
     () => readLoginLock()
   );
-  const [lockTick, setLockTick] = useState(0); // para mag-recompute ang isLoginLocked
+  const [lockTick, setLockTick] = useState(0);
 
   /* ✅ I-persist sa localStorage tuwing magbabago */
   useEffect(() => {
@@ -111,7 +110,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (Date.now() >= loginLockUntil) {
         setLoginLockUntil(null);
       } else {
-        setLockTick((n) => n + 1); // trigger re-render para updated ang isLoginLocked
+        setLockTick((n) => n + 1);
       }
     };
 
@@ -131,7 +130,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const isLoginLocked =
     loginLockUntil !== null && Date.now() < loginLockUntil;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  void lockTick; // keeps dependency happy
+  void lockTick;
 
   /* ============================================
      INITIAL LOAD
@@ -215,7 +214,36 @@ export function AppProvider({ children }: { children: ReactNode }) {
       )
       .subscribe();
 
-    /* ---------- NOTIFICATIONS ---------- */
+    /* ---------- USER NOTIFICATIONS (bagong channel) ---------- */
+    const userNotificationsChannel = supabase
+      .channel('user-notifications-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'user_notifications' },
+        (payload) => {
+          const userId =
+            payload.eventType === 'DELETE'
+              ? (payload.old as any)?.user_id
+              : (payload.new as any)?.user_id;
+
+          if (userId) {
+            invalidateCache(`user_notifications_${userId}`);
+          }
+
+          window.dispatchEvent(
+            new CustomEvent('user-notifications-updated', {
+              detail: {
+                userId,
+                eventType: payload.eventType,
+                notification: payload.new,
+              },
+            })
+          );
+        }
+      )
+      .subscribe();
+
+    /* ---------- LEGACY NOTIFICATIONS (favorites) ---------- */
     const notificationsChannel = supabase
       .channel('notifications-realtime')
       .on(
@@ -247,6 +275,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return () => {
       supabase.removeChannel(productsChannel);
       supabase.removeChannel(ordersChannel);
+      supabase.removeChannel(userNotificationsChannel);
       supabase.removeChannel(notificationsChannel);
     };
   }, []);
@@ -407,18 +436,24 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
         const statusInfo = statusMessages[orderStatus];
         if (statusInfo) {
-          await createNotification(order.userId, {
-            type: statusInfo.type,
-            title: statusInfo.title,
-            message: statusInfo.message,
-            link: `/orders/${orderId}`,
-            actionLabel: 'View Order',
-            metadata: {
-              orderId,
-              status: orderStatus,
-              productId: order.items[0]?.id,
-            },
-          });
+          // ✅ GAMITIN ang createUserNotification para sa user_notifications
+          try {
+            await createUserNotification(order.userId, {
+              type: statusInfo.type,
+              title: statusInfo.title,
+              message: statusInfo.message,
+              link: `/orders/${orderId}`,
+              actionLabel: 'View Order',
+              metadata: {
+                orderId,
+                status: orderStatus,
+                productId: order.items[0]?.id,
+              },
+            });
+            console.log('[Store] ✅ Status notification created:', orderStatus);
+          } catch (err) {
+            console.error('[Store] ❌ Notification failed:', err);
+          }
         }
       }
     },
@@ -442,14 +477,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     await placeOrderService(order);
 
-    await createNotification(order.userId, {
-      type: 'order',
-      title: 'Order Confirmed ✅',
-      message: `Your order #${order.id} has been successfully placed! Total: ₱${order.totalAmount.toFixed(2)}.`,
-      link: `/orders/${order.id}`,
-      actionLabel: 'View Order',
-      metadata: { orderId: order.id, totalAmount: order.totalAmount },
-    });
+    // ✅ GAMITIN ang createUserNotification para sa user_notifications
+    try {
+      await createUserNotification(order.userId, {
+        type: 'order',
+        title: 'Order Confirmed ✅',
+        message: `Your order #${order.id} has been successfully placed! Total: ₱${order.totalAmount.toFixed(2)}.`,
+        link: `/orders/${order.id}`,
+        actionLabel: 'View Order',
+        metadata: { orderId: order.id, totalAmount: order.totalAmount },
+      });
+      console.log('[Store] ✅ Order notification created:', order.id);
+    } catch (err) {
+      console.error('[Store] ❌ Notification failed:', err);
+    }
   }, []);
 
   /* ============================================
@@ -482,7 +523,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       updateProfilePicture,
       refreshProducts: refreshProductsData,
 
-      /* ✅ Global login lock */
       loginLockUntil,
       isLoginLocked,
       lockLogin,
@@ -506,7 +546,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       updateProfilePicture,
       refreshProductsData,
 
-      /* ✅ Dependencies ng login lock */
       loginLockUntil,
       isLoginLocked,
       lockLogin,
@@ -519,7 +558,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
 /* ============================================
    HOOKS
-   ============================================ */
+============================================ */
 
 export function useApp(): AppContextValue {
   const context = useContext(AppContext);
@@ -539,7 +578,7 @@ export function useOrders(): Order[] {
 
 /* ============================================
    MAPPERS
-   ============================================ */
+============================================ */
 
 function mapProductRow(row: any): Product {
   return {

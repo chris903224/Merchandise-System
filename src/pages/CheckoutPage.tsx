@@ -27,7 +27,6 @@ import {
 import { useApp } from '../store';
 import { useToast } from '../toast';
 import { formatPrice, isStaffRole, sumCartItems } from '../services';
-import { placeOrder as placeOrderService } from '../services/orders';
 import { createPayMongoCheckout } from '../services/paymongo';
 import { BUILDINGS, BUILDING_NAMES } from '../data/constants';
 import type { Order } from '../types';
@@ -37,7 +36,9 @@ type PaymentMethod = 'gcash_paymongo' | 'gcash_manual' | 'cod' | 'cop';
 export default function CheckoutPage() {
   const navigate = useNavigate();
   const toast = useToast();
-  const { session, cart, setCart } = useApp();
+
+  // ✅ GAMITIN ang `placeOrder` mula sa store (may notification trigger)
+  const { session, cart, setCart, placeOrder } = useApp();
 
   const fullName = session?.name || '';
   const studentId = session?.idNumber || '';
@@ -131,6 +132,13 @@ export default function CheckoutPage() {
     setIsRedirectModalOpen(true);
   };
 
+  /* ============================================
+     ✅ PROCEED TO PAYMONGO — FIXED
+     - Step 1: Save order sa DB (may notification)
+     - Step 2: Clear cart BEFORE redirect
+     - Step 3: Create PayMongo session
+     - Step 4: Redirect to PayMongo
+  ============================================ */
   const proceedToPayMongo = async () => {
     if (!session) {
       toast('Please sign in to continue.', 'warning');
@@ -156,13 +164,16 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
     setIsRedirectModalOpen(false);
 
+    // ✅ Backup ang cart para sa cancel page
+    const cartBackup = [...cart];
+
     try {
       const orderId = `SJCM-${Date.now()}`;
-      const sessionId = session.id;
 
+      /* ✅ STEP 1: SAVE ORDER SA SUPABASE (via store.placeOrder → may notification) */
       const newOrder: Order = {
         id: orderId,
-        userId: sessionId,
+        userId: session.id,
         customerName: fullName,
         studentId: studentId,
         email: email,
@@ -185,13 +196,22 @@ export default function CheckoutPage() {
         createdAt: new Date().toISOString(),
       };
 
-      /* ✅ Save to sessionStorage — idadagdag sa DB pagkatapos ng payment */
-      sessionStorage.setItem('pendingOrder', JSON.stringify(newOrder));
-      sessionStorage.setItem('pendingCart', JSON.stringify(cart));
-      sessionStorage.setItem('pendingOrderId', orderId);
+      console.log('[Checkout] Placing order (with notification):', orderId);
 
-      console.log('[Checkout] Pending order saved:', orderId);
+      // ✅ GAMITIN ang `placeOrder` mula sa store — nag-trigger ng notification
+      await placeOrder(newOrder);
 
+      console.log('[Checkout] ✅ Order placed with notification:', orderId);
+
+      /* ✅ STEP 2: I-CLEAR ANG CART DITO — BAGO mag-redirect */
+      setCart([]);
+      console.log('[Checkout] ✅ Cart cleared BEFORE redirect');
+
+      /* ✅ Save cart backup para sa cancel page */
+      sessionStorage.setItem('cartBackup', JSON.stringify(cartBackup));
+      sessionStorage.setItem('backupOrderId', orderId);
+
+      /* ✅ STEP 3: Create PayMongo session */
       const timeoutPromise = new Promise<string>((_, reject) =>
         setTimeout(() => reject(new Error('Request timeout. Please try again.')), 15000)
       );
@@ -210,13 +230,25 @@ export default function CheckoutPage() {
 
       const checkoutUrl = await Promise.race([paymongoPromise, timeoutPromise]);
 
+      /* ✅ STEP 4: Redirect to PayMongo */
       console.log('[Checkout] Redirecting to:', checkoutUrl);
       window.location.href = checkoutUrl;
     } catch (error: any) {
       console.error('[Checkout] PayMongo error:', error);
-      sessionStorage.removeItem('pendingOrder');
-      sessionStorage.removeItem('pendingCart');
-      sessionStorage.removeItem('pendingOrderId');
+
+      /* ✅ Kung mag-fail, i-restore ang cart */
+      const backup = sessionStorage.getItem('cartBackup');
+      if (backup) {
+        try {
+          setCart(JSON.parse(backup));
+          console.log('[Checkout] ✅ Cart restored after failure');
+        } catch (restoreErr) {
+          console.error('[Checkout] Failed to restore cart:', restoreErr);
+        }
+        sessionStorage.removeItem('cartBackup');
+        sessionStorage.removeItem('backupOrderId');
+      }
+
       toast(error?.message || 'Payment gateway error. Please try again.', 'danger');
       setIsSubmitting(false);
       setIsRedirectModalOpen(false);
@@ -326,15 +358,14 @@ export default function CheckoutPage() {
         createdAt: new Date().toISOString(),
       };
 
-      await placeOrderService(newOrder);
+      // ✅ GAMITIN ang `placeOrder` mula sa store — nag-trigger ng notification
+      await placeOrder(newOrder);
 
-      /* ✅ Save order ID sa sessionStorage for verification tracking */
       sessionStorage.setItem('lastOrderId', orderId);
 
       setCart([]);
       toast('Order placed successfully! Check your email to verify.', 'success');
 
-      /* ✅ NEW: Redirect sa verification page imbes na dashboard */
       navigate(
         `/verify-email?order=${encodeURIComponent(orderId)}&email=${encodeURIComponent(email)}`
       );
@@ -1077,5 +1108,5 @@ export default function CheckoutPage() {
         </div>
       )}
     </main>
-  );  
+  );
 }

@@ -1,16 +1,21 @@
 // src/services/orders.ts
 
-import { supabase } from '../lib/supabaseClient';
+import { supabase, supabaseAdmin } from '../lib/supabaseClient';
 import type { Order, OrderItem } from '../types';
 import { getCachedData, invalidateCache } from '../utils/cache';
 import { triggerOrderStatusNotifications } from './orderNotifications';
 
-/* ============================================
-   PLACE ORDER
-   ============================================ */
+type SupabaseClient = typeof supabase;
 
-export async function placeOrder(order: Order): Promise<void> {
-  const { error } = await supabase.from('orders').insert([
+/* ============================================
+   ✅ PLACE ORDER — UPSERT
+============================================ */
+
+export async function placeOrder(
+  order: Order,
+  client: SupabaseClient = supabase
+): Promise<void> {
+  const { error } = await client.from('orders').upsert(
     {
       id: order.id,
       user_id: order.userId,
@@ -28,14 +33,14 @@ export async function placeOrder(order: Order): Promise<void> {
       claim_date: order.claimDate,
       created_at: order.createdAt,
     },
-  ]);
+    { onConflict: 'id' }
+  );
 
   if (error) {
-    console.error('Error placing order:', error);
+    console.error('[Orders] placeOrder error:', error);
     throw new Error(error.message);
   }
 
-  // ✅ Invalidate caches
   invalidateCache('orders');
   invalidateCache('orders_all');
   invalidateCache('products');
@@ -43,21 +48,51 @@ export async function placeOrder(order: Order): Promise<void> {
 }
 
 /* ============================================
-   FETCH — user-specific
-   ============================================ */
+   ✅ FETCH ORDER BY ID
+============================================ */
 
-export async function fetchOrders(userId: string): Promise<Order[]> {
+export async function fetchOrderById(
+  orderId: string,
+  client: SupabaseClient = supabase
+): Promise<Order | null> {
+  const { data, error } = await client
+    .from('orders')
+    .select('*')
+    .eq('id', orderId)
+    .maybeSingle();
+
+  if (error) {
+    console.error('[Orders] fetchOrderById error:', error);
+    return null;
+  }
+
+  return data ? mapOrderRow(data) : null;
+}
+
+/* ============================================
+   FETCH — user-specific
+============================================ */
+
+export async function fetchOrders(
+  userId: string,
+  client: SupabaseClient = supabase
+): Promise<Order[]> {
+  if (!userId) {
+    console.warn('[Orders] fetchOrders called with empty userId');
+    return [];
+  }
+
   return getCachedData(
     `orders_${userId}`,
     async () => {
-      const { data, error } = await supabase
+      const { data, error } = await client
         .from('orders')
         .select('*')
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching orders:', error);
+        console.error('[Orders] fetchOrders error:', error);
         return [];
       }
 
@@ -69,19 +104,21 @@ export async function fetchOrders(userId: string): Promise<Order[]> {
 
 /* ============================================
    FETCH — all orders (admin)
-   ============================================ */
+============================================ */
 
-export async function fetchAllOrders(): Promise<Order[]> {
+export async function fetchAllOrders(
+  client: SupabaseClient = supabase
+): Promise<Order[]> {
   return getCachedData(
     'orders_all',
     async () => {
-      const { data, error } = await supabase
+      const { data, error } = await client
         .from('orders')
         .select('*')
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching all orders:', error);
+        console.error('[Orders] fetchAllOrders error:', error);
         return [];
       }
 
@@ -92,22 +129,22 @@ export async function fetchAllOrders(): Promise<Order[]> {
 }
 
 /* ============================================
-   ✅ UPDATE ORDER STATUS — WITH PRODUCT INFO FOR NOTIFICATIONS
-   ============================================ */
+   ✅ UPDATE ORDER STATUS — optional client
+============================================ */
 
 export async function updateOrderStatus(
   orderId: string,
-  status: string
+  status: string,
+  client: SupabaseClient = supabase
 ): Promise<void> {
-  // ✅ Fetch full order
-  const { data: existing, error: fetchError } = await supabase
+  const { data: existing, error: fetchError } = await client
     .from('orders')
     .select('*')
     .eq('id', orderId)
     .maybeSingle();
 
   if (fetchError) {
-    console.error('Error fetching order:', fetchError);
+    console.error('[Orders] updateOrderStatus fetch error:', fetchError);
     throw new Error(fetchError.message);
   }
 
@@ -117,24 +154,21 @@ export async function updateOrderStatus(
 
   const previousStatus = existing.order_status;
 
-  // ✅ Skip kung walang change
   if (previousStatus === status) {
     console.log('[Orders] Status unchanged, skipping');
     return;
   }
 
-  // ✅ Update order status
-  const { error } = await supabase
+  const { error } = await client
     .from('orders')
     .update({ order_status: status })
     .eq('id', orderId);
 
   if (error) {
-    console.error('Error updating order status:', error);
+    console.error('[Orders] updateOrderStatus error:', error);
     throw new Error(error.message);
   }
 
-  // ✅ Invalidate caches
   invalidateCache('orders_all');
   invalidateCache('orders');
 
@@ -142,17 +176,11 @@ export async function updateOrderStatus(
     invalidateCache(`orders_${existing.user_id}`);
   }
 
-  /* ============================================
-     ✅ EXTRACT PRODUCT INFO FOR NOTIFICATION IMAGES
-     ============================================ */
   const items = (existing.items ?? []) as OrderItem[];
   const firstItem = items[0];
   const productId = firstItem?.id;
   const productName = firstItem?.name;
 
-  console.log('[Orders] Triggering notification with productId:', productId);
-
-  // ✅ Trigger notifications with productId (para sa product image)
   try {
     await triggerOrderStatusNotifications({
       orderId: existing.id,
@@ -168,20 +196,19 @@ export async function updateOrderStatus(
     });
   } catch (notifError) {
     console.error('[Orders] Notification trigger failed:', notifError);
-    // Don't throw — hindi dapat mag-block sa order update
   }
 }
 
 /* ============================================
-   ✅ CANCEL ORDER — with stock restoration via trigger
-   ============================================ */
+   ✅ CANCEL ORDER
+============================================ */
 
 export async function cancelOrder(
   orderId: string,
-  reason: string = 'Cancelled by user'
+  reason: string = 'Cancelled by user',
+  client: SupabaseClient = supabase
 ): Promise<void> {
-  // ✅ Fetch current order
-  const { data: order, error: fetchError } = await supabase
+  const { data: order, error: fetchError } = await client
     .from('orders')
     .select('*')
     .eq('id', orderId)
@@ -191,16 +218,13 @@ export async function cancelOrder(
     throw new Error('Order not found');
   }
 
-  // ✅ Check kung Pending pa lang
   if (order.order_status !== 'Pending') {
     throw new Error(
       'Cannot cancel — order is already being processed. Please contact the supply office.'
     );
   }
 
-  // ✅ Update status to Cancelled
-  // ✅ Supabase trigger `on_order_cancelled` will auto-restore stock
-  const { error: updateError } = await supabase
+  const { error: updateError } = await client
     .from('orders')
     .update({
       order_status: 'Cancelled',
@@ -213,23 +237,16 @@ export async function cancelOrder(
     throw new Error(updateError.message);
   }
 
-  // ✅ Invalidate caches (products too kasi nag-restore ang stock)
   invalidateCache('orders_all');
   invalidateCache('orders');
   invalidateCache(`orders_${order.user_id}`);
   invalidateCache('products');
 
-  /* ============================================
-     ✅ EXTRACT PRODUCT INFO FOR NOTIFICATION
-     ============================================ */
   const items = (order.items ?? []) as OrderItem[];
   const firstItem = items[0];
   const productId = firstItem?.id;
   const productName = firstItem?.name;
 
-  console.log('[Order] Cancel notification with productId:', productId);
-
-  // ✅ Send notification (fire-and-forget)
   try {
     await triggerOrderStatusNotifications({
       orderId: order.id,
@@ -250,25 +267,26 @@ export async function cancelOrder(
 
 /* ============================================
    UPDATE PAYMENT STATUS
-   ============================================ */
+============================================ */
 
 export async function updatePaymentStatus(
   orderId: string,
-  paymentStatus: string
+  paymentStatus: string,
+  client: SupabaseClient = supabase
 ): Promise<void> {
-  const { data: existing } = await supabase
+  const { data: existing } = await client
     .from('orders')
     .select('user_id')
     .eq('id', orderId)
     .maybeSingle();
 
-  const { error } = await supabase
+  const { error } = await client
     .from('orders')
     .update({ payment_status: paymentStatus })
     .eq('id', orderId);
 
   if (error) {
-    console.error('Error updating payment status:', error);
+    console.error('[Orders] updatePaymentStatus error:', error);
     throw new Error(error.message);
   }
 
@@ -282,28 +300,27 @@ export async function updatePaymentStatus(
 
 /* ============================================
    REFRESH — bypass cache
-   ============================================ */
+============================================ */
 
-export async function refreshOrders(userId?: string): Promise<Order[]> {
+export async function refreshOrders(
+  userId?: string,
+  client: SupabaseClient = supabase
+): Promise<Order[]> {
   if (userId) {
     invalidateCache(`orders_${userId}`);
-    return fetchOrders(userId);
+    return fetchOrders(userId, client);
   } else {
     invalidateCache('orders_all');
-    return fetchAllOrders();
+    return fetchAllOrders(client);
   }
 }
 
 /* ============================================
-   ✅ DATE/TIME FORMATTERS
-   ============================================ */
+   DATE/TIME FORMATTERS
+============================================ */
 
-/**
- * Format date — e.g. "Oct 2, 2026"
- */
 export function formatDate(iso: string): string {
   if (!iso) return '—';
-
   try {
     const date = new Date(iso);
     return date.toLocaleDateString('en-US', {
@@ -316,27 +333,20 @@ export function formatDate(iso: string): string {
   }
 }
 
-/**
- * Format date + time — e.g. "Oct 2, 2026 · 8:24 AM"
- */
 export function formatDateTime(iso: string): string {
   if (!iso) return '—';
-
   try {
     const date = new Date(iso);
-
     const datePart = date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
     });
-
     const timePart = date.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',
       hour12: true,
     });
-
     return `${datePart} · ${timePart}`;
   } catch {
     return iso;
@@ -345,7 +355,7 @@ export function formatDateTime(iso: string): string {
 
 /* ============================================
    MAPPER
-   ============================================ */
+============================================ */
 
 function mapOrderRow(row: any): Order {
   return {
@@ -366,3 +376,6 @@ function mapOrderRow(row: any): Order {
     createdAt: row.created_at,
   };
 }
+
+/* ✅ Export supabaseAdmin para sa admin services */
+export { supabaseAdmin };

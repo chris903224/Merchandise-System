@@ -7,12 +7,17 @@ import {
   refreshOrders,
 } from '../orders';
 import { fetchProducts } from '../products';
+import { triggerOrderStatusNotifications } from '../orderNotifications';
+
+// ✅ PALITAN: supabase → supabaseAdmin
+import { supabaseAdmin } from '../../lib/supabaseClient';
+
 import type { Order, OrderItem, Product } from '../../types';
 import type { AdminOrder, AdminOrderStatus } from '../../store/adminStore';
 
 /* ============================================
    HELPERS
-   ============================================ */
+============================================ */
 
 export const ORDER_FLOW: AdminOrderStatus[] = [
   'Pending',
@@ -84,12 +89,12 @@ function mapOrderToAdmin(o: Order, products: Product[]): AdminOrder {
 }
 
 /* ============================================
-   READ
-   ============================================ */
+   READ — lahat gumagamit ng supabaseAdmin
+============================================ */
 
 export async function getOrders(filter: string = 'all'): Promise<AdminOrder[]> {
   const [orders, products] = await Promise.all([
-    fetchAllOrders(),
+    fetchAllOrders(supabaseAdmin),   // ✅ ADMIN CLIENT
     fetchProducts(),
   ]);
   const mapped = orders.map((o) => mapOrderToAdmin(o, products));
@@ -99,7 +104,7 @@ export async function getOrders(filter: string = 'all'): Promise<AdminOrder[]> {
 
 export async function getAllOrders(): Promise<AdminOrder[]> {
   const [orders, products] = await Promise.all([
-    fetchAllOrders(),
+    fetchAllOrders(supabaseAdmin),   // ✅ ADMIN CLIENT
     fetchProducts(),
   ]);
   return orders.map((o) => mapOrderToAdmin(o, products));
@@ -107,7 +112,7 @@ export async function getAllOrders(): Promise<AdminOrder[]> {
 
 export async function getOrderById(id: string): Promise<AdminOrder | null> {
   const [orders, products] = await Promise.all([
-    fetchAllOrders(),
+    fetchAllOrders(supabaseAdmin),   // ✅ ADMIN CLIENT
     fetchProducts(),
   ]);
   const found = orders.find((o) => o.id === id);
@@ -115,7 +120,7 @@ export async function getOrderById(id: string): Promise<AdminOrder | null> {
 }
 
 export async function getOrderCounts() {
-  const orders = await fetchAllOrders();
+  const orders = await fetchAllOrders(supabaseAdmin);   // ✅ ADMIN CLIENT
   return {
     pending:    orders.filter((o) => o.orderStatus === 'Pending').length,
     processing: orders.filter((o) => o.orderStatus === 'Processing').length,
@@ -126,8 +131,8 @@ export async function getOrderCounts() {
 }
 
 /* ============================================
-   ✅ SALES CHART DATA — last 7 days
-   ============================================ */
+   ✅ SALES CHART DATA
+============================================ */
 
 export interface SalesChartPoint {
   label: string;
@@ -137,7 +142,7 @@ export interface SalesChartPoint {
 export async function getSalesChartData(
   days: number = 7
 ): Promise<SalesChartPoint[]> {
-  const orders = await fetchAllOrders();
+  const orders = await fetchAllOrders(supabaseAdmin);   // ✅ ADMIN CLIENT
   const now = new Date();
   const points: SalesChartPoint[] = [];
 
@@ -172,7 +177,7 @@ export async function getSalesChartData(
 
 /* ============================================
    ✅ TOP SELLING PRODUCTS
-   ============================================ */
+============================================ */
 
 export interface TopSellingProduct {
   id: string;
@@ -187,7 +192,7 @@ export async function getTopSellingProducts(
   limit: number = 4
 ): Promise<TopSellingProduct[]> {
   const [orders, products] = await Promise.all([
-    fetchAllOrders(),
+    fetchAllOrders(supabaseAdmin),   // ✅ ADMIN CLIENT
     fetchProducts(),
   ]);
 
@@ -225,7 +230,7 @@ export async function getTopSellingProducts(
 
 /* ============================================
    HELPERS
-   ============================================ */
+============================================ */
 
 export function orderTotal(order: AdminOrder): number {
   return order.items.reduce((sum, item) => sum + item.qty * item.price, 0);
@@ -236,11 +241,59 @@ export function orderItemCount(order: AdminOrder): number {
 }
 
 /* ============================================
-   WRITE
-   ============================================ */
+   ✅ NOTIFICATION HELPER — supabaseAdmin
+============================================ */
+
+async function triggerStatusNotification(
+  orderId: string,
+  previousStatus: string,
+  newStatus: string
+): Promise<void> {
+  try {
+    // ✅ PALITAN: supabase → supabaseAdmin
+    const { data: order, error } = await supabaseAdmin
+      .from('orders')
+      .select('*')
+      .eq('id', orderId)
+      .maybeSingle();
+
+    if (error || !order) {
+      console.warn('[AdminOrders] Order not found for notification:', orderId);
+      return;
+    }
+
+    const items = order.items ?? [];
+    const firstItem = items[0];
+
+    await triggerOrderStatusNotifications({
+      orderId: order.id,
+      orderCode: order.id,
+      userId: order.user_id,
+      email: order.email || '',
+      customerName: order.customer_name,
+      previousStatus: previousStatus as any,
+      newStatus: newStatus as any,
+      claimLocation: order.claim_location || undefined,
+      productId: firstItem?.id,
+      productName: firstItem?.name,
+    });
+
+    console.log(
+      `[AdminOrders] ✅ Notification triggered: ${previousStatus} → ${newStatus}`
+    );
+  } catch (err) {
+    console.error('[AdminOrders] ❌ Notification failed:', err);
+    // Don't throw — hindi dapat mag-block sa order update
+  }
+}
+
+/* ============================================
+   ✅ WRITE — supabaseAdmin
+============================================ */
 
 export async function advanceOrder(id: string): Promise<void> {
-  const orders = await fetchAllOrders();
+  // ✅ ADMIN CLIENT
+  const orders = await fetchAllOrders(supabaseAdmin);
   const order = orders.find((o) => o.id === id);
   if (!order) throw new Error(`Order ${id} not found.`);
 
@@ -248,14 +301,43 @@ export async function advanceOrder(id: string): Promise<void> {
   if (idx === -1 || idx >= ORDER_FLOW.length - 1) return;
 
   const next = ORDER_FLOW[idx + 1];
-  await updateOrderStatus(id, next);
+  const previousStatus = order.orderStatus;
+
+  // ✅ Update sa DB gamit ang ADMIN client
+  await updateOrderStatus(id, next, supabaseAdmin);
+
+  // ✅ Trigger notification + email
+  await triggerStatusNotification(id, previousStatus, next);
 }
 
 export async function setOrderStatus(
   id: string,
   status: AdminOrderStatus
 ): Promise<void> {
-  await updateOrderStatus(id, status);
+  // ✅ ADMIN CLIENT — kunin ang current status
+  const orders = await fetchAllOrders(supabaseAdmin);
+  const order = orders.find((o) => o.id === id);
+
+  if (!order) {
+    console.error('[AdminOrders] Order not found:', id);
+    throw new Error(`Order ${id} not found.`);
+  }
+
+  const previousStatus = order.orderStatus;
+
+  // ✅ Skip kung walang change
+  if (previousStatus === status) {
+    console.log('[AdminOrders] Status unchanged, skipping');
+    return;
+  }
+
+  // ✅ Update sa DB gamit ang ADMIN client
+  await updateOrderStatus(id, status, supabaseAdmin);
+
+  console.log(`[AdminOrders] Status updated: ${previousStatus} → ${status}`);
+
+  // ✅ Trigger notification + email
+  await triggerStatusNotification(id, previousStatus, status);
 }
 
 export async function cancelOrder(id: string): Promise<void> {
@@ -266,16 +348,17 @@ export async function updateOrderPaymentStatus(
   id: string,
   paymentStatus: string
 ): Promise<void> {
-  await updatePaymentStatus(id, paymentStatus);
+  // ✅ ADMIN CLIENT
+  await updatePaymentStatus(id, paymentStatus, supabaseAdmin);
 }
 
 /* ============================================
    FORCE REFRESH
-   ============================================ */
+============================================ */
 
 export async function forceRefreshOrders(): Promise<AdminOrder[]> {
   const [orders, products] = await Promise.all([
-    refreshOrders(),
+    refreshOrders(undefined, supabaseAdmin),   // ✅ ADMIN CLIENT
     fetchProducts(),
   ]);
   return orders.map((o) => mapOrderToAdmin(o, products));
