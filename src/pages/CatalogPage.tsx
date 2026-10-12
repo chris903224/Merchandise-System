@@ -20,11 +20,11 @@ import {
 import { useProducts, useApp } from '../store';
 import { useToast } from '../toast';
 import { useNotificationStore } from '../store/notificationStore';
+import { useFavoritesStore } from '../store/favoritesStore'; // ✅ BAGO
 import ProductImage from '../components/ProductImage';
 import MobileFilterDrawer from '../components/catalog/MobileFilterDrawer';
 import MobileProductCard from '../components/catalog/MobileProductCard';
 import { formatPrice, getStockBadge } from '../services';
-import { toggleFavorite, fetchFavorites } from '../services/favorites';
 import { createNotification } from '../services/notifications';
 import type { Product } from '../types';
 
@@ -48,15 +48,9 @@ export default function CatalogPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const resultsRef = useRef<HTMLDivElement>(null);
 
-  /* ============================================
-     ✅ SUPPORT BOTH ?q= AND ?search=
-  ============================================ */
   const getUrlSearchTerm = () =>
     searchParams.get('search') ?? searchParams.get('q') ?? '';
 
-  /* ============================================
-     STATE — naka-sync sa URL
-  ============================================ */
   const [query, setQuery] = useState(getUrlSearchTerm());
   const [category, setCategory] = useState(
     searchParams.get('category') ?? 'ALL',
@@ -66,37 +60,31 @@ export default function CatalogPage() {
   const [currentPage, setCurrentPage] = useState(
     Number(searchParams.get('page')) || 1,
   );
-
-  /* ✅ Mobile filter drawer state */
   const [showFilterDrawer, setShowFilterDrawer] = useState(false);
 
-  /* ✅ Favorite tracking (for mobile cards) */
-  const [favIds, setFavIds] = useState<Set<string>>(new Set());
   const { session } = useApp();
   const toast = useToast();
 
+  /* ✅ Global favorites store */
+  const favIds = useFavoritesStore((s) => s.favIds);
+  const loadFavorites = useFavoritesStore((s) => s.loadFavorites);
+  const toggleFavorite = useFavoritesStore((s) => s.toggleFavorite);
+
+  // ✅ I-load ang favorites pagka-mount
   useEffect(() => {
-    if (!session?.id) return;
-    let cancelled = false;
-    const load = async () => {
-      try {
-        const favs = await fetchFavorites(session.id);
-        if (!cancelled) {
-          setFavIds(new Set(favs.map((f) => f.product_id)));
-        }
-      } catch (err) {
-        console.warn('[Catalog] Failed to load favorites:', err);
-      }
-    };
-    void load();
-    return () => {
-      cancelled = true;
-    };
+    if (session?.id) {
+      void loadFavorites(session.id);
+    }
+  }, [session?.id, loadFavorites]);
+
+  // ✅ I-clear ang favorites kapag nag-logout
+  useEffect(() => {
+    if (!session?.id) {
+      useFavoritesStore.getState().clearFavorites();
+    }
   }, [session?.id]);
 
-  /* ============================================
-     SYNC MULA URL
-  ============================================ */
+  /* SYNC MULA URL */
   useEffect(() => {
     const urlQuery = getUrlSearchTerm();
     setQuery(urlQuery);
@@ -109,9 +97,7 @@ export default function CatalogPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  /* ============================================
-     HANDLERS
-  ============================================ */
+  /* HANDLERS */
   const setSearchParam = (key: string, value: string | null) => {
     const next = new URLSearchParams(searchParams);
 
@@ -163,36 +149,20 @@ export default function CatalogPage() {
     navigate(`/products/${encodeURIComponent(product.id)}`);
   };
 
-  /* ✅ Mobile favorite toggle */
+  /* ✅ Mobile favorite toggle — gamitin ang global store */
   const handleMobileFav = async (product: Product) => {
     if (!session?.id) {
       toast('Please sign in to add favorites.', 'warning');
       return;
     }
-    const wasFav = favIds.has(product.id);
-
-    setFavIds((prev) => {
-      const next = new Set(prev);
-      if (wasFav) next.delete(product.id);
-      else next.add(product.id);
-      return next;
-    });
-
     try {
-      await toggleFavorite(session.id, product.id, wasFav);
-    } catch (err) {
-      setFavIds((prev) => {
-        const next = new Set(prev);
-        if (wasFav) next.add(product.id);
-        else next.delete(product.id);
-        return next;
-      });
+      await toggleFavorite(session.id, product.id);
+    } catch {
+      toast('Failed to update favorites.', 'danger');
     }
   };
 
-  /* ============================================
-     CATEGORIES LIST
-  ============================================ */
+  /* CATEGORIES LIST */
   const categoryList = useMemo(() => {
     const map = new Map<string, number>();
     products.forEach((p) => {
@@ -210,9 +180,7 @@ export default function CatalogPage() {
     ];
   }, [products]);
 
-  /* ============================================
-     FILTERED + SORTED
-  ============================================ */
+  /* FILTERED + SORTED */
   const filtered = useMemo(() => {
     const normalizedQuery = query.toLowerCase().trim();
     const result = products.filter((product) => {
@@ -246,9 +214,7 @@ export default function CatalogPage() {
     return result;
   }, [products, query, category, stock, sort]);
 
-  /* ============================================
-     PAGINATION
-  ============================================ */
+  /* PAGINATION */
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
   const safePage = Math.min(Math.max(1, currentPage), totalPages);
 
@@ -275,9 +241,7 @@ export default function CatalogPage() {
   return (
     <main className="catalog-page">
       <div className="catalog-container">
-        {/* ============================================================
-            ✅ MOBILE TOOLBAR
-        ============================================================ */}
+        {/* MOBILE TOOLBAR */}
         <div className="mobile-only mobile-catalog-toolbar">
           <div className="mobile-catalog-search">
             <Search className="react-icon" aria-hidden="true" />
@@ -309,9 +273,7 @@ export default function CatalogPage() {
           </button>
         </div>
 
-        {/* ============================================================
-            ✅ MOBILE CATEGORY CHIPS
-        ============================================================ */}
+        {/* MOBILE CATEGORY CHIPS */}
         <div className="mobile-only mobile-catalog-chips">
           {categoryList.map((cat) => (
             <button
@@ -327,9 +289,7 @@ export default function CatalogPage() {
           ))}
         </div>
 
-        {/* ============================================================
-            ✅ MOBILE RESULTS COUNT
-        ============================================================ */}
+        {/* MOBILE RESULTS COUNT */}
         <div className="mobile-only mobile-catalog-meta">
           {filtered.length === 0
             ? 'No results'
@@ -342,9 +302,7 @@ export default function CatalogPage() {
             )}
         </div>
 
-        {/* ============================================================
-            ✅ MOBILE PRODUCT GRID
-        ============================================================ */}
+        {/* MOBILE PRODUCT GRID */}
         {filtered.length > 0 && (
           <div className="mobile-only mobile-catalog-grid">
             {paginatedItems.map((product) => (
@@ -358,9 +316,7 @@ export default function CatalogPage() {
           </div>
         )}
 
-        {/* ============================================================
-            ✅ MOBILE PAGINATION
-        ============================================================ */}
+        {/* MOBILE PAGINATION */}
         {filtered.length > ITEMS_PER_PAGE && (
           <div className="mobile-only mobile-catalog-pagination">
             <button
@@ -389,9 +345,7 @@ export default function CatalogPage() {
           </div>
         )}
 
-        {/* ============================================================
-            ✅ MOBILE EMPTY STATE
-        ============================================================ */}
+        {/* MOBILE EMPTY STATE */}
         {filtered.length === 0 && (
           <div className="mobile-only mobile-catalog-empty">
             <PackageX className="react-icon" />
@@ -415,9 +369,7 @@ export default function CatalogPage() {
           </div>
         )}
 
-        {/* ============================================================
-            ✅ MOBILE FILTER DRAWER
-        ============================================================ */}
+        {/* MOBILE FILTER DRAWER */}
         <MobileFilterDrawer
           isOpen={showFilterDrawer}
           onClose={() => setShowFilterDrawer(false)}
@@ -432,9 +384,7 @@ export default function CatalogPage() {
           onApply={() => setShowFilterDrawer(false)}
         />
 
-        {/* ============================================================
-            ✅ DESKTOP — HERO
-        ============================================================ */}
+        {/* DESKTOP — HERO */}
         <header className="catalog-hero desktop-only">
           <div className="catalog-hero__copy">
             <p className="catalog-hero__kicker">SJCM Store</p>
@@ -450,9 +400,7 @@ export default function CatalogPage() {
           </div>
         </header>
 
-        {/* ============================================================
-            ✅ DESKTOP — TOOLBAR
-        ============================================================ */}
+        {/* DESKTOP — TOOLBAR */}
         <div className="desktop-only catalog-toolbar">
           <div className="catalog-toolbar__search">
             <Search className="react-icon" aria-hidden="true" />
@@ -516,9 +464,7 @@ export default function CatalogPage() {
           </select>
         </div>
 
-        {/* ============================================================
-            ✅ DESKTOP — SEARCH SUMMARY
-        ============================================================ */}
+        {/* DESKTOP — SEARCH SUMMARY */}
         {(query || category !== 'ALL') && (
           <div className="desktop-only catalog-search-summary">
             <span>
@@ -556,9 +502,7 @@ export default function CatalogPage() {
           </div>
         )}
 
-        {/* ============================================================
-            ✅ DESKTOP — BODY
-        ============================================================ */}
+        {/* DESKTOP — BODY */}
         <div className="desktop-only catalog-body" ref={resultsRef}>
           <aside className="catalog-categories">
             <div className="catalog-categories__card">
@@ -723,30 +667,14 @@ function ProductCard({
   const { session } = useApp();
   const toast = useToast();
   const addNotification = useNotificationStore((s) => s.addNotification);
-  const [isFav, setIsFav] = useState(false);
+
+  /* ✅ Global favorites store — HINDI local state */
+  const isFav = useFavoritesStore((s) => s.favIds.has(product.id));
+  const toggleFavorite = useFavoritesStore((s) => s.toggleFavorite);
   const [isToggling, setIsToggling] = useState(false);
 
   const badge = getStockBadge(product.stock);
   const isOutOfStock = (Number(product.stock) || 0) <= 0;
-
-  useEffect(() => {
-    if (!session?.id) return;
-    let cancelled = false;
-    const checkFav = async () => {
-      try {
-        const favorites = await fetchFavorites(session.id);
-        if (!cancelled) {
-          setIsFav(favorites.some((f) => f.product_id === product.id));
-        }
-      } catch (error) {
-        console.warn('[Catalog] Failed to check favorite:', error);
-      }
-    };
-    void checkFav();
-    return () => {
-      cancelled = true;
-    };
-  }, [session?.id, product.id]);
 
   const handleToggleFavorite = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -759,12 +687,9 @@ function ProductCard({
     if (isToggling) return;
 
     setIsToggling(true);
-    const wasFav = isFav;
-    setIsFav(!wasFav);
 
     try {
-      const nowFav = await toggleFavorite(session.id, product.id, wasFav);
-      setIsFav(nowFav);
+      const nowFav = await toggleFavorite(session.id, product.id);
 
       if (nowFav) {
         const notificationId =
@@ -774,7 +699,7 @@ function ProductCard({
                 .toString(36)
                 .substring(2, 9)}`;
 
-        const optimisticNotification = {
+        addNotification({
           id: notificationId,
           userId: session.id,
           type: 'info' as const,
@@ -785,9 +710,7 @@ function ProductCard({
           read: false,
           metadata: { productId: product.id },
           createdAt: new Date().toISOString(),
-        };
-
-        addNotification(optimisticNotification);
+        });
 
         try {
           await createNotification(session.id, {
@@ -808,7 +731,6 @@ function ProductCard({
       }
     } catch (error) {
       console.error('[Catalog] Favorite toggle failed:', error);
-      setIsFav(wasFav);
       toast('Failed to update favorites.', 'danger');
     } finally {
       setIsToggling(false);

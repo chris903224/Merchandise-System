@@ -192,7 +192,7 @@ export default function Footer() {
         {/* ---------- BOTTOM BAR ---------- */}
         <div className="site-footer__bottom">
           <p className="site-footer__copy">
-            © {year} Saint Jude Catholic School. All rights reserved.
+            © {year} Phinma Saint Jude College Manila. All rights reserved.
           </p>
 
           <div className="site-footer__bottom-right">

@@ -1,9 +1,56 @@
 /* ============================================================
    TOKENS — Theme Variables (10 themes)
-   Light: Cream Yellow, Warm Beige, Pure White, Soft Gray, Pale Blush
-   Dark: Midnight Navy (default), Matte Black, Charcoal Gray, Deep Forest, Dark Plum
+   Light: Cream Yellow (DEFAULT), Warm Beige, Pure White, Soft Gray, Pale Blush
+   Dark: Midnight Navy, Matte Black, Charcoal Gray, Deep Forest, Dark Plum
    ✅ Background + text + accent + SUCCESS = SAME HUE
+   ✅ FIX: :root standalone — walang conflict sa [data-theme]
 ============================================================ */
+
+/* ============================================================
+   ✅ DEFAULT — CREAM YELLOW (light)
+   Ito ang mag-a-apply kapag walang data-theme attribute sa <html>
+============================================================ */
+:root {
+  color-scheme: light;
+
+  --theme-primary: #B8860B;
+  --theme-primary-hover: #966C09;
+  --theme-primary-rgb: 184, 134, 11;
+
+  --theme-accent: #8B5E34;
+  --theme-accent-hover: #734A28;
+  --theme-accent-rgb: 139, 94, 52;
+
+  --theme-bg: #FEF9E7;
+  --theme-bg-solid: #FEF9E7;
+  --theme-surface: #FFFFFF;
+  --theme-surface-2: #FFFBF0;
+  --theme-surface-raised: #FFFFFF;
+
+  --theme-text: #2A2010;
+  --theme-text-muted: #6B5B3A;
+  --theme-text-subtle: rgba(42, 32, 16, 0.5);
+
+  --theme-border: #F0E5C0;
+  --theme-border-strong: rgba(184, 134, 11, 0.3);
+
+  --theme-success: #8B6914;
+  --theme-success-rgb: 139, 105, 20;
+  --theme-warning: #B8860B;
+  --theme-warning-rgb: 184, 134, 11;
+  --theme-danger: #A93C3C;
+  --theme-danger-rgb: 169, 60, 60;
+
+  --theme-shadow-sm: 0 1px 2px rgba(42, 32, 16, 0.06);
+  --theme-shadow-md: 0 4px 12px rgba(42, 32, 16, 0.08);
+  --theme-shadow-lg: 0 12px 32px rgba(42, 32, 16, 0.1);
+  --theme-shadow-xl: 0 24px 48px rgba(42, 32, 16, 0.12);
+
+  --theme-glass-bg: rgba(255, 255, 255, 0.7);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(184, 134, 11, 0.15);
+  --glow-info: rgba(107, 91, 58, 0.12);
+}
 
 /* ============================================================
    LIGHT — 5 VARIANTS
@@ -228,8 +275,7 @@
    DARK — 5 VARIANTS
 ============================================================ */
 
-/* ----- 6. MIDNIGHT NAVY (DEFAULT) ----- */
-:root,
+/* ----- 6. MIDNIGHT NAVY ----- */
 [data-theme='midnight-navy'] {
   color-scheme: dark;
 
@@ -446,27 +492,29 @@
 
 /* ============================================================
    ✅ SEMANTIC CONTRAST TOKENS
-   Default = dark (para sa Midnight Navy)
+   ✅ Standalone — HINDI naka-group sa :root
+   ✅ Base sa data-theme-mode attribute (naka-set ng JS)
 ============================================================ */
 
-:root,
-[data-theme-mode='dark'] {
-  --theme-on-primary: #0E1626;
-  --theme-on-primary-rgb: 14, 22, 38;
-  --theme-on-accent: #0E1626;
-  --theme-on-accent-rgb: 14, 22, 38;
-  --theme-on-success: #0E1626;
-  --theme-on-success-rgb: 14, 22, 38;
-  --theme-on-danger: #0E1626;
-  --theme-on-danger-rgb: 14, 22, 38;
-  --theme-on-warning: #0E1626;
-  --theme-on-warning-rgb: 14, 22, 38;
-  --theme-scrim: rgba(255, 255, 255, 0.04);
-  --theme-scrim-strong: rgba(255, 255, 255, 0.08);
+/* ✅ Default (walang data-theme-mode) = light — safe fallback */
+:root {
+  --theme-on-primary: #FFFFFF;
+  --theme-on-primary-rgb: 255, 255, 255;
+  --theme-on-accent: #1A1209;
+  --theme-on-accent-rgb: 26, 18, 9;
+  --theme-on-success: #FFFFFF;
+  --theme-on-success-rgb: 255, 255, 255;
+  --theme-on-danger: #FFFFFF;
+  --theme-on-danger-rgb: 255, 255, 255;
+  --theme-on-warning: #1A1209;
+  --theme-on-warning-rgb: 26, 18, 9;
+  --theme-scrim: rgba(0, 0, 0, 0.04);
+  --theme-scrim-strong: rgba(0, 0, 0, 0.08);
   --theme-surface-hover: var(--theme-surface-2);
   --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
 }
 
+/* ✅ Light mode override */
 [data-theme-mode='light'] {
   --theme-on-primary: #FFFFFF;
   --theme-on-primary-rgb: 255, 255, 255;
@@ -484,7 +532,29 @@
   --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
 }
 
-/* Per-theme on-* overrides */
+/* ✅ Dark mode override */
+[data-theme-mode='dark'] {
+  --theme-on-primary: #0E1626;
+  --theme-on-primary-rgb: 14, 22, 38;
+  --theme-on-accent: #0E1626;
+  --theme-on-accent-rgb: 14, 22, 38;
+  --theme-on-success: #0E1626;
+  --theme-on-success-rgb: 14, 22, 38;
+  --theme-on-danger: #0E1626;
+  --theme-on-danger-rgb: 14, 22, 38;
+  --theme-on-warning: #0E1626;
+  --theme-on-warning-rgb: 14, 22, 38;
+  --theme-scrim: rgba(255, 255, 255, 0.04);
+  --theme-scrim-strong: rgba(255, 255, 255, 0.08);
+  --theme-surface-hover: var(--theme-surface-2);
+  --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
+}
+
+/* ============================================================
+   ✅ PER-THEME on-* OVERRIDES
+   (mas specific kaysa [data-theme-mode] — para sa unique colors)
+============================================================ */
+
 [data-theme='matte-black'] {
   --theme-on-primary: #1A1209;
   --theme-on-primary-rgb: 26, 18, 9;

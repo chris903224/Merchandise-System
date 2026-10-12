@@ -1,16 +1,60 @@
 /* ============================================================
    THEME VARIABLES — 10 themes (MONOCHROME)
+   ✅ DEFAULT = MIDNIGHT NAVY (dark)
    Light: Cream Yellow, Warm Beige, Pure White, Soft Gray, Pale Blush
    Dark: Midnight Navy, Matte Black, Charcoal Gray, Deep Forest, Dark Plum
-   ✅ Background + text + accent + SUCCESS = SAME HUE
 ============================================================ */
+
+/* ============================================================
+   ✅ DEFAULT — MIDNIGHT NAVY (naka-root)
+============================================================ */
+:root {
+  color-scheme: dark;
+
+  --theme-primary: #7BA7E1;
+  --theme-primary-hover: #5F8CC7;
+  --theme-primary-rgb: 123, 167, 225;
+
+  --theme-accent: #9BC0ED;
+  --theme-accent-hover: #7BA7E1;
+  --theme-accent-rgb: 155, 192, 237;
+
+  --theme-bg: #0E1626;
+  --theme-bg-solid: #0E1626;
+  --theme-surface: #1B2742;
+  --theme-surface-2: #222F4D;
+  --theme-surface-raised: #283658;
+
+  --theme-text: #E8EEF7;
+  --theme-text-muted: #B0B9CC;
+  --theme-text-subtle: rgba(232, 238, 247, 0.5);
+
+  --theme-border: rgba(123, 167, 225, 0.15);
+  --theme-border-strong: rgba(123, 167, 225, 0.4);
+
+  --theme-success: #7BA7E1;
+  --theme-success-rgb: 123, 167, 225;
+  --theme-warning: #E0B24D;
+  --theme-warning-rgb: 224, 178, 77;
+  --theme-danger: #E57575;
+  --theme-danger-rgb: 229, 117, 117;
+
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --theme-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.7);
+
+  --theme-glass-bg: rgba(27, 39, 66, 0.75);
+  --theme-glass-border: rgba(123, 167, 225, 0.15);
+  --glow-brand: rgba(123, 167, 225, 0.25);
+  --glow-info: rgba(176, 185, 204, 0.2);
+}
 
 /* ============================================================
    LIGHT — 5 VARIANTS
 ============================================================ */
 
-/* ----- 1. CREAM YELLOW (default light) ----- */
-:root,
+/* ----- 1. CREAM YELLOW ----- */
 [data-theme='cream-yellow'] {
   color-scheme: light;
 
@@ -229,7 +273,7 @@
    DARK — 5 VARIANTS
 ============================================================ */
 
-/* ----- 6. MIDNIGHT NAVY ----- */
+/* ----- 6. MIDNIGHT NAVY (explicit) ----- */
 [data-theme='midnight-navy'] {
   color-scheme: dark;
 
@@ -445,10 +489,26 @@
 }
 
 /* ============================================================
-   ✅ SEMANTIC CONTRAST TOKENS — follows :root (cream-yellow)
+   ✅ SEMANTIC CONTRAST TOKENS
+   ✅ DEFAULT = DARK (Midnight Navy)
 ============================================================ */
+:root {
+  --theme-on-primary: #0E1626;
+  --theme-on-primary-rgb: 14, 22, 38;
+  --theme-on-accent: #0E1626;
+  --theme-on-accent-rgb: 14, 22, 38;
+  --theme-on-success: #0E1626;
+  --theme-on-success-rgb: 14, 22, 38;
+  --theme-on-danger: #0E1626;
+  --theme-on-danger-rgb: 14, 22, 38;
+  --theme-on-warning: #0E1626;
+  --theme-on-warning-rgb: 14, 22, 38;
+  --theme-scrim: rgba(255, 255, 255, 0.04);
+  --theme-scrim-strong: rgba(255, 255, 255, 0.08);
+  --theme-surface-hover: var(--theme-surface-2);
+  --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
+}
 
-:root,
 [data-theme-mode='light'] {
   --theme-on-primary: #FFFFFF;
   --theme-on-primary-rgb: 255, 255, 255;
@@ -466,24 +526,7 @@
   --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
 }
 
-[data-theme-mode='dark'] {
-  --theme-on-primary: #0E1626;
-  --theme-on-primary-rgb: 14, 22, 38;
-  --theme-on-accent: #0E1626;
-  --theme-on-accent-rgb: 14, 22, 38;
-  --theme-on-success: #0E1626;
-  --theme-on-success-rgb: 14, 22, 38;
-  --theme-on-danger: #0E1626;
-  --theme-on-danger-rgb: 14, 22, 38;
-  --theme-on-warning: #0E1626;
-  --theme-on-warning-rgb: 14, 22, 38;
-  --theme-scrim: rgba(255, 255, 255, 0.04);
-  --theme-scrim-strong: rgba(255, 255, 255, 0.08);
-  --theme-surface-hover: var(--theme-surface-2);
-  --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
-}
-
-/* Per-theme on-* overrides */
+/* Per-theme on-* overrides (pareho pa rin) */
 [data-theme='matte-black'] {
   --theme-on-primary: #1A1209;
   --theme-on-primary-rgb: 26, 18, 9;
@@ -592,7 +635,7 @@ body {
 }
 
 /* ============================================
-   THEME GRID (Settings)
+   THEME GRID (Settings) — pareho pa rin
 ============================================ */
 .theme-grid {
   display: grid;

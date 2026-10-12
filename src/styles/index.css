@@ -1090,3 +1090,46 @@ span {
   color: var(--ui-text) !important;
   -webkit-text-fill-color: var(--ui-text) !important;
 }
+/* ============================================================
+   ✅ PROFESSIONAL MOTION POLISH
+============================================================ */
+
+/* ✅ Respect OS-level motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ✅ Prevent layout shift habang nag-a-animate */
+.site-layout main {
+  position: relative;
+  min-height: 60vh;
+  /* Isolate layout para hindi makaapekto sa Navbar/Footer */
+  contain: layout style;
+}
+
+/* ✅ GPU acceleration para sa page content */
+.site-layout main > div {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* ✅ Smooth scroll reset — walang jump */
+html {
+  scroll-behavior: auto;
+}
+
+/* ✅ Font rendering optimization */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
