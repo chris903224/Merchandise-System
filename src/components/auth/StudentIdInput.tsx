@@ -7,7 +7,7 @@ import {
   isValidStudentId,
   STUDENT_ID_EXAMPLE,
   STUDENT_ID_LENGTH,
-} from ;
+} from '../../data/studentId';
 
 interface StudentIdInputProps {
   value: string;
