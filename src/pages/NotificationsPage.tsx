@@ -1,6 +1,6 @@
 // src/pages/NotificationsPage.tsx
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, Bell, Check, X, Trash2, Inbox, Package, ShoppingBag, Tag,
@@ -72,7 +72,9 @@ export default function NotificationsPage() {
     };
   }, [session?.id, loadNotifications, subscribeToRealtime, unsubscribeFromRealtime, navigate]);
 
-  // ✅ hover-to-open sidebar (same sa Settings)
+  // ============================================
+  // ✅ FIXED: Hover-to-open sidebar (works on scroll)
+  // ============================================
   useEffect(() => {
     const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
     if (!isDesktop()) return;
@@ -97,19 +99,63 @@ export default function NotificationsPage() {
     const sidebar = sidebarRef.current;
     if (!zone || !sidebar) return;
 
-    zone.addEventListener('mouseenter', openSidebar);
-    sidebar.addEventListener('mouseenter', openSidebar);
-    sidebar.addEventListener('mouseleave', scheduleClose);
-    zone.addEventListener('mouseleave', scheduleClose);
+    // ✅ Use pointer events for better scroll compatibility
+    zone.addEventListener('pointerenter', openSidebar);
+    sidebar.addEventListener('pointerenter', openSidebar);
+    sidebar.addEventListener('pointerleave', scheduleClose);
+    zone.addEventListener('pointerleave', scheduleClose);
+
+    // ✅ Also handle touch devices
+    zone.addEventListener('touchstart', openSidebar, { passive: true });
+    sidebar.addEventListener('touchstart', openSidebar, { passive: true });
 
     return () => {
-      zone.removeEventListener('mouseenter', openSidebar);
-      sidebar.removeEventListener('mouseenter', openSidebar);
-      sidebar.removeEventListener('mouseleave', scheduleClose);
-      zone.removeEventListener('mouseleave', scheduleClose);
+      zone.removeEventListener('pointerenter', openSidebar);
+      sidebar.removeEventListener('pointerenter', openSidebar);
+      sidebar.removeEventListener('pointerleave', scheduleClose);
+      zone.removeEventListener('pointerleave', scheduleClose);
+      zone.removeEventListener('touchstart', openSidebar);
+      sidebar.removeEventListener('touchstart', openSidebar);
       if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
     };
   }, [isSidebarPinned, session]);
+
+  // ============================================
+  // ✅ FIXED: Ensure scroll works on body, not on container
+  // ============================================
+  useEffect(() => {
+    // ✅ Make sure the body is the scroll container
+    document.documentElement.style.overflowY = 'auto';
+    document.documentElement.style.height = 'auto';
+    document.body.style.overflowY = 'auto';
+    document.body.style.height = 'auto';
+
+    return () => {
+      // ✅ Cleanup — restore defaults
+      document.documentElement.style.overflowY = '';
+      document.documentElement.style.height = '';
+      document.body.style.overflowY = '';
+      document.body.style.height = '';
+    };
+  }, []);
+
+  // ============================================
+  // ✅ FIXED: Sync sidebar visibility on scroll
+  // ============================================
+  const handleScroll = useCallback(() => {
+    // ✅ If sidebar is pinned, keep it open
+    if (isSidebarPinned) return;
+    // ✅ If mouse is not over the hover zone, close the sidebar
+    setIsSidebarOpen(false);
+  }, [isSidebarPinned]);
+
+  useEffect(() => {
+    const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
+    if (!isDesktop()) return;
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
 
   // ============================================
   // FILTERED NOTIFICATIONS
@@ -127,7 +173,6 @@ export default function NotificationsPage() {
     await markAsRead(id);
   };
 
-  // ✅ FIX: pass session.id to markAllAsRead
   const handleMarkAllAsRead = async () => {
     if (!session?.id) return;
     await markAllAsRead(session.id);
@@ -207,7 +252,7 @@ export default function NotificationsPage() {
         aria-hidden="true"
       />
 
-      {/* ✅ SIDEBAR — same sa Settings */}
+      {/* ✅ SIDEBAR */}
       <aside
         ref={sidebarRef}
         className={`notifications-sidebar ${isSidebarOpen ? 'is-open' : ''}`}

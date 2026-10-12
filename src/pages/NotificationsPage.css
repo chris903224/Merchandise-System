@@ -2,6 +2,7 @@
 
 /* ============================================
    NOTIFICATIONS PAGE — with sidebar (Settings-style)
+   ✅ FIXED SIDEBAR — sumasama habang nag-i-scroll
    ============================================ */
 
 .notifications-shell {
@@ -21,6 +22,8 @@
   color: var(--theme-text);
   font-family: var(--font-body);
   transition: background 0.4s ease, color 0.3s ease;
+  /* ✅ Siguraduhing walang overflow: hidden dito */
+  overflow: visible;
 }
 
 .notifications-shell .react-icon {
@@ -225,6 +228,8 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  /* ✅ Walang overflow: hidden — para hindi maputol ang fixed sidebar */
+  overflow: visible;
 }
 
 .notifications-mobile-menu {
@@ -817,10 +822,22 @@
 
 /* ============================================================
    ✅ DESKTOP SIDEBAR — PREMIUM GLASS MINI RAIL
-   Tugma sa Dashboard, Settings, Profile, Order Details
+   ✅ FIXED — sumasama habang nag-i-scroll
    ============================================================ */
 
 @media (min-width: 1024px) {
+  /* ✅ Siguraduhing ang body/html ang nag-i-scroll */
+  html, body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+    min-height: 100%;
+  }
+
+  .notifications-shell {
+    overflow: visible;
+  }
+
   /* ============================================
      CONTAINER — compact glass pill
   ============================================ */

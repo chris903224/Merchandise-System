@@ -4,6 +4,7 @@
    ✅ Uses the SAME theme variables as the rest of the app
    ✅ No hardcoded colors — auto-adjusts for Light & Dark
    ✅ Matches Footer.tsx structure 100%
+   ✅ FIXED: Walang z-index — para hindi manaig sa fixed sidebar
 ============================================================ */
 
 .site-footer {
@@ -19,7 +20,9 @@
   --sf-shell: 1560px;
 
   position: relative;
-  z-index: 2;
+  /* ✅ ALISIN ANG z-index — para hindi mag-lock ang stacking context
+     at mananaig ang fixed sidebar (z-index: 50) sa footer */
+  /* ❌ WALANG z-index: 2; */
   margin-top: 1rem;
   padding: 0;
   color: var(--theme-text-muted);
@@ -84,7 +87,6 @@
   gap: 1.5rem;
   padding: 1.5rem 1.75rem;
   border-radius: 1.5rem;
-  /* ✅ Theme surface card */
   background: var(--theme-surface);
   border: 1px solid var(--theme-border-strong);
   box-shadow: var(--theme-shadow-md);
@@ -118,7 +120,6 @@
   font-family: var(--sf-body);
   font-weight: 700;
   font-size: 0.92rem;
-  /* ✅ Auto-contrast text on accent background */
   color: var(--theme-on-accent) !important;
   background: linear-gradient(
     180deg,
@@ -178,7 +179,6 @@
   width: 2.6rem;
   height: 2.6rem;
   border-radius: 0.85rem;
-  /* ✅ Theme accent + on-accent for perfect contrast */
   color: var(--theme-on-accent);
   background: var(--theme-accent);
   border: 1px solid var(--theme-border-strong);
@@ -238,7 +238,6 @@
   font-family: var(--sf-body);
   font-size: 0.78rem;
   font-weight: 600;
-  /* ✅ Theme primary text on surface-2 */
   color: var(--theme-primary);
   background: var(--theme-surface-2);
   border: 1px solid var(--theme-border);
@@ -298,7 +297,6 @@
   font-size: 0.85rem;
   font-weight: 500;
   color: var(--theme-text-muted);
-  /* ✅ Underline uses theme accent */
   background: linear-gradient(
       var(--theme-accent),
       var(--theme-accent)
@@ -346,7 +344,6 @@
   width: 1.75rem;
   height: 1.75rem;
   border-radius: 0.5rem;
-  /* ✅ Theme primary icon on surface-2 */
   color: var(--theme-primary);
   background: var(--theme-surface-2);
   border: 1px solid var(--theme-border);
@@ -359,7 +356,6 @@
   height: 0.85rem;
 }
 
-/* ✅ Status pill uses theme success/danger */
 .site-footer__status {
   display: inline-flex;
   align-items: center;
@@ -439,7 +435,6 @@
   width: 2.25rem;
   height: 2.25rem;
   border-radius: 50%;
-  /* ✅ Theme primary icon on surface-2 */
   color: var(--theme-primary);
   background: var(--theme-surface-2);
   border: 1px solid var(--theme-border);
