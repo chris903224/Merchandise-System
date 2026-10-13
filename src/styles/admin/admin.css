@@ -3096,3 +3096,594 @@
   height: 14px;
   color: var(--admin-brand-500);
 }
+
+/* ============================================================
+   NEUMORPHISM ADMIN LOGIN — DARK VERSION
+   ✅ Pinanatili ang existing background (campus + pine gradient)
+   ✅ Neumorphism applied sa card, inputs, buttons
+   ============================================================ */
+
+/* ---------- Neumorphism tokens (dark) ---------- */
+:root {
+  --neu-dark-bg: #0f2f21;              /* base card bg */
+  --neu-dark-bg-light: #1a4531;         /* highlight */
+  --neu-dark-bg-dark: #081a13;          /* shadow */
+  --neu-dark-primary: #2fb072;
+  --neu-dark-primary-light: #3fc885;
+  --neu-dark-primary-dark: #22915c;
+  --neu-dark-ink: #f6f3ea;
+  --neu-dark-ink-muted: #a8b8ad;
+  --neu-dark-ink-soft: #7a8b80;
+  --neu-dark-gold: #d8b978;
+  --neu-dark-danger: #e87878;
+  --neu-dark-danger-bg: rgba(224, 82, 82, 0.15);
+
+  /* Dark neumorphism shadows */
+  --neu-dark-out:
+    8px 8px 20px var(--neu-dark-bg-dark),
+    -8px -8px 20px var(--neu-dark-bg-light);
+  --neu-dark-out-sm:
+    4px 4px 10px var(--neu-dark-bg-dark),
+    -4px -4px 10px var(--neu-dark-bg-light);
+  --neu-dark-in:
+    inset 4px 4px 10px var(--neu-dark-bg-dark),
+    inset -4px -4px 10px var(--neu-dark-bg-light);
+  --neu-dark-in-sm:
+    inset 2px 2px 6px var(--neu-dark-bg-dark),
+    inset -2px -2px 6px var(--neu-dark-bg-light);
+  --neu-dark-flat:
+    2px 2px 6px var(--neu-dark-bg-dark),
+    -2px -2px 6px var(--neu-dark-bg-light);
+}
+
+/* ---------- Page ---------- */
+.neu-login {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 24px;
+  overflow: hidden;
+  font-family: var(--admin-font-ui, 'Manrope', system-ui, sans-serif);
+}
+
+/* ✅ EXISTING BACKGROUND — campus image */
+.neu-login__bg {
+  position: fixed;
+  inset: 0;
+  background-image: url('/campus.png');
+  background-size: cover;
+  background-position: center;
+  z-index: -2;
+}
+
+/* ✅ EXISTING OVERLAY — pine gradient */
+.neu-login__overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(10, 33, 24, 0.94) 0%,
+    rgba(15, 47, 33, 0.88) 45%,
+    rgba(10, 33, 24, 0.96) 100%
+  );
+  z-index: -1;
+}
+
+/* ---------- Wrap — split layout ---------- */
+.neu-login__wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1080px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-radius: 28px;
+  overflow: hidden;
+
+  /* ✅ Neumorphism extruded card */
+  background: var(--neu-dark-bg);
+  box-shadow:
+    20px 20px 60px rgba(0, 0, 0, 0.55),
+    -20px -20px 60px rgba(47, 176, 114, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ============================================
+   LEFT — Brand panel
+============================================ */
+
+.neu-login__brand {
+  padding: 56px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  background: linear-gradient(
+    160deg,
+    rgba(15, 47, 33, 0.95) 0%,
+    rgba(10, 33, 24, 0.98) 100%
+  );
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.neu-login__brand-mark {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ✅ Neumorphism extruded logo */
+.neu-login__logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-family: var(--admin-font-display, 'Fraunces', serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--neu-dark-primary-light), var(--neu-dark-primary));
+  box-shadow:
+    6px 6px 14px rgba(0, 0, 0, 0.5),
+    -6px -6px 14px rgba(47, 176, 114, 0.1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.neu-login__brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.neu-login__brand-name {
+  font-family: var(--admin-font-display, 'Fraunces', serif);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--neu-dark-ink);
+  line-height: 1.1;
+}
+
+.neu-login__brand-tag {
+  font-size: 11px;
+  color: var(--neu-dark-gold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.neu-login__headline {
+  font-family: var(--admin-font-display, 'Fraunces', serif);
+  font-size: 30px;
+  line-height: 1.2;
+  font-weight: 600;
+  margin: 12px 0 0;
+  color: var(--neu-dark-ink);
+}
+
+.neu-login__desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(246, 243, 234, 0.65);
+  margin: 0;
+  max-width: 36ch;
+}
+
+.neu-login__features {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.neu-login__features li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13.5px;
+  color: rgba(246, 243, 234, 0.85);
+  font-weight: 500;
+}
+
+/* ✅ Neumorphism INSET check circle */
+.neu-login__check {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: var(--neu-dark-primary);
+  background: var(--neu-dark-bg);
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.5),
+    inset -3px -3px 6px rgba(47, 176, 114, 0.08);
+}
+
+.neu-login__check svg {
+  width: 14px;
+  height: 14px;
+}
+
+.neu-login__footer {
+  margin-top: auto;
+  padding-top: 24px;
+  font-family: var(--admin-font-display, 'Fraunces', serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--neu-dark-gold);
+  line-height: 1.5;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.neu-login__footer span {
+  display: block;
+  font-style: normal;
+  font-family: var(--admin-font-ui, sans-serif);
+  font-size: 11.5px;
+  color: rgba(246, 243, 234, 0.45);
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* ============================================
+   RIGHT — Login card (neumorphism)
+============================================ */
+
+.neu-login__card {
+  padding: 56px 48px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  background: linear-gradient(
+    160deg,
+    rgba(20, 55, 38, 0.7) 0%,
+    rgba(15, 47, 33, 0.9) 100%
+  );
+}
+
+.neu-login__card-inner {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+/* ✅ Neumorphism pill badge */
+.neu-login__eyebrow {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--neu-dark-gold);
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--neu-dark-bg);
+  box-shadow:
+    4px 4px 10px rgba(0, 0, 0, 0.4),
+    -4px -4px 10px rgba(47, 176, 114, 0.06);
+  margin-bottom: 20px;
+}
+
+.neu-login__title {
+  font-family: var(--admin-font-display, 'Fraunces', serif);
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--neu-dark-ink);
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+.neu-login__subtitle {
+  font-size: 14px;
+  color: rgba(246, 243, 234, 0.6);
+  margin: 0 0 28px;
+  line-height: 1.55;
+}
+
+/* ✅ Neumorphism INSET error callout */
+.neu-login__callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  color: #f0b0b0;
+  background: var(--neu-dark-bg);
+  box-shadow:
+    inset 3px 3px 8px rgba(0, 0, 0, 0.5),
+    inset -3px -3px 8px rgba(224, 82, 82, 0.08);
+}
+
+.neu-login__callout svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--neu-dark-danger);
+}
+
+/* Form */
+.neu-login__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.neu-login__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.neu-login__field label {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: rgba(246, 243, 234, 0.7);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding-left: 4px;
+}
+
+/* ✅ Neumorphism INSET input (pressed-in look) */
+.neu-login__input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: 14px;
+  background: var(--neu-dark-bg);
+  box-shadow:
+    inset 4px 4px 10px rgba(0, 0, 0, 0.55),
+    inset -4px -4px 10px rgba(47, 176, 114, 0.05);
+  transition: box-shadow 0.25s ease;
+}
+
+.neu-login__input-wrap:focus-within {
+  box-shadow:
+    inset 5px 5px 12px rgba(0, 0, 0, 0.6),
+    inset -5px -5px 12px rgba(47, 176, 114, 0.08),
+    0 0 0 2px rgba(47, 176, 114, 0.35);
+}
+
+.neu-login__input-icon {
+  position: absolute;
+  left: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--neu-dark-ink-soft);
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.neu-login__input-wrap:focus-within .neu-login__input-icon {
+  color: var(--neu-dark-primary);
+}
+
+.neu-login__input-wrap input {
+  width: 100%;
+  padding: 16px 48px 16px 48px;
+  border-radius: 14px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--neu-dark-ink);
+  outline: none;
+}
+
+.neu-login__input-wrap input::placeholder {
+  color: var(--neu-dark-ink-soft);
+  font-weight: 400;
+}
+
+.neu-login__input-wrap input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ✅ Neumorphism extruded toggle button */
+.neu-login__toggle {
+  position: absolute;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--neu-dark-bg);
+  color: var(--neu-dark-ink-muted);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+  box-shadow:
+    2px 2px 6px rgba(0, 0, 0, 0.5),
+    -2px -2px 6px rgba(47, 176, 114, 0.06);
+  transition: box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.neu-login__toggle:hover {
+  color: var(--neu-dark-primary);
+  box-shadow:
+    3px 3px 8px rgba(0, 0, 0, 0.55),
+    -3px -3px 8px rgba(47, 176, 114, 0.08);
+}
+
+.neu-login__toggle:active {
+  box-shadow:
+    inset 2px 2px 6px rgba(0, 0, 0, 0.55),
+    inset -2px -2px 6px rgba(47, 176, 114, 0.06);
+}
+
+.neu-login__toggle svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ✅ Neumorphism extruded submit button */
+.neu-login__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px 24px;
+  border-radius: 16px;
+  border: none;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 6px;
+  background: linear-gradient(145deg, var(--neu-dark-primary-light), var(--neu-dark-primary));
+  box-shadow:
+    8px 8px 18px rgba(0, 0, 0, 0.5),
+    -8px -8px 18px rgba(47, 176, 114, 0.1),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.25),
+    inset 0 2px 4px rgba(255, 255, 255, 0.15);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.15s ease;
+}
+
+.neu-login__submit svg {
+  width: 17px;
+  height: 17px;
+}
+
+.neu-login__submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow:
+    10px 10px 22px rgba(0, 0, 0, 0.55),
+    -10px -10px 22px rgba(47, 176, 114, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.25),
+    inset 0 2px 4px rgba(255, 255, 255, 0.15);
+}
+
+.neu-login__submit:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow:
+    inset 5px 5px 12px rgba(0, 0, 0, 0.35),
+    inset -3px -3px 8px rgba(255, 255, 255, 0.08);
+}
+
+.neu-login__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow:
+    4px 4px 10px rgba(0, 0, 0, 0.4),
+    -4px -4px 10px rgba(47, 176, 114, 0.06);
+}
+
+/* Divider */
+.neu-login__divider {
+  text-align: center;
+  margin: 28px 0 16px;
+  position: relative;
+}
+
+.neu-login__divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(255, 255, 255, 0.1) 80%,
+    transparent
+  );
+}
+
+.neu-login__divider span {
+  position: relative;
+  background: var(--neu-dark-bg);
+  padding: 0 16px;
+  font-size: 11.5px;
+  color: rgba(246, 243, 234, 0.5);
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Back link */
+.neu-login__back {
+  display: block;
+  text-align: center;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--neu-dark-primary);
+  text-decoration: none;
+  padding: 12px;
+  border-radius: 12px;
+  transition: color 0.15s ease, box-shadow 0.2s ease;
+}
+
+.neu-login__back:hover {
+  color: var(--neu-dark-primary-light);
+  box-shadow:
+    4px 4px 10px rgba(0, 0, 0, 0.4),
+    -4px -4px 10px rgba(47, 176, 114, 0.08);
+}
+
+/* ============================================
+   RESPONSIVE
+============================================ */
+
+@media (max-width: 900px) {
+  .neu-login__wrap {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    border-radius: 24px;
+  }
+
+  .neu-login__brand {
+    display: none;
+  }
+
+  .neu-login__card {
+    padding: 48px 32px;
+  }
+}
+
+@media (max-width: 520px) {
+  .neu-login {
+    padding: 20px 16px;
+  }
+
+  .neu-login__wrap {
+    border-radius: 20px;
+    box-shadow:
+      12px 12px 32px rgba(0, 0, 0, 0.5),
+      -12px -12px 32px rgba(47, 176, 114, 0.08);
+  }
+
+  .neu-login__card {
+    padding: 36px 24px;
+  }
+
+  .neu-login__title {
+    font-size: 26px;
+  }
+
+  .neu-login__submit {
+    padding: 16px 20px;
+    font-size: 14px;
+  }
+}
