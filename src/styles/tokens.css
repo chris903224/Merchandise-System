@@ -607,4 +607,288 @@
   --theme-on-accent-rgb: 255, 255, 255;
   --theme-on-success: #FFFFFF;
   --theme-on-success-rgb: 255, 255, 255;
+} 
+/* ============================================================
+   🎯 FINAL FIX: Hero Ghost Buttons Visibility
+   ✅ Ang "My orders" button ay hindi visible sa light themes
+   ✅ Kasi puti ang text at puti ang background
+   ✅ Fix: gumamit ng theme-aware contrast
+   ============================================================ */
+
+/* ============================================================
+   1️⃣ HERO GHOST BUTTONS — Theme-aware contrast
+   ✅ Sa light themes: dark text + light bg
+   ✅ Sa dark themes: light text + subtle bg
+   ============================================================ */
+
+/* ✅ Base — gumamit ng theme variables */
+.hero-actions [class*="--ghost"],
+.hero-actions [class*="--secondary"],
+.hero-actions .button--secondary,
+.hero-actions .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1rem;
+  background: var(--theme-surface) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  border: 1px solid var(--theme-border) !important;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, background 0.2s ease, color 0.2s ease;
+}
+
+[data-theme-mode='dark'] .hero-actions [class*="--ghost"],
+[data-theme-mode='dark'] .hero-actions [class*="--secondary"],
+[data-theme-mode='dark'] .hero-actions .button--secondary,
+[data-theme-mode='dark'] .hero-actions .btn-secondary {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  border: 1px solid var(--theme-border-strong) !important;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.35),
+    0 1px 2px rgba(0, 0, 0, 0.25),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.06);
+}
+
+/* ✅ Hover state — theme-aware */
+.hero-actions [class*="--ghost"]:hover,
+.hero-actions [class*="--secondary"]:hover,
+.hero-actions .button--secondary:hover,
+.hero-actions .btn-secondary:hover {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  color: var(--theme-primary-hover) !important;
+  -webkit-text-fill-color: var(--theme-primary-hover) !important;
+  border-color: var(--theme-primary) !important;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow:
+    0 8px 16px rgba(var(--theme-primary-rgb), 0.2),
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6);
+}
+
+/* ============================================================
+   2️⃣ HERO PRIMARY BUTTON — Siguraduhing visible
+   ============================================================ */
+
+.hero-actions [class*="--primary"],
+.hero-actions .button--primary,
+.hero-actions .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1rem;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border: none !important;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+}
+
+.hero-actions [class*="--primary"]:hover,
+.hero-actions .button--primary:hover,
+.hero-actions .btn-primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================================
+   3️⃣ HERO BULLET ICONS — Theme-aware
+   ============================================================ */
+
+.hero-bullet__icon {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.25) !important;
+  color: var(--theme-primary) !important;
+}
+
+.hero-bullet__icon svg,
+.hero-bullet__icon .react-icon {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  stroke: currentColor !important;
+}
+
+[data-theme-mode='dark'] .hero-bullet__icon {
+  background: rgba(var(--theme-primary-rgb), 0.15) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.35) !important;
+}
+
+/* ============================================================
+   4️⃣ HERO BULLETS — Text visibility
+   ============================================================ */
+
+.hero-bullet,
+.hero-bullet strong {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.hero-bullet small {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ============================================================
+   5️⃣ HERO BULLETS — Divider lines
+   ============================================================ */
+
+.hero-bullet:not(:last-child)::after {
+  background: var(--theme-border) !important;
+}
+
+.hero-bullets {
+  border-top-color: var(--theme-border) !important;
+}
+
+/* ============================================================
+   6️⃣ LAHAT NG GHOST BUTTONS — Lahat ng pages
+   ✅ I-apply ang fix sa lahat ng ghost buttons
+   ============================================================ */
+
+/* ✅ Settings, profile, cart, at iba pa */
+button[class*="--ghost"]:not([class*="hero"]),
+button[class*="--secondary"]:not([class*="hero"]),
+a[class*="--ghost"]:not([class*="hero"]),
+a[class*="--secondary"]:not([class*="hero"]) {
+  background: var(--theme-surface) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  border: 1px solid var(--theme-border) !important;
+}
+
+[data-theme-mode='dark'] button[class*="--ghost"]:not([class*="hero"]),
+[data-theme-mode='dark'] button[class*="--secondary"]:not([class*="hero"]),
+[data-theme-mode='dark'] a[class*="--ghost"]:not([class*="hero"]),
+[data-theme-mode='dark'] a[class*="--secondary"]:not([class*="hero"]) {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  border-color: var(--theme-border-strong) !important;
+}
+
+button[class*="--ghost"]:hover:not(:disabled):not([class*="hero"]),
+button[class*="--secondary"]:hover:not(:disabled):not([class*="hero"]),
+a[class*="--ghost"]:hover:not([class*="hero"]),
+a[class*="--secondary"]:hover:not([class*="hero"]) {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  color: var(--theme-primary-hover) !important;
+  -webkit-text-fill-color: var(--theme-primary-hover) !important;
+  border-color: var(--theme-primary) !important;
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   7️⃣ CART SUMMARY GHOST BUTTON — Fix
+   ============================================================ */
+
+.cart-summary__btn--ghost,
+.checkout-btn--secondary,
+.gcash-modal__btn--ghost,
+.od-modal__btn--ghost,
+.settings-btn--ghost,
+.dashboard-gate__btn--ghost {
+  background: var(--theme-surface) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  border: 1px solid var(--theme-border) !important;
+}
+
+[data-theme-mode='dark'] .cart-summary__btn--ghost,
+[data-theme-mode='dark'] .checkout-btn--secondary,
+[data-theme-mode='dark'] .gcash-modal__btn--ghost,
+[data-theme-mode='dark'] .od-modal__btn--ghost,
+[data-theme-mode='dark'] .settings-btn--ghost,
+[data-theme-mode='dark'] .dashboard-gate__btn--ghost {
+  background: var(--theme-surface-2) !important;
+  border-color: var(--theme-border-strong) !important;
+}
+
+/* ============================================================
+   8️⃣ PRODUCT RELATED CARD CTA — Fix
+   ============================================================ */
+
+.product-related__card button,
+.product-related__card a[class*="--primary"] {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ============================================================
+   9️⃣ SIGURADUHING WALANG PUTI SA PUTI
+   ✅ Force text color sa lahat ng buttons
+   ============================================================ */
+
+/* ✅ Lahat ng primary buttons — dark text sa light accent, light text sa dark accent */
+button[class*="--primary"]:not(:disabled),
+a[class*="--primary"]:not(.is-disabled) {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Lahat ng ghost buttons — theme-aware text */
+button[class*="--ghost"]:not(:disabled),
+button[class*="--secondary"]:not(:disabled),
+a[class*="--ghost"]:not(.is-disabled),
+a[class*="--secondary"]:not(.is-disabled) {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+button[class*="--ghost"]:hover:not(:disabled),
+button[class*="--secondary"]:hover:not(:disabled),
+a[class*="--ghost"]:hover:not(.is-disabled),
+a[class*="--secondary"]:hover:not(.is-disabled) {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   🔟 SPAN INHERIT — Siguraduhing sumasama ang text color
+   ============================================================ */
+
+button > span,
+button > *,
+a[class*="btn"] > span,
+a[class*="btn"] > *,
+a[class*="cta"] > span,
+a[class*="cta"] > * {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
 }

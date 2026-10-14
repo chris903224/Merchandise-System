@@ -1182,5 +1182,4588 @@ body {
 .site-layout main > div,
 .site-layout main > [class*="motion"],
 .site-layout main [style*="transform"] {
-  /* ❌ Hindi ito recommended — masisira ang animation */
+
+}
+
+/* ✅ Fallback: Siguraduhing walang element ang pumipigil */
+.site-layout main > div {
+  position: relative;
+  z-index: 20;
+}
+
+/* ✅ Fallback: Sidebar mismo */
+@media (min-width: 1024px) {
+  .dashboard-sidebar,
+  .profile-sidebar,
+  .settings-sidebar {
+    z-index: 100 !important;
+  }
+}
+/* ============================================================
+   🎨 UNIVERSAL THEME ENFORCEMENT
+   ✅ Naka-apply sa LAHAT ng student pages
+   ✅ Sinasakop ang lahat ng hardcoded colors
+   ✅ Base sa tokens.css variables
+   ✅ Walang binabago sa layout, design, functions
+   ✅ Compatible sa 10 themes (5 light + 5 dark)
+   ============================================================ */
+
+/* ============================================================
+   1️⃣ SHIPPED BADGE — Hardcoded blue → theme accent
+   ============================================================ */
+
+.order-card__badge.is-shipped,
+.admin-badge--shipped,
+.status-badge.is-shipped,
+.order-status-badge.is-shipped {
+  background: rgba(var(--theme-accent-rgb), 0.1) !important;
+  color: var(--theme-accent) !important;
+  border-color: rgba(var(--theme-accent-rgb), 0.25) !important;
+}
+
+/* ============================================================
+   2️⃣ SETTINGS — Hardcoded green (#10b981, #059669)
+   ============================================================ */
+
+.appearance-tab.is-active {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  box-shadow: 0 4px 12px -4px rgba(var(--theme-primary-rgb), 0.45) !important;
+}
+
+.theme-card.is-active,
+.appearance-section .theme-card.is-active {
+  border-color: var(--theme-primary) !important;
+  box-shadow:
+    0 0 0 3px rgba(var(--theme-primary-rgb), 0.15),
+    0 12px 28px -8px rgba(var(--theme-primary-rgb), 0.3) !important;
+}
+
+.theme-card__check,
+.theme-card.is-active .theme-card__radio {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  box-shadow: 0 2px 6px rgba(var(--theme-primary-rgb), 0.5) !important;
+}
+
+.theme-card.is-active .theme-card__radio {
+  border-color: var(--theme-primary) !important;
+}
+
+.appearance-current-theme__icon,
+.appearance-current-theme__badge {
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  color: var(--theme-primary) !important;
+}
+
+.appearance-current-theme__icon .react-icon {
+  color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   3️⃣ SETTINGS HERO — Hardcoded white/cream → theme surface
+   ============================================================ */
+
+.settings-hero {
+  background: linear-gradient(
+    100deg,
+    var(--theme-surface) 0%,
+    var(--theme-surface-2) 100%
+  ) !important;
+  border: 1px solid var(--theme-border) !important;
+  box-shadow: var(--theme-shadow-md) !important;
+}
+
+.settings-hero__title {
+  color: var(--theme-text) !important;
+}
+
+.settings-hero__description {
+  color: var(--theme-text-muted) !important;
+}
+
+.settings-hero__quote,
+.settings-hero__quote span {
+  color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   4️⃣ SETTINGS SIDEBAR — Hardcoded cream/yellow → theme
+   ============================================================ */
+
+.settings-sidebar__brand-name {
+  color: var(--theme-text) !important;
+}
+
+.settings-sidebar__brand-tag {
+  color: var(--theme-text-muted) !important;
+}
+
+.settings-sidebar__brand-mark {
+  border-color: rgba(var(--theme-primary-rgb), 0.5) !important;
+  background: rgba(var(--theme-primary-rgb), 0.15) !important;
+  color: var(--theme-primary) !important;
+}
+
+.settings-sidebar__item {
+  color: var(--theme-text-muted) !important;
+}
+
+.settings-sidebar__item .react-icon {
+  color: var(--theme-text-muted) !important;
+}
+
+.settings-sidebar__item:hover {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  color: var(--theme-text) !important;
+}
+
+.settings-sidebar__item:hover .react-icon {
+  color: var(--theme-primary) !important;
+}
+
+.settings-sidebar__item.is-active {
+  background: rgba(var(--theme-primary-rgb), 0.18) !important;
+  color: var(--theme-text) !important;
+}
+
+.settings-sidebar__item.is-active::before {
+  background: var(--theme-primary) !important;
+}
+
+.settings-sidebar__item.is-active .react-icon {
+  color: var(--theme-primary) !important;
+}
+
+.settings-sidebar__motto {
+  color: var(--theme-primary) !important;
+}
+
+.settings-sidebar__campus {
+  color: var(--theme-text-muted) !important;
+}
+
+/* ============================================================
+   5️⃣ SETTINGS LOCKED FIELDS — Hardcoded brown → theme muted
+   ============================================================ */
+
+.settings-field__input--locked,
+.settings-field__input--locked:disabled {
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(var(--theme-primary-rgb), 0.03),
+    rgba(var(--theme-primary-rgb), 0.03) 8px,
+    rgba(var(--theme-primary-rgb), 0.05) 8px,
+    rgba(var(--theme-primary-rgb), 0.05) 16px
+  ) !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.12) !important;
+}
+
+.settings-field__lock {
+  color: var(--theme-primary) !important;
+  background: rgba(var(--theme-primary-rgb), 0.08) !important;
+}
+
+/* ============================================================
+   6️⃣ SETTINGS MODAL OVERLAY — Hardcoded brown → theme scrim
+   ============================================================ */
+
+.settings-modal-overlay {
+  background: rgba(0, 0, 0, 0.45) !important;
+}
+
+[data-theme-mode='dark'] .settings-modal-overlay {
+  background: rgba(0, 0, 0, 0.65) !important;
+}
+
+/* ============================================================
+   7️⃣ SETTINGS DANGER BUTTON — Hardcoded red → theme danger
+   ============================================================ */
+
+.settings-danger-btn {
+  background: rgba(var(--theme-danger-rgb), 0.04) !important;
+  border-color: rgba(var(--theme-danger-rgb), 0.15) !important;
+}
+
+.settings-danger-btn:hover {
+  background: rgba(var(--theme-danger-rgb), 0.08) !important;
+  border-color: rgba(var(--theme-danger-rgb), 0.3) !important;
+}
+
+.settings-danger-btn__icon {
+  background: rgba(var(--theme-danger-rgb), 0.1) !important;
+  color: var(--theme-danger) !important;
+}
+
+.settings-danger-btn__label {
+  color: var(--theme-danger) !important;
+}
+
+.settings-danger-btn__desc {
+  color: var(--theme-danger) !important;
+  opacity: 0.7;
+}
+
+.settings-side-card--danger {
+  border-color: rgba(var(--theme-danger-rgb), 0.2) !important;
+}
+
+.settings-side-card__title--danger,
+.settings-side-card__title--danger .react-icon {
+  color: var(--theme-danger) !important;
+}
+
+/* ============================================================
+   8️⃣ SETTINGS TOGGLE SWITCH — Naka-theme na (check lang)
+   ============================================================ */
+
+.settings-switch__slider {
+  background: rgba(var(--theme-primary-rgb), 0.15) !important;
+}
+
+.settings-switch input:checked + .settings-switch__slider {
+  background: var(--theme-primary) !important;
+}
+
+.settings-switch__slider::before {
+  background: var(--theme-surface) !important;
+}
+
+/* ============================================================
+   9️⃣ HERO CAROUSEL CAPTION — Intentional dark glass
+   ⚠️ Ito ay INTENTIONAL — para readable sa ibabaw ng image
+   ✅ HINDI ito babaguhin
+   ============================================================ */
+
+/* Walang binabago — naka-set na ito sa hero.css */
+
+/* ============================================================
+   🔟 HERO CAROUSEL NAV BUTTONS — Intentional dark glass
+   ============================================================ */
+
+/* Walang binabago — naka-set na ito sa hero.css */
+
+/* ============================================================
+   1️⃣1️⃣ GCASH MODAL — Theme-aware
+   ============================================================ */
+
+.gcash-modal-backdrop,
+.od-modal-backdrop {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme-mode='light'] .gcash-modal-backdrop,
+[data-theme-mode='light'] .od-modal-backdrop {
+  background: rgba(0, 0, 0, 0.35) !important;
+}
+
+.gcash-modal__qr-image {
+  /* ✅ Intentional white — para scannable ang QR code */
+  background: #ffffff !important;
+}
+
+.gcash-modal__icon,
+.od-modal__header-icon {
+  color: var(--theme-on-primary) !important;
+}
+
+.gcash-modal__option.is-selected .gcash-modal__option-icon {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+}
+
+.gcash-modal__btn--primary,
+.od-modal__btn--primary {
+  color: var(--theme-on-primary) !important;
+}
+
+/* ============================================================
+   1️⃣2️⃣ NOTIFICATION BANNER — Theme-aware
+   ============================================================ */
+
+.notification-banner {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.notification-banner__title {
+  color: var(--theme-text) !important;
+}
+
+.notification-banner__message {
+  color: var(--theme-text-muted) !important;
+}
+
+/* ============================================================
+   1️⃣3️⃣ DASHBOARD GATE — Theme-aware (check)
+   ============================================================ */
+
+.dashboard-gate__icon {
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.25) !important;
+  color: var(--theme-primary) !important;
+}
+
+.dashboard-gate__title {
+  color: var(--theme-text) !important;
+}
+
+.dashboard-gate__description {
+  color: var(--theme-text-muted) !important;
+}
+
+/* ============================================================
+   1️⃣4️⃣ GENERIC OVERRIDES — Lahat ng pages
+   ✅ Sinasakop ang lahat ng elements na may hardcoded colors
+   ============================================================ */
+
+/* ✅ LAHAT ng card backgrounds */
+.dashboard-hero,
+.dashboard-summary__card,
+.dashboard-orders,
+.order-card,
+.settings-panel,
+.settings-hero,
+.settings-side-card,
+.profile-card,
+.profile-side__card,
+.catalog-card,
+.product-card,
+.product-related__card,
+.favorites-card,
+.notification-card,
+.notifications-container,
+.notification-bell__dropdown,
+.checkout-card,
+.cart-card,
+.cart-summary,
+.home-card,
+.home-section,
+.home-highlights__panel,
+.od-card,
+.od-rail-card,
+.order-details-card,
+.order-details-summary {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  border-color: var(--theme-border) !important;
+}
+
+/* ✅ LAHAT ng glass panels */
+.settings-panel,
+.dashboard-sidebar,
+.dashboard-summary__card,
+.order-card,
+.od-card,
+.od-rail-card,
+.profile-card,
+.profile-side__card,
+.catalog-card,
+.product-card,
+.product-related__card,
+.favorites-card,
+.notification-card,
+.notifications-container,
+.notification-bell__dropdown,
+.checkout-card,
+.cart-card,
+.cart-summary,
+.home-card,
+.home-section,
+.home-highlights__panel,
+.order-details-card,
+.order-details-summary {
+  background: var(--theme-glass-bg) !important;
+  border-color: var(--theme-glass-border) !important;
+}
+
+/* ✅ LAHAT ng headings */
+h1, h2, h3, h4, h5, h6,
+.dashboard-hero__title,
+.dashboard-summary__title,
+.settings-panel__title,
+.settings-hero__title,
+.settings-modal__title,
+.profile-card-title,
+.notification-card__title,
+.catalog-card__name,
+.product-info__title,
+.favorites-card__name,
+.od-card__head-title,
+.od-rail-card__title,
+.home-section__title,
+.home-card__name,
+.cart-card__title,
+.checkout-card__title,
+.catalog-hero__title,
+.favorites-hero__title,
+.notifications-hero__title {
+  color: var(--theme-text) !important;
+}
+
+/* ✅ LAHAT ng muted text */
+p, li,
+.settings-panel__subtitle,
+.settings-hero__description,
+.profile-card-subtitle,
+.notification-card__message,
+.catalog-card__category,
+.favorites-card__category,
+.dashboard-summary__label,
+.od-rail-card__text,
+.home-section__description,
+.home-card__category,
+.cart-card__subtitle,
+.checkout-card__subtitle,
+.catalog-hero__description,
+.favorites-hero__description,
+.notifications-hero__description {
+  color: var(--theme-text-muted) !important;
+}
+
+/* ✅ LAHAT ng accent text */
+.dashboard-hero__kicker,
+.dashboard-hero__quote,
+.dashboard-summary__total strong,
+.catalog-card__price,
+.product-card__price,
+.favorites-card__price,
+.home-card__price,
+.cart-item__price,
+.checkout-item__price,
+.order-card__price,
+.home-section__link,
+.home-section__kicker,
+.catalog-hero__kicker,
+.favorites-hero__kicker,
+.notifications-hero__kicker,
+.settings-hero__quote,
+.settings-hero__quote span {
+  color: var(--theme-primary) !important;
+}
+
+/* ✅ LAHAT ng primary buttons */
+button[class*="--primary"],
+button[class*="__cta"],
+button[class*="button--primary"],
+a[class*="--primary"],
+a[class*="__cta"],
+a[class*="button--primary"],
+.dashboard-summary__cta,
+.dashboard-gate__btn--primary,
+.catalog-card__cta,
+.catalog-card__btn,
+.product-card__btn,
+.product-panel__cta,
+.favorites-card__btn,
+.favorites-card__cta,
+.home-card__cta,
+.select-options-btn,
+.cart-summary__btn--primary,
+.checkout-summary__submit,
+.checkout-btn--primary,
+.gcash-modal__btn--primary,
+.od-modal__btn--primary,
+.settings-btn--primary,
+.dashboard-gate__btn--primary {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border-color: var(--theme-primary) !important;
+}
+
+button[class*="--primary"]:hover:not(:disabled),
+button[class*="__cta"]:hover:not(:disabled),
+button[class*="button--primary"]:hover:not(:disabled),
+a[class*="--primary"]:hover,
+a[class*="__cta"]:hover:not(.is-disabled),
+a[class*="button--primary"]:hover,
+.dashboard-summary__cta:hover,
+.dashboard-gate__btn--primary:hover,
+.catalog-card__cta:hover:not(.is-disabled),
+.catalog-card__btn:hover:not(:disabled),
+.product-card__btn:hover:not(:disabled),
+.product-panel__cta:hover:not(:disabled),
+.favorites-card__btn:hover:not(:disabled),
+.favorites-card__cta:hover:not(.is-disabled),
+.home-card__cta:hover,
+.select-options-btn:hover:not(:disabled),
+.cart-summary__btn--primary:hover:not(:disabled),
+.checkout-summary__submit:hover:not(:disabled),
+.checkout-btn--primary:hover:not(:disabled),
+.gcash-modal__btn--primary:hover:not(:disabled),
+.od-modal__btn--primary:hover:not(:disabled),
+.settings-btn--primary:hover:not(:disabled),
+.dashboard-gate__btn--primary:hover {
+  background: var(--theme-primary-hover) !important;
+  border-color: var(--theme-primary-hover) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ LAHAT ng ghost/secondary buttons */
+button[class*="--ghost"],
+button[class*="--secondary"],
+a[class*="--ghost"],
+a[class*="--secondary"],
+.cart-summary__btn--ghost,
+.checkout-btn--secondary,
+.gcash-modal__btn--ghost,
+.od-modal__btn--ghost,
+.settings-btn--ghost,
+.dashboard-gate__btn--ghost {
+  background: transparent !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  border-color: var(--theme-glass-border) !important;
+}
+
+/* ✅ LAHAT ng inputs */
+input,
+textarea,
+select,
+.settings-field__input,
+.settings-field__select,
+.settings-field__input--textarea,
+.cart-input,
+.checkout-input,
+.field__input {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  border-color: var(--theme-border) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.settings-field__input:focus,
+.settings-field__select:focus {
+  border-color: var(--theme-primary) !important;
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.15) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--theme-text-muted) !important;
+  opacity: 0.7;
+}
+
+/* ✅ LAHAT ng badges */
+.catalog-card__badge,
+.favorites-card__badge,
+.product-card__badge,
+.product-media__badge,
+.product-related__badge,
+.home-card__badge,
+.favorites-card__stock {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ============================================================
+   1️⃣5️⃣ HERO CAROUSEL — Intentional dark glass (HINDI BABAGUHIN)
+   ============================================================ */
+
+.hero-carousel__caption {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.5) 100%
+  ) !important;
+  color: #ffffff !important;
+}
+
+.hero-carousel__caption *,
+.hero-carousel__name,
+.hero-carousel__meta {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.hero-carousel__btn {
+  background: rgba(0, 0, 0, 0.45) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.hero-carousel__btn:hover {
+  background: rgba(0, 0, 0, 0.65) !important;
+  border-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.hero-carousel__dots {
+  background: rgba(0, 0, 0, 0.45) !important;
+}
+
+.hero-carousel__dot {
+  background: rgba(255, 255, 255, 0.45) !important;
+}
+
+.hero-carousel__dot.is-active {
+  background: #ffffff !important;
+}
+
+/* ============================================================
+   1️⃣6️⃣ FOOTER — Theme-aware
+   ============================================================ */
+
+.site-footer {
+  background: var(--theme-surface-2) !important;
+  border-top-color: var(--theme-border) !important;
+}
+
+.site-footer__cta {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border-strong) !important;
+}
+
+.site-footer__cta-copy h2 {
+  color: var(--theme-text) !important;
+}
+
+.site-footer__cta-copy p {
+  color: var(--theme-text-muted) !important;
+}
+
+.site-footer__logo-mark {
+  color: var(--theme-on-accent) !important;
+  background: var(--theme-accent) !important;
+  border-color: var(--theme-border-strong) !important;
+}
+
+.site-footer__logo-text strong {
+  color: var(--theme-text) !important;
+}
+
+.site-footer__logo-text small {
+  color: var(--theme-text-muted) !important;
+}
+
+.site-footer__heading {
+  color: var(--theme-text) !important;
+}
+
+.site-footer__heading::after {
+  background: var(--theme-accent) !important;
+}
+
+.site-footer__links a {
+  color: var(--theme-text-muted) !important;
+}
+
+.site-footer__links a:hover {
+  color: var(--theme-text) !important;
+}
+
+.site-footer__contact li {
+  color: var(--theme-text-muted) !important;
+}
+
+.site-footer__icon {
+  color: var(--theme-primary) !important;
+  background: var(--theme-surface-2) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.site-footer__badges li {
+  color: var(--theme-primary) !important;
+  background: var(--theme-surface-2) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.site-footer__badges .react-icon {
+  color: var(--theme-accent) !important;
+}
+
+.site-footer__bottom {
+  border-top-color: var(--theme-border) !important;
+}
+
+.site-footer__copy,
+.site-footer__meta a {
+  color: var(--theme-text-muted) !important;
+}
+
+.site-footer__meta a:hover {
+  color: var(--theme-text) !important;
+}
+
+.site-footer__top {
+  color: var(--theme-primary) !important;
+  background: var(--theme-surface-2) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.site-footer__top:hover {
+  background: var(--theme-accent) !important;
+  color: var(--theme-on-accent) !important;
+}
+
+.site-footer__status.is-open {
+  color: var(--theme-success) !important;
+}
+
+.site-footer__status.is-closed {
+  color: var(--theme-danger) !important;
+}
+
+/* ============================================================
+   1️⃣7️⃣ NAVBAR — Theme-aware
+   ============================================================ */
+
+.site-nav {
+  background: rgba(var(--theme-primary-rgb), 0.04) !important;
+  border-bottom-color: var(--theme-border) !important;
+}
+
+.brand__mark {
+  border-color: rgba(var(--theme-primary-rgb), 0.4) !important;
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  color: var(--theme-primary) !important;
+}
+
+.brand__name {
+  color: var(--theme-text) !important;
+}
+
+.brand__tagline {
+  color: var(--theme-text-muted) !important;
+}
+
+.nav-search {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.nav-search__input {
+  color: var(--theme-text) !important;
+}
+
+.nav-search__input::placeholder {
+  color: var(--theme-text-muted) !important;
+}
+
+.nav-cart-count {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+}
+
+/* ============================================================
+   1️⃣8️⃣ HERO CAROUSEL VIEWPORT
+   ============================================================ */
+
+.hero-carousel__viewport {
+  background: var(--theme-glass-bg) !important;
+  border-color: var(--theme-glass-border) !important;
+}
+
+/* ============================================================
+   1️⃣9️⃣ HOME CARDS
+   ============================================================ */
+
+.home-card {
+  background: var(--theme-glass-bg) !important;
+  border-color: var(--theme-glass-border) !important;
+}
+
+.home-card__media {
+  background: rgba(var(--theme-primary-rgb), 0.03) !important;
+  border-bottom-color: var(--theme-glass-border) !important;
+}
+
+.home-card__name {
+  color: var(--theme-text) !important;
+}
+
+.home-card__category {
+  color: var(--theme-text-muted) !important;
+}
+
+.home-card__price {
+  color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   2️⃣0️⃣ THEME GRID (Settings) — Walang binabago
+   ============================================================ */
+
+/* Naka-set na ito sa index.css */
+
+/* ============================================================
+   2️⃣1️⃣ CART & CHECKOUT — Theme-aware
+   ============================================================ */
+
+.cart-items,
+.cart-summary,
+.checkout-section,
+.checkout-summary {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.cart-hero,
+.checkout-hero {
+  background: linear-gradient(
+    90deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+}
+
+.cart-hero__title,
+.checkout-hero__title {
+  color: var(--theme-on-primary) !important;
+}
+
+.cart-hero__description,
+.checkout-hero__description {
+  color: var(--theme-on-primary) !important;
+  opacity: 0.85;
+}
+
+.cart-item__price,
+.checkout-summary__total strong {
+  color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   2️⃣2️⃣ PRODUCT PAGE — Theme-aware
+   ============================================================ */
+
+.product-gallery__stage {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.product-panel__inner {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.product-panel__title {
+  color: var(--theme-text) !important;
+}
+
+.product-panel__price {
+  color: var(--theme-primary) !important;
+}
+
+.product-panel__description {
+  color: var(--theme-text-muted) !important;
+}
+
+.product-variant {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--theme-text) !important;
+}
+
+.product-variant.is-selected {
+  background: var(--theme-primary) !important;
+  border-color: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+}
+
+.product-tabs {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.product-related__card {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.product-related__name {
+  color: var(--theme-text) !important;
+}
+
+.product-related__price {
+  color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   2️⃣3️⃣ NOTIFICATIONS — Theme-aware
+   ============================================================ */
+
+.notifications-hero {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.notifications-hero__title {
+  color: var(--theme-text) !important;
+}
+
+.notifications-toolbar {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.notifications-tab.is-active {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+}
+
+.notification-card {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.notification-card--unread {
+  background: rgba(var(--theme-primary-rgb), 0.04) !important;
+  border-left-color: var(--theme-primary) !important;
+}
+
+.notification-card__title {
+  color: var(--theme-text) !important;
+}
+
+.notification-card__message {
+  color: var(--theme-text-muted) !important;
+}
+
+/* ============================================================
+   2️⃣4️⃣ PROFILE PAGE — Theme-aware
+   ============================================================ */
+
+.profile-card {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.profile-card-title {
+  color: var(--theme-text) !important;
+}
+
+.profile-side__card {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.profile-brand-card {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+}
+
+.profile-brand-card__title,
+.profile-brand-card__subtitle,
+.profile-brand-card__tagline {
+  color: var(--theme-on-primary) !important;
+}
+
+/* ============================================================
+   2️⃣5️⃣ CATALOG — Theme-aware
+   ============================================================ */
+
+.catalog-card {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.catalog-card__name {
+  color: var(--theme-text) !important;
+}
+
+.catalog-card__price {
+  color: var(--theme-primary) !important;
+}
+
+.catalog-card__category {
+  color: var(--theme-text-muted) !important;
+}
+
+/* ============================================================
+   2️⃣6️⃣ FAVORITES — Theme-aware
+   ============================================================ */
+
+.favorites-card {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.favorites-card__name {
+  color: var(--theme-text) !important;
+}
+
+.favorites-card__price {
+  color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   2️⃣7️⃣ ORDERS / ORDER DETAILS — Theme-aware
+   ============================================================ */
+
+.od-card,
+.od-rail-card {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+.od-card__head-title,
+.od-rail-card__title {
+  color: var(--theme-text) !important;
+}
+
+.od-rail-card__text {
+  color: var(--theme-text-muted) !important;
+}
+
+.od-summary__total strong {
+  color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   2️⃣8️⃣ AUTH (Login/Register) — Theme-aware
+   ============================================================ */
+
+.auth-shell,
+.register-page {
+  background: var(--theme-bg-solid) !important;
+  color: var(--theme-text) !important;
+}
+
+/* ============================================================
+   ✅ FALLBACK — no backdrop-filter support
+   ============================================================ */
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .dashboard-sidebar,
+  .settings-sidebar,
+  .profile-sidebar,
+  .order-sidebar-nav,
+  .notifications-sidebar {
+    background: var(--theme-surface) !important;
+  }
+}
+
+/* ============================================================
+   ✅ PER-THEME MODE OVERRIDES — Contrast safety
+   ============================================================ */
+
+/* ✅ Dark mode — mas deep na shadows */
+[data-theme-mode='dark'] .settings-modal-overlay,
+[data-theme-mode='dark'] .gcash-modal-backdrop,
+[data-theme-mode='dark'] .od-modal-backdrop {
+  background: rgba(0, 0, 0, 0.65) !important;
+}
+
+/* ✅ Light mode — mas light na shadows */
+[data-theme-mode='light'] .settings-modal-overlay,
+[data-theme-mode='light'] .gcash-modal-backdrop,
+[data-theme-mode='light'] .od-modal-backdrop {
+  background: rgba(0, 0, 0, 0.35) !important;
+}
+/* ===========================================================
+
+/* ============================================================
+   5️⃣ Z-INDEX STACKING — Siguraduhing maayos ang layers
+   ✅ body::before (bg) < body::after (overlay) < #root (content)
+   ============================================================ */
+
+#root,
+.app-shell {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   6️⃣ PAGES — Transparent shells para makita ang background
+   ✅ Lahat ng pages: transparent para consistent ang bg
+   ============================================================ */
+
+.dashboard-shell,
+.order-page,
+.catalog-page,
+.cart-page,
+.checkout-page,
+.product-page,
+.settings-shell,
+.profile-shell,
+.auth-shell,
+.register-page,
+.notifications-shell,
+.favorites-page,
+.profile-page,
+.order-details-page {
+  background: transparent !important;
+}
+
+/* ============================================================
+   7️⃣ REDUCED MOTION — Respect user preferences
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after {
+    transition: none !important;
+  }
+}
+
+/* ============================================================
+   8️⃣ MOBILE — Siguraduhing visible pa rin ang background
+   ✅ Mas mataas na opacity para sa maliliit na screens
+   ============================================================ */
+
+@media (max-width: 768px) {
+  body::before {
+    opacity: 0.15 !important;
+  }
+  
+  [data-theme-mode='dark'] body::before {
+    opacity: 0.25 !important;
+  }
+}
+
+/* ============================================================
+   9️⃣ SAFE AREA — Support para sa notched devices
+   ============================================================ */
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+/* ============================================================
+   🎨 CLAYMORPHISM + NEUMORPHISM — NAVBAR MATCH
+   ✅ Match sa catalog claymorphism at fields neumorphism
+   ✅ Naka-apply sa lahat ng 10 themes
+   ============================================================ */
+
+/* ============================================================
+   1️⃣ NAVBAR — Base (claymorphism)
+   ============================================================ */
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    inset 0 -1px 0 rgba(var(--theme-primary-rgb), 0.08);
+  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+[data-theme-mode='dark'] .site-nav {
+  background: var(--theme-surface);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 -1px 0 rgba(var(--theme-primary-rgb), 0.15);
+}
+
+/* ============================================================
+   2️⃣ NAV ACTIONS — Claymorphism buttons
+   ✅ Lahat ng nav links at buttons
+   ============================================================ */
+
+.site-nav .nav-action {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.35rem;
+  padding: 0.5rem 0.85rem;
+  border: none;
+  border-radius: 1rem;
+  background: var(--theme-surface);
+  color: var(--theme-text-muted);
+  -webkit-text-fill-color: var(--theme-text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  transition:
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.25s ease,
+    background 0.25s ease,
+    color 0.25s ease;
+  overflow: hidden;
+}
+
+[data-theme-mode='dark'] .site-nav .nav-action {
+  background: var(--theme-surface-2);
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.35),
+    0 1px 2px rgba(0, 0, 0, 0.25),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.06);
+}
+
+/* ✅ Clay gloss highlight */
+.site-nav .nav-action::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    transparent 100%
+  );
+  border-radius: 1rem 1rem 0 0;
+  pointer-events: none;
+}
+
+[data-theme-mode='dark'] .site-nav .nav-action::before {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 100%
+  );
+}
+
+.site-nav .nav-action:hover {
+  transform: translateY(-2px) scale(1.03);
+  background: var(--theme-surface);
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  box-shadow:
+    0 8px 16px rgba(var(--theme-primary-rgb), 0.15),
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5);
+}
+
+[data-theme-mode='dark'] .site-nav .nav-action:hover {
+  background: var(--theme-surface-2);
+  box-shadow:
+    0 8px 16px rgba(var(--theme-primary-rgb), 0.25),
+    0 3px 6px rgba(0, 0, 0, 0.35),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.08);
+}
+
+.site-nav .nav-action:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 2px 4px rgba(0, 0, 0, 0.12),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.2);
+}
+
+/* ✅ Accent button (Sign in) */
+.site-nav .nav-action--accent {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  );
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
+  box-shadow:
+    0 4px 10px rgba(var(--theme-primary-rgb), 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25);
+}
+
+.site-nav .nav-action--accent:hover {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary-hover) 0%,
+    var(--theme-primary) 100%
+  );
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
+  box-shadow:
+    0 8px 20px rgba(var(--theme-primary-rgb), 0.4),
+    0 3px 6px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3);
+}
+
+/* ✅ Cart count badge */
+.site-nav .nav-cart-count {
+  display: inline-grid;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.3rem;
+  place-items: center;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  );
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.62rem;
+  font-weight: 700;
+  box-shadow:
+    0 2px 6px rgba(var(--theme-primary-rgb), 0.4),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================================
+   3️⃣ NAV SEARCH — Neumorphism inset
+   ✅ Same treatment ng ibang fields
+   ============================================================ */
+
+.site-nav .nav-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.85rem;
+  margin: 0 1rem;
+  background: var(--theme-surface-2);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  height: 2.5rem;
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.6);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+[data-theme-mode='dark'] .site-nav .nav-search {
+  background: var(--theme-surface-2);
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.5),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.04);
+}
+
+.site-nav .nav-search:hover {
+  box-shadow:
+    inset 4px 4px 8px rgba(0, 0, 0, 0.1),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.7);
+}
+
+[data-theme-mode='dark'] .site-nav .nav-search:hover {
+  box-shadow:
+    inset 4px 4px 8px rgba(0, 0, 0, 0.55),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.05);
+}
+
+.site-nav .nav-search:focus-within {
+  background: var(--theme-surface);
+  box-shadow:
+    inset 4px 4px 8px rgba(0, 0, 0, 0.1),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.7),
+    0 0 0 3px rgba(var(--theme-primary-rgb), 0.15);
+}
+
+.site-nav .nav-search__icon {
+  color: var(--theme-text-muted);
+  flex-shrink: 0;
+}
+
+.site-nav .nav-search__input {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  font-family: inherit;
+  font-size: 0.82rem;
+  outline: none;
+  height: 100%;
+}
+
+.site-nav .nav-search__input::placeholder {
+  color: var(--theme-text-muted) !important;
+  opacity: 0.7;
+}
+
+/* ✅ Keyboard shortcut pill */
+.site-nav .nav-search__kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.4rem;
+  background: var(--theme-surface);
+  color: var(--theme-text-muted);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6rem;
+  font-weight: 700;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.08),
+    inset 0 1px 2px rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+}
+
+[data-theme-mode='dark'] .site-nav .nav-search__kbd {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.05);
+}
+
+/* ✅ Clear button */
+.site-nav .nav-search__clear {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  border-radius: 50%;
+  background: var(--theme-surface);
+  color: var(--theme-text-muted);
+  cursor: pointer;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.06),
+    inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  transition: all 0.2s ease;
+}
+
+.site-nav .nav-search__clear:hover {
+  color: var(--theme-danger);
+  transform: scale(1.1);
+}
+
+/* ============================================================
+   4️⃣ NAV AVATAR — Claymorphism
+   ============================================================ */
+
+.site-nav .nav-avatar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px 3px 3px;
+  border-radius: 999px;
+  background: var(--theme-surface);
+  border: none;
+  cursor: pointer;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+}
+
+[data-theme-mode='dark'] .site-nav .nav-avatar {
+  background: var(--theme-surface-2);
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.35),
+    0 1px 2px rgba(0, 0, 0, 0.25),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.06);
+}
+
+.site-nav .nav-avatar:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow:
+    0 6px 12px rgba(var(--theme-primary-rgb), 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5);
+}
+
+.site-nav .nav-avatar-frame {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--theme-surface);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.site-nav .nav-avatar-initials {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  );
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
+  font-weight: 700;
+  font-size: 0.72rem;
+}
+
+.site-nav .nav-avatar-chevron {
+  color: var(--theme-text-muted);
+  width: 0.85rem;
+  height: 0.85rem;
+  transition: transform 0.25s ease;
+}
+
+/* ============================================================
+   5️⃣ NAV DROPDOWN — Claymorphism panel
+   ============================================================ */
+
+.site-nav .nav-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 280px;
+  padding: 0.5rem;
+  border-radius: 1.25rem;
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3);
+  animation: navDropdownIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-theme-mode='dark'] .site-nav .nav-dropdown {
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    0 8px 16px rgba(0, 0, 0, 0.4),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.35),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06);
+}
+
+@keyframes navDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ✅ Dropdown header link */
+.site-nav .nav-dropdown-header-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 0.85rem;
+  transition: background 0.2s ease;
+}
+
+.site-nav .nav-dropdown-header-link:hover {
+  background: var(--theme-surface-2);
+}
+
+.site-nav .nav-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.site-nav .nav-dropdown-avatar-frame {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--theme-surface-2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+
+.site-nav .nav-dropdown-initials {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  );
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.site-nav .nav-dropdown-name {
+  color: var(--theme-text);
+  font-family: var(--font-display, 'Fraunces', serif);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0 0 0.15rem;
+}
+
+.site-nav .nav-dropdown-role {
+  color: var(--theme-primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin: 0 0 0.15rem;
+}
+
+.site-nav .nav-dropdown-email {
+  color: var(--theme-text-muted);
+  font-size: 0.72rem;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ✅ Dropdown divider */
+.site-nav .nav-dropdown-divider {
+  border: none;
+  border-top: 1px solid var(--theme-border);
+  margin: 0.5rem 0.75rem;
+  opacity: 0.5;
+}
+
+/* ✅ Dropdown items — claymorphism mini */
+.site-nav .nav-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: none;
+  border-radius: 0.75rem;
+  background: transparent;
+  color: var(--theme-text-muted);
+  -webkit-text-fill-color: var(--theme-text-muted);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.site-nav .nav-dropdown-item .react-icon {
+  width: 1rem;
+  height: 1rem;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.site-nav .nav-dropdown-item:hover {
+  background: var(--theme-surface-2);
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  transform: translateX(3px);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.06),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 1px 2px rgba(255, 255, 255, 0.4);
+}
+
+[data-theme-mode='dark'] .site-nav .nav-dropdown-item:hover {
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.05);
+}
+
+/* ✅ Danger item */
+.site-nav .nav-dropdown-item--danger {
+  color: var(--theme-danger);
+  -webkit-text-fill-color: var(--theme-danger);
+}
+
+.site-nav .nav-dropdown-item--danger:hover {
+  background: rgba(var(--theme-danger-rgb), 0.08);
+  color: var(--theme-danger);
+  -webkit-text-fill-color: var(--theme-danger);
+}
+
+/* ✅ Themes item — special accent */
+.site-nav .nav-dropdown-item--themes {
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+}
+
+.site-nav .nav-dropdown-item--themes:hover {
+  background: rgba(var(--theme-primary-rgb), 0.08);
+}
+
+/* ============================================================
+   6️⃣ NAV DROPDOWN LANGUAGE — Claymorphism
+   ============================================================ */
+
+.site-nav .nav-dropdown-language {
+  padding: 0.5rem 0.75rem;
+}
+
+.site-nav .nav-dropdown-language__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--theme-text-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.site-nav .nav-dropdown-language__header .react-icon {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+/* ============================================================
+   7️⃣ NOTIFICATION BELL — Claymorphism
+   ============================================================ */
+
+.site-nav .notification-bell__button {
+  display: grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 1rem;
+  background: var(--theme-surface);
+  border: none;
+  color: var(--theme-text-muted);
+  cursor: pointer;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, color 0.25s ease;
+}
+
+[data-theme-mode='dark'] .site-nav .notification-bell__button {
+  background: var(--theme-surface-2);
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.35),
+    0 1px 2px rgba(0, 0, 0, 0.25),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.06);
+}
+
+.site-nav .notification-bell__button:hover {
+  transform: translateY(-2px) scale(1.05);
+  color: var(--theme-primary);
+  box-shadow:
+    0 6px 12px rgba(var(--theme-primary-rgb), 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5);
+}
+
+.site-nav .notification-bell__badge {
+  box-shadow:
+    0 2px 6px rgba(var(--theme-danger-rgb), 0.4),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================================
+   8️⃣ BRAND LOGO — Claymorphism frame
+   ============================================================ */
+
+.site-nav .brand__logo {
+  border-radius: 50%;
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+[data-theme-mode='dark'] .site-nav .brand__logo {
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.4),
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.08);
+}
+
+.site-nav .brand:hover .brand__logo {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow:
+    0 8px 16px rgba(var(--theme-primary-rgb), 0.2),
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6);
+}
+
+/* ============================================================
+   9️⃣ RESPONSIVE — Mobile adjustments
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .site-nav .nav-action {
+    padding: 0.45rem 0.65rem;
+    box-shadow:
+      0 3px 6px rgba(0, 0, 0, 0.08),
+      inset 0 -1.5px 3px rgba(0, 0, 0, 0.06),
+      inset 0 1.5px 3px rgba(255, 255, 255, 0.4);
+  }
+
+  .site-nav .nav-search {
+    box-shadow:
+      inset 2px 2px 4px rgba(0, 0, 0, 0.08),
+      inset -2px -2px 4px rgba(255, 255, 255, 0.6);
+  }
+
+  [data-theme-mode='dark'] .site-nav .nav-search {
+    box-shadow:
+      inset 2px 2px 4px rgba(0, 0, 0, 0.5),
+      inset -2px -2px 4px rgba(255, 255, 255, 0.04);
+  }
+}
+
+/* ============================================================
+   🔟 ACCESSIBILITY — Reduced motion
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .site-nav .nav-action,
+  .site-nav .nav-avatar,
+  .site-nav .notification-bell__button,
+  .site-nav .brand__logo {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+/* ============================================================
+   🎨 FINAL POLISH — Hero, Cart, Catalog, Profile + Gradient Tint
+   ✅ Match sa claymorphism at neumorphism
+   ✅ Dark background: may gradient tint pa rin mula sa theme
+   ✅ Naka-apply sa lahat ng 10 themes
+   ============================================================ */
+
+/* ============================================================
+   1️⃣ DARK BACKGROUND — Gradient tint mula sa theme color
+   ✅ Hindi purong itim — may tint pa rin mula sa primary
+   ============================================================ */
+
+[data-theme-mode='dark'] body {
+  background:
+    radial-gradient(
+      ellipse at top left,
+      rgba(var(--theme-primary-rgb), 0.08) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at bottom right,
+      rgba(var(--theme-accent-rgb), 0.06) 0%,
+      transparent 50%
+    ),
+    var(--theme-bg-solid) !important;
+  background-attachment: fixed !important;
+}
+
+/* ✅ Per dark theme — custom gradient tint */
+[data-theme='midnight-navy'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(123, 167, 225, 0.12) 0%, transparent 55%),
+    radial-gradient(ellipse at bottom right, rgba(155, 192, 237, 0.08) 0%, transparent 55%),
+    #0E1626 !important;
+}
+
+[data-theme='matte-black'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(212, 165, 116, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse at bottom right, rgba(229, 181, 132, 0.06) 0%, transparent 55%),
+    #0F0F0F !important;
+}
+
+[data-theme='charcoal-gray'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(168, 184, 200, 0.12) 0%, transparent 55%),
+    radial-gradient(ellipse at bottom right, rgba(200, 208, 220, 0.08) 0%, transparent 55%),
+    #1A1A1A !important;
+}
+
+[data-theme='deep-forest'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(127, 200, 162, 0.12) 0%, transparent 55%),
+    radial-gradient(ellipse at bottom right, rgba(168, 224, 192, 0.08) 0%, transparent 55%),
+    #0A1F1A !important;
+}
+
+[data-theme='dark-plum'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(200, 160, 212, 0.12) 0%, transparent 55%),
+    radial-gradient(ellipse at bottom right, rgba(217, 184, 226, 0.08) 0%, transparent 55%),
+    #1A0E1F !important;
+}
+
+/* ✅ Light themes — subtle gradient tint din */
+[data-theme-mode='light'] body {
+  background:
+    radial-gradient(
+      ellipse at top left,
+      rgba(var(--theme-primary-rgb), 0.04) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at bottom right,
+      rgba(var(--theme-accent-rgb), 0.03) 0%,
+      transparent 50%
+    ),
+    var(--theme-bg-solid) !important;
+  background-attachment: fixed !important;
+}
+
+/* ============================================================
+   2️⃣ HERO SECTION — Match sa claymorphism at neumorphism
+   ============================================================ */
+
+/* ✅ Hero shell — gradient tint */
+.hero-shell {
+  position: relative;
+  background: transparent;
+}
+
+.hero-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse at top right,
+      rgba(var(--theme-primary-rgb), 0.06) 0%,
+      transparent 60%
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ✅ Hero title — clay-like text shadow */
+.hero-title {
+  text-shadow:
+    0 2px 4px rgba(var(--theme-primary-rgb), 0.15),
+    0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme-mode='dark'] .hero-title {
+  text-shadow:
+    0 2px 8px rgba(var(--theme-primary-rgb), 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.hero-title span {
+  text-shadow:
+    0 2px 4px rgba(var(--theme-primary-rgb), 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme-mode='dark'] .hero-title span {
+  text-shadow:
+    0 3px 10px rgba(var(--theme-primary-rgb), 0.4),
+    0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* ✅ Hero action buttons — claymorphism */
+.hero-actions .button--primary,
+.hero-actions .btn-primary,
+.hero-actions [class*="--primary"] {
+  position: relative;
+  border-radius: 1rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease !important;
+  overflow: hidden;
+}
+
+.hero-actions .button--primary::before,
+.hero-actions .btn-primary::before,
+.hero-actions [class*="--primary"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 100%);
+  border-radius: 1rem 1rem 0 0;
+  pointer-events: none;
+}
+
+.hero-actions .button--primary:hover,
+.hero-actions .btn-primary:hover,
+.hero-actions [class*="--primary"]:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+.hero-actions .button--primary:active,
+.hero-actions .btn-primary:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 4px rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ✅ Hero secondary/ghost buttons — clay variant */
+.hero-actions .button--secondary,
+.hero-actions .btn-secondary,
+.hero-actions [class*="--secondary"],
+.hero-actions [class*="--ghost"] {
+  border-radius: 1rem !important;
+  background: var(--theme-surface) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  border: none !important;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+.hero-actions .button--secondary:hover,
+.hero-actions .btn-secondary:hover,
+.hero-actions [class*="--secondary"]:hover,
+.hero-actions [class*="--ghost"]:hover {
+  transform: translateY(-2px) scale(1.02);
+  color: var(--theme-primary-hover) !important;
+  -webkit-text-fill-color: var(--theme-primary-hover) !important;
+  box-shadow:
+    0 8px 16px rgba(var(--theme-primary-rgb), 0.15),
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6) !important;
+}
+
+/* ✅ Hero bullets — clay icons */
+.hero-bullet__icon {
+  border-radius: 50% !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  color: var(--theme-primary) !important;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ✅ Hero carousel viewport — clay panel */
+.hero-carousel__viewport {
+  border-radius: 1.5rem !important;
+  box-shadow:
+    0 20px 40px rgba(var(--theme-primary-rgb), 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+[data-theme-mode='dark'] .hero-carousel__viewport {
+  box-shadow:
+    0 20px 40px rgba(var(--theme-primary-rgb), 0.25),
+    0 8px 16px rgba(0, 0, 0, 0.4),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ============================================================
+   3️⃣ CART PAGE — Match sa claymorphism at neumorphism
+   ============================================================ */
+
+/* ✅ Cart hero — gradient tint + clay */
+.cart-hero {
+  position: relative;
+  border-radius: 1.25rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  box-shadow:
+    0 12px 28px rgba(var(--theme-primary-rgb), 0.25),
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.2) !important;
+  overflow: hidden;
+}
+
+.cart-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* ✅ Cart items panel — clay */
+.cart-items {
+  border-radius: 1.25rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+}
+
+[data-theme-mode='dark'] .cart-items {
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ✅ Cart summary panel — clay */
+.cart-summary {
+  border-radius: 1.25rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.35) !important;
+}
+
+[data-theme-mode='dark'] .cart-summary {
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.55),
+    0 4px 8px rgba(0, 0, 0, 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ✅ Cart summary buttons — clay */
+.cart-summary__btn--primary {
+  border-radius: 1rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease !important;
+}
+
+.cart-summary__btn--primary:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+.cart-summary__btn--primary:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 4px rgba(255, 255, 255, 0.15) !important;
+}
+
+.cart-summary__btn--ghost {
+  border-radius: 1rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+.cart-summary__btn--ghost:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.02);
+  color: var(--theme-primary-hover) !important;
+  box-shadow:
+    0 8px 16px rgba(var(--theme-primary-rgb), 0.15),
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6) !important;
+}
+
+/* ✅ Cart quantity buttons — clay mini */
+.cart-item__qty-btn {
+  border-radius: 0.6rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  color: var(--theme-text-muted) !important;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.06),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5) !important;
+  transition: all 0.2s ease !important;
+}
+
+.cart-item__qty-btn:hover {
+  color: var(--theme-primary) !important;
+  transform: scale(1.1);
+  box-shadow:
+    0 4px 8px rgba(var(--theme-primary-rgb), 0.2),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.06),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ✅ Cart remove button — clay danger */
+.cart-item__remove {
+  border-radius: 0.6rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  color: var(--theme-text-muted) !important;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+.cart-item__remove:hover {
+  color: var(--theme-danger) !important;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow:
+    0 6px 12px rgba(var(--theme-danger-rgb), 0.25),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ============================================================
+   4️⃣ CATALOG PAGE — I-apply ang clay sa lahat ng buttons
+   ============================================================ */
+
+.catalog-hero {
+  border-radius: 1.5rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  box-shadow:
+    0 16px 32px rgba(var(--theme-primary-rgb), 0.25),
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.2) !important;
+  overflow: hidden;
+}
+
+.catalog-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* ✅ Catalog cards — clay */
+.catalog-card {
+  border-radius: 1.25rem !important;
+  border: none !important;
+  background: var(--theme-surface) !important;
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease !important;
+}
+
+[data-theme-mode='dark'] .catalog-card {
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.25),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.05) !important;
+}
+
+.catalog-card:hover {
+  transform: translateY(-4px) scale(1.01) !important;
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
+}
+
+/* ============================================================
+   5️⃣ PROFILE PAGE — Match sa claymorphism at neumorphism
+   ============================================================ */
+
+.profile-shell,
+.profile-page {
+  background: transparent !important;
+}
+
+.profile-hero {
+  border-radius: 1.5rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  box-shadow:
+    0 16px 32px rgba(var(--theme-primary-rgb), 0.25),
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.2) !important;
+}
+
+.profile-card {
+  border-radius: 1.25rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+}
+
+[data-theme-mode='dark'] .profile-card {
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.05) !important;
+}
+
+.profile-side__card {
+  border-radius: 1.25rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ✅ Profile brand card — clay accent */
+.profile-brand-card,
+.settings-brand-card {
+  border-radius: 1.25rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  border: none !important;
+  box-shadow:
+    0 8px 20px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.2) !important;
+  overflow: hidden;
+}
+
+/* ✅ Profile edit buttons — clay */
+.profile-card button[class*="--primary"],
+.profile-card a[class*="--primary"],
+.profile-card__cta,
+.profile-side__cta {
+  border-radius: 1rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease !important;
+}
+
+.profile-card button[class*="--primary"]:hover,
+.profile-card a[class*="--primary"]:hover,
+.profile-card__cta:hover,
+.profile-side__cta:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ============================================================
+   6️⃣ DASHBOARD SUMMARY + ORDERS — Match
+   ============================================================ */
+
+.dashboard-summary__card {
+  border-radius: 1.25rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+}
+
+[data-theme-mode='dark'] .dashboard-summary__card {
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.05) !important;
+}
+
+.dashboard-summary__cta {
+  border-radius: 1rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease !important;
+}
+
+.dashboard-summary__cta:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ============================================================
+   7️⃣ CHECKOUT — Match
+   ============================================================ */
+
+.checkout-section {
+  border-radius: 1.25rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+}
+
+.checkout-summary__submit,
+.checkout-btn--primary {
+  border-radius: 1rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease !important;
+}
+
+.checkout-summary__submit:hover:not(:disabled),
+.checkout-btn--primary:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ============================================================
+   8️⃣ NOTIFICATIONS — Match
+   ============================================================ */
+
+.notification-card {
+  border-radius: 1.25rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.03),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.03),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease !important;
+}
+
+[data-theme-mode='dark'] .notification-card {
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 1px 2px rgba(0, 0, 0, 0.25),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.05) !important;
+}
+
+.notification-card:hover {
+  transform: translateY(-3px) scale(1.01) !important;
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.15),
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
+}
+
+/* ============================================================
+   9️⃣ SETTINGS — Match
+   ============================================================ */
+
+.settings-panel {
+  border-radius: 1.25rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+}
+
+[data-theme-mode='dark'] .settings-panel {
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.05) !important;
+}
+
+.settings-btn--primary {
+  border-radius: 1rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease !important;
+}
+
+.settings-btn--primary:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+.settings-btn--ghost {
+  border-radius: 1rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+.settings-btn--ghost:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.02);
+  color: var(--theme-primary-hover) !important;
+  box-shadow:
+    0 8px 16px rgba(var(--theme-primary-rgb), 0.15),
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6) !important;
+}
+
+/* ============================================================
+   🔟 FAVORITES — Match
+   ============================================================ */
+
+.favorites-card {
+  border-radius: 1.25rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease !important;
+}
+
+[data-theme-mode='dark'] .favorites-card {
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.25),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.05) !important;
+}
+
+.favorites-card:hover {
+  transform: translateY(-4px) scale(1.01) !important;
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
+}
+
+/* ============================================================
+   1️⃣1️⃣ ORDER DETAILS — Match
+   ============================================================ */
+
+.od-card,
+.od-rail-card {
+  border-radius: 1.25rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+}
+
+[data-theme-mode='dark'] .od-card,
+[data-theme-mode='dark'] .od-rail-card {
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ============================================================
+   1️⃣2️⃣ MODALS — Claymorphism panels
+   ============================================================ */
+
+.gcash-modal,
+.od-modal,
+.cancel-modal,
+.settings-modal {
+  border-radius: 1.5rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 32px 64px rgba(0, 0, 0, 0.25),
+    0 12px 24px rgba(0, 0, 0, 0.15),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+[data-theme-mode='dark'] .gcash-modal,
+[data-theme-mode='dark'] .od-modal,
+[data-theme-mode='dark'] .cancel-modal,
+[data-theme-mode='dark'] .settings-modal {
+  box-shadow:
+    0 32px 64px rgba(0, 0, 0, 0.7),
+    0 12px 24px rgba(0, 0, 0, 0.5),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ============================================================
+   1️⃣3️⃣ FOOTER — Match sa claymorphism
+   ============================================================ */
+
+.site-footer {
+  background: var(--theme-surface-2) !important;
+  border-top: 1px solid var(--theme-border) !important;
+  box-shadow:
+    0 -8px 20px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme-mode='dark'] .site-footer {
+  box-shadow:
+    0 -8px 20px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.04) !important;
+}
+
+.site-footer__cta {
+  border-radius: 1.25rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+}
+
+.site-footer__cta-btn {
+  border-radius: 1rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease !important;
+}
+
+.site-footer__cta-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ============================================================
+   1️⃣4️⃣ ACCESSIBILITY — Reduced motion
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-actions button,
+  .hero-actions a,
+  .cart-summary__btn,
+  .catalog-card,
+  .profile-card,
+  .dashboard-summary__cta,
+  .checkout-summary__submit,
+  .notification-card,
+  .favorites-card,
+  .settings-btn,
+  .site-footer__cta-btn {
+    transition: none !important;
+    transform: none !important;
+  }
+} 
+/* ============================================================
+   🎨 CLAYMORPHISM — HOME PAGE (Hero, Home Cards, Sections)
+   ✅ Match sa catalog claymorphism
+   ✅ Naka-apply sa lahat ng elements sa home page
+   ============================================================ */
+
+/* ============================================================
+   1️⃣ HOME SECTION — Clay container
+   ============================================================ */
+
+.home-section {
+  position: relative;
+  border-radius: 1.5rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease !important;
+}
+
+[data-theme-mode='dark'] .home-section {
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+.home-section:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 20px 40px rgba(var(--theme-primary-rgb), 0.12),
+    0 8px 16px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(255, 255, 255, 0.5) !important;
+}
+
+[data-theme-mode='dark'] .home-section:hover {
+  box-shadow:
+    0 20px 40px rgba(var(--theme-primary-rgb), 0.25),
+    0 8px 16px rgba(0, 0, 0, 0.45),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ✅ Home section header — clay divider */
+.home-section__header {
+  border-bottom: 1px solid var(--theme-border) !important;
+  padding-bottom: 1rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.home-section__kicker {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  font-weight: 700 !important;
+}
+
+.home-section__kicker::before {
+  background: var(--theme-primary) !important;
+  height: 2px !important;
+}
+
+.home-section__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  font-weight: 700 !important;
+  font-family: var(--font-display, 'Fraunces', serif) !important;
+}
+
+.home-section__description {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.home-section__link {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  font-weight: 700 !important;
+}
+
+.home-section__link:hover {
+  color: var(--theme-primary-hover) !important;
+  -webkit-text-fill-color: var(--theme-primary-hover) !important;
+  transform: translateX(3px);
+}
+
+/* ============================================================
+   2️⃣ HOME CARDS — Claymorphism (Newest Arrivals, Featured, etc.)
+   ============================================================ */
+
+.home-card {
+  position: relative;
+  border-radius: 1.25rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  overflow: hidden !important;
+  text-decoration: none !important;
+  color: var(--theme-text) !important;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease !important;
+}
+
+[data-theme-mode='dark'] .home-card {
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+.home-card:hover {
+  transform: translateY(-5px) scale(1.015) !important;
+  box-shadow:
+    0 16px 32px rgba(var(--theme-primary-rgb), 0.2),
+    0 6px 12px rgba(0, 0, 0, 0.1),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(255, 255, 255, 0.5) !important;
+}
+
+[data-theme-mode='dark'] .home-card:hover {
+  box-shadow:
+    0 16px 32px rgba(var(--theme-primary-rgb), 0.35),
+    0 6px 12px rgba(0, 0, 0, 0.5),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.08) !important;
+}
+
+.home-card__media {
+  background: var(--theme-surface-2) !important;
+  border-bottom: 1px solid var(--theme-border) !important;
+}
+
+.home-card__image {
+  border-radius: 1.25rem 1.25rem 0 0 !important;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+.home-card:hover .home-card__image {
+  transform: scale(1.06);
+}
+
+.home-card__body {
+  background: var(--theme-surface) !important;
+  padding: 1rem 1rem 1.25rem !important;
+}
+
+.home-card__name {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  font-weight: 700 !important;
+}
+
+.home-card__category {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.home-card__price {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  font-weight: 700 !important;
+}
+
+/* ✅ Home card badge — clay */
+.home-card__badge {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  padding: 0.35rem 0.75rem !important;
+  box-shadow:
+    0 4px 10px rgba(var(--theme-primary-rgb), 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.25) !important;
+  font-weight: 800 !important;
+}
+
+/* ============================================================
+   3️⃣ HOME CARD CTA — Claymorphism (View button)
+   ============================================================ */
+
+.home-card__cta {
+  position: relative;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.4rem !important;
+  width: 100% !important;
+  margin-top: auto !important;
+  padding: 0.75rem 1.25rem !important;
+  border: none !important;
+  border-radius: 1rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  font-family: inherit !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease !important;
+  overflow: hidden !important;
+}
+
+.home-card__cta::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 50% !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 100%) !important;
+  border-radius: 1rem 1rem 0 0 !important;
+  pointer-events: none !important;
+}
+
+.home-card__cta:hover {
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+.home-card__cta:active {
+  transform: translateY(1px) scale(0.98) !important;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 4px rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ============================================================
+   4️⃣ HERO SECTION — Claymorphism
+   ============================================================ */
+
+/* ✅ Hero action buttons — clay */
+.hero-actions .button,
+.hero-actions button,
+.hero-actions a[class*="btn"],
+.hero-actions a[class*="cta"] {
+  position: relative;
+  border-radius: 1rem !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 700 !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease !important;
+  overflow: hidden;
+}
+
+.hero-actions .button--primary,
+.hero-actions .btn-primary,
+.hero-actions [class*="--primary"] {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border: none !important;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+}
+
+.hero-actions .button--primary::before,
+.hero-actions .btn-primary::before,
+.hero-actions [class*="--primary"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 100%);
+  border-radius: 1rem 1rem 0 0;
+  pointer-events: none;
+}
+
+.hero-actions .button--primary:hover,
+.hero-actions .btn-primary:hover,
+.hero-actions [class*="--primary"]:hover {
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+.hero-actions .button--primary:active,
+.hero-actions .btn-primary:active,
+.hero-actions [class*="--primary"]:active {
+  transform: translateY(1px) scale(0.98) !important;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 4px rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ✅ Hero secondary buttons — clay ghost */
+.hero-actions .button--secondary,
+.hero-actions .btn-secondary,
+.hero-actions [class*="--secondary"],
+.hero-actions [class*="--ghost"] {
+  background: var(--theme-surface) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  border: none !important;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+.hero-actions .button--secondary:hover,
+.hero-actions .btn-secondary:hover,
+.hero-actions [class*="--secondary"]:hover,
+.hero-actions [class*="--ghost"]:hover {
+  transform: translateY(-2px) scale(1.02) !important;
+  color: var(--theme-primary-hover) !important;
+  -webkit-text-fill-color: var(--theme-primary-hover) !important;
+  box-shadow:
+    0 8px 16px rgba(var(--theme-primary-rgb), 0.15),
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6) !important;
+}
+
+/* ✅ Hero title — clay text shadow */
+.hero-title {
+  text-shadow:
+    0 2px 4px rgba(var(--theme-primary-rgb), 0.15),
+    0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme-mode='dark'] .hero-title {
+  text-shadow:
+    0 2px 8px rgba(var(--theme-primary-rgb), 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.hero-title span {
+  text-shadow:
+    0 2px 4px rgba(var(--theme-primary-rgb), 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme-mode='dark'] .hero-title span {
+  text-shadow:
+    0 3px 10px rgba(var(--theme-primary-rgb), 0.4),
+    0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* ✅ Hero bullets — clay icons */
+.hero-bullet__icon {
+  border-radius: 50% !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  color: var(--theme-primary) !important;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+.hero-bullet__icon svg {
+  color: var(--theme-primary) !important;
+  stroke: currentColor !important;
+}
+
+/* ✅ Hero carousel viewport — clay panel */
+.hero-carousel__viewport {
+  border-radius: 1.5rem !important;
+  box-shadow:
+    0 20px 40px rgba(var(--theme-primary-rgb), 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+[data-theme-mode='dark'] .hero-carousel__viewport {
+  box-shadow:
+    0 20px 40px rgba(var(--theme-primary-rgb), 0.25),
+    0 8px 16px rgba(0, 0, 0, 0.4),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ✅ Hero carousel nav buttons — clay dark */
+.hero-carousel__btn {
+  border-radius: 50% !important;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.25),
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.3),
+    inset 0 3px 6px rgba(255, 255, 255, 0.15) !important;
+}
+
+.hero-carousel__btn:hover {
+  transform: translateY(-50%) scale(1.1) !important;
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.35),
+    0 4px 8px rgba(0, 0, 0, 0.2),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.35),
+    inset 0 3px 6px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ✅ Hero carousel dots — clay */
+.hero-carousel__dots {
+  border-radius: 999px !important;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.15),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ============================================================
+   5️⃣ HOME HIGHLIGHTS PANEL — Clay
+   ============================================================ */
+
+.home-highlights__panel {
+  border-radius: 1.5rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+}
+
+[data-theme-mode='dark'] .home-highlights__panel {
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ✅ Visit panel icons — clay */
+.visit-panel__icon {
+  border-radius: 50% !important;
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-primary) !important;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ============================================================
+   6️⃣ HOME CARD CATEGORY VARIANT — Clay
+   ============================================================ */
+
+.home-card--category .home-card__media--icon {
+  background:
+    radial-gradient(
+      60% 60% at 50% 40%,
+      rgba(var(--theme-primary-rgb), 0.12),
+      transparent 70%
+    ),
+    var(--theme-surface-2) !important;
+}
+
+.home-card__icon-circle {
+  background: var(--theme-surface) !important;
+  border: none !important;
+  color: var(--theme-primary) !important;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 3px 6px rgba(255, 255, 255, 0.5) !important;
+}
+
+[data-theme-mode='dark'] .home-card__icon-circle {
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.35),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+.home-card--category:hover .home-card__icon-circle {
+  transform: scale(1.1) !important;
+  color: var(--theme-primary-hover) !important;
+  box-shadow:
+    0 10px 20px rgba(var(--theme-primary-rgb), 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 3px 6px rgba(255, 255, 255, 0.6) !important;
+}
+
+/* ============================================================
+   7️⃣ EMPTY STATE — Clay
+   ============================================================ */
+
+.home-section__empty,
+.home-card--empty {
+  border-radius: 1.5rem !important;
+  background: var(--theme-surface-2) !important;
+  border: 2px dashed var(--theme-border) !important;
+  box-shadow:
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+.home-section__empty .react-icon,
+.home-card--empty .react-icon {
+  color: var(--theme-text-muted) !important;
+  opacity: 0.5 !important;
+}
+
+/* ============================================================
+   8️⃣ RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .home-card {
+    border-radius: 1rem !important;
+    box-shadow:
+      0 6px 14px rgba(0, 0, 0, 0.08),
+      0 2px 4px rgba(0, 0, 0, 0.04),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.05),
+      inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
+  }
+
+  [data-theme-mode='dark'] .home-card {
+    box-shadow:
+      0 6px 14px rgba(0, 0, 0, 0.4),
+      0 2px 4px rgba(0, 0, 0, 0.3),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+      inset 0 2px 4px rgba(255, 255, 255, 0.05) !important;
+  }
+
+  .home-card__cta {
+    padding: 0.65rem 1rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  .home-section {
+    padding: 1rem !important;
+    border-radius: 1.25rem !important;
+  }
+}
+
+/* ============================================================
+   9️⃣ ACCESSIBILITY — Reduced motion
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .home-card,
+  .home-card__cta,
+  .home-section,
+  .home-card__image,
+  .hero-actions button,
+  .hero-actions a {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+/* ============================================================
+   ✅ FIX: Walang hover effect sa panel at background
+   ✅ Consistent ang background image sa lahat ng state
+   ============================================================ */
+
+/* ============================================================
+   1️⃣ HOME SECTION — Walang hover effect sa buong panel
+   ============================================================ */
+
+.home-section,
+.home-section:hover {
+  transform: none !important;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme-mode='dark'] .home-section,
+[data-theme-mode='dark'] .home-section:hover {
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ✅ Home highlights panel — walang hover */
+.home-highlights__panel,
+.home-highlights__panel:hover {
+  transform: none !important;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+}
+
+[data-theme-mode='dark'] .home-highlights__panel,
+[data-theme-mode='dark'] .home-highlights__panel:hover {
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ✅ Hero shell — walang hover */
+.hero-shell,
+.hero-shell:hover {
+  transform: none !important;
+}
+
+/* ✅ Hero carousel viewport — walang hover transform */
+.hero-carousel__viewport,
+.hero-carousel__viewport:hover {
+  transform: none !important;
+  box-shadow:
+    0 20px 40px rgba(var(--theme-primary-rgb), 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+[data-theme-mode='dark'] .hero-carousel__viewport,
+[data-theme-mode='dark'] .hero-carousel__viewport:hover {
+  box-shadow:
+    0 20px 40px rgba(var(--theme-primary-rgb), 0.25),
+    0 8px 16px rgba(0, 0, 0, 0.4),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ✅ Cart items panel — walang hover */
+.cart-items,
+.cart-items:hover {
+  transform: none !important;
+}
+
+/* ✅ Cart summary panel — walang hover */
+.cart-summary,
+.cart-summary:hover {
+  transform: none !important;
+}
+
+/* ✅ Settings panel — walang hover */
+.settings-panel,
+.settings-panel:hover {
+  transform: none !important;
+}
+
+/* ✅ Dashboard summary card — walang hover */
+.dashboard-summary__card,
+.dashboard-summary__card:hover {
+  transform: none !important;
+}
+
+/* ✅ Checkout section — walang hover */
+.checkout-section,
+.checkout-section:hover {
+  transform: none !important;
+}
+
+/* ============================================================
+   2️⃣ BACKGROUND IMAGE — Consistent, walang hover
+   ✅ Hindi nagbabago ang opacity, blend, o filter
+   ============================================================ */
+
+body::before,
+body::before:hover {
+  opacity: 0.18 !important;
+  mix-blend-mode: multiply !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+[data-theme-mode='light'] body::before,
+[data-theme-mode='light'] body::before:hover {
+  opacity: 0.35 !important;
+  mix-blend-mode: multiply !important;
+  filter: contrast(1.15) saturate(1.1) !important;
+}
+
+[data-theme-mode='dark'] body::before,
+[data-theme-mode='dark'] body::before:hover {
+  opacity: 0.28 !important;
+  mix-blend-mode: screen !important;
+  filter: contrast(1.1) saturate(1.15) !important;
+}
+
+/* ✅ Per light theme — consistent */
+[data-theme='cream-yellow'] body::before,
+[data-theme='cream-yellow'] body::before:hover {
+  opacity: 0.30 !important;
+  mix-blend-mode: multiply !important;
+}
+
+[data-theme='warm-beige'] body::before,
+[data-theme='warm-beige'] body::before:hover {
+  opacity: 0.32 !important;
+  mix-blend-mode: multiply !important;
+}
+
+[data-theme='pure-white'] body::before,
+[data-theme='pure-white'] body::before:hover {
+  opacity: 0.25 !important;
+  mix-blend-mode: multiply !important;
+}
+
+[data-theme='soft-gray'] body::before,
+[data-theme='soft-gray'] body::before:hover {
+  opacity: 0.30 !important;
+  mix-blend-mode: multiply !important;
+}
+
+[data-theme='pale-blush'] body::before,
+[data-theme='pale-blush'] body::before:hover {
+  opacity: 0.28 !important;
+  mix-blend-mode: multiply !important;
+}
+
+/* ✅ Per dark theme — consistent */
+[data-theme='midnight-navy'] body::before,
+[data-theme='midnight-navy'] body::before:hover {
+  opacity: 0.22 !important;
+  mix-blend-mode: screen !important;
+}
+
+[data-theme='matte-black'] body::before,
+[data-theme='matte-black'] body::before:hover {
+  opacity: 0.20 !important;
+  mix-blend-mode: screen !important;
+}
+
+[data-theme='charcoal-gray'] body::before,
+[data-theme='charcoal-gray'] body::before:hover {
+  opacity: 0.22 !important;
+  mix-blend-mode: screen !important;
+}
+
+[data-theme='deep-forest'] body::before,
+[data-theme='deep-forest'] body::before:hover {
+  opacity: 0.24 !important;
+  mix-blend-mode: screen !important;
+}
+
+[data-theme='dark-plum'] body::before,
+[data-theme='dark-plum'] body::before:hover {
+  opacity: 0.22 !important;
+  mix-blend-mode: screen !important;
+}
+
+/* ✅ Body background — consistent, walang hover */
+body,
+body:hover {
+  transition: background 0.5s ease, color 0.3s ease !important;
+}
+
+/* ✅ Dark body gradient — consistent */
+[data-theme-mode='dark'] body,
+[data-theme-mode='dark'] body:hover {
+  background:
+    radial-gradient(ellipse at top left, rgba(var(--theme-primary-rgb), 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(var(--theme-accent-rgb), 0.10) 0%, transparent 55%),
+    var(--theme-bg-solid) !important;
+  background-attachment: fixed !important;
+}
+
+[data-theme='midnight-navy'] body,
+[data-theme='midnight-navy'] body:hover {
+  background:
+    radial-gradient(ellipse at top left, rgba(123, 167, 225, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(155, 192, 237, 0.10) 0%, transparent 55%),
+    #0E1626 !important;
+  background-attachment: fixed !important;
+}
+
+[data-theme='matte-black'] body,
+[data-theme='matte-black'] body:hover {
+  background:
+    radial-gradient(ellipse at top left, rgba(212, 165, 116, 0.14) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(229, 181, 132, 0.08) 0%, transparent 55%),
+    #0F0F0F !important;
+  background-attachment: fixed !important;
+}
+
+[data-theme='charcoal-gray'] body,
+[data-theme='charcoal-gray'] body:hover {
+  background:
+    radial-gradient(ellipse at top left, rgba(168, 184, 200, 0.16) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(200, 208, 220, 0.10) 0%, transparent 55%),
+    #1A1A1A !important;
+  background-attachment: fixed !important;
+}
+
+[data-theme='deep-forest'] body,
+[data-theme='deep-forest'] body:hover {
+  background:
+    radial-gradient(ellipse at top left, rgba(127, 200, 162, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(168, 224, 192, 0.10) 0%, transparent 55%),
+    #0A1F1A !important;
+  background-attachment: fixed !important;
+}
+
+[data-theme='dark-plum'] body,
+[data-theme='dark-plum'] body:hover {
+  background:
+    radial-gradient(ellipse at top left, rgba(200, 160, 212, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(217, 184, 226, 0.10) 0%, transparent 55%),
+    #1A0E1F !important;
+  background-attachment: fixed !important;
+}
+
+/* ============================================================
+   3️⃣ MGA PANEL NA WALANG HOVER TRANSFORM
+   ✅ Consistent sa lahat ng state
+   ============================================================ */
+
+/* ✅ Order details — walang hover */
+.od-card,
+.od-rail-card,
+.od-card:hover,
+.od-rail-card:hover {
+  transform: none !important;
+}
+
+/* ✅ Profile cards — walang hover */
+.profile-card,
+.profile-side__card,
+.profile-card:hover,
+.profile-side__card:hover {
+  transform: none !important;
+}
+
+/* ✅ Notification cards — walang hover transform */
+.notification-card,
+.notification-card:hover {
+  transform: none !important;
+}
+
+/* ✅ Favorites cards — walang hover */
+.favorites-card,
+.favorites-card:hover {
+  transform: none !important;
+}
+
+/* ✅ Catalog cards — retain ang hover (kasi ito ang gusto) */
+/* .catalog-card — walang binabago */
+
+/* ============================================================
+   🎨 CATALOG CLAYMORPHISM + PRODUCT NEUMORPHISM
+   ✅ Catalog: claymorphism sa cards at buttons
+   ✅ Product: neumorphism sa fields at panels
+   ✅ Naka-apply sa lahat ng 10 themes
+   ============================================================ */
+
+/* ============================================================
+   1️⃣ CATALOG PAGE — CLAYMORPHISM
+   ============================================================ */
+
+/* ✅ Catalog hero — clay */
+.catalog-hero {
+  position: relative;
+  border-radius: 1.5rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  box-shadow:
+    0 16px 32px rgba(var(--theme-primary-rgb), 0.25),
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.2) !important;
+  overflow: hidden;
+}
+
+.catalog-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* ✅ Catalog cards — clay */
+.catalog-card {
+  position: relative !important;
+  border-radius: 1.25rem !important;
+  border: none !important;
+  background: var(--theme-surface) !important;
+  overflow: hidden !important;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease !important;
+}
+
+[data-theme-mode='dark'] .catalog-card {
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+.catalog-card:hover {
+  transform: translateY(-5px) scale(1.015) !important;
+  box-shadow:
+    0 16px 32px rgba(var(--theme-primary-rgb), 0.2),
+    0 6px 12px rgba(0, 0, 0, 0.1),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(255, 255, 255, 0.5) !important;
+}
+
+[data-theme-mode='dark'] .catalog-card:hover {
+  box-shadow:
+    0 16px 32px rgba(var(--theme-primary-rgb), 0.35),
+    0 6px 12px rgba(0, 0, 0, 0.5),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.08) !important;
+}
+
+.catalog-card__media {
+  background: var(--theme-surface-2) !important;
+  border-radius: 1.25rem 1.25rem 0 0 !important;
+  overflow: hidden !important;
+}
+
+.catalog-card__image {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+.catalog-card:hover .catalog-card__image {
+  transform: scale(1.06);
+}
+
+.catalog-card__body {
+  background: var(--theme-surface) !important;
+  padding: 1rem 1rem 1.25rem !important;
+}
+
+.catalog-card__name {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  font-weight: 700 !important;
+}
+
+.catalog-card__category {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.catalog-card__price {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  font-weight: 700 !important;
+}
+
+/* ✅ Catalog card badge — clay pill */
+.catalog-card__badge {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  padding: 0.35rem 0.75rem !important;
+  box-shadow:
+    0 4px 10px rgba(var(--theme-primary-rgb), 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.25) !important;
+  font-weight: 800 !important;
+}
+
+/* ✅ Catalog card CTA button — clay */
+.catalog-card__cta,
+.catalog-card__btn,
+.select-options-btn {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.4rem !important;
+  width: 100% !important;
+  padding: 0.75rem 1.25rem !important;
+  border: none !important;
+  border-radius: 1rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  font-family: inherit !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease !important;
+  overflow: hidden !important;
+}
+
+.catalog-card__cta::before,
+.catalog-card__btn::before,
+.select-options-btn::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 50% !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 100%) !important;
+  border-radius: 1rem 1rem 0 0 !important;
+  pointer-events: none !important;
+}
+
+.catalog-card__cta:hover,
+.catalog-card__btn:hover,
+.select-options-btn:hover {
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+.catalog-card__cta:active,
+.catalog-card__btn:active,
+.select-options-btn:active {
+  transform: translateY(1px) scale(0.98) !important;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 4px rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ✅ Catalog empty state — clay */
+.catalog-empty {
+  border-radius: 1.5rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+}
+
+.catalog-empty__cta {
+  border-radius: 1rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+}
+
+/* ============================================================
+   2️⃣ PRODUCT PAGE — NEUMORPHISM
+   ============================================================ */
+
+/* ✅ Product gallery stage — neumorphism inset */
+.product-gallery__stage {
+  border-radius: 1.25rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    inset 4px 4px 8px rgba(0, 0, 0, 0.08),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.5) !important;
+  overflow: hidden !important;
+}
+
+[data-theme-mode='dark'] .product-gallery__stage {
+  box-shadow:
+    inset 4px 4px 8px rgba(0, 0, 0, 0.5),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.04) !important;
+}
+
+/* ✅ Product thumbnail buttons — neumorphism */
+.product-gallery__thumb {
+  border-radius: 0.75rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+  transition: all 0.2s ease !important;
+}
+
+.product-gallery__thumb:hover {
+  transform: translateY(-2px) !important;
+  box-shadow:
+    0 6px 12px rgba(var(--theme-primary-rgb), 0.2),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6) !important;
+}
+
+.product-gallery__thumb.is-active {
+  border: 2px solid var(--theme-primary) !important;
+  box-shadow:
+    0 4px 10px rgba(var(--theme-primary-rgb), 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ✅ Product gallery nav buttons — clay */
+.product-gallery__nav {
+  border-radius: 50% !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+.product-gallery__nav:hover {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  transform: scale(1.1) !important;
+}
+
+/* ✅ Product wishlist button — clay */
+.product-gallery__wish {
+  border-radius: 50% !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+.product-gallery__wish:hover {
+  transform: scale(1.1) !important;
+}
+
+/* ✅ Product panel — clay container */
+.product-panel__inner {
+  border-radius: 1.5rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+}
+
+[data-theme-mode='dark'] .product-panel__inner {
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ✅ Product variant buttons — neumorphism */
+.product-variant {
+  border-radius: 0.75rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  color: var(--theme-text) !important;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+  transition: all 0.2s ease !important;
+}
+
+.product-variant:hover:not(:disabled) {
+  transform: translateY(-2px) !important;
+  color: var(--theme-primary) !important;
+  box-shadow:
+    0 6px 12px rgba(var(--theme-primary-rgb), 0.2),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+.product-variant.is-selected {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  box-shadow:
+    0 4px 10px rgba(var(--theme-primary-rgb), 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+}
+
+/* ✅ Product quantity buttons — clay mini */
+.product-qty {
+  border-radius: 0.75rem !important;
+  background: var(--theme-surface-2) !important;
+  border: none !important;
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.5) !important;
+}
+
+.product-qty__btn {
+  border-radius: 0.5rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  color: var(--theme-text-muted) !important;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.06),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5) !important;
+  transition: all 0.2s ease !important;
+}
+
+.product-qty__btn:hover:not(:disabled) {
+  color: var(--theme-primary) !important;
+  transform: scale(1.1) !important;
+  box-shadow:
+    0 4px 8px rgba(var(--theme-primary-rgb), 0.2),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.06),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ✅ Product CTA (Add to cart) — clay */
+.product-panel__cta {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  width: 100% !important;
+  padding: 0.85rem 1.5rem !important;
+  border: none !important;
+  border-radius: 1rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  font-family: inherit !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  box-shadow:
+    0 8px 18px rgba(var(--theme-primary-rgb), 0.35),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease !important;
+  overflow: hidden !important;
+}
+
+.product-panel__cta::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 50% !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 100%) !important;
+  border-radius: 1rem 1rem 0 0 !important;
+  pointer-events: none !important;
+}
+
+.product-panel__cta:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow:
+    0 14px 28px rgba(var(--theme-primary-rgb), 0.45),
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+.product-panel__cta:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98) !important;
+}
+
+/* ✅ Product tabs — neumorphism */
+.product-tabs {
+  border-radius: 1.25rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
+}
+
+.product-tabs__tab {
+  border-radius: 0.5rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.product-tabs__tab.is-active {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  font-weight: 700 !important;
+}
+
+/* ✅ Product related cards — clay */
+.product-related__card {
+  border-radius: 1.25rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  overflow: hidden !important;
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease !important;
+}
+
+.product-related__card:hover {
+  transform: translateY(-4px) scale(1.01) !important;
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+.product-related__name {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.product-related__price {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ✅ Product breadcrumb links */
+.product-breadcrumb__link:hover {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   3️⃣ RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .catalog-card {
+    border-radius: 1rem !important;
+  }
+
+  .product-panel__inner {
+    border-radius: 1.25rem !important;
+    padding: 1.25rem !important;
+  }
+
+  .product-gallery__stage {
+    border-radius: 1rem !important;
+  }
+}
+
+/* ============================================================
+   4️⃣ ACCESSIBILITY — Reduced motion
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .catalog-card,
+  .catalog-card__cta,
+  .catalog-card__btn,
+  .product-panel__cta,
+  .product-related__card,
+  .product-variant,
+  .product-qty__btn {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+/* ============================================================
+   🎯 HERO TEXT CONTRAST FIX — Lahat ng hero sections
+   ✅ Ang text sa loob ng hero ay dapat light (on-primary)
+   ✅ Kasi dark ang hero background (gradient primary)
+   ✅ Naka-apply sa lahat ng pages at 10 themes
+   ============================================================ */
+
+/* ============================================================
+   1️⃣ CART HERO — Text contrast
+   ============================================================ */
+
+.cart-hero,
+.cart-hero * {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.cart-hero__kicker {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
+}
+
+.cart-hero__title {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cart-hero__description {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
+}
+
+.cart-hero__quote {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
+}
+
+/* ============================================================
+   2️⃣ CATALOG HERO — Text contrast
+   ============================================================ */
+
+.catalog-hero,
+.catalog-hero * {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.catalog-hero__kicker {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
+}
+
+.catalog-hero__title {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.catalog-hero__description {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
+}
+
+/* ============================================================
+   3️⃣ CHECKOUT HERO — Text contrast
+   ============================================================ */
+
+.checkout-hero,
+.checkout-hero * {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+.checkout-hero__back {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
+}
+
+.checkout-hero__kicker {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
+}
+
+.checkout-hero__title {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.checkout-hero__description {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
+}
+
+.checkout-hero__quote {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
+}
+
+/* ============================================================
+   4️⃣ DASHBOARD HERO — Text contrast
+   ============================================================ */
+
+.dashboard-hero__kicker {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.dashboard-hero__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.dashboard-hero__description {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.dashboard-hero__quote {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   5️⃣ SETTINGS HERO — Text contrast
+   ============================================================ */
+
+.settings-hero__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.settings-hero__description {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.settings-hero__quote,
+.settings-hero__quote span {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   6️⃣ NOTIFICATIONS HERO — Text contrast
+   ============================================================ */
+
+.notifications-hero__kicker {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.notifications-hero__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.notifications-hero__description {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ============================================================
+   7️⃣ FAVORITES HERO — Text contrast
+   ============================================================ */
+
+.favorites-hero__kicker {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.favorites-hero__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.favorites-hero__description {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ============================================================
+   8️⃣ ORDER DETAILS HERO — Text contrast
+   ============================================================ */
+
+.od-hero__id {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.od-hero__date {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.85;
+}
+
+.od-hero__status {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ============================================================
+   9️⃣ PRODUCT PAGE — Text contrast (walang hero, pero may title)
+   ============================================================ */
+
+.product-breadcrumb,
+.product-breadcrumb__link {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.product-breadcrumb__current {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.product-breadcrumb__link:hover {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   🔟 HERO ACTIONS BUTTONS — Text contrast sa hero
+   ============================================================ */
+
+/* ✅ Primary buttons sa loob ng hero */
+.hero-actions .button--primary,
+.hero-actions .btn-primary,
+.hero-actions [class*="--primary"],
+.cart-hero .button--primary,
+.catalog-hero .button--primary {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Ghost buttons sa loob ng hero */
+.hero-actions .button--secondary,
+.hero-actions [class*="--ghost"],
+.cart-hero [class*="--ghost"],
+.catalog-hero [class*="--ghost"] {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  background: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.15) !important;
+  border-color: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.3) !important;
+}
+
+.hero-actions .button--secondary:hover,
+.hero-actions [class*="--ghost"]:hover,
+.cart-hero [class*="--ghost"]:hover,
+.catalog-hero [class*="--ghost"]:hover {
+  background: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.25) !important;
+  border-color: rgba(var(--theme-on-primary-rgb, 255, 255, 255), 0.5) !important;
+}
+
+/* ============================================================
+   1️⃣1️⃣ GENERIC FALLBACK — Lahat ng text sa loob ng dark hero
+   ✅ Kasi ang hero ay dark gradient (primary color)
+   ✅ Lahat ng text ay dapat on-primary (light)
+   ============================================================ */
+
+/* ✅ Cart hero — lahat ng text */
+[class*="cart-hero"] h1,
+[class*="cart-hero"] h2,
+[class*="cart-hero"] h3,
+[class*="cart-hero"] p,
+[class*="cart-hero"] span:not([class*="badge"]):not([class*="count"]),
+[class*="cart-hero"] em {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Catalog hero — lahat ng text */
+[class*="catalog-hero"] h1,
+[class*="catalog-hero"] h2,
+[class*="catalog-hero"] h3,
+[class*="catalog-hero"] p,
+[class*="catalog-hero"] span:not([class*="badge"]):not([class*="count"]),
+[class*="catalog-hero"] em {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Checkout hero — lahat ng text */
+[class*="checkout-hero"] h1,
+[class*="checkout-hero"] h2,
+[class*="checkout-hero"] h3,
+[class*="checkout-hero"] p,
+[class*="checkout-hero"] span:not([class*="badge"]):not([class*="count"]),
+[class*="checkout-hero"] em {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Order details hero — lahat ng text */
+[class*="od-hero"] h1,
+[class*="od-hero"] h2,
+[class*="od-hero"] h3,
+[class*="od-hero"] p,
+[class*="od-hero"] span:not([class*="badge"]):not([class*="count"]),
+[class*="od-hero"] em {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ============================================================
+   1️⃣2️⃣ MGA KICKER SA LOOB NG HERO — light text
+   ============================================================ */
+
+.cart-hero__kicker,
+.catalog-hero__kicker,
+.checkout-hero__kicker,
+.od-hero__status {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.85;
+}
+
+/* ============================================================
+   1️⃣3️⃣ MGA DESCRIPTION SA LOOB NG HERO — light text
+   ============================================================ */
+
+.cart-hero__description,
+.catalog-hero__description,
+.checkout-hero__description {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
+}
+
+/* ============================================================
+   1️⃣4️⃣ QUOTE SA LOOB NG HERO — light text
+   ============================================================ */
+
+.cart-hero__quote,
+.checkout-hero__quote {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  opacity: 0.9;
 }

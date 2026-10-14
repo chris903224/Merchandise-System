@@ -1,8 +1,11 @@
 /* ============================================================
-   THEME VARIABLES — 10 themes (MONOCHROME)
+   THEME VARIABLES — 10 themes (HUE-MATCHED CONTRAST)
    ✅ DEFAULT = MIDNIGHT NAVY (dark)
    Light: Cream Yellow, Warm Beige, Pure White, Soft Gray, Pale Blush
    Dark: Midnight Navy, Matte Black, Charcoal Gray, Deep Forest, Dark Plum
+   ✅ Dark themes: maliwanag na tinted white ang text
+   ✅ Light themes: madilim na tinted ink ang text
+   ✅ Base sa WCAG AAA contrast ratio (7:1+)
 ============================================================ */
 
 /* ============================================================
@@ -25,9 +28,10 @@
   --theme-surface-2: #222F4D;
   --theme-surface-raised: #283658;
 
-  --theme-text: #E8EEF7;
-  --theme-text-muted: #B0B9CC;
-  --theme-text-subtle: rgba(232, 238, 247, 0.5);
+  /* ✅ HUE-MATCHED: blue-white text */
+  --theme-text: #F0F5FF;
+  --theme-text-muted: #B8C8E8;
+  --theme-text-subtle: rgba(240, 245, 255, 0.65);
 
   --theme-border: rgba(123, 167, 225, 0.15);
   --theme-border-strong: rgba(123, 167, 225, 0.4);
@@ -72,12 +76,13 @@
   --theme-surface-2: #FFFBF0;
   --theme-surface-raised: #FFFFFF;
 
-  --theme-text: #2A2010;
-  --theme-text-muted: #6B5B3A;
-  --theme-text-subtle: rgba(42, 32, 16, 0.5);
+  /* ✅ HUE-MATCHED: dark warm brown text */
+  --theme-text: #1F1408;
+  --theme-text-muted: #4A3A20;
+  --theme-text-subtle: rgba(31, 20, 8, 0.7);
 
   --theme-border: #F0E5C0;
-  --theme-border-strong: rgba(184, 134, 11, 0.3);
+  --theme-border-strong: rgba(184, 134, 11, 0.35);
 
   --theme-success: #8B6914;
   --theme-success-rgb: 139, 105, 20;
@@ -115,12 +120,13 @@
   --theme-surface-2: #F5EEDB;
   --theme-surface-raised: #FFFFFF;
 
-  --theme-text: #2A1F10;
-  --theme-text-muted: #6B5B47;
-  --theme-text-subtle: rgba(42, 31, 16, 0.5);
+  /* ✅ HUE-MATCHED: dark tan text */
+  --theme-text: #1F1408;
+  --theme-text-muted: #4A3820;
+  --theme-text-subtle: rgba(31, 20, 8, 0.7);
 
   --theme-border: #E4D5B7;
-  --theme-border-strong: rgba(139, 111, 71, 0.3);
+  --theme-border-strong: rgba(139, 111, 71, 0.35);
 
   --theme-success: #6B5636;
   --theme-success-rgb: 107, 86, 54;
@@ -158,12 +164,13 @@
   --theme-surface-2: #F0F0F0;
   --theme-surface-raised: #FFFFFF;
 
-  --theme-text: #1A1A1A;
-  --theme-text-muted: #4A4A4A;
-  --theme-text-subtle: rgba(26, 26, 26, 0.5);
+  /* ✅ HUE-MATCHED: pure black text */
+  --theme-text: #000000;
+  --theme-text-muted: #2A2A2A;
+  --theme-text-subtle: rgba(0, 0, 0, 0.7);
 
   --theme-border: #E5E5E5;
-  --theme-border-strong: rgba(51, 51, 51, 0.3);
+  --theme-border-strong: rgba(51, 51, 51, 0.35);
 
   --theme-success: #2A2A2A;
   --theme-success-rgb: 42, 42, 42;
@@ -201,12 +208,13 @@
   --theme-surface-2: #E5E7EB;
   --theme-surface-raised: #FFFFFF;
 
-  --theme-text: #1F2937;
-  --theme-text-muted: #4B5563;
-  --theme-text-subtle: rgba(31, 41, 55, 0.5);
+  /* ✅ HUE-MATCHED: cool black text */
+  --theme-text: #0F1820;
+  --theme-text-muted: #2A3540;
+  --theme-text-subtle: rgba(15, 24, 32, 0.7);
 
   --theme-border: #D1D5DB;
-  --theme-border-strong: rgba(75, 85, 99, 0.3);
+  --theme-border-strong: rgba(75, 85, 99, 0.35);
 
   --theme-success: #374151;
   --theme-success-rgb: 55, 65, 81;
@@ -244,12 +252,13 @@
   --theme-surface-2: #FCE8EC;
   --theme-surface-raised: #FFFFFF;
 
-  --theme-text: #2A1A1F;
-  --theme-text-muted: #6B4A52;
-  --theme-text-subtle: rgba(42, 26, 31, 0.5);
+  /* ✅ HUE-MATCHED: dark rose text */
+  --theme-text: #1A0A10;
+  --theme-text-muted: #4A2028;
+  --theme-text-subtle: rgba(26, 10, 16, 0.7);
 
   --theme-border: #F0D5DB;
-  --theme-border-strong: rgba(184, 99, 122, 0.3);
+  --theme-border-strong: rgba(184, 99, 122, 0.35);
 
   --theme-success: #8B4A5C;
   --theme-success-rgb: 139, 74, 92;
@@ -291,9 +300,10 @@
   --theme-surface-2: #222F4D;
   --theme-surface-raised: #283658;
 
-  --theme-text: #E8EEF7;
-  --theme-text-muted: #B0B9CC;
-  --theme-text-subtle: rgba(232, 238, 247, 0.5);
+  /* ✅ HUE-MATCHED: blue-white text */
+  --theme-text: #F0F5FF;
+  --theme-text-muted: #B8C8E8;
+  --theme-text-subtle: rgba(240, 245, 255, 0.65);
 
   --theme-border: rgba(123, 167, 225, 0.15);
   --theme-border-strong: rgba(123, 167, 225, 0.4);
@@ -334,9 +344,10 @@
   --theme-surface-2: #252525;
   --theme-surface-raised: #2F2F2F;
 
-  --theme-text: #F5F0E8;
-  --theme-text-muted: #B8B0A0;
-  --theme-text-subtle: rgba(245, 240, 232, 0.5);
+  /* ✅ HUE-MATCHED: warm white text */
+  --theme-text: #FAF6EE;
+  --theme-text-muted: #C8BFA8;
+  --theme-text-subtle: rgba(250, 246, 238, 0.65);
 
   --theme-border: rgba(255, 255, 255, 0.08);
   --theme-border-strong: rgba(212, 165, 116, 0.4);
@@ -377,9 +388,10 @@
   --theme-surface-2: #353535;
   --theme-surface-raised: #404040;
 
-  --theme-text: #E8ECF0;
-  --theme-text-muted: #A8B0B8;
-  --theme-text-subtle: rgba(232, 236, 240, 0.5);
+  /* ✅ HUE-MATCHED: cool white text */
+  --theme-text: #F5F8FC;
+  --theme-text-muted: #C0C8D4;
+  --theme-text-subtle: rgba(245, 248, 252, 0.65);
 
   --theme-border: rgba(255, 255, 255, 0.1);
   --theme-border-strong: rgba(168, 184, 200, 0.4);
@@ -420,9 +432,10 @@
   --theme-surface-2: #1C3D33;
   --theme-surface-raised: #234A3D;
 
-  --theme-text: #E0F0E8;
-  --theme-text-muted: #98B8A8;
-  --theme-text-subtle: rgba(224, 240, 232, 0.5);
+  /* ✅ HUE-MATCHED: green-white text */
+  --theme-text: #ECFAF2;
+  --theme-text-muted: #A8CCB8;
+  --theme-text-subtle: rgba(236, 250, 242, 0.65);
 
   --theme-border: rgba(127, 200, 162, 0.15);
   --theme-border-strong: rgba(127, 200, 162, 0.4);
@@ -463,9 +476,10 @@
   --theme-surface-2: #382444;
   --theme-surface-raised: #452C52;
 
-  --theme-text: #F0E8F2;
-  --theme-text-muted: #C0B0C8;
-  --theme-text-subtle: rgba(240, 232, 242, 0.5);
+  /* ✅ HUE-MATCHED: lavender-white text */
+  --theme-text: #F8F0FA;
+  --theme-text-muted: #D0B8D8;
+  --theme-text-subtle: rgba(248, 240, 250, 0.65);
 
   --theme-border: rgba(200, 160, 212, 0.15);
   --theme-border-strong: rgba(200, 160, 212, 0.4);
@@ -526,7 +540,7 @@
   --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
 }
 
-/* Per-theme on-* overrides (pareho pa rin) */
+/* Per-theme on-* overrides */
 [data-theme='matte-black'] {
   --theme-on-primary: #1A1209;
   --theme-on-primary-rgb: 26, 18, 9;
@@ -635,7 +649,7 @@ body {
 }
 
 /* ============================================
-   THEME GRID (Settings) — pareho pa rin
+   THEME GRID (Settings)
 ============================================ */
 .theme-grid {
   display: grid;
@@ -691,9 +705,12 @@ body {
   box-shadow: 0 12px 24px -8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.5);
 }
 
+/* ✅ THEME-AWARE: gamitin ang --theme-primary sa halip na #10b981 */
 .theme-card.is-active {
-  border-color: #10b981;
-  box-shadow: 0 0 0 2px rgba(16,185,129,0.25), 0 12px 24px -8px rgba(16,185,129,0.3);
+  border-color: var(--theme-primary);
+  box-shadow:
+    0 0 0 2px rgba(var(--theme-primary-rgb), 0.25),
+    0 12px 24px -8px rgba(var(--theme-primary-rgb), 0.3);
 }
 
 .theme-card__emoji {
@@ -731,6 +748,7 @@ body {
   text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
+/* ✅ THEME-AWARE: gamitin ang --theme-primary sa halip na #10b981 */
 .theme-card__check {
   position: absolute;
   top: 0.4rem;
@@ -738,11 +756,11 @@ body {
   width: 1.15rem;
   height: 1.15rem;
   border-radius: 50%;
-  background: #10b981;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-on-primary);
   display: grid;
   place-items: center;
-  box-shadow: 0 2px 6px rgba(16,185,129,0.5);
+  box-shadow: 0 2px 6px rgba(var(--theme-primary-rgb), 0.5);
   animation: theme-check-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 4;
 }
@@ -782,4 +800,1481 @@ body {
 [data-theme-mode='light'] .product-media__image,
 [data-theme-mode='light'] .favorites-card__image {
   filter: none;
+}
+
+/* ============================================
+   ✅ CONSISTENT BACKGROUND — Same treatment sa lahat ng themes
+============================================ */
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-image: url('/campus.png');
+  opacity: 0.18;
+  mix-blend-mode: multiply;
+  transition: background 0.5s ease, opacity 0.5s ease, mix-blend-mode 0.5s ease;
+}
+
+[data-theme-mode='dark'] body::before {
+  mix-blend-mode: screen;
+  opacity: 0.22;
+}
+
+[data-theme-mode='light'] body::before {
+  mix-blend-mode: multiply;
+  opacity: 0.18;
+}
+
+/* ✅ Per-theme fine-tuning */
+[data-theme='cream-yellow'] body::before { opacity: 0.16; mix-blend-mode: multiply; }
+[data-theme='warm-beige'] body::before { opacity: 0.16; mix-blend-mode: multiply; }
+[data-theme='pure-white'] body::before { opacity: 0.12; mix-blend-mode: multiply; }
+[data-theme='soft-gray'] body::before { opacity: 0.14; mix-blend-mode: multiply; }
+[data-theme='pale-blush'] body::before { opacity: 0.16; mix-blend-mode: multiply; }
+
+[data-theme='midnight-navy'] body::before { opacity: 0.22; mix-blend-mode: screen; }
+[data-theme='matte-black'] body::before { opacity: 0.20; mix-blend-mode: screen; }
+[data-theme='charcoal-gray'] body::before { opacity: 0.22; mix-blend-mode: screen; }
+[data-theme='deep-forest'] body::before { opacity: 0.24; mix-blend-mode: screen; }
+[data-theme='dark-plum'] body::before { opacity: 0.22; mix-blend-mode: screen; }
+
+/* ✅ Subtle gradient overlay para pantay ang visual weight */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 60%,
+    rgba(0, 0, 0, 0.05) 100%
+  );
+  transition: background 0.5s ease;
+}
+
+[data-theme-mode='dark'] body::after {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 60%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+}
+
+/* ✅ Mobile: adjust opacity */
+@media (max-width: 768px) {
+  body::before { opacity: 0.15 !important; }
+  [data-theme-mode='dark'] body::before { opacity: 0.25 !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after {
+    transition: none !important;
+  }
+}
+/* ============================================================
+   ✅ FIX: Background visibility — Light mode
+   ✅ I-boost ang campus image visibility sa light mode
+   ✅ Naka-apply sa lahat ng 5 light themes
+   ============================================================ */
+
+/* ✅ Base light mode — mas mataas na opacity */
+[data-theme-mode='light'] body::before {
+  mix-blend-mode: multiply;
+  opacity: 0.35;  /* ✅ Dating 0.18 — itinaas para visible */
+}
+
+/* ✅ Per light theme — fine-tuned opacity */
+[data-theme='cream-yellow'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.30;
+  mix-blend-mode: multiply;
+}
+
+[data-theme='warm-beige'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.32;
+  mix-blend-mode: multiply;
+}
+
+[data-theme='pure-white'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.25;
+  mix-blend-mode: multiply;
+}
+
+[data-theme='soft-gray'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.30;
+  mix-blend-mode: multiply;
+}
+
+[data-theme='pale-blush'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.28;
+  mix-blend-mode: multiply;
+}
+
+/* ============================================================
+   ✅ FIX: Background visibility — Dark mode
+   ✅ I-maintain ang dark mode visibility
+   ============================================================ */
+
+[data-theme-mode='dark'] body::before {
+  mix-blend-mode: screen;
+  opacity: 0.28;  /* ✅ Dating 0.22 — itinaas ng kaunti */
+}
+
+[data-theme='midnight-navy'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.28;
+  mix-blend-mode: screen;
+}
+
+[data-theme='matte-black'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.25;
+  mix-blend-mode: screen;
+}
+
+[data-theme='charcoal-gray'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.28;
+  mix-blend-mode: screen;
+}
+
+[data-theme='deep-forest'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.30;
+  mix-blend-mode: screen;
+}
+
+[data-theme='dark-plum'] body::before {
+  background-image: url('/campus.png');
+  opacity: 0.28;
+  mix-blend-mode: screen;
+}
+
+/* ============================================================
+   ✅ ADDITIONAL: Mas visible pa sa light mode
+   ✅ I-boost ang contrast ng background image
+   ============================================================ */
+
+[data-theme-mode='light'] body::before {
+  /* ✅ I-boost ang contrast at saturation ng campus image */
+  filter: contrast(1.15) saturate(1.1);
+}
+
+[data-theme-mode='dark'] body::before {
+  /* ✅ I-boost ang contrast at saturation sa dark */
+  filter: contrast(1.1) saturate(1.15);
+}
+
+/* ============================================================
+   ✅ Mobile — adjust opacity
+   ============================================================ */
+
+@media (max-width: 768px) {
+  [data-theme-mode='light'] body::before {
+    opacity: 0.40 !important;
+  }
+
+  [data-theme-mode='dark'] body::before {
+    opacity: 0.32 !important;
+  }
+}
+/* ============================================================
+   🎨 DARK BACKGROUND — Gradient tint mula sa theme color
+   ✅ Hindi purong flat dark — may radial gradient tint
+   ✅ Naka-apply sa lahat ng 5 dark themes
+   ============================================================ */
+
+/* ✅ Base dark background — may gradient tint */
+[data-theme-mode='dark'] body {
+  background:
+    radial-gradient(
+      ellipse at top left,
+      rgba(var(--theme-primary-rgb), 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at bottom right,
+      rgba(var(--theme-accent-rgb), 0.10) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      transparent 40%,
+      rgba(0, 0, 0, 0.35) 100%
+    ),
+    var(--theme-bg-solid) !important;
+  background-attachment: fixed !important;
+}
+
+/* ============================================================
+   ✅ PER DARK THEME — Custom gradient tint
+   ============================================================ */
+
+/* ✅ MIDNIGHT NAVY — Blue radial tint */
+[data-theme='midnight-navy'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(123, 167, 225, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(155, 192, 237, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(0, 0, 0, 0.35) 100%),
+    #0E1626 !important;
+  background-attachment: fixed !important;
+}
+
+/* ✅ MATTE BLACK — Warm gold radial tint */
+[data-theme='matte-black'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(212, 165, 116, 0.14) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(229, 181, 132, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(0, 0, 0, 0.4) 100%),
+    #0F0F0F !important;
+  background-attachment: fixed !important;
+}
+
+/* ✅ CHARCOAL GRAY — Silver radial tint */
+[data-theme='charcoal-gray'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(168, 184, 200, 0.16) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(200, 208, 220, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(0, 0, 0, 0.4) 100%),
+    #1A1A1A !important;
+  background-attachment: fixed !important;
+}
+
+/* ✅ DEEP FOREST — Green radial tint */
+[data-theme='deep-forest'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(127, 200, 162, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(168, 224, 192, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(0, 0, 0, 0.4) 100%),
+    #0A1F1A !important;
+  background-attachment: fixed !important;
+}
+
+/* ✅ DARK PLUM — Purple radial tint */
+[data-theme='dark-plum'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(200, 160, 212, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(217, 184, 226, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(0, 0, 0, 0.4) 100%),
+    #1A0E1F !important;
+  background-attachment: fixed !important;
+}
+
+/* ============================================================
+   ✅ SIGURADUHIN — Ang body::before (campus image) ay visible
+   ✅ Pero hindi nito na-o-override ang gradient tint
+   ============================================================ */
+
+[data-theme-mode='dark'] body::before {
+  mix-blend-mode: screen;
+  opacity: 0.18;  /* ✅ Ibaba ng kaunti para visible ang gradient */
+}
+
+[data-theme='midnight-navy'] body::before { opacity: 0.18; mix-blend-mode: screen; }
+[data-theme='matte-black'] body::before { opacity: 0.16; mix-blend-mode: screen; }
+[data-theme='charcoal-gray'] body::before { opacity: 0.18; mix-blend-mode: screen; }
+[data-theme='deep-forest'] body::before { opacity: 0.20; mix-blend-mode: screen; }
+[data-theme='dark-plum'] body::before { opacity: 0.18; mix-blend-mode: screen; }
+
+/* ============================================================
+   ✅ LIGHT MODE — Pareho rin may gradient tint (subtle)
+   ============================================================ */
+
+[data-theme-mode='light'] body {
+  background:
+    radial-gradient(
+      ellipse at top left,
+      rgba(var(--theme-primary-rgb), 0.06) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at bottom right,
+      rgba(var(--theme-accent-rgb), 0.04) 0%,
+      transparent 55%
+    ),
+    var(--theme-bg-solid) !important;
+  background-attachment: fixed !important;
+}
+/* ============================================================
+   THEME VARIABLES — 10 themes (FINAL — ALL HOVER HUE-MATCHED)
+   ✅ DEFAULT = MIDNIGHT NAVY (dark)
+   Light: Cream Yellow, Warm Beige, Pure White, Soft Gray, Pale Blush
+   Dark: Midnight Navy, Matte Black, Charcoal Gray, Deep Forest, Dark Plum
+   ✅ Text + hover states + accent — lahat tugma sa hue ng theme
+   ✅ Base sa WCAG AAA contrast ratio (7:1+)
+============================================================ */
+
+/* ============================================================
+   ✅ DEFAULT — MIDNIGHT NAVY (naka-root)
+============================================================ */
+:root {
+  color-scheme: dark;
+
+  --theme-primary: #7BA7E1;
+  --theme-primary-hover: #5F8CC7;
+  --theme-primary-rgb: 123, 167, 225;
+
+  --theme-accent: #9BC0ED;
+  --theme-accent-hover: #7BA7E1;
+  --theme-accent-rgb: 155, 192, 237;
+
+  --theme-bg: #0E1626;
+  --theme-bg-solid: #0E1626;
+  --theme-surface: #1B2742;
+  --theme-surface-2: #222F4D;
+  --theme-surface-raised: #283658;
+
+  --theme-text: #F0F5FF;
+  --theme-text-muted: #B8C8E8;
+  --theme-text-subtle: rgba(240, 245, 255, 0.65);
+
+  --theme-border: rgba(123, 167, 225, 0.15);
+  --theme-border-strong: rgba(123, 167, 225, 0.4);
+
+  --theme-success: #7BA7E1;
+  --theme-success-rgb: 123, 167, 225;
+  --theme-warning: #E0B24D;
+  --theme-warning-rgb: 224, 178, 77;
+  --theme-danger: #E57575;
+  --theme-danger-rgb: 229, 117, 117;
+
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --theme-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.7);
+
+  --theme-glass-bg: rgba(27, 39, 66, 0.75);
+  --theme-glass-border: rgba(123, 167, 225, 0.15);
+  --glow-brand: rgba(123, 167, 225, 0.25);
+  --glow-info: rgba(176, 185, 204, 0.2);
+}
+
+/* ============================================================
+   LIGHT — 5 VARIANTS
+============================================================ */
+
+/* ----- 1. CREAM YELLOW ----- */
+[data-theme='cream-yellow'] {
+  color-scheme: light;
+
+  --theme-primary: #B8860B;
+  --theme-primary-hover: #966C09;
+  --theme-primary-rgb: 184, 134, 11;
+
+  --theme-accent: #8B5E34;
+  --theme-accent-hover: #734A28;
+  --theme-accent-rgb: 139, 94, 52;
+
+  --theme-bg: #FEF9E7;
+  --theme-bg-solid: #FEF9E7;
+  --theme-surface: #FFFFFF;
+  --theme-surface-2: #FFFBF0;
+  --theme-surface-raised: #FFFFFF;
+
+  --theme-text: #1F1408;
+  --theme-text-muted: #4A3A20;
+  --theme-text-subtle: rgba(31, 20, 8, 0.7);
+
+  --theme-border: #F0E5C0;
+  --theme-border-strong: rgba(184, 134, 11, 0.35);
+
+  --theme-success: #8B6914;
+  --theme-success-rgb: 139, 105, 20;
+  --theme-warning: #B8860B;
+  --theme-warning-rgb: 184, 134, 11;
+  --theme-danger: #A93C3C;
+  --theme-danger-rgb: 169, 60, 60;
+
+  --theme-shadow-sm: 0 1px 2px rgba(42, 32, 16, 0.06);
+  --theme-shadow-md: 0 4px 12px rgba(42, 32, 16, 0.08);
+  --theme-shadow-lg: 0 12px 32px rgba(42, 32, 16, 0.1);
+  --theme-shadow-xl: 0 24px 48px rgba(42, 32, 16, 0.12);
+
+  --theme-glass-bg: rgba(255, 255, 255, 0.7);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(184, 134, 11, 0.15);
+  --glow-info: rgba(107, 91, 58, 0.12);
+}
+
+/* ----- 2. WARM BEIGE ----- */
+[data-theme='warm-beige'] {
+  color-scheme: light;
+
+  --theme-primary: #8B6F47;
+  --theme-primary-hover: #705A38;
+  --theme-primary-rgb: 139, 111, 71;
+
+  --theme-accent: #A67C52;
+  --theme-accent-hover: #8B6640;
+  --theme-accent-rgb: 166, 124, 82;
+
+  --theme-bg: #F5EFE0;
+  --theme-bg-solid: #F5EFE0;
+  --theme-surface: #FCF8EE;
+  --theme-surface-2: #F5EEDB;
+  --theme-surface-raised: #FFFFFF;
+
+  --theme-text: #1F1408;
+  --theme-text-muted: #4A3820;
+  --theme-text-subtle: rgba(31, 20, 8, 0.7);
+
+  --theme-border: #E4D5B7;
+  --theme-border-strong: rgba(139, 111, 71, 0.35);
+
+  --theme-success: #6B5636;
+  --theme-success-rgb: 107, 86, 54;
+  --theme-warning: #A67C52;
+  --theme-warning-rgb: 166, 124, 82;
+  --theme-danger: #A93C3C;
+  --theme-danger-rgb: 169, 60, 60;
+
+  --theme-shadow-sm: 0 1px 2px rgba(42, 31, 16, 0.06);
+  --theme-shadow-md: 0 4px 12px rgba(42, 31, 16, 0.08);
+  --theme-shadow-lg: 0 12px 32px rgba(42, 31, 16, 0.1);
+  --theme-shadow-xl: 0 24px 48px rgba(42, 31, 16, 0.12);
+
+  --theme-glass-bg: rgba(252, 248, 238, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(139, 111, 71, 0.15);
+  --glow-info: rgba(107, 91, 71, 0.12);
+}
+
+/* ----- 3. PURE WHITE ----- */
+[data-theme='pure-white'] {
+  color-scheme: light;
+
+  --theme-primary: #333333;
+  --theme-primary-hover: #1A1A1A;
+  --theme-primary-rgb: 51, 51, 51;
+
+  --theme-accent: #555555;
+  --theme-accent-hover: #333333;
+  --theme-accent-rgb: 85, 85, 85;
+
+  --theme-bg: #FFFFFF;
+  --theme-bg-solid: #FFFFFF;
+  --theme-surface: #F8F8F8;
+  --theme-surface-2: #F0F0F0;
+  --theme-surface-raised: #FFFFFF;
+
+  --theme-text: #000000;
+  --theme-text-muted: #2A2A2A;
+  --theme-text-subtle: rgba(0, 0, 0, 0.7);
+
+  --theme-border: #E5E5E5;
+  --theme-border-strong: rgba(51, 51, 51, 0.35);
+
+  --theme-success: #2A2A2A;
+  --theme-success-rgb: 42, 42, 42;
+  --theme-warning: #C9993A;
+  --theme-warning-rgb: 201, 153, 58;
+  --theme-danger: #A93C3C;
+  --theme-danger-rgb: 169, 60, 60;
+
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --theme-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08);
+  --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.1);
+
+  --theme-glass-bg: rgba(248, 248, 248, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(51, 51, 51, 0.15);
+  --glow-info: rgba(74, 74, 74, 0.12);
+}
+
+/* ----- 4. SOFT GRAY ----- */
+[data-theme='soft-gray'] {
+  color-scheme: light;
+
+  --theme-primary: #4B5563;
+  --theme-primary-hover: #374151;
+  --theme-primary-rgb: 75, 85, 99;
+
+  --theme-accent: #6B7280;
+  --theme-accent-hover: #4B5563;
+  --theme-accent-rgb: 107, 114, 128;
+
+  --theme-bg: #F3F4F6;
+  --theme-bg-solid: #F3F4F6;
+  --theme-surface: #FFFFFF;
+  --theme-surface-2: #E5E7EB;
+  --theme-surface-raised: #FFFFFF;
+
+  --theme-text: #0F1820;
+  --theme-text-muted: #2A3540;
+  --theme-text-subtle: rgba(15, 24, 32, 0.7);
+
+  --theme-border: #D1D5DB;
+  --theme-border-strong: rgba(75, 85, 99, 0.35);
+
+  --theme-success: #374151;
+  --theme-success-rgb: 55, 65, 81;
+  --theme-warning: #D97706;
+  --theme-warning-rgb: 217, 119, 6;
+  --theme-danger: #DC2626;
+  --theme-danger-rgb: 220, 38, 38;
+
+  --theme-shadow-sm: 0 1px 2px rgba(31, 41, 55, 0.06);
+  --theme-shadow-md: 0 4px 12px rgba(31, 41, 55, 0.08);
+  --theme-shadow-lg: 0 12px 32px rgba(31, 41, 55, 0.1);
+  --theme-shadow-xl: 0 24px 48px rgba(31, 41, 55, 0.12);
+
+  --theme-glass-bg: rgba(255, 255, 255, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(75, 85, 99, 0.15);
+  --glow-info: rgba(107, 114, 128, 0.12);
+}
+
+/* ----- 5. PALE BLUSH ----- */
+[data-theme='pale-blush'] {
+  color-scheme: light;
+
+  --theme-primary: #B8637A;
+  --theme-primary-hover: #9C5062;
+  --theme-primary-rgb: 184, 99, 122;
+
+  --theme-accent: #D48A9C;
+  --theme-accent-hover: #B8737F;
+  --theme-accent-rgb: 212, 138, 156;
+
+  --theme-bg: #FDF2F4;
+  --theme-bg-solid: #FDF2F4;
+  --theme-surface: #FFFFFF;
+  --theme-surface-2: #FCE8EC;
+  --theme-surface-raised: #FFFFFF;
+
+  --theme-text: #1A0A10;
+  --theme-text-muted: #4A2028;
+  --theme-text-subtle: rgba(26, 10, 16, 0.7);
+
+  --theme-border: #F0D5DB;
+  --theme-border-strong: rgba(184, 99, 122, 0.35);
+
+  --theme-success: #8B4A5C;
+  --theme-success-rgb: 139, 74, 92;
+  --theme-warning: #D48A9C;
+  --theme-warning-rgb: 212, 138, 156;
+  --theme-danger: #A93C3C;
+  --theme-danger-rgb: 169, 60, 60;
+
+  --theme-shadow-sm: 0 1px 2px rgba(42, 26, 31, 0.06);
+  --theme-shadow-md: 0 4px 12px rgba(42, 26, 31, 0.08);
+  --theme-shadow-lg: 0 12px 32px rgba(42, 26, 31, 0.1);
+  --theme-shadow-xl: 0 24px 48px rgba(42, 26, 31, 0.12);
+
+  --theme-glass-bg: rgba(255, 255, 255, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.9);
+  --glow-brand: rgba(184, 99, 122, 0.15);
+  --glow-info: rgba(107, 74, 82, 0.12);
+}
+
+/* ============================================================
+   DARK — 5 VARIANTS
+============================================================ */
+
+/* ----- 6. MIDNIGHT NAVY (explicit) ----- */
+[data-theme='midnight-navy'] {
+  color-scheme: dark;
+
+  --theme-primary: #7BA7E1;
+  --theme-primary-hover: #5F8CC7;
+  --theme-primary-rgb: 123, 167, 225;
+
+  --theme-accent: #9BC0ED;
+  --theme-accent-hover: #7BA7E1;
+  --theme-accent-rgb: 155, 192, 237;
+
+  --theme-bg: #0E1626;
+  --theme-bg-solid: #0E1626;
+  --theme-surface: #1B2742;
+  --theme-surface-2: #222F4D;
+  --theme-surface-raised: #283658;
+
+  --theme-text: #F0F5FF;
+  --theme-text-muted: #B8C8E8;
+  --theme-text-subtle: rgba(240, 245, 255, 0.65);
+
+  --theme-border: rgba(123, 167, 225, 0.15);
+  --theme-border-strong: rgba(123, 167, 225, 0.4);
+
+  --theme-success: #7BA7E1;
+  --theme-success-rgb: 123, 167, 225;
+  --theme-warning: #E0B24D;
+  --theme-warning-rgb: 224, 178, 77;
+  --theme-danger: #E57575;
+  --theme-danger-rgb: 229, 117, 117;
+
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --theme-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.7);
+
+  --theme-glass-bg: rgba(27, 39, 66, 0.75);
+  --theme-glass-border: rgba(123, 167, 225, 0.15);
+  --glow-brand: rgba(123, 167, 225, 0.25);
+  --glow-info: rgba(176, 185, 204, 0.2);
+}
+
+/* ----- 7. MATTE BLACK ----- */
+[data-theme='matte-black'] {
+  color-scheme: dark;
+
+  --theme-primary: #D4A574;
+  --theme-primary-hover: #C19461;
+  --theme-primary-rgb: 212, 165, 116;
+
+  --theme-accent: #E5B584;
+  --theme-accent-hover: #D4A574;
+  --theme-accent-rgb: 229, 181, 132;
+
+  --theme-bg: #0F0F0F;
+  --theme-bg-solid: #0F0F0F;
+  --theme-surface: #1A1A1A;
+  --theme-surface-2: #252525;
+  --theme-surface-raised: #2F2F2F;
+
+  --theme-text: #FAF6EE;
+  --theme-text-muted: #C8BFA8;
+  --theme-text-subtle: rgba(250, 246, 238, 0.65);
+
+  --theme-border: rgba(255, 255, 255, 0.08);
+  --theme-border-strong: rgba(212, 165, 116, 0.4);
+
+  --theme-success: #D4A574;
+  --theme-success-rgb: 212, 165, 116;
+  --theme-warning: #E5B584;
+  --theme-warning-rgb: 229, 181, 132;
+  --theme-danger: #E57575;
+  --theme-danger-rgb: 229, 117, 117;
+
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --theme-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.7);
+  --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.8);
+
+  --theme-glass-bg: rgba(26, 26, 26, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.1);
+  --glow-brand: rgba(212, 165, 116, 0.25);
+  --glow-info: rgba(184, 176, 160, 0.2);
+}
+
+/* ----- 8. CHARCOAL GRAY ----- */
+[data-theme='charcoal-gray'] {
+  color-scheme: dark;
+
+  --theme-primary: #A8B8C8;
+  --theme-primary-hover: #94A4B4;
+  --theme-primary-rgb: 168, 184, 200;
+
+  --theme-accent: #C8D0DC;
+  --theme-accent-hover: #B0B8C8;
+  --theme-accent-rgb: 200, 208, 220;
+
+  --theme-bg: #1A1A1A;
+  --theme-bg-solid: #1A1A1A;
+  --theme-surface: #2A2A2A;
+  --theme-surface-2: #353535;
+  --theme-surface-raised: #404040;
+
+  --theme-text: #F5F8FC;
+  --theme-text-muted: #C0C8D4;
+  --theme-text-subtle: rgba(245, 248, 252, 0.65);
+
+  --theme-border: rgba(255, 255, 255, 0.1);
+  --theme-border-strong: rgba(168, 184, 200, 0.4);
+
+  --theme-success: #A8B8C8;
+  --theme-success-rgb: 168, 184, 200;
+  --theme-warning: #C8B896;
+  --theme-warning-rgb: 200, 184, 150;
+  --theme-danger: #E57575;
+  --theme-danger-rgb: 229, 117, 117;
+
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --theme-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.7);
+  --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.8);
+
+  --theme-glass-bg: rgba(42, 42, 42, 0.75);
+  --theme-glass-border: rgba(255, 255, 255, 0.1);
+  --glow-brand: rgba(168, 184, 200, 0.25);
+  --glow-info: rgba(168, 176, 184, 0.2);
+}
+
+/* ----- 9. DEEP FOREST ----- */
+[data-theme='deep-forest'] {
+  color-scheme: dark;
+
+  --theme-primary: #7FC8A2;
+  --theme-primary-hover: #6AB08C;
+  --theme-primary-rgb: 127, 200, 162;
+
+  --theme-accent: #A8E0C0;
+  --theme-accent-hover: #8FC8A8;
+  --theme-accent-rgb: 168, 224, 192;
+
+  --theme-bg: #0A1F1A;
+  --theme-bg-solid: #0A1F1A;
+  --theme-surface: #153029;
+  --theme-surface-2: #1C3D33;
+  --theme-surface-raised: #234A3D;
+
+  --theme-text: #ECFAF2;
+  --theme-text-muted: #A8CCB8;
+  --theme-text-subtle: rgba(236, 250, 242, 0.65);
+
+  --theme-border: rgba(127, 200, 162, 0.15);
+  --theme-border-strong: rgba(127, 200, 162, 0.4);
+
+  --theme-success: #7FC8A2;
+  --theme-success-rgb: 127, 200, 162;
+  --theme-warning: #D4A574;
+  --theme-warning-rgb: 212, 165, 116;
+  --theme-danger: #E57575;
+  --theme-danger-rgb: 229, 117, 117;
+
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --theme-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.7);
+
+  --theme-glass-bg: rgba(21, 48, 41, 0.75);
+  --theme-glass-border: rgba(127, 200, 162, 0.15);
+  --glow-brand: rgba(127, 200, 162, 0.25);
+  --glow-info: rgba(168, 188, 179, 0.2);
+}
+
+/* ----- 10. DARK PLUM ----- */
+[data-theme='dark-plum'] {
+  color-scheme: dark;
+
+  --theme-primary: #C8A0D4;
+  --theme-primary-hover: #B48CC0;
+  --theme-primary-rgb: 200, 160, 212;
+
+  --theme-accent: #D9B8E2;
+  --theme-accent-hover: #C8A0D4;
+  --theme-accent-rgb: 217, 184, 226;
+
+  --theme-bg: #1A0E1F;
+  --theme-bg-solid: #1A0E1F;
+  --theme-surface: #2A1A30;
+  --theme-surface-2: #382444;
+  --theme-surface-raised: #452C52;
+
+  --theme-text: #F8F0FA;
+  --theme-text-muted: #D0B8D8;
+  --theme-text-subtle: rgba(248, 240, 250, 0.65);
+
+  --theme-border: rgba(200, 160, 212, 0.15);
+  --theme-border-strong: rgba(200, 160, 212, 0.4);
+
+  --theme-success: #C8A0D4;
+  --theme-success-rgb: 200, 160, 212;
+  --theme-warning: #E0B2C8;
+  --theme-warning-rgb: 224, 178, 200;
+  --theme-danger: #E57575;
+  --theme-danger-rgb: 229, 117, 117;
+
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --theme-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --theme-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.7);
+  --theme-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.8);
+
+  --theme-glass-bg: rgba(42, 26, 48, 0.75);
+  --theme-glass-border: rgba(200, 160, 212, 0.15);
+  --glow-brand: rgba(200, 160, 212, 0.25);
+  --glow-info: rgba(192, 176, 200, 0.2);
+}
+
+/* ============================================================
+   ✅ SEMANTIC CONTRAST TOKENS
+============================================================ */
+:root {
+  --theme-on-primary: #0E1626;
+  --theme-on-primary-rgb: 14, 22, 38;
+  --theme-on-accent: #0E1626;
+  --theme-on-accent-rgb: 14, 22, 38;
+  --theme-on-success: #0E1626;
+  --theme-on-success-rgb: 14, 22, 38;
+  --theme-on-danger: #0E1626;
+  --theme-on-danger-rgb: 14, 22, 38;
+  --theme-on-warning: #0E1626;
+  --theme-on-warning-rgb: 14, 22, 38;
+  --theme-scrim: rgba(255, 255, 255, 0.04);
+  --theme-scrim-strong: rgba(255, 255, 255, 0.08);
+  --theme-surface-hover: var(--theme-surface-2);
+  --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
+}
+
+[data-theme-mode='light'] {
+  --theme-on-primary: #FFFFFF;
+  --theme-on-primary-rgb: 255, 255, 255;
+  --theme-on-accent: #1A1209;
+  --theme-on-accent-rgb: 26, 18, 9;
+  --theme-on-success: #FFFFFF;
+  --theme-on-success-rgb: 255, 255, 255;
+  --theme-on-danger: #FFFFFF;
+  --theme-on-danger-rgb: 255, 255, 255;
+  --theme-on-warning: #1A1209;
+  --theme-on-warning-rgb: 26, 18, 9;
+  --theme-scrim: rgba(0, 0, 0, 0.04);
+  --theme-scrim-strong: rgba(0, 0, 0, 0.08);
+  --theme-surface-hover: var(--theme-surface-2);
+  --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
+}
+
+/* Per-theme on-* overrides */
+[data-theme='matte-black'] {
+  --theme-on-primary: #1A1209;
+  --theme-on-primary-rgb: 26, 18, 9;
+  --theme-on-accent: #1A1209;
+  --theme-on-accent-rgb: 26, 18, 9;
+  --theme-on-success: #1A1209;
+  --theme-on-success-rgb: 26, 18, 9;
+}
+
+[data-theme='deep-forest'] {
+  --theme-on-primary: #0A1F1A;
+  --theme-on-primary-rgb: 10, 31, 26;
+  --theme-on-accent: #0A1F1A;
+  --theme-on-accent-rgb: 10, 31, 26;
+  --theme-on-success: #0A1F1A;
+  --theme-on-success-rgb: 10, 31, 26;
+}
+
+[data-theme='dark-plum'] {
+  --theme-on-primary: #1A0E1F;
+  --theme-on-primary-rgb: 26, 14, 31;
+  --theme-on-accent: #1A0E1F;
+  --theme-on-accent-rgb: 26, 14, 31;
+  --theme-on-success: #1A0E1F;
+  --theme-on-success-rgb: 26, 14, 31;
+}
+
+[data-theme='charcoal-gray'] {
+  --theme-on-primary: #1A1A1A;
+  --theme-on-primary-rgb: 26, 26, 26;
+  --theme-on-accent: #1A1A1A;
+  --theme-on-accent-rgb: 26, 26, 26;
+  --theme-on-success: #1A1A1A;
+  --theme-on-success-rgb: 26, 26, 26;
+}
+
+[data-theme='midnight-navy'] {
+  --theme-on-primary: #0E1626;
+  --theme-on-primary-rgb: 14, 22, 38;
+  --theme-on-accent: #0E1626;
+  --theme-on-accent-rgb: 14, 22, 38;
+  --theme-on-success: #0E1626;
+  --theme-on-success-rgb: 14, 22, 38;
+}
+
+[data-theme='pure-white'] {
+  --theme-on-primary: #FFFFFF;
+  --theme-on-primary-rgb: 255, 255, 255;
+  --theme-on-accent: #FFFFFF;
+  --theme-on-accent-rgb: 255, 255, 255;
+  --theme-on-success: #FFFFFF;
+  --theme-on-success-rgb: 255, 255, 255;
+}
+
+/* ============================================
+   BODY BACKGROUND
+============================================ */
+body {
+  background: var(--theme-bg-solid);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--theme-text);
+  transition: background 0.5s ease, color 0.3s ease;
+}
+
+/* ✅ Dark body — gradient tint */
+[data-theme-mode='dark'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(var(--theme-primary-rgb), 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(var(--theme-accent-rgb), 0.10) 0%, transparent 55%),
+    var(--theme-bg-solid);
+  background-attachment: fixed;
+}
+
+[data-theme='midnight-navy'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(123, 167, 225, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(155, 192, 237, 0.10) 0%, transparent 55%),
+    #0E1626;
+  background-attachment: fixed;
+}
+
+[data-theme='matte-black'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(212, 165, 116, 0.14) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(229, 181, 132, 0.08) 0%, transparent 55%),
+    #0F0F0F;
+  background-attachment: fixed;
+}
+
+[data-theme='charcoal-gray'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(168, 184, 200, 0.16) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(200, 208, 220, 0.10) 0%, transparent 55%),
+    #1A1A1A;
+  background-attachment: fixed;
+}
+
+[data-theme='deep-forest'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(127, 200, 162, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(168, 224, 192, 0.10) 0%, transparent 55%),
+    #0A1F1A;
+  background-attachment: fixed;
+}
+
+[data-theme='dark-plum'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(200, 160, 212, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(217, 184, 226, 0.10) 0%, transparent 55%),
+    #1A0E1F;
+  background-attachment: fixed;
+}
+
+/* ✅ Light body — subtle gradient tint */
+[data-theme-mode='light'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(var(--theme-primary-rgb), 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(var(--theme-accent-rgb), 0.04) 0%, transparent 55%),
+    var(--theme-bg-solid);
+  background-attachment: fixed;
+}
+
+.dashboard-shell,
+.order-page,
+.catalog-page,
+.cart-page,
+.checkout-page,
+.product-page,
+.settings-shell,
+.profile-shell,
+.profile-page,
+.auth-shell,
+.register-page,
+.notifications-shell,
+.favorites-page,
+.order-details-page {
+  background: transparent !important;
+}
+
+/* ============================================
+   BACKGROUND IMAGE LAYER — Consistent
+============================================ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url('/campus.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  opacity: 0.18;
+  mix-blend-mode: multiply;
+  transition: background 0.5s ease, opacity 0.5s ease, mix-blend-mode 0.5s ease;
+}
+
+[data-theme-mode='dark'] body::before {
+  mix-blend-mode: screen;
+  opacity: 0.28;
+}
+
+[data-theme-mode='light'] body::before {
+  mix-blend-mode: multiply;
+  opacity: 0.35;
+}
+
+/* Per light theme */
+[data-theme='cream-yellow'] body::before { opacity: 0.30; mix-blend-mode: multiply; }
+[data-theme='warm-beige'] body::before { opacity: 0.32; mix-blend-mode: multiply; }
+[data-theme='pure-white'] body::before { opacity: 0.25; mix-blend-mode: multiply; }
+[data-theme='soft-gray'] body::before { opacity: 0.30; mix-blend-mode: multiply; }
+[data-theme='pale-blush'] body::before { opacity: 0.28; mix-blend-mode: multiply; }
+
+/* Per dark theme */
+[data-theme='midnight-navy'] body::before { opacity: 0.22; mix-blend-mode: screen; }
+[data-theme='matte-black'] body::before { opacity: 0.20; mix-blend-mode: screen; }
+[data-theme='charcoal-gray'] body::before { opacity: 0.22; mix-blend-mode: screen; }
+[data-theme='deep-forest'] body::before { opacity: 0.24; mix-blend-mode: screen; }
+[data-theme='dark-plum'] body::before { opacity: 0.22; mix-blend-mode: screen; }
+
+/* Contrast boost */
+[data-theme-mode='light'] body::before { filter: contrast(1.15) saturate(1.1); }
+[data-theme-mode='dark'] body::before { filter: contrast(1.1) saturate(1.15); }
+
+/* Vignette */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 0%, transparent 60%, rgba(0, 0, 0, 0.05) 100%);
+  transition: background 0.5s ease;
+}
+
+[data-theme-mode='dark'] body::after {
+  background: radial-gradient(ellipse at center, transparent 0%, transparent 60%, rgba(0, 0, 0, 0.15) 100%);
+}
+
+/* ============================================================
+   🎯 UNIVERSAL HOVER STATES — HUE-MATCHED SA LAHAT NG THEMES
+   ✅ Lahat ng hover ay gumagamit ng theme color
+   ✅ Tugma sa bawat theme (10 colors)
+   ============================================================ */
+
+/* ✅ Universal hover color */
+:root {
+  --hover-bg: rgba(var(--theme-primary-rgb), 0.08);
+  --hover-bg-strong: rgba(var(--theme-primary-rgb), 0.12);
+  --hover-text: var(--theme-primary);
+  --hover-text-hover: var(--theme-primary-hover);
+  --hover-border: rgba(var(--theme-primary-rgb), 0.35);
+}
+
+/* ============================================================
+   1️⃣ LINK HOVER — Lahat ng links
+   ============================================================ */
+a {
+  transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+a:hover {
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+}
+
+a:active {
+  color: var(--theme-primary-hover);
+  -webkit-text-fill-color: var(--theme-primary-hover);
+}
+
+/* ============================================================
+   2️⃣ BUTTON HOVER — Lahat ng buttons
+   ============================================================ */
+button {
+  transition: background 0.25s ease, color 0.2s ease, box-shadow 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ✅ Primary buttons */
+button[class*="--primary"],
+button[class*="__cta"],
+button[class*="button--primary"] {
+  background: var(--theme-primary);
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
+}
+
+button[class*="--primary"]:hover:not(:disabled),
+button[class*="__cta"]:hover:not(:disabled),
+button[class*="button--primary"]:hover:not(:disabled) {
+  background: var(--theme-primary-hover);
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
+  box-shadow: 0 8px 20px rgba(var(--theme-primary-rgb), 0.35);
+}
+
+/* ✅ Ghost / Secondary buttons */
+button[class*="--ghost"],
+button[class*="--secondary"] {
+  background: transparent;
+  color: var(--theme-text);
+  -webkit-text-fill-color: var(--theme-text);
+  border: 1px solid var(--theme-border);
+}
+
+button[class*="--ghost"]:hover:not(:disabled),
+button[class*="--secondary"]:hover:not(:disabled) {
+  background: var(--hover-bg);
+  color: var(--hover-text);
+  -webkit-text-fill-color: var(--hover-text);
+  border-color: var(--hover-border);
+}
+
+/* ✅ Danger buttons */
+button[class*="--danger"]:hover:not(:disabled),
+button[class*="--danger"]:focus-visible {
+  background: var(--theme-danger);
+  color: var(--theme-on-danger);
+  -webkit-text-fill-color: var(--theme-on-danger);
+  box-shadow: 0 8px 20px rgba(var(--theme-danger-rgb), 0.35);
+}
+
+/* ============================================================
+   3️⃣ NAV ITEMS HOVER — Sidebar at Navbar
+   ============================================================ */
+[class*="sidebar__item"],
+[class*="nav-item"],
+[class*="nav-action"],
+[class*="nav-link"] {
+  transition: background 0.2s ease, color 0.2s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[class*="sidebar__item"]:hover,
+[class*="nav-item"]:hover,
+[class*="nav-action"]:hover,
+[class*="nav-link"]:hover {
+  background: var(--hover-bg);
+  color: var(--hover-text);
+  -webkit-text-fill-color: var(--hover-text);
+}
+
+[class*="sidebar__item"].is-active,
+[class*="nav-item"].is-active,
+[class*="nav-action"].is-active,
+[class*="nav-link"].is-active {
+  background: var(--hover-bg-strong);
+  color: var(--hover-text);
+  -webkit-text-fill-color: var(--hover-text);
+  font-weight: 700;
+}
+
+/* ============================================================
+   4️⃣ CARD HOVER — Lahat ng cards
+   ============================================================ */
+[class*="card"]:not([class*="icon"]):not([class*="badge"]),
+[class*="panel"]:not([class*="icon"]) {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.2s ease;
+}
+
+[class*="card"]:not([class*="icon"]):hover,
+[class*="panel"]:not([class*="icon"]):hover {
+  border-color: var(--hover-border);
+  box-shadow: 0 12px 28px rgba(var(--theme-primary-rgb), 0.15);
+}
+
+/* ============================================================
+   5️⃣ INPUT HOVER + FOCUS — Lahat ng fields
+   ============================================================ */
+input, textarea, select {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+input:hover, textarea:hover, select:hover {
+  border-color: var(--hover-border);
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.15);
+}
+
+/* ============================================================
+   6️⃣ DROPDOWN ITEMS HOVER
+   ============================================================ */
+[class*="dropdown__item"]:hover,
+[class*="menu__item"]:hover {
+  background: var(--hover-bg);
+  color: var(--hover-text);
+  -webkit-text-fill-color: var(--hover-text);
+}
+
+[class*="dropdown__item--danger"]:hover,
+[class*="menu__item--danger"]:hover {
+  background: rgba(var(--theme-danger-rgb), 0.08);
+  color: var(--theme-danger);
+  -webkit-text-fill-color: var(--theme-danger);
+}
+
+/* ============================================================
+   7️⃣ ICON HOVER — Lahat ng icons
+   ============================================================ */
+[class*="icon"]:hover .react-icon,
+button:hover .react-icon {
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+}
+
+/* ============================================================
+   8️⃣ BADGE HOVER — Lahat ng badges
+   ============================================================ */
+[class*="badge"]:hover {
+  transform: scale(1.05);
+}
+
+/* ============================================================
+   9️⃣ TAB HOVER — Lahat ng tabs
+   ============================================================ */
+[class*="tab"]:hover:not(.is-active) {
+  background: var(--hover-bg);
+  color: var(--hover-text);
+  -webkit-text-fill-color: var(--hover-text);
+}
+
+[class*="tab"].is-active {
+  background: var(--theme-primary);
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
+}
+
+/* ============================================================
+   🔟 FILTER CHIP HOVER — Lahat ng chips
+   ============================================================ */
+[class*="chip"]:hover:not(.is-active) {
+  background: var(--hover-bg);
+  color: var(--hover-text);
+  -webkit-text-fill-color: var(--hover-text);
+  border-color: var(--hover-border);
+}
+
+[class*="chip"].is-active {
+  background: var(--theme-primary);
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
+  border-color: var(--theme-primary);
+}
+
+/* ============================================================
+   1️⃣1️⃣ ARROW / CHEVRON HOVER
+   ============================================================ */
+[class*="link"]:hover [class*="arrow"],
+[class*="link"]:hover svg:last-child,
+[class*="cta"]:hover svg:last-child {
+  transform: translateX(3px);
+  transition: transform 0.25s ease;
+}
+
+/* ============================================================
+   1️⃣2️⃣ UNIVERSAL FOCUS RING
+   ============================================================ */
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 2px;
+  border-radius: 0.4rem;
+}
+
+/* ============================================================
+   1️⃣3️⃣ DISABLED STATE
+   ============================================================ */
+:where(button, input, select, textarea):disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(0.3);
+}
+
+/* ============================================================
+   1️⃣4️⃣ TEXT SELECTION
+   ============================================================ */
+::selection {
+  background: rgba(var(--theme-primary-rgb), 0.25);
+  color: var(--theme-text);
+}
+
+::placeholder {
+  color: var(--theme-text-subtle, var(--theme-text-muted));
+  opacity: 0.7;
+}
+
+/* ============================================================
+   1️⃣5️⃣ SCROLLBAR — Hue-matched
+   ============================================================ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--theme-primary-rgb), 0.3) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(var(--theme-primary-rgb), 0.3);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--theme-primary-rgb), 0.5);
+}
+
+/* ============================================================
+   ✅ REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* ============================================================
+   🎯 BACKGROUND CONTRAST BALANCE — Light mode fix
+   ✅ I-match ang light mode visual weight sa dark mode
+   ✅ Hindi masyadong visible ang campus image
+   ✅ Consistent feel sa lahat ng 10 themes
+   ============================================================ */
+
+/* ============================================================
+   1️⃣ LIGHT MODE — Ibaba ang opacity para match sa dark
+   ✅ Dating 0.35 — masyadong visible
+   ✅ Bagong 0.18 — match sa dark mode
+   ============================================================ */
+
+[data-theme-mode='light'] body::before {
+  mix-blend-mode: multiply;
+  opacity: 0.18 !important;  /* ✅ Ibaba mula 0.35 → 0.18 */
+  filter: contrast(1.05) saturate(1.05) !important;  /* ✅ Ibaba ang boost */
+}
+
+/* ✅ Per light theme — match sa dark mode visual weight */
+[data-theme='cream-yellow'] body::before {
+  opacity: 0.16 !important;  /* ✅ Dating 0.30 */
+  mix-blend-mode: multiply;
+  filter: contrast(1.05) saturate(1.05) !important;
+}
+
+[data-theme='warm-beige'] body::before {
+  opacity: 0.16 !important;  /* ✅ Dating 0.32 */
+  mix-blend-mode: multiply;
+  filter: contrast(1.05) saturate(1.05) !important;
+}
+
+[data-theme='pure-white'] body::before {
+  opacity: 0.12 !important;  /* ✅ Dating 0.25 */
+  mix-blend-mode: multiply;
+  filter: contrast(1.05) saturate(1.05) !important;
+}
+
+[data-theme='soft-gray'] body::before {
+  opacity: 0.16 !important;  /* ✅ Dating 0.30 */
+  mix-blend-mode: multiply;
+  filter: contrast(1.05) saturate(1.05) !important;
+}
+
+[data-theme='pale-blush'] body::before {
+  opacity: 0.16 !important;  /* ✅ Dating 0.28 */
+  mix-blend-mode: multiply;
+  filter: contrast(1.05) saturate(1.05) !important;
+}
+
+/* ============================================================
+   2️⃣ DARK MODE — I-maintain ang current visual weight
+   ✅ Dating 0.28 — tama lang
+   ============================================================ */
+
+[data-theme-mode='dark'] body::before {
+  mix-blend-mode: screen;
+  opacity: 0.22 !important;  /* ✅ Ibaba mula 0.28 → 0.22 para match */
+  filter: contrast(1.05) saturate(1.05) !important;
+}
+
+[data-theme='midnight-navy'] body::before {
+  opacity: 0.20 !important;
+  mix-blend-mode: screen;
+  filter: contrast(1.05) saturate(1.05) !important;
+}
+
+[data-theme='matte-black'] body::before {
+  opacity: 0.18 !important;
+  mix-blend-mode: screen;
+  filter: contrast(1.05) saturate(1.05) !important;
+}
+
+[data-theme='charcoal-gray'] body::before {
+  opacity: 0.20 !important;
+  mix-blend-mode: screen;
+  filter: contrast(1.05) saturate(1.05) !important;
+}
+
+[data-theme='deep-forest'] body::before {
+  opacity: 0.22 !important;
+  mix-blend-mode: screen;
+  filter: contrast(1.05) saturate(1.05) !important;
+}
+
+[data-theme='dark-plum'] body::before {
+  opacity: 0.20 !important;
+  mix-blend-mode: screen;
+  filter: contrast(1.05) saturate(1.05) !important;
+}
+
+/* ============================================================
+   3️⃣ MOBILE — Same treatment
+   ============================================================ */
+
+@media (max-width: 768px) {
+  [data-theme-mode='light'] body::before {
+    opacity: 0.20 !important;  /* ✅ Dating 0.40 */
+  }
+
+  [data-theme-mode='dark'] body::before {
+    opacity: 0.24 !important;  /* ✅ Dating 0.32 */
+  }
+}
+
+/* ============================================================
+   4️⃣ VIGNETTE — Light mode subtle, dark mode visible
+   ✅ Consistent sa parehong mode
+   ============================================================ */
+
+[data-theme-mode='light'] body::after {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 70%,
+    rgba(0, 0, 0, 0.03) 100%
+  ) !important;
+}
+
+[data-theme-mode='dark'] body::after {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 65%,
+    rgba(0, 0, 0, 0.12) 100%
+  ) !important;
+}
+
+/* ============================================================
+   5️⃣ GRADIENT TINT — Light mode subtle
+   ✅ Match sa dark mode intensity
+   ============================================================ */
+
+[data-theme-mode='light'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(var(--theme-primary-rgb), 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(var(--theme-accent-rgb), 0.03) 0%, transparent 55%),
+    var(--theme-bg-solid) !important;
+  background-attachment: fixed !important;
+}
+
+[data-theme-mode='dark'] body {
+  background:
+    radial-gradient(ellipse at top left, rgba(var(--theme-primary-rgb), 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(var(--theme-accent-rgb), 0.08) 0%, transparent 55%),
+    var(--theme-bg-solid) !important;
+  background-attachment: fixed !important;
 }
