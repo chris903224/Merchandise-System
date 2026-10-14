@@ -5767,3 +5767,1481 @@ body:hover {
   -webkit-text-fill-color: var(--theme-on-primary) !important;
   opacity: 0.9;
 }
+/* ============================================================
+   🎯 HOVER CONTROL — FINAL (Buttons at Cards lang)
+   ✅ Buttons at Cards — may hover
+   ❌ Navbar, Product sizes, at lahat ng iba — walang hover
+   ✅ Naka-apply sa lahat ng 10 themes
+   ============================================================ */
+
+/* ============================================================
+   1️⃣ DISABLE HOVER — NAVBAR / HEADER (lahat)
+   ❌ Walang hover sa navbar elements
+   ============================================================ */
+
+.site-nav,
+.site-nav:hover,
+.site-nav__inner,
+.site-nav__inner:hover,
+.nav-actions,
+.nav-actions:hover,
+.nav-action,
+.nav-action:hover,
+.nav-action--accent,
+.nav-action--accent:hover,
+.nav-session,
+.nav-session:hover,
+.brand,
+.brand:hover,
+.brand__logo,
+.brand__logo:hover,
+.brand__mark,
+.brand__mark:hover,
+.brand__copy,
+.brand__copy:hover,
+.nav-search,
+.nav-search:hover,
+.nav-search:focus-within,
+.nav-search__input,
+.nav-search__input:hover,
+.nav-search__clear,
+.nav-search__clear:hover,
+.nav-search__kbd,
+.nav-search__kbd:hover,
+.nav-search-toggle,
+.nav-search-toggle:hover,
+.nav-profile,
+.nav-profile:hover,
+.nav-avatar,
+.nav-avatar:hover,
+.nav-avatar-frame,
+.nav-avatar-frame:hover,
+.nav-avatar-chevron,
+.nav-avatar-chevron:hover,
+.nav-cart-count,
+.nav-cart-count:hover,
+.notification-bell,
+.notification-bell:hover,
+.notification-bell__button,
+.notification-bell__button:hover,
+.notification-bell__badge,
+.notification-bell__badge:hover,
+.nav-dropdown,
+.nav-dropdown:hover,
+.nav-dropdown-item,
+.nav-dropdown-item:hover,
+.nav-dropdown-item--danger,
+.nav-dropdown-item--danger:hover,
+.nav-dropdown-item--themes,
+.nav-dropdown-item--themes:hover,
+.nav-dropdown-header-link,
+.nav-dropdown-header-link:hover,
+.nav-dropdown-divider,
+.nav-dropdown-divider:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ✅ Retain ang nav-action background, pero walang transform */
+.nav-action,
+.nav-action:hover {
+  transform: none !important;
+}
+
+/* ✅ Navbar icons — walang hover transform */
+.site-nav .react-icon,
+.site-nav .react-icon:hover {
+  transform: none !important;
+}
+
+/* ============================================================
+   2️⃣ DISABLE HOVER — PRODUCT SIZES / VARIANTS
+   ❌ Walang hover sa sizes/variants
+   ============================================================ */
+
+.product-variant,
+.product-variant:hover,
+.product-variant:focus,
+.product-variant.is-selected,
+.product-variant.is-selected:hover,
+.product-panel__variants,
+.product-panel__variants:hover,
+.product-panel__group,
+.product-panel__group:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ✅ Retain ang selected state bg, pero walang hover transform */
+.product-variant.is-selected {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border-color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   3️⃣ DISABLE HOVER — PANELS AT SECTIONS
+   ❌ Walang hover sa buong panel/section
+   ============================================================ */
+
+.home-section,
+.home-section:hover,
+.home-highlights__panel,
+.home-highlights__panel:hover,
+.settings-panel,
+.settings-panel:hover,
+.cart-items,
+.cart-items:hover,
+.cart-summary,
+.cart-summary:hover,
+.checkout-section,
+.checkout-section:hover,
+.dashboard-summary__card,
+.dashboard-summary__card:hover,
+.profile-card,
+.profile-card:hover,
+.profile-side__card,
+.profile-side__card:hover,
+.notification-card,
+.notification-card:hover,
+.favorites-card,
+.favorites-card:hover,
+.od-card,
+.od-card:hover,
+.od-rail-card,
+.od-rail-card:hover,
+.hero-shell,
+.hero-shell:hover,
+.hero-carousel,
+.hero-carousel:hover,
+.hero-carousel__viewport,
+.hero-carousel__viewport:hover,
+.hero-carousel__caption,
+.hero-carousel__caption:hover,
+.hero-carousel__dots,
+.hero-carousel__dots:hover,
+.hero-carousel__dot,
+.hero-carousel__dot:hover,
+.cart-hero,
+.cart-hero:hover,
+.catalog-hero,
+.catalog-hero:hover,
+.checkout-hero,
+.checkout-hero:hover,
+.dashboard-hero,
+.dashboard-hero:hover,
+.settings-hero,
+.settings-hero:hover,
+.notifications-hero,
+.notifications-hero:hover,
+.favorites-hero,
+.favorites-hero:hover,
+.od-hero,
+.od-hero:hover,
+.product-panel__inner,
+.product-panel__inner:hover,
+.product-gallery__stage,
+.product-gallery__stage:hover,
+.product-tabs,
+.product-tabs:hover,
+.catalog-empty,
+.catalog-empty:hover,
+.checkout-empty,
+.checkout-empty:hover,
+.dashboard-gate__info,
+.dashboard-gate__info:hover,
+.dashboard-orders,
+.dashboard-orders:hover,
+.notification-banner,
+.notification-banner:hover,
+.checkout-success,
+.checkout-success:hover,
+.checkout-cancel,
+.checkout-cancel:hover,
+.settings-hero,
+.settings-hero:hover,
+.home-highlights__grid,
+.home-highlights__grid:hover,
+.home-cards,
+.home-cards:hover {
+  transform: none !important;
+}
+
+/* ============================================================
+   4️⃣ DISABLE HOVER — LINKS (lahat)
+   ❌ Walang hover sa links
+   ============================================================ */
+
+a:not([class*="btn"]):not([class*="cta"]):not([class*="button"]):not([class*="card"]),
+a:not([class*="btn"]):not([class*="cta"]):not([class*="button"]):not([class*="card"]):hover,
+.product-breadcrumb__link,
+.product-breadcrumb__link:hover,
+.home-section__link,
+.home-section__link:hover,
+.site-footer__links a,
+.site-footer__links a:hover,
+.site-footer__meta a,
+.site-footer__meta a:hover,
+.site-footer__contact a,
+.site-footer__contact a:hover,
+.product-related__link,
+.product-related__link:hover,
+.notification-banner__link,
+.notification-banner__link:hover,
+.home-card__link,
+.home-card__link:hover,
+.hero-photo__link,
+.hero-photo__link:hover,
+.profile-sidebar__item,
+.profile-sidebar__item:hover,
+.settings-sidebar__item,
+.settings-sidebar__item:hover,
+.dashboard-sidebar__item,
+.dashboard-sidebar__item:hover,
+.notifications-sidebar__item,
+.notifications-sidebar__item:hover,
+.order-sidebar-nav__item,
+.order-sidebar-nav__item:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ============================================================
+   5️⃣ DISABLE HOVER — ICONS (lahat)
+   ❌ Walang hover transform
+   ============================================================ */
+
+.react-icon,
+.react-icon:hover,
+svg:hover,
+[class*="icon"]:hover,
+[class*="icon"]:hover .react-icon,
+button:hover .react-icon,
+.hero-bullet__icon:hover,
+.hero-bullet__icon .react-icon:hover,
+.home-card__icon-circle:hover,
+.home-card--category:hover .home-card__icon-circle,
+.visit-panel__icon:hover,
+.settings-panel__icon:hover,
+.checkout-section__icon:hover,
+.dashboard-summary__icon:hover,
+.dashboard-sidebar__avatar:hover,
+.profile-sidebar__avatar:hover,
+.nav-dropdown-avatar:hover,
+.nav-dropdown-initials:hover,
+.nav-avatar-initials:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ============================================================
+   6️⃣ DISABLE HOVER — INPUTS, TEXTAREAS, SELECTS
+   ❌ Walang hover effect (may focus pa rin)
+   ============================================================ */
+
+input:hover,
+textarea:hover,
+select:hover,
+input:not(:focus):hover,
+textarea:not(:focus):hover,
+select:not(:focus):hover,
+.nav-search__input:hover,
+.dashboard-toolbar__search input:hover,
+.dashboard-toolbar__select:hover,
+.settings-field__input:hover,
+.settings-field__select:hover,
+.field__input:hover {
+  border-color: var(--theme-border) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* ============================================================
+   7️⃣ DISABLE HOVER — TABS AT CHIPS
+   ❌ Walang hover effect (active pa rin visible)
+   ============================================================ */
+
+[class*="tab"]:not(.is-active),
+[class*="tab"]:not(.is-active):hover,
+[class*="chip"]:not(.is-active),
+[class*="chip"]:not(.is-active):hover,
+.notifications-tab:not(.is-active),
+.notifications-tab:not(.is-active):hover,
+.appearance-tab:not(.is-active),
+.appearance-tab:not(.is-active):hover,
+.settings-tab:not(.is-active),
+.settings-tab:not(.is-active):hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ============================================================
+   8️⃣ DISABLE HOVER — DROPDOWN ITEMS
+   ❌ Walang hover effect
+   ============================================================ */
+
+[class*="dropdown__item"]:hover,
+[class*="menu__item"]:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ============================================================
+   9️⃣ DISABLE HOVER — BADGES
+   ❌ Walang hover effect
+   ============================================================ */
+
+[class*="badge"]:hover,
+.home-card__badge:hover,
+.catalog-card__badge:hover,
+.favorites-card__badge:hover,
+.product-card__badge:hover,
+.notification-bell__badge:hover,
+.nav-cart-count:hover,
+.cart-count:hover,
+.queue-badge:hover,
+.live-badge:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ============================================================
+   🔟 DISABLE HOVER — BACKGROUND (body, gradient, vignette)
+   ❌ Walang hover effect
+   ============================================================ */
+
+body,
+body:hover,
+body::before,
+body::before:hover,
+body::after,
+body::after:hover,
+html,
+html:hover {
+  transform: none !important;
+}
+
+/* ============================================================
+   1️⃣1️⃣ DISABLE HOVER — THUMBNAILS, AVATARS, WISHLIST, NAV BUTTONS
+   ❌ Walang hover effect
+   ============================================================ */
+
+.product-gallery__thumb,
+.product-gallery__thumb:hover,
+.product-gallery__thumb.is-active:hover,
+.product-gallery__nav,
+.product-gallery__nav:hover,
+.product-gallery__wish,
+.product-gallery__wish:hover,
+.product-gallery__dot,
+.product-gallery__dot:hover,
+.hero-carousel__btn,
+.hero-carousel__btn:hover,
+.hero-carousel__btn:active,
+.settings-quicklink,
+.settings-quicklink:hover,
+.settings-address,
+.settings-address:hover,
+.cart-summary__pickup,
+.cart-summary__pickup:hover,
+.cart-item__media,
+.cart-item__media:hover,
+.checkout-summary__item,
+.checkout-summary__item:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ✅ Retain ang wishlist active state (red heart) */
+.product-gallery__wish.is-active {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  transform: none !important;
+}
+
+/* ============================================================
+   1️⃣2️⃣ RETAIN HOVER — BUTTONS LANG
+   ✅ Ito lang ang may hover
+   ============================================================ */
+
+/* ✅ Primary buttons */
+button[class*="--primary"]:hover:not(:disabled),
+button[class*="__cta"]:hover:not(:disabled),
+button[class*="button--primary"]:hover:not(:disabled),
+a[class*="--primary"]:hover:not(.is-disabled),
+a[class*="__cta"]:hover:not(.is-disabled),
+.cart-summary__btn--primary:hover:not(:disabled),
+.checkout-summary__submit:hover:not(:disabled),
+.checkout-btn--primary:hover:not(:disabled),
+.dashboard-summary__cta:hover,
+.dashboard-gate__btn--primary:hover,
+.settings-btn--primary:hover:not(:disabled),
+.gcash-modal__btn--primary:hover:not(:disabled),
+.od-modal__btn--primary:hover:not(:disabled),
+.site-footer__cta-btn:hover,
+.home-card__cta:hover,
+.catalog-card__cta:hover:not(.is-disabled),
+.catalog-card__btn:hover:not(:disabled),
+.product-panel__cta:hover:not(:disabled),
+.product-card__btn:hover:not(:disabled),
+.favorites-card__btn:hover:not(:disabled),
+.favorites-card__cta:hover:not(.is-disabled),
+.select-options-btn:hover:not(:disabled),
+.hero-actions [class*="--primary"]:hover,
+.catalog-empty__cta:hover,
+.checkout-empty__cta:hover {
+  transform: translateY(-3px) scale(1.02) !important;
+}
+
+/* ✅ Ghost/secondary buttons */
+button[class*="--ghost"]:hover:not(:disabled),
+button[class*="--secondary"]:hover:not(:disabled),
+a[class*="--ghost"]:hover:not(.is-disabled),
+a[class*="--secondary"]:hover:not(.is-disabled),
+.cart-summary__btn--ghost:hover:not(:disabled),
+.checkout-btn--secondary:hover:not(:disabled),
+.gcash-modal__btn--ghost:hover:not(:disabled),
+.od-modal__btn--ghost:hover:not(:disabled),
+.settings-btn--ghost:hover:not(:disabled),
+.dashboard-gate__btn--ghost:hover,
+.hero-actions [class*="--ghost"]:hover,
+.hero-actions [class*="--secondary"]:hover {
+  transform: translateY(-2px) scale(1.02) !important;
+}
+
+/* ============================================================
+   1️⃣3️⃣ RETAIN HOVER — CARDS LANG
+   ✅ Ito lang ang may hover lift
+   ============================================================ */
+
+.home-card:hover,
+.catalog-card:hover,
+.product-card:hover,
+.product-related__card:hover,
+.favorites-card:hover {
+  transform: translateY(-4px) scale(1.01) !important;
+  box-shadow:
+    0 16px 32px rgba(var(--theme-primary-rgb), 0.2),
+    0 6px 12px rgba(0, 0, 0, 0.1),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(255, 255, 255, 0.5) !important;
+}
+
+[data-theme-mode='dark'] .home-card:hover,
+[data-theme-mode='dark'] .catalog-card:hover,
+[data-theme-mode='dark'] .product-card:hover,
+[data-theme-mode='dark'] .product-related__card:hover,
+[data-theme-mode='dark'] .favorites-card:hover {
+  box-shadow:
+    0 16px 32px rgba(var(--theme-primary-rgb), 0.35),
+    0 6px 12px rgba(0, 0, 0, 0.5),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ✅ Image zoom sa loob ng card */
+.home-card:hover .home-card__image,
+.catalog-card:hover .catalog-card__image,
+.product-card:hover .product-card__image,
+.product-related__card:hover .product-related__image,
+.favorites-card:hover .favorites-card__image {
+  transform: scale(1.06) !important;
+}
+
+/* ============================================================
+   1️⃣4️⃣ RETAIN FOCUS — Accessibility
+   ✅ Focus visible pa rin sa lahat ng interactive
+   ============================================================ */
+
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--theme-primary) !important;
+  outline-offset: 2px !important;
+  border-radius: 0.4rem !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--theme-primary) !important;
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.15) !important;
+  outline: none !important;
+}
+
+/* ============================================================
+   1️⃣5️⃣ RETAIN SELECTED STATES (walang hover transform)
+   ✅ Active, selected, at current states — visible pa rin
+   ============================================================ */
+
+/* ✅ Selected product variant */
+.product-variant.is-selected {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  transform: none !important;
+}
+
+/* ✅ Active sidebar item */
+.settings-sidebar__item.is-active,
+.profile-sidebar__item.is-active,
+.dashboard-sidebar__item.is-active,
+.notifications-sidebar__item.is-active,
+.order-sidebar-nav__item.is-active {
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  transform: none !important;
+}
+
+/* ✅ Active tab */
+[class*="tab"].is-active {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  transform: none !important;
+}
+
+/* ✅ Active chip */
+[class*="chip"].is-active {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  transform: none !important;
+}
+
+/* ✅ Active carousel dot */
+.hero-carousel__dot.is-active {
+  background: var(--theme-primary) !important;
+  transform: none !important;
+}
+
+/* ✅ Active appearance tab */
+.appearance-tab.is-active {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  transform: none !important;
+}
+
+/* ============================================================
+   1️⃣6️⃣ CURSOR STATES — Retain
+   ✅ Interactive elements lang
+   ============================================================ */
+
+button:not(:disabled),
+a,
+[role="button"],
+[tabindex]:not([tabindex="-1"]) {
+  cursor: pointer;
+}
+
+button:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   1️⃣7️⃣ REDUCED MOTION — Accessibility
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+
+  /* ✅ Retain focus ring */
+  :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--theme-primary) !important;
+    outline-offset: 2px !important;
+  }
+}
+/* ============================================================
+   🎨 CLAYMORPHISM — FAVORITES PAGE
+   ✅ Claymorphism sa cards, CTA, remove button
+   ✅ Naka-apply sa lahat ng 10 themes
+   ============================================================ */
+
+/* ============================================================
+   1️⃣ FAVORITES HERO — Clay container
+   ============================================================ */
+
+.favorites-hero {
+  border-radius: 1.5rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+  transition: none !important;
+}
+
+[data-theme-mode='dark'] .favorites-hero {
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ✅ Hero accent bar — clay */
+.favorites-hero::before {
+  background: linear-gradient(
+    180deg,
+    var(--theme-primary) 0%,
+    var(--theme-accent) 100%
+  ) !important;
+  border-radius: 1.5rem 0 0 1.5rem !important;
+  box-shadow: 0 0 12px rgba(var(--theme-primary-rgb), 0.5) !important;
+}
+
+/* ✅ Hero count badge — clay */
+.favorites-hero__count {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border-radius: 999px !important;
+  padding: 0.75rem 1.25rem !important;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+  font-weight: 800 !important;
+}
+
+.favorites-hero__count .react-icon {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  stroke: currentColor !important;
+}
+
+/* ============================================================
+   2️⃣ FAVORITES CARDS — Claymorphism
+   ============================================================ */
+
+.favorites-card {
+  position: relative !important;
+  border-radius: 1.25rem !important;
+  background: var(--theme-surface) !important;
+  border: none !important;
+  overflow: hidden !important;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease !important;
+}
+
+[data-theme-mode='dark'] .favorites-card {
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+.favorites-card:hover {
+  transform: translateY(-5px) scale(1.015) !important;
+  box-shadow:
+    0 16px 32px rgba(var(--theme-primary-rgb), 0.2),
+    0 6px 12px rgba(0, 0, 0, 0.1),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(255, 255, 255, 0.5) !important;
+}
+
+[data-theme-mode='dark'] .favorites-card:hover {
+  box-shadow:
+    0 16px 32px rgba(var(--theme-primary-rgb), 0.35),
+    0 6px 12px rgba(0, 0, 0, 0.5),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ✅ Card media — clay */
+.favorites-card__media {
+  background: var(--theme-surface-2) !important;
+  border-bottom: 1px solid var(--theme-border) !important;
+}
+
+/* ✅ Card image — zoom sa hover */
+.favorites-card:hover .favorites-card__image {
+  transform: scale(1.06) !important;
+}
+
+/* ✅ Card badge — clay */
+.favorites-card__badge {
+  background: linear-gradient(
+    135deg,
+    var(--theme-accent) 0%,
+    var(--theme-accent-hover) 100%
+  ) !important;
+  color: var(--theme-on-accent) !important;
+  -webkit-text-fill-color: var(--theme-on-accent) !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  padding: 0.35rem 0.75rem !important;
+  box-shadow:
+    0 4px 10px rgba(var(--theme-accent-rgb), 0.35),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.25) !important;
+  font-weight: 800 !important;
+}
+
+/* ============================================================
+   3️⃣ REMOVE BUTTON — Claymorphism (danger)
+   ============================================================ */
+
+.favorites-card__remove {
+  display: grid !important;
+  place-items: center !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  border: none !important;
+  border-radius: 50% !important;
+  background: var(--theme-surface) !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  cursor: pointer !important;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, color 0.2s ease !important;
+}
+
+[data-theme-mode='dark'] .favorites-card__remove {
+  background: var(--theme-surface-2) !important;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.35),
+    0 1px 2px rgba(0, 0, 0, 0.25),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.06) !important;
+}
+
+.favorites-card__remove:hover:not(:disabled) {
+  background: var(--theme-danger) !important;
+  color: var(--theme-on-danger) !important;
+  -webkit-text-fill-color: var(--theme-on-danger) !important;
+  transform: rotate(90deg) scale(1.1) !important;
+  box-shadow:
+    0 8px 16px rgba(var(--theme-danger-rgb), 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+}
+
+.favorites-card__remove:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+.favorites-card__remove .react-icon {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
+}
+
+/* ============================================================
+   4️⃣ CARD BODY — Clay
+   ============================================================ */
+
+.favorites-card__body {
+  background: var(--theme-surface) !important;
+  padding: 0.85rem !important;
+}
+
+.favorites-card__name {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  font-weight: 700 !important;
+}
+
+.favorites-card__category {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.favorites-card__price {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  font-weight: 800 !important;
+}
+
+/* ============================================================
+   5️⃣ CTA BUTTON — Claymorphism (View product)
+   ============================================================ */
+
+.favorites-card__cta {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.4rem !important;
+  padding: 0.7rem 1rem !important;
+  border: none !important;
+  border-radius: 1rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  font-family: inherit !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease !important;
+  overflow: hidden !important;
+  margin-top: auto !important;
+}
+
+.favorites-card__cta::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 50% !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 100%) !important;
+  border-radius: 1rem 1rem 0 0 !important;
+  pointer-events: none !important;
+}
+
+.favorites-card__cta:hover:not(.is-disabled) {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary-hover) 0%,
+    var(--theme-primary) 100%
+  ) !important;
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+.favorites-card__cta:active:not(.is-disabled) {
+  transform: translateY(1px) scale(0.98) !important;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 4px rgba(255, 255, 255, 0.15) !important;
+}
+
+.favorites-card__cta.is-disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  transform: none !important;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
+}
+
+.favorites-card__cta .react-icon {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
+}
+
+/* ============================================================
+   6️⃣ EMPTY STATE — Clay panel
+   ============================================================ */
+
+.favorites-empty {
+  border-radius: 1.5rem !important;
+  background: var(--theme-surface) !important;
+  border: 2px dashed var(--theme-border-strong) !important;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+}
+
+[data-theme-mode='dark'] .favorites-empty {
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+.favorites-empty__cta {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  padding: 0.85rem 1.5rem !important;
+  border: none !important;
+  border-radius: 1rem !important;
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  font-family: inherit !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease !important;
+  overflow: hidden !important;
+}
+
+.favorites-empty__cta::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 50% !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 100%) !important;
+  border-radius: 1rem 1rem 0 0 !important;
+  pointer-events: none !important;
+}
+
+.favorites-empty__cta:hover {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary-hover) 0%,
+    var(--theme-primary) 100%
+  ) !important;
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+.favorites-empty__cta .react-icon {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
+}
+
+/* ============================================================
+   7️⃣ RESPONSIVE — Mobile adjustments
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .favorites-card {
+    border-radius: 1rem !important;
+    box-shadow:
+      0 6px 14px rgba(0, 0, 0, 0.08),
+      0 2px 4px rgba(0, 0, 0, 0.04),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.05),
+      inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
+  }
+
+  .favorites-card__cta {
+    font-size: 0.72rem !important;
+    padding: 0.6rem 0.85rem !important;
+  }
+}
+
+/* ============================================================
+   8️⃣ ACCESSIBILITY — Reduced motion
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .favorites-card,
+  .favorites-card__cta,
+  .favorites-card__remove,
+  .favorites-card__image,
+  .favorites-empty__cta {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+/* ============================================================
+   🎯 NOTIFICATION BADGE — Hue-matched sa 10 themes
+   ✅ Dark themes: light text (puti/maliwanag)
+   ✅ Light themes: dark text (madilim)
+   ✅ Naka-apply sa lahat ng 10 themes
+   ============================================================ */
+
+/* ============================================================
+   1️⃣ BASE — Notification badge
+   ✅ Naka-base sa theme danger color
+   ✅ Text = on-danger (auto-contrast)
+   ============================================================ */
+
+.notification-bell__badge,
+.notifications-badge,
+.nav-cart-count,
+.nav-badge,
+.cart-count-badge,
+[class*="notification-bell__badge"],
+[class*="notification-count"],
+[class*="badge-count"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 1.15rem !important;
+  height: 1.15rem !important;
+  padding: 0 0.35rem !important;
+  border-radius: 999px !important;
+
+  /* ✅ Background = theme danger (auto-adjust sa theme) */
+  background: var(--theme-danger) !important;
+
+  /* ✅ Text = on-danger (auto-contrast) */
+  color: var(--theme-on-danger) !important;
+  -webkit-text-fill-color: var(--theme-on-danger) !important;
+
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace) !important;
+  font-size: 0.62rem !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  text-align: center !important;
+
+  /* ✅ Border para sa contrast sa kahit anong background */
+  border: 2px solid var(--theme-surface) !important;
+
+  /* ✅ Shadow para sa depth */
+  box-shadow:
+    0 2px 6px rgba(var(--theme-danger-rgb), 0.4),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.25) !important;
+
+  /* ✅ Smooth transition */
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+}
+
+/* ============================================================
+   2️⃣ DARK THEMES — Light text (puti/maliwanag)
+   ✅ Para visible sa dark background
+   ============================================================ */
+
+/* ✅ MIDNIGHT NAVY — Blue theme */
+[data-theme='midnight-navy'] .notification-bell__badge,
+[data-theme='midnight-navy'] .notifications-badge,
+[data-theme='midnight-navy'] .nav-cart-count {
+  background: var(--theme-danger) !important;  /* #E57575 */
+  color: #FFFFFF !important;  /* ✅ Puti para visible */
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: var(--theme-surface) !important;
+  box-shadow:
+    0 2px 6px rgba(229, 117, 117, 0.5),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ✅ MATTE BLACK — Gold theme */
+[data-theme='matte-black'] .notification-bell__badge,
+[data-theme='matte-black'] .notifications-badge,
+[data-theme='matte-black'] .nav-cart-count {
+  background: var(--theme-danger) !important;
+  color: #FFFFFF !important;  /* ✅ Puti para visible */
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: var(--theme-surface) !important;
+  box-shadow:
+    0 2px 6px rgba(229, 117, 117, 0.5),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ✅ CHARCOAL GRAY — Silver theme */
+[data-theme='charcoal-gray'] .notification-bell__badge,
+[data-theme='charcoal-gray'] .notifications-badge,
+[data-theme='charcoal-gray'] .nav-cart-count {
+  background: var(--theme-danger) !important;
+  color: #FFFFFF !important;  /* ✅ Puti */
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: var(--theme-surface) !important;
+  box-shadow:
+    0 2px 6px rgba(229, 117, 117, 0.5),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ✅ DEEP FOREST — Green theme */
+[data-theme='deep-forest'] .notification-bell__badge,
+[data-theme='deep-forest'] .notifications-badge,
+[data-theme='deep-forest'] .nav-cart-count {
+  background: var(--theme-danger) !important;
+  color: #FFFFFF !important;  /* ✅ Puti */
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: var(--theme-surface) !important;
+  box-shadow:
+    0 2px 6px rgba(229, 117, 117, 0.5),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ✅ DARK PLUM — Purple theme */
+[data-theme='dark-plum'] .notification-bell__badge,
+[data-theme='dark-plum'] .notifications-badge,
+[data-theme='dark-plum'] .nav-cart-count {
+  background: var(--theme-danger) !important;  /* #E57575 */
+  color: #FFFFFF !important;  /* ✅ Puti para visible sa plum bg */
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: var(--theme-surface) !important;
+  box-shadow:
+    0 2px 6px rgba(229, 117, 117, 0.6),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.25),
+    inset 0 1px 2px rgba(255, 255, 255, 0.35) !important;
+}
+
+/* ============================================================
+   3️⃣ LIGHT THEMES — Dark text (madilim)
+   ✅ Para visible sa light background
+   ============================================================ */
+
+/* ✅ CREAM YELLOW — Gold theme */
+[data-theme='cream-yellow'] .notification-bell__badge,
+[data-theme='cream-yellow'] .notifications-badge,
+[data-theme='cream-yellow'] .nav-cart-count {
+  background: var(--theme-danger) !important;  /* #A93C3C */
+  color: #FFFFFF !important;  /* ✅ Puti — visible sa dark red bg */
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: var(--theme-surface) !important;
+  box-shadow:
+    0 2px 6px rgba(169, 60, 60, 0.4),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.25) !important;
+}
+
+/* ✅ WARM BEIGE — Tan theme */
+[data-theme='warm-beige'] .notification-bell__badge,
+[data-theme='warm-beige'] .notifications-badge,
+[data-theme='warm-beige'] .nav-cart-count {
+  background: var(--theme-danger) !important;  /* #A93C3C */
+  color: #FFFFFF !important;  /* ✅ Puti */
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: var(--theme-surface) !important;
+  box-shadow:
+    0 2px 6px rgba(169, 60, 60, 0.4),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.25) !important;
+}
+
+/* ✅ PURE WHITE — Neutral theme */
+[data-theme='pure-white'] .notification-bell__badge,
+[data-theme='pure-white'] .notifications-badge,
+[data-theme='pure-white'] .nav-cart-count {
+  background: var(--theme-danger) !important;  /* #A93C3C */
+  color: #FFFFFF !important;  /* ✅ Puti */
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: var(--theme-surface) !important;
+  box-shadow:
+    0 2px 6px rgba(169, 60, 60, 0.4),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.25) !important;
+}
+
+/* ✅ SOFT GRAY — Slate theme */
+[data-theme='soft-gray'] .notification-bell__badge,
+[data-theme='soft-gray'] .notifications-badge,
+[data-theme='soft-gray'] .nav-cart-count {
+  background: var(--theme-danger) !important;  /* #DC2626 */
+  color: #FFFFFF !important;  /* ✅ Puti */
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: var(--theme-surface) !important;
+  box-shadow:
+    0 2px 6px rgba(220, 38, 38, 0.4),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.25) !important;
+}
+
+/* ✅ PALE BLUSH — Rose theme */
+[data-theme='pale-blush'] .notification-bell__badge,
+[data-theme='pale-blush'] .notifications-badge,
+[data-theme='pale-blush'] .nav-cart-count {
+  background: var(--theme-danger) !important;  /* #A93C3C */
+  color: #FFFFFF !important;  /* ✅ Puti */
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: var(--theme-surface) !important;
+  box-shadow:
+    0 2px 6px rgba(169, 60, 60, 0.4),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.25) !important;
+}
+
+/* ============================================================
+   4️⃣ UNIVERSAL — Siguraduhing visible sa lahat
+   ============================================================ */
+
+.notification-bell__badge *,
+.notifications-badge *,
+.nav-cart-count * {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+}
+
+/* ============================================================
+   5️⃣ MOBILE — Same treatment
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .notification-bell__badge,
+  .notifications-badge,
+  .nav-cart-count {
+    min-width: 1rem !important;
+    height: 1rem !important;
+    font-size: 0.55rem !important;
+    border-width: 1.5px !important;
+  }
+}
+
+/* ============================================================
+   6️⃣ ACCESSIBILITY — Reduced motion
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .notification-bell__badge,
+  .notifications-badge,
+  .nav-cart-count {
+    transition: none !important;
+  }
+}
+/* ============================================================
+   🎯 NAVBAR HOVER — Specific lang
+   ✅ Nav actions, bell, avatar — may hover
+   ❌ Navbar mismo, icons, brand, search — walang hover
+   ✅ Naka-apply sa lahat ng 10 themes
+   ============================================================ */
+
+/* ============================================================
+   1️⃣ NAV ACTIONS — HOVER (glass accent)
+   ✅ Catalog, Cart, My Orders — may hover
+   ============================================================ */
+
+.site-nav .nav-action {
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.site-nav .nav-action:hover:not(.is-active):not([aria-current="page"]) {
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.4) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 4px 12px rgba(var(--theme-primary-rgb), 0.15),
+    0 8px 20px rgba(var(--theme-primary-rgb), 0.1) !important;
+}
+
+/* ✅ Active state (My Orders kapag nasa /dashboard) — retain */
+.site-nav .nav-action.is-active,
+.site-nav .nav-action[aria-current="page"] {
+  background: rgba(var(--theme-primary-rgb), 0.18) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.5) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  font-weight: 700 !important;
+}
+
+/* ============================================================
+   2️⃣ NOTIFICATION BELL — HOVER
+   ============================================================ */
+
+.site-nav .notification-bell__button {
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.site-nav .notification-bell__button:hover {
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.4) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 4px 12px rgba(var(--theme-primary-rgb), 0.15),
+    0 8px 20px rgba(var(--theme-primary-rgb), 0.1) !important;
+}
+
+/* ============================================================
+   3️⃣ NAV AVATAR — HOVER
+   ============================================================ */
+
+.site-nav .nav-avatar {
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.site-nav .nav-avatar:hover {
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.4) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 4px 12px rgba(var(--theme-primary-rgb), 0.15),
+    0 8px 20px rgba(var(--theme-primary-rgb), 0.1) !important;
+}
+
+/* ✅ Sign in (accent) — HOVER */
+.site-nav .nav-action--accent {
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.site-nav .nav-action--accent:hover {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary-hover) 0%,
+    var(--theme-primary) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 4px 12px rgba(var(--theme-primary-rgb), 0.35),
+    0 12px 28px rgba(var(--theme-primary-rgb), 0.2) !important;
+}
+
+/* ============================================================
+   4️⃣ NAV DROPDOWN ITEMS — HOVER
+   ============================================================ */
+
+.site-nav .nav-dropdown-item {
+  transition: background 0.2s ease, color 0.2s ease !important;
+}
+
+.site-nav .nav-dropdown-item:hover {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.site-nav .nav-dropdown-item--danger:hover {
+  background: rgba(var(--theme-danger-rgb), 0.1) !important;
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+}
+
+/* ============================================================
+   5️⃣ WALANG HOVER — Navbar mismo, brand, search, icons
+   ❌ Ito ay walang hover effect
+   ============================================================ */
+
+/* ✅ Navbar mismo */
+.site-nav,
+.site-nav:hover {
+  transform: none !important;
+}
+
+/* ✅ Brand logo at text */
+.site-nav .brand,
+.site-nav .brand:hover,
+.site-nav .brand__logo,
+.site-nav .brand:hover .brand__logo,
+.site-nav .brand__mark,
+.site-nav .brand:hover .brand__mark {
+  transform: none !important;
+  background: inherit !important;
+  box-shadow: inherit !important;
+}
+
+/* ✅ Search bar at input */
+.site-nav .nav-search,
+.site-nav .nav-search:hover:not(:focus-within),
+.site-nav .nav-search__input:hover {
+  transform: none !important;
+  background: inherit !important;
+  border-color: inherit !important;
+  box-shadow: inherit !important;
+}
+
+/* ✅ Search icon, kbd, clear */
+.site-nav .nav-search__icon:hover,
+.site-nav .nav-search__kbd:hover,
+.site-nav .nav-search__clear:hover {
+  transform: none !important;
+}
+
+/* ✅ Icons sa loob ng nav actions — HINDI nagbabago */
+.site-nav .nav-action .react-icon,
+.site-nav .nav-action svg,
+.site-nav .nav-action:hover .react-icon,
+.site-nav .nav-action:hover svg,
+.site-nav .notification-bell__button .react-icon,
+.site-nav .notification-bell__button svg,
+.site-nav .notification-bell__button:hover .react-icon,
+.site-nav .notification-bell__button:hover svg,
+.site-nav .nav-avatar-chevron,
+.site-nav .nav-avatar:hover .nav-avatar-chevron {
+  transform: none !important;
+  rotate: 0deg !important;
+  scale: 1 !important;
+}
+
+/* ✅ Avatar frame — walang hover */
+.site-nav .nav-avatar-frame,
+.site-nav .nav-avatar:hover .nav-avatar-frame {
+  transform: none !important;
+}
+
+/* ============================================================
+   6️⃣ RETAIN — Selected, active, focus states
+   ============================================================ */
+
+.site-nav .nav-action.is-active,
+.site-nav .nav-action[aria-current="page"] {
+  /* ✅ Retained sa itaas */
+}
+
+.site-nav .nav-action:focus-visible,
+.site-nav .notification-bell__button:focus-visible,
+.site-nav .nav-avatar:focus-visible {
+  outline: 2px solid var(--theme-primary) !important;
+  outline-offset: 2px !important;
+}
+
+/* ============================================================
+   7️⃣ MOBILE — Same treatment
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .site-nav .nav-action,
+  .site-nav .notification-bell__button,
+  .site-nav .nav-avatar {
+    transition: background 0.2s ease, border-color 0.2s ease !important;
+  }
+}
+
+/* ============================================================
+   8️⃣ ACCESSIBILITY — Reduced motion
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .site-nav .nav-action,
+  .site-nav .notification-bell__button,
+  .site-nav .nav-avatar,
+  .site-nav .nav-dropdown-item {
+    transition: none !important;
+  }
+}
