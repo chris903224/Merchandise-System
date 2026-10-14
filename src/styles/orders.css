@@ -1623,3 +1623,3557 @@
     background: rgba(var(--theme-danger-rgb), 0.15);
     border-color: rgba(var(--theme-danger-rgb), 0.35);
   }
+  
+  /* ==========================================================================
+   🎨 ORDERS + ORDER DETAILS PAGE — THEME-AWARE + CLAY × NEUMORPH
+   ✅ Lahat ng colors theme-aware (10 themes)
+   ✅ Hero / Header — Clay accent
+   ✅ Status badges — theme-aware (warning/success/danger)
+   ✅ Buttons — Clay raised
+   ✅ Cards — Clay raised
+   ✅ Timeline — Clay mini
+   ✅ Fields — Neumorph inset
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ ORDER DETAILS HERO — CLAY ACCENT CARD
+   ✅ Yung dark hero sa taas (order ID, status, actions)
+   ========================================================================== */
+
+html body .od-hero,
+html body .order-details-hero,
+html body .order-detail__hero,
+html body .od-header,
+html body .order-details-header {
+  position: relative !important;
+  border-radius: 1.25rem !important;
+  overflow: hidden !important;
+  padding: 1.5rem 1.75rem !important;
+  border: none !important;
+
+  /* ✅ CLAY ACCENT GRADIENT (theme-aware) */
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  background-color: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+
+  box-shadow:
+    0 12px 28px rgba(var(--theme-primary-rgb), 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.2) !important;
+  -webkit-box-shadow:
+    0 12px 28px rgba(var(--theme-primary-rgb), 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ✅ Clay gloss */
+html body .od-hero::before,
+html body .order-details-hero::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 50% !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%) !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+html body .od-hero > *,
+html body .order-details-hero > * {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* ✅ Lahat ng text sa loob ng hero */
+html body .od-hero,
+html body .od-hero *,
+html body .od-hero h1,
+html body .od-hero h2,
+html body .od-hero h3,
+html body .od-hero p,
+html body .od-hero span:not([class*="badge"]):not([class*="status"]),
+html body .order-details-hero,
+html body .order-details-hero * {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Order ID — malaki */
+html body .od-hero__id,
+html body .order-details-hero__id,
+html body .od-header__id {
+  font-family: var(--font-display, 'Fraunces', serif) !important;
+  font-size: clamp(1.5rem, 3vw, 2rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  margin: 0.5rem 0 0.25rem !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* ✅ Date */
+html body .od-hero__date,
+html body .order-details-hero__date {
+  opacity: 0.9 !important;
+  font-size: 0.85rem !important;
+}
+
+/* ==========================================================================
+   2️⃣ STATUS BADGES — Theme-aware
+   ✅ PENDING, PROCESSING, SHIPPED, COMPLETED, CANCELLED
+   ========================================================================== */
+
+html body .od-status-badge,
+html body .order-status-badge,
+html body .status-badge,
+html body .od-hero__status,
+html body .od-header__status {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+  padding: 0.4rem 0.85rem !important;
+  border-radius: 999px !important;
+  font-family: inherit !important;
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  width: fit-content !important;
+  border: 1px solid transparent !important;
+
+  /* ✅ Clay mini shadow */
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.1),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.1),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ✅ PENDING */
+html body .od-status-badge.is-pending,
+html body .order-status-badge.is-pending,
+html body .status-badge.is-pending,
+html body [class*="badge"][class*="pending"] {
+  background: rgba(var(--theme-warning-rgb), 0.15) !important;
+  background-color: rgba(var(--theme-warning-rgb), 0.15) !important;
+  color: var(--theme-warning) !important;
+  -webkit-text-fill-color: var(--theme-warning) !important;
+  border-color: rgba(var(--theme-warning-rgb), 0.3) !important;
+}
+
+/* ✅ PROCESSING */
+html body .od-status-badge.is-processing,
+html body .order-status-badge.is-processing,
+html body [class*="badge"][class*="processing"] {
+  background: rgba(var(--theme-warning-rgb), 0.15) !important;
+  background-color: rgba(var(--theme-warning-rgb), 0.15) !important;
+  color: var(--theme-warning) !important;
+  -webkit-text-fill-color: var(--theme-warning) !important;
+  border-color: rgba(var(--theme-warning-rgb), 0.3) !important;
+}
+
+/* ✅ SHIPPED */
+html body .od-status-badge.is-shipped,
+html body .order-status-badge.is-shipped,
+html body [class*="badge"][class*="shipped"] {
+  background: rgba(var(--theme-primary-rgb), 0.15) !important;
+  background-color: rgba(var(--theme-primary-rgb), 0.15) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.3) !important;
+}
+
+/* ✅ COMPLETED */
+html body .od-status-badge.is-completed,
+html body .order-status-badge.is-completed,
+html body .status-badge.is-completed,
+html body [class*="badge"][class*="completed"] {
+  background: rgba(var(--theme-success-rgb), 0.15) !important;
+  background-color: rgba(var(--theme-success-rgb), 0.15) !important;
+  color: var(--theme-success) !important;
+  -webkit-text-fill-color: var(--theme-success) !important;
+  border-color: rgba(var(--theme-success-rgb), 0.3) !important;
+}
+
+/* ✅ CANCELLED */
+html body .od-status-badge.is-cancelled,
+html body .order-status-badge.is-cancelled,
+html body .status-badge.is-cancelled,
+html body [class*="badge"][class*="cancelled"] {
+  background: rgba(var(--theme-danger-rgb), 0.15) !important;
+  background-color: rgba(var(--theme-danger-rgb), 0.15) !important;
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+  border-color: rgba(var(--theme-danger-rgb), 0.3) !important;
+}
+
+/* ✅ DELIVERED / CLAIMED */
+html body .od-status-badge.is-delivered,
+html body .od-status-badge.is-claimed,
+html body [class*="badge"][class*="delivered"],
+html body [class*="badge"][class*="claimed"] {
+  background: rgba(var(--theme-success-rgb), 0.15) !important;
+  color: var(--theme-success) !important;
+  -webkit-text-fill-color: var(--theme-success) !important;
+  border-color: rgba(var(--theme-success-rgb), 0.3) !important;
+}
+
+/* ==========================================================================
+   3️⃣ HERO ACTION BUTTONS — CLAY RAISED
+   ✅ Print Receipt, Cancel Order
+   ========================================================================== */
+
+html body .od-hero button,
+html body .od-hero a[class*="btn"],
+html body .od-hero .od-hero__action,
+html body .order-details-hero button,
+html body .order-details-hero a[class*="btn"] {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  padding: 0.65rem 1.15rem !important;
+  border: none !important;
+  border-radius: 0.85rem !important;
+  font-family: inherit !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  overflow: hidden !important;
+
+  /* ✅ CLAY ghost (surface + accent text) */
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+  -webkit-box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+
+  transition: box-shadow 0.2s ease !important;
+}
+
+html body .od-hero button::before,
+html body .od-hero a[class*="btn"]::before,
+html body .order-details-hero button::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 50% !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, transparent 100%) !important;
+  border-radius: 0.85rem 0.85rem 0 0 !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+html body .od-hero button > *,
+html body .order-details-hero button > * {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+html body .od-hero button:hover,
+html body .od-hero a[class*="btn"]:hover,
+html body .order-details-hero button:hover {
+  background: rgba(var(--theme-primary-rgb), 0.08) !important;
+  background-color: rgba(var(--theme-primary-rgb), 0.08) !important;
+  color: var(--theme-primary-hover) !important;
+  -webkit-text-fill-color: var(--theme-primary-hover) !important;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ✅ DANGER — Cancel Order button */
+html body .od-hero button[class*="cancel"],
+html body .od-hero button[class*="danger"],
+html body .od-hero .od-hero__cancel,
+html body .od-cancel-btn,
+html body .order-details-hero button[class*="cancel"] {
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+}
+
+html body .od-hero button[class*="cancel"]:hover,
+html body .od-cancel-btn:hover {
+  background: rgba(var(--theme-danger-rgb), 0.1) !important;
+  background-color: rgba(var(--theme-danger-rgb), 0.1) !important;
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+  box-shadow:
+    0 6px 14px rgba(var(--theme-danger-rgb), 0.25),
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ==========================================================================
+   4️⃣ ORDER CARDS — CLAY RAISED
+   ✅ Order Items card, Order Summary, Order Status
+   ========================================================================== */
+
+html body .od-card,
+html body .od-rail-card,
+html body .order-details-card,
+html body .order-details-summary,
+html body .order-summary,
+html body .order-status-card,
+html body .order-items-card {
+  position: relative !important;
+  border-radius: 1.25rem !important;
+  border: none !important;
+  overflow: hidden !important;
+
+  /* ✅ Clay card */
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+  -webkit-box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+}
+
+[data-theme-mode='dark'] html body .od-card,
+[data-theme-mode='dark'] html body .od-rail-card,
+[data-theme-mode='dark'] html body .order-details-card,
+[data-theme-mode='dark'] html body .order-summary {
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ✅ Card headers */
+html body .od-card__head,
+html body .order-details-card__header,
+html body .order-summary__header,
+html body .order-items-card__header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.75rem !important;
+  padding: 1rem 1.25rem !important;
+  border-bottom: 1px solid var(--theme-border) !important;
+  background: transparent !important;
+}
+
+html body .od-card__head-title,
+html body .order-details-card__title,
+html body .order-summary__title,
+html body .order-items-card__title {
+  font-family: var(--font-display, 'Fraunces', serif) !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  margin: 0 !important;
+}
+
+/* ==========================================================================
+   5️⃣ ORDER ITEMS — Clay mini row
+   ✅ Bawat item sa loob ng Order Items card
+   ========================================================================== */
+
+html body .od-item,
+html body .order-item,
+html body .order-line-item,
+html body .order-details-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.85rem !important;
+  padding: 0.85rem 1rem !important;
+  border-bottom: 1px solid var(--theme-border) !important;
+  background: transparent !important;
+  transition: background-color 0.2s ease !important;
+}
+
+html body .od-item:last-child,
+html body .order-item:last-child,
+html body .order-line-item:last-child {
+  border-bottom: none !important;
+}
+
+html body .od-item:hover,
+html body .order-item:hover {
+  background: rgba(var(--theme-primary-rgb), 0.04) !important;
+  background-color: rgba(var(--theme-primary-rgb), 0.04) !important;
+}
+
+/* ✅ Product image — Clay mini */
+html body .od-item__media,
+html body .order-item__image,
+html body .order-line-item__media,
+html body .od-item img {
+  width: 56px !important;
+  height: 56px !important;
+  min-width: 56px !important;
+  min-height: 56px !important;
+  flex-shrink: 0 !important;
+  border-radius: 0.75rem !important;
+  object-fit: cover !important;
+  overflow: hidden !important;
+
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ✅ Product name */
+html body .od-item__name,
+html body .order-item__name,
+html body .order-line-item__name {
+  font-family: var(--font-display, 'Fraunces', serif) !important;
+  font-size: 0.92rem !important;
+  font-weight: 700 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  margin: 0 0 0.15rem !important;
+}
+
+/* ✅ Product meta */
+html body .od-item__meta,
+html body .order-item__meta {
+  font-size: 0.72rem !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ✅ Product price — accent */
+html body .od-item__price,
+html body .order-item__price {
+  font-family: var(--font-mono, monospace) !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  white-space: nowrap !important;
+}
+
+/* ==========================================================================
+   6️⃣ ORDER SUMMARY ROWS — Clay mini field
+   ✅ Items, Shipping, Total
+   ========================================================================== */
+
+html body .order-summary__line,
+html body .order-summary__row,
+html body .od-summary__line {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.75rem !important;
+  padding: 0.65rem 0 !important;
+  font-size: 0.85rem !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+html body .order-summary__label,
+html body .od-summary__label {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+html body .order-summary__value,
+html body .od-summary__value {
+  font-family: var(--font-mono, monospace) !important;
+  font-weight: 700 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+/* ✅ Total row — accent */
+html body .order-summary__total,
+html body .od-summary__total {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0.85rem 1rem !important;
+  margin-top: 0.5rem !important;
+  border-radius: 0.75rem !important;
+  font-weight: 800 !important;
+
+  background: rgba(var(--theme-primary-rgb), 0.08) !important;
+  background-color: rgba(var(--theme-primary-rgb), 0.08) !important;
+
+  box-shadow:
+    inset 0 -1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+}
+
+html body .order-summary__total strong,
+html body .od-summary__total strong {
+  font-family: var(--font-mono, monospace) !important;
+  font-size: 1.05rem !important;
+  font-weight: 800 !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ==========================================================================
+   7️⃣ ORDER STATUS TIMELINE — CLAY MINI
+   ✅ Pending, Processing, For Pickup, Completed
+   ========================================================================== */
+
+html body .order-status-step,
+html body .od-timeline__step,
+html body .order-timeline__step {
+  position: relative !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 0.75rem !important;
+  padding: 0.5rem 0 !important;
+}
+
+/* ✅ Timeline dot — Clay circle */
+html body .order-status-step__dot,
+html body .od-timeline__dot,
+html body .order-timeline__dot {
+  position: relative !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 1.75rem !important;
+  height: 1.75rem !important;
+  min-width: 1.75rem !important;
+  min-height: 1.75rem !important;
+  flex-shrink: 0 !important;
+  border-radius: 50% !important;
+
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.06),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ✅ Active / completed step — Clay accent */
+html body .order-status-step.is-active .order-status-step__dot,
+html body .order-status-step.is-completed .order-status-step__dot,
+html body .od-timeline__step.is-active .od-timeline__dot,
+html body .od-timeline__step.is-completed .od-timeline__dot {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  background-color: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+
+  box-shadow:
+    0 3px 6px rgba(var(--theme-primary-rgb), 0.35),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ✅ Timeline content */
+html body .order-status-step__label,
+html body .od-timeline__label {
+  font-family: var(--font-display, 'Fraunces', serif) !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  margin: 0 0 0.1rem !important;
+}
+
+html body .order-status-step__desc,
+html body .od-timeline__desc {
+  font-size: 0.75rem !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  margin: 0 !important;
+}
+
+html body .order-status-step__time,
+html body .od-timeline__time {
+  font-size: 0.7rem !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 0.7 !important;
+}
+
+/* ✅ Timeline connector line */
+html body .order-status-step::before,
+html body .od-timeline__step::before {
+  background: var(--theme-border) !important;
+}
+
+/* ==========================================================================
+   8️⃣ ORDERS LIST PAGE — Clay cards
+   ✅ Yung listahan ng orders sa /dashboard
+   ========================================================================== */
+
+html body .order-card,
+html body .dashboard-order-card,
+html body .orders-list__item {
+  position: relative !important;
+  border-radius: 1.25rem !important;
+  border: none !important;
+  overflow: hidden !important;
+  padding: 1rem 1.25rem !important;
+
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+  -webkit-box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+
+  transition: box-shadow 0.25s ease, transform 0.25s ease !important;
+}
+
+[data-theme-mode='dark'] html body .order-card {
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+html body .order-card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.15),
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ✅ Order card text */
+html body .order-card__title,
+html body .order-card__id {
+  font-family: var(--font-display, 'Fraunces', serif) !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  margin: 0 !important;
+}
+
+html body .order-card__date,
+html body .order-card__meta {
+  font-size: 0.75rem !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+html body .order-card__price,
+html body .order-card__total {
+  font-family: var(--font-mono, monospace) !important;
+  font-weight: 700 !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ==========================================================================
+   9️⃣ ORDER DETAILS FIELDS — NEUMORPHISM INSET
+   ✅ Order info fields (kung meron)
+   ========================================================================== */
+
+html body .od-field,
+html body .order-details-field,
+html body .od-rail-card__field {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.25rem !important;
+  padding: 0.6rem 0.85rem !important;
+  border-radius: 0.75rem !important;
+  margin-bottom: 0.5rem !important;
+
+  /* ✅ Neumorphism inset */
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.06),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+[data-theme-mode='dark'] html body .od-field {
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.4),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.03) !important;
+}
+
+html body .od-field__label,
+html body .order-details-field__label {
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+html body .od-field__value,
+html body .order-details-field__value {
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+/* ==========================================================================
+   🔟 BACK BUTTON — Clay mini
+   ✅ "Back to My Orders"
+   ========================================================================== */
+
+html body .od-back,
+html body .order-details-back,
+html body .orders-back,
+html body a[class*="back"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.4rem !important;
+  padding: 0.5rem 0.85rem !important;
+  border-radius: 0.7rem !important;
+  text-decoration: none !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+
+  /* ✅ Clay ghost mini */
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.05),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
+
+  transition: box-shadow 0.2s ease, background-color 0.2s ease !important;
+}
+
+html body .od-back:hover,
+html body .order-details-back:hover,
+html body .orders-back:hover {
+  background: rgba(var(--theme-primary-rgb), 0.08) !important;
+  background-color: rgba(var(--theme-primary-rgb), 0.08) !important;
+  box-shadow:
+    0 4px 10px rgba(var(--theme-primary-rgb), 0.15),
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.05),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ==========================================================================
+   1️⃣1️⃣ PRIMARY CTA — Clay accent
+   ✅ "Continue Shopping", "Browse Catalog", "Reorder"
+   ========================================================================== */
+
+html body .od-cta,
+html body .order-details-cta,
+html body .orders-empty__cta,
+html body .od-modal__btn--primary,
+html body .cancel-modal__btn--primary {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  padding: 0.75rem 1.25rem !important;
+  border: none !important;
+  border-radius: 1rem !important;
+  font-family: inherit !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  overflow: hidden !important;
+
+  /* ✅ Clay accent */
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  background-color: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+
+  transition: box-shadow 0.2s ease !important;
+}
+
+html body .od-cta::before,
+html body .order-details-cta::before,
+html body .od-modal__btn--primary::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 50% !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%) !important;
+  border-radius: 1rem 1rem 0 0 !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+html body .od-cta > *,
+html body .order-details-cta > * {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+html body .od-cta:hover,
+html body .order-details-cta:hover,
+html body .od-modal__btn--primary:hover:not(:disabled) {
+  transform: none !important;
+  box-shadow:
+    0 8px 18px rgba(var(--theme-primary-rgb), 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.18),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ==========================================================================
+   1️⃣2️⃣ RESPONSIVE — Mobile
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  html body .od-hero,
+  html body .order-details-hero {
+    padding: 1.25rem 1rem !important;
+    border-radius: 1rem !important;
+  }
+
+  html body .od-hero__id {
+    font-size: 1.35rem !important;
+  }
+
+  html body .od-hero button {
+    padding: 0.55rem 0.9rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  html body .od-item__media,
+  html body .order-item__image {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+  }
+}
+
+/* ==========================================================================
+   1️⃣3️⃣ REDUCED MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html body .od-hero,
+  html body .order-details-hero,
+  html body .od-card,
+  html body .order-card,
+  html body .od-hero button,
+  html body .od-back,
+  html body .od-cta {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+/* ==========================================================================
+   🎨 ORDER LIST PAGE — CLEAN FLAT DESIGN (match sa screenshot)
+   ✅ Theme-aware colors
+   ✅ Subtle shadows (hindi clay)
+   ✅ Outline buttons
+   ✅ Soft tinted badges
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ ORDER CARDS — Clean white card
+   ✅ Subtle shadow, hindi clay
+   ========================================================================== */
+
+html body #root .order-card,
+html body #root .orders-list__item,
+html body #root .orders-item,
+html body #root article[class*="order"] {
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 1.25rem !important;
+  padding: 1.25rem 1.5rem !important;
+  margin-bottom: 0.85rem !important;
+  overflow: hidden !important;
+
+  /* ✅ Subtle shadow (hindi clay) */
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    0 1px 2px rgba(0, 0, 0, 0.02) !important;
+  -webkit-box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    0 1px 2px rgba(0, 0, 0, 0.02) !important;
+
+  transition: box-shadow 0.2s ease !important;
+}
+
+[data-theme-mode='dark'] html body #root .order-card {
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+html body #root .order-card:hover {
+  transform: none !important;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* ==========================================================================
+   2️⃣ PRODUCT IMAGE — Simple rounded thumb
+   ========================================================================== */
+
+html body #root .order-card__media,
+html body #root .order-card__thumb,
+html body #root .order-card img,
+html body #root article[class*="order"] img {
+  width: 68px !important;
+  height: 68px !important;
+  min-width: 68px !important;
+  min-height: 68px !important;
+  flex-shrink: 0 !important;
+  border-radius: 0.75rem !important;
+  object-fit: cover !important;
+  overflow: hidden !important;
+
+  border: 1px solid var(--theme-border) !important;
+  box-shadow: none !important;
+}
+
+/* ==========================================================================
+   3️⃣ ORDER ID — Bold title
+   ========================================================================== */
+
+html body #root .order-card__title,
+html body #root .order-card__id {
+  font-family: var(--font-display, 'Fraunces', serif) !important;
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  margin: 0 0 0.35rem !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* ==========================================================================
+   4️⃣ ORDER META — Date + item count
+   ========================================================================== */
+
+html body #root .order-card__meta,
+html body #root .order-card__date,
+html body #root .order-card__items {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+  font-size: 0.75rem !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ==========================================================================
+   5️⃣ ORDER PRICE — Bold accent
+   ========================================================================== */
+
+html body #root .order-card__price,
+html body #root .order-card__total {
+  font-family: var(--font-mono, monospace) !important;
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+/* ==========================================================================
+   6️⃣ STATUS BADGES — Soft tinted (hindi solid)
+   ✅ Cancelled = soft red
+   ✅ Ready for Pickup = soft gray
+   ✅ Pending = soft gold
+   ========================================================================== */
+
+html body #root [class*="badge"],
+html body #root [class*="status"],
+html body #root .order-card__badge,
+html body #root .order-status-badge,
+html body #root span[class*="ready"],
+html body #root span[class*="pickup"],
+html body #root span[class*="pending"],
+html body #root span[class*="cancelled"],
+html body #root span[class*="completed"],
+html body #root span[class*="processing"],
+html body #root span[class*="shipped"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.3rem !important;
+  padding: 0.25rem 0.65rem !important;
+  border-radius: 999px !important;
+  font-family: inherit !important;
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: capitalize !important;
+  border: 1px solid transparent !important;
+  width: fit-content !important;
+  box-shadow: none !important;
+}
+
+/* ✅ CANCELLED — soft red */
+html body #root span[class*="cancelled"],
+html body #root [class*="badge"][class*="cancelled"],
+html body #root [class*="status"][class*="cancelled"] {
+  background: rgba(var(--theme-danger-rgb), 0.1) !important;
+  background-color: rgba(var(--theme-danger-rgb), 0.1) !important;
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+  border-color: rgba(var(--theme-danger-rgb), 0.2) !important;
+}
+
+/* ✅ READY FOR PICKUP — soft gray/neutral */
+html body #root span[class*="ready"],
+html body #root span[class*="pickup"],
+html body #root [class*="badge"][class*="ready"],
+html body #root [class*="status"][class*="ready"] {
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  border-color: var(--theme-border) !important;
+}
+
+/* ✅ PENDING — soft gold */
+html body #root span[class*="pending"],
+html body #root [class*="badge"][class*="pending"],
+html body #root [class*="status"][class*="pending"] {
+  background: rgba(var(--theme-warning-rgb), 0.12) !important;
+  background-color: rgba(var(--theme-warning-rgb), 0.12) !important;
+  color: var(--theme-warning) !important;
+  -webkit-text-fill-color: var(--theme-warning) !important;
+  border-color: rgba(var(--theme-warning-rgb), 0.25) !important;
+}
+
+/* ✅ COMPLETED — soft green */
+html body #root span[class*="completed"],
+html body #root [class*="badge"][class*="completed"],
+html body #root [class*="status"][class*="completed"] {
+  background: rgba(var(--theme-success-rgb), 0.12) !important;
+  background-color: rgba(var(--theme-success-rgb), 0.12) !important;
+  color: var(--theme-success) !important;
+  -webkit-text-fill-color: var(--theme-success) !important;
+  border-color: rgba(var(--theme-success-rgb), 0.25) !important;
+}
+
+/* ✅ PROCESSING — soft blue */
+html body #root span[class*="processing"],
+html body #root [class*="badge"][class*="processing"],
+html body #root [class*="status"][class*="processing"] {
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  background-color: rgba(var(--theme-primary-rgb), 0.12) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.25) !important;
+}
+
+/* ==========================================================================
+   7️⃣ "VIEW DETAILS" BUTTON — OUTLINE STYLE
+   ✅ Transparent + border (hindi solid, hindi clay)
+   ========================================================================== */
+
+html body #root button[class*="view"],
+html body #root a[class*="view"],
+html body #root .order-card button,
+html body #root .order-card a,
+html body #root .order-card__cta,
+html body #root .order-card__view,
+html body #root .order-card__view-details {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.4rem !important;
+  padding: 0.55rem 1rem !important;
+  border-radius: 999px !important;
+
+  /* ✅ OUTLINE STYLE */
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  border: 1px solid var(--theme-border) !important;
+
+  font-family: inherit !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+
+  box-shadow: none !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
+}
+
+/* ✅ Hover — subtle bg */
+html body #root button[class*="view"]:hover,
+html body #root .order-card button:hover,
+html body #root .order-card__cta:hover,
+html body #root .order-card__view:hover {
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  border-color: var(--theme-text-muted) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  box-shadow: none !important;
+}
+
+/* ==========================================================================
+   8️⃣ TIMELINE DOTS — Simple dots
+   ✅ Ordered, Processing, Shipped, Completed
+   ========================================================================== */
+
+html body #root .order-timeline__dot,
+html body #root .order-card__timeline-dot {
+  display: inline-block !important;
+  width: 0.65rem !important;
+  height: 0.65rem !important;
+  min-width: 0.65rem !important;
+  min-height: 0.65rem !important;
+  border-radius: 50% !important;
+
+  background: var(--theme-border) !important;
+  background-color: var(--theme-border) !important;
+
+  box-shadow: none !important;
+  transition: background 0.2s ease !important;
+}
+
+/* ✅ Active / completed dot */
+html body #root .order-timeline__step.is-active .order-timeline__dot,
+html body #root .order-timeline__step.is-completed .order-timeline__dot {
+  background: var(--theme-text) !important;
+  background-color: var(--theme-text) !important;
+}
+
+/* ✅ Timeline label */
+html body #root .order-timeline__label {
+  font-size: 0.68rem !important;
+  font-weight: 600 !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+html body #root .order-timeline__step.is-active .order-timeline__label,
+html body #root .order-timeline__step.is-completed .order-timeline__label {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  font-weight: 700 !important;
+}
+
+html body #root .order-timeline__date {
+  font-size: 0.62rem !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 0.7 !important;
+}
+
+/* ==========================================================================
+   9️⃣ "BROWSE STORE" BUTTON — Dark solid button
+   ✅ Yung itim sa screenshot (intentional dark)
+   ✅ Pero dapat theme-aware dark
+   ========================================================================== */
+
+html body #root .orders-summary button,
+html body #root .orders-summary a,
+html body #root .order-summary-panel button,
+html body #root .order-summary-panel a,
+html body #root button[class*="browse"],
+html body #root a[class*="browse"] {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 999px !important;
+
+  /* ✅ Solid dark (accent-based) */
+  background: var(--theme-text) !important;
+  background-color: var(--theme-text) !important;
+  background-image: none !important;
+  color: var(--theme-surface) !important;
+  -webkit-text-fill-color: var(--theme-surface) !important;
+
+  border: none !important;
+
+  font-family: inherit !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.15),
+    0 1px 2px rgba(0, 0, 0, 0.08) !important;
+
+  transition: box-shadow 0.2s ease, opacity 0.2s ease !important;
+}
+
+html body #root .orders-summary button:hover,
+html body #root .orders-summary a:hover,
+html body #root button[class*="browse"]:hover {
+  opacity: 0.9 !important;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-theme-mode='dark'] html body #root .orders-summary button,
+[data-theme-mode='dark'] html body #root .orders-summary a {
+  background: var(--theme-primary) !important;
+  background-color: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ==========================================================================
+   🔟 ORDER SUMMARY PANEL — Clean white card
+   ========================================================================== */
+
+html body #root .orders-summary,
+html body #root .order-summary-panel,
+html body #root .orders-sidebar,
+html body #root aside[class*="summary"] {
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 1.25rem !important;
+  padding: 1.25rem !important;
+
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    0 1px 2px rgba(0, 0, 0, 0.02) !important;
+}
+
+[data-theme-mode='dark'] html body #root .orders-summary {
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+}
+
+html body #root .orders-summary__title,
+html body #root .order-summary-panel h2,
+html body #root .order-summary-panel h3 {
+  font-family: var(--font-display, 'Fraunces', serif) !important;
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  margin: 0 0 1rem !important;
+}
+
+/* ✅ Summary rows — simple flex */
+html body #root .orders-summary__row,
+html body #root .orders-summary__item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.75rem !important;
+  padding: 0.6rem 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* ✅ Summary icon — small soft tinted */
+html body #root .orders-summary__icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 1.75rem !important;
+  height: 1.75rem !important;
+  min-width: 1.75rem !important;
+  min-height: 1.75rem !important;
+  flex-shrink: 0 !important;
+  border-radius: 0.5rem !important;
+
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+
+  box-shadow: none !important;
+  border: 1px solid var(--theme-border) !important;
+}
+
+html body #root .orders-summary__label {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+html body #root .orders-summary__count,
+html body #root .orders-summary__value {
+  font-family: var(--font-mono, monospace) !important;
+  font-size: 0.95rem !important;
+  font-weight: 800 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+/* ✅ Total Spent row — may separator */
+html body #root .orders-summary__total,
+html body #root .orders-summary__total-spent {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding-top: 0.85rem !important;
+  margin-top: 0.5rem !important;
+  border-top: 1px solid var(--theme-border) !important;
+
+  font-size: 0.9rem !important;
+  font-weight: 800 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+/* ==========================================================================
+   1️⃣1️⃣ SEARCH INPUT — Simple bordered (hindi neumorph)
+   ========================================================================== */
+
+html body #root input[type="text"],
+html body #root input[type="search"],
+html body #root .orders-toolbar__search input,
+html body #root input[placeholder*="Search"],
+html body #root input[placeholder*="order"] {
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  background-image: none !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 999px !important;
+  padding: 0.7rem 1.15rem !important;
+  outline: none !important;
+
+  box-shadow: none !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+html body #root input[type="text"]:focus,
+html body #root input[type="search"]:focus {
+  border-color: var(--theme-primary) !important;
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.15) !important;
+  outline: none !important;
+}
+
+html body #root input[type="text"]::placeholder,
+html body #root input[type="search"]::placeholder {
+  color: var(--theme-text-muted) !important;
+  opacity: 0.7 !important;
+}
+
+/* ==========================================================================
+   1️⃣2️⃣ "ALL STATUSES" DROPDOWN — Simple bordered
+   ========================================================================== */
+
+html body #root select,
+html body #root .orders-toolbar__select,
+html body #root .orders-status-filter {
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 999px !important;
+  padding: 0.7rem 2.5rem 0.7rem 1.15rem !important;
+
+  font-family: inherit !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+
+  box-shadow: none !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}
+
+/* ==========================================================================
+   1️⃣3️⃣ RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  html body #root .order-card {
+    padding: 1rem !important;
+  }
+
+  html body #root .order-card__media,
+  html body #root .order-card img {
+    width: 56px !important;
+    height: 56px !important;
+    min-width: 56px !important;
+    min-height: 56px !important;
+  }
+}
+
+/* ==========================================================================
+   1️⃣4️⃣ REDUCED MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html body #root .order-card,
+  html body #root .order-card button,
+  html body #root .orders-summary button {
+    transition: none !important;
+  }
+}/* ==========================================================================
+   🎯 SIDEBAR — ICONS VISIBLE PALAGI (hover man o hindi)
+   ✅ Lahat ng icons kita
+   ✅ Theme-aware colors
+   ✅ Active state retained
+   ✅ Hover state retained
+   ✅ Naka-apply sa lahat ng 10 themes
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ SIDEBAR NAV ITEMS — Force icons visible
+   ✅ Yung profile sidebar, dashboard sidebar, settings sidebar
+   ========================================================================== */
+
+html body #root .profile-sidebar__item,
+html body #root .profile-sidebar__item:hover,
+html body #root .profile-sidebar__item:focus,
+html body #root .profile-sidebar__item:active,
+html body #root .profile-sidebar__item:not(.is-active):not(:hover),
+html body #root .dashboard-sidebar__item,
+html body #root .dashboard-sidebar__item:hover,
+html body #root .dashboard-sidebar__item:not(.is-active):not(:hover),
+html body #root .settings-sidebar__item,
+html body #root .settings-sidebar__item:hover,
+html body #root .settings-sidebar__item:not(.is-active):not(:hover),
+html body #root .notifications-sidebar__item,
+html body #root .notifications-sidebar__item:hover,
+html body #root .notifications-sidebar__item:not(.is-active):not(:hover),
+html body #root .order-sidebar-nav__item,
+html body #root .order-sidebar-nav__item:hover,
+html body #root .order-sidebar-nav__item:not(.is-active):not(:hover) {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.65rem !important;
+  padding: 0.65rem 0.85rem !important;
+  border-radius: 0.75rem !important;
+  width: 100% !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  text-decoration: none !important;
+  transition: background-color 0.2s ease, color 0.2s ease !important;
+}
+
+/* ✅ ICON mismo — LAGING VISIBLE */
+html body #root .profile-sidebar__item .react-icon,
+html body #root .profile-sidebar__item:hover .react-icon,
+html body #root .profile-sidebar__item:not(.is-active) .react-icon,
+html body #root .profile-sidebar__item:not(.is-active):not(:hover) .react-icon,
+html body #root .dashboard-sidebar__item .react-icon,
+html body #root .dashboard-sidebar__item:hover .react-icon,
+html body #root .dashboard-sidebar__item:not(.is-active):not(:hover) .react-icon,
+html body #root .settings-sidebar__item .react-icon,
+html body #root .settings-sidebar__item:hover .react-icon,
+html body #root .settings-sidebar__item:not(.is-active):not(:hover) .react-icon,
+html body #root .notifications-sidebar__item .react-icon,
+html body #root .notifications-sidebar__item:hover .react-icon,
+html body #root .notifications-sidebar__item:not(.is-active):not(:hover) .react-icon,
+html body #root .order-sidebar-nav__item .react-icon,
+html body #root .order-sidebar-nav__item:hover .react-icon,
+html body #root .order-sidebar-nav__item:not(.is-active):not(:hover) .react-icon {
+  /* ✅ Force visible */
+  display: inline-flex !important;
+  width: 1.15rem !important;
+  height: 1.15rem !important;
+  min-width: 1.15rem !important;
+  min-height: 1.15rem !important;
+  flex-shrink: 0 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+
+  /* ✅ Color — muted by default, accent sa hover */
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  stroke: currentColor !important;
+  fill: none !important;
+}
+
+/* ==========================================================================
+   2️⃣ ACTIVE STATE — Accent color + background
+   ✅ Yung naka-active item
+   ========================================================================== */
+
+html body #root .profile-sidebar__item.is-active,
+html body #root .dashboard-sidebar__item.is-active,
+html body #root .settings-sidebar__item.is-active,
+html body #root .notifications-sidebar__item.is-active,
+html body #root .order-sidebar-nav__item.is-active {
+  background: rgba(var(--theme-primary-rgb), 0.15) !important;
+  background-color: rgba(var(--theme-primary-rgb), 0.15) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  font-weight: 700 !important;
+}
+
+html body #root .profile-sidebar__item.is-active .react-icon,
+html body #root .dashboard-sidebar__item.is-active .react-icon,
+html body #root .settings-sidebar__item.is-active .react-icon,
+html body #root .notifications-sidebar__item.is-active .react-icon,
+html body #root .order-sidebar-nav__item.is-active .react-icon {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* ==========================================================================
+   3️⃣ HOVER STATE — Accent color
+   ✅ Yung naka-hover item
+   ========================================================================== */
+
+html body #root .profile-sidebar__item:hover:not(.is-active),
+html body #root .dashboard-sidebar__item:hover:not(.is-active),
+html body #root .settings-sidebar__item:hover:not(.is-active),
+html body #root .notifications-sidebar__item:hover:not(.is-active),
+html body #root .order-sidebar-nav__item:hover:not(.is-active) {
+  background: rgba(var(--theme-primary-rgb), 0.08) !important;
+  background-color: rgba(var(--theme-primary-rgb), 0.08) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+html body #root .profile-sidebar__item:hover:not(.is-active) .react-icon,
+html body #root .dashboard-sidebar__item:hover:not(.is-active) .react-icon,
+html body #root .settings-sidebar__item:hover:not(.is-active) .react-icon,
+html body #root .notifications-sidebar__item:hover:not(.is-active) .react-icon,
+html body #root .order-sidebar-nav__item:hover:not(.is-active) .react-icon {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+}
+
+/* ==========================================================================
+   4️⃣ LABEL TEXT — Force visible din
+   ✅ Yung text sa tabi ng icon
+   ========================================================================== */
+
+html body #root .profile-sidebar__item span,
+html body #root .dashboard-sidebar__item span,
+html body #root .settings-sidebar__item span,
+html body #root .notifications-sidebar__item span,
+html body #root .order-sidebar-nav__item span {
+  display: inline-block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+}
+
+/* ==========================================================================
+   5️⃣ SIDEBAR CONTAINER — Full opacity
+   ✅ Yung buong sidebar
+   ========================================================================== */
+
+html body #root .profile-sidebar,
+html body #root .dashboard-sidebar,
+html body #root .settings-sidebar,
+html body #root .notifications-sidebar,
+html body #root .order-sidebar-nav {
+  opacity: 1 !important;
+  visibility: visible !important;
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 1.25rem !important;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme-mode='dark'] html body #root .profile-sidebar,
+[data-theme-mode='dark'] html body #root .dashboard-sidebar,
+[data-theme-mode='dark'] html body #root .settings-sidebar,
+[data-theme-mode='dark'] html body #root .notifications-sidebar,
+[data-theme-mode='dark'] html body #root .order-sidebar-nav {
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ==========================================================================
+   6️⃣ ICON WRAPPERS — Siguraduhing walang hidden
+   ✅ Catch-all sa lahat ng icon sa sidebar
+   ========================================================================== */
+
+html body #root .profile-sidebar *,
+html body #root .dashboard-sidebar *,
+html body #root .settings-sidebar *,
+html body #root .notifications-sidebar *,
+html body #root .order-sidebar-nav * {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* ✅ Pero retain ang active/hover states */
+html body #root .profile-sidebar__item:not(.is-active):not(:hover) .react-icon,
+html body #root .dashboard-sidebar__item:not(.is-active):not(:hover) .react-icon,
+html body #root .settings-sidebar__item:not(.is-active):not(:hover) .react-icon {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  stroke: currentColor !important;
+}
+
+/* ==========================================================================
+   7️⃣ RESPONSIVE — Mobile
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  html body #root .profile-sidebar,
+  html body #root .dashboard-sidebar,
+  html body #root .settings-sidebar {
+    width: 4rem !important;
+    padding: 0.5rem !important;
+  }
+
+  html body #root .profile-sidebar__item span,
+  html body #root .dashboard-sidebar__item span,
+  html body #root .settings-sidebar__item span {
+    display: none !important;
+  }
+
+  html body #root .profile-sidebar__item .react-icon,
+  html body #root .dashboard-sidebar__item .react-icon,
+  html body #root .settings-sidebar__item .react-icon {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+  }
+}
+
+/* ==========================================================================
+   8️⃣ PICKUP INFO + CUSTOMER INFO CARDS — Clean white
+   ✅ Yung mga cards sa order details
+   ========================================================================== */
+
+html body #root .od-card,
+html body #root .order-details-card,
+html body #root .pickup-info-card,
+html body #root .customer-info-card {
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 1.25rem !important;
+
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    0 1px 2px rgba(0, 0, 0, 0.02) !important;
+}
+
+[data-theme-mode='dark'] html body #root .od-card {
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+}
+
+/* ✅ Card title */
+html body #root .od-card__head-title,
+html body #root .order-details-card__title {
+  font-family: var(--font-display, 'Fraunces', serif) !important;
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+/* ==========================================================================
+   9️⃣ FIELD LABELS + VALUES
+   ✅ BUILDING, ROOM / OFFICE, HOURS
+   ========================================================================== */
+
+html body #root [class*="field__label"],
+html body #root [class*="info__label"],
+html body #root [class*="detail__label"],
+html body #root .od-field__label,
+html body #root .order-details-field__label {
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  margin-bottom: 0.15rem !important;
+}
+
+html body #root [class*="field__value"],
+html body #root [class*="info__value"],
+html body #root [class*="detail__value"],
+html body #root .od-field__value,
+html body #root .order-details-field__value {
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+/* ✅ Avatar circle — clay mini */
+html body #root .od-avatar,
+html body #root .customer-info__avatar,
+html body #root .order-details-avatar,
+html body #root [class*="customer"] [class*="avatar"] {
+  display: grid !important;
+  place-items: center !important;
+  width: 3rem !important;
+  height: 3rem !important;
+  min-width: 3rem !important;
+  min-height: 3rem !important;
+  flex-shrink: 0 !important;
+  border-radius: 50% !important;
+
+  background: var(--theme-text) !important;
+  background-color: var(--theme-text) !important;
+  color: var(--theme-surface) !important;
+  -webkit-text-fill-color: var(--theme-surface) !important;
+
+  font-family: var(--font-display, 'Fraunces', serif) !important;
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+
+  box-shadow: none !important;
+  border: 1px solid var(--theme-border) !important;
+}
+
+/* ==========================================================================
+   🔟 REDUCED MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html body #root .profile-sidebar__item,
+  html body #root .dashboard-sidebar__item,
+  html body #root .settings-sidebar__item {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+/* ==========================================================================
+   🎯 ORDER DETAILS — BANNER + "PRINT RECEIPT" BUTTON
+   ✅ Banner — theme gradient (hindi black)
+   ✅ Print Receipt — theme-aware button
+   ✅ Match sa 10 themes
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ ORDER HERO BANNER — THEME GRADIENT
+   ✅ Yung dark card sa taas ng order details
+   ✅ Hindi hardcoded black — theme-primary
+   ========================================================================== */
+
+html body #root .od-hero,
+html body #root .order-details-hero,
+html body #root .order-detail__hero,
+html body #root .order-header,
+html body #root .od-header,
+html body #root [class*="order-hero"],
+html body #root [class*="details-hero"] {
+  position: relative !important;
+  border-radius: 1.25rem !important;
+  overflow: hidden !important;
+  padding: 1.5rem 1.75rem !important;
+  border: none !important;
+
+  /* ✅ THEME GRADIENT (hindi black) */
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  background-color: var(--theme-primary) !important;
+  background-image: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+
+  box-shadow:
+    0 12px 28px rgba(var(--theme-primary-rgb), 0.25),
+    0 4px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ✅ Subtle gloss sa taas */
+html body #root .od-hero::before,
+html body #root .order-details-hero::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 50% !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, transparent 100%) !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+html body #root .od-hero > *,
+html body #root .order-details-hero > * {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* ✅ LAHAT ng text sa loob ng banner — on-primary */
+html body #root .od-hero,
+html body #root .od-hero *,
+html body #root .od-hero h1,
+html body #root .od-hero h2,
+html body #root .od-hero p,
+html body #root .od-hero span,
+html body #root .order-details-hero,
+html body #root .order-details-hero * {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+/* ✅ Order ID */
+html body #root .od-hero__id,
+html body #root .order-details-hero__id {
+  font-family: var(--font-display, 'Fraunces', serif) !important;
+  font-size: clamp(1.5rem, 3vw, 2rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  margin: 0.5rem 0 0.25rem !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ==========================================================================
+   2️⃣ STATUS BADGE sa loob ng banner
+   ✅ PENDING sa hero — theme-on-primary tinted
+   ========================================================================== */
+
+html body #root .od-hero [class*="status"],
+html body #root .od-hero [class*="badge"],
+html body #root .order-details-hero [class*="status"],
+html body #root .order-details-hero [class*="badge"] {
+  background: rgba(255, 255, 255, 0.2) !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+}
+
+/* ==========================================================================
+   3️⃣ 🎯 "PRINT RECEIPT" BUTTON — THEME-AWARE
+   ✅ Match sa banner gradient (theme-on-primary surface)
+   ✅ Hindi hardcoded white — gumagamit ng theme variables
+   ========================================================================== */
+
+/* ✅ DARK THEMES — light button sa light-ish banner */
+html body #root .od-hero button,
+html body #root .od-hero a[class*="btn"],
+html body #root .od-hero a[class*="print"],
+html body #root .od-hero .od-hero__action,
+html body #root .order-details-hero button,
+html body #root .order-details-hero a[class*="btn"],
+html body #root button[class*="print"],
+html body #root button[class*="receipt"],
+html body #root a[class*="print"],
+html body #root [class*="print-receipt"] {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  padding: 0.65rem 1.25rem !important;
+  border: none !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+
+  /* ✅ THEME-ON-PRIMARY — light bg, primary text */
+  background: var(--theme-on-primary) !important;
+  background-color: var(--theme-on-primary) !important;
+  background-image: none !important;
+
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+
+  font-family: inherit !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.15),
+    0 1px 2px rgba(0, 0, 0, 0.08) !important;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease !important;
+}
+
+/* ✅ Icon sa loob — inherit color */
+html body #root .od-hero button .react-icon,
+html body #root .od-hero button svg,
+html body #root button[class*="print"] .react-icon,
+html body #root button[class*="print"] svg,
+html body #root [class*="print-receipt"] .react-icon,
+html body #root [class*="print-receipt"] svg {
+  width: 0.95rem !important;
+  height: 0.95rem !important;
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
+  fill: none !important;
+  flex-shrink: 0 !important;
+}
+
+/* ✅ HOVER — slight lift */
+html body #root .od-hero button:hover,
+html body #root .od-hero a[class*="btn"]:hover,
+html body #root button[class*="print"]:hover,
+html body #root [class*="print-receipt"]:hover {
+  transform: translateY(-2px) !important;
+  opacity: 0.95 !important;
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* ✅ ACTIVE — pressed */
+html body #root .od-hero button:active,
+html body #root button[class*="print"]:active {
+  transform: translateY(0) scale(0.98) !important;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ==========================================================================
+   4️⃣ PER-THEME — Exact contrast per theme
+   ✅ Siguraduhing contrasting ang button sa banner
+   ========================================================================== */
+
+/* ✅ MIDNIGHT NAVY — Blue banner, dark button */
+[data-theme='midnight-navy'] html body #root .od-hero button,
+[data-theme='midnight-navy'] html body #root button[class*="print"] {
+  background: #0E1626 !important;
+  background-color: #0E1626 !important;
+  color: #F0F5FF !important;
+  -webkit-text-fill-color: #F0F5FF !important;
+}
+
+/* ✅ MATTE BLACK — Gold banner, dark button */
+[data-theme='matte-black'] html body #root .od-hero button,
+[data-theme='matte-black'] html body #root button[class*="print"] {
+  background: #1A1209 !important;
+  background-color: #1A1209 !important;
+  color: #FAF6EE !important;
+  -webkit-text-fill-color: #FAF6EE !important;
+}
+
+/* ✅ CHARCOAL GRAY — Silver banner, dark button */
+[data-theme='charcoal-gray'] html body #root .od-hero button {
+  background: #1A1A1A !important;
+  background-color: #1A1A1A !important;
+  color: #F5F8FC !important;
+  -webkit-text-fill-color: #F5F8FC !important;
+}
+
+/* ✅ DEEP FOREST — Green banner, dark button */
+[data-theme='deep-forest'] html body #root .od-hero button {
+  background: #0A1F1A !important;
+  background-color: #0A1F1A !important;
+  color: #ECFAF2 !important;
+  -webkit-text-fill-color: #ECFAF2 !important;
+}
+
+/* ✅ DARK PLUM — Purple banner, dark button */
+[data-theme='dark-plum'] html body #root .od-hero button {
+  background: #1A0E1F !important;
+  background-color: #1A0E1F !important;
+  color: #F8F0FA !important;
+  -webkit-text-fill-color: #F8F0FA !important;
+}
+
+/* ✅ CREAM YELLOW — Gold banner, light button */
+[data-theme='cream-yellow'] html body #root .od-hero button {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  color: #A67A0A !important;
+  -webkit-text-fill-color: #A67A0A !important;
+}
+
+/* ✅ WARM BEIGE — Brown banner, light button */
+[data-theme='warm-beige'] html body #root .od-hero button {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  color: #7D633F !important;
+  -webkit-text-fill-color: #7D633F !important;
+}
+
+/* ✅ PURE WHITE — Dark banner, light button */
+[data-theme='pure-white'] html body #root .od-hero button {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  color: #2A2A2A !important;
+  -webkit-text-fill-color: #2A2A2A !important;
+}
+
+/* ✅ SOFT GRAY — Slate banner, light button */
+[data-theme='soft-gray'] html body #root .od-hero button {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  color: #3F4854 !important;
+  -webkit-text-fill-color: #3F4854 !important;
+}
+
+/* ✅ PALE BLUSH — Rose banner, light button */
+[data-theme='pale-blush'] html body #root .od-hero button {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  color: #A65868 !important;
+  -webkit-text-fill-color: #A65868 !important;
+}
+
+/* ==========================================================================
+   5️⃣ "CANCEL ORDER" BUTTON — Ghost variant
+   ✅ Transparent + border (theme-on-primary)
+   ========================================================================== */
+
+html body #root .od-hero button[class*="cancel"],
+html body #root .od-hero button[class*="danger"],
+html body #root .od-hero .od-hero__cancel,
+html body #root button[class*="cancel-order"] {
+  background: rgba(255, 255, 255, 0.15) !important;
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  background-image: none !important;
+
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+
+  box-shadow: none !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+}
+
+html body #root .od-hero button[class*="cancel"]:hover,
+html body #root button[class*="cancel-order"]:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ==========================================================================
+   6️⃣ RESPONSIVE — Mobile
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  html body #root .od-hero,
+  html body #root .order-details-hero {
+    padding: 1.25rem 1rem !important;
+    border-radius: 1rem !important;
+  }
+
+  html body #root .od-hero__id {
+    font-size: 1.35rem !important;
+  }
+
+  html body #root .od-hero button {
+    padding: 0.55rem 0.95rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  html body #root .od-hero button .react-icon {
+    width: 0.85rem !important;
+    height: 0.85rem !important;
+  }
+}
+
+/* ==========================================================================
+   7️⃣ REDUCED MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html body #root .od-hero button,
+  html body #root .od-hero a[class*="btn"],
+  html body #root [class*="print-receipt"] {
+    transition: none !important;
+    transform: none !important;
+  }
+} 
+/* ==========================================================================
+   🎯 FIX: "PRINT RECEIPT" BUTTON — Hindi Naka-clip
+   ✅ Full text visible — "Print Receipt"
+   ✅ Icon visible sa loob
+   ✅ Walang overflow
+   ✅ Nasa PINAKADULO — pinakamalakas
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ PRINT RECEIPT — Force full width + visible
+   ========================================================================== */
+
+html body #root button[class*="print"],
+html body #root button[class*="receipt"],
+html body #root button[class*="Print"],
+html body #root a[class*="print"],
+html body #root [class*="print-receipt"],
+html body #root .od-hero button,
+html body #root .order-details-hero button {
+  /* ✅ Reset lahat ng positioning */
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  /* ✅ GAP sa pagitan ng icon at text */
+  gap: 0.5rem !important;
+
+  /* ✅ ENOUGH padding — hindi clip */
+  padding: 0.65rem 1.35rem !important;
+
+  /* ✅ WIDTH AUTO — punuin ang content, hindi clip */
+  width: auto !important;
+  min-width: fit-content !important;
+  max-width: none !important;
+
+  /* ✅ HEIGHT auto */
+  height: auto !important;
+  min-height: 2.5rem !important;
+
+  /* ✅ Walang overflow hidden */
+  overflow: visible !important;
+  text-overflow: clip !important;
+
+  /* ✅ Border radius */
+  border: none !important;
+  border-radius: 999px !important;
+
+  /* ✅ Force visible background */
+  background: #2A2A2A !important;
+  background-color: #2A2A2A !important;
+  background-image: none !important;
+
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+
+  /* ✅ Font */
+  font-family: inherit !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  letter-spacing: 0 !important;
+
+  cursor: pointer !important;
+  text-decoration: none !important;
+
+  /* ✅ Flex positioning */
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+  margin: 0 !important;
+  margin-left: auto !important;
+
+  /* ✅ Box sizing */
+  box-sizing: border-box !important;
+
+  /* ✅ Shadow */
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease !important;
+}
+
+/* ==========================================================================
+   2️⃣ ICON SA LOOB — Visible, hindi naka-clip
+   ========================================================================== */
+
+html body #root button[class*="print"] .react-icon,
+html body #root button[class*="print"] svg,
+html body #root button[class*="receipt"] .react-icon,
+html body #root button[class*="receipt"] svg,
+html body #root .od-hero button .react-icon,
+html body #root .od-hero button svg {
+  /* ✅ Fixed size */
+  width: 1rem !important;
+  height: 1rem !important;
+  min-width: 1rem !important;
+  min-height: 1rem !important;
+
+  /* ✅ Hindi shrink */
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+
+  /* ✅ Visible */
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  stroke: currentColor !important;
+  fill: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+
+  /* ✅ Position */
+  position: static !important;
+  transform: none !important;
+  margin: 0 !important;
+}
+
+/* ==========================================================================
+   3️⃣ TEXT SA LOOB — Visible
+   ========================================================================== */
+
+html body #root button[class*="print"] span,
+html body #root button[class*="print"] > span,
+html body #root button[class*="receipt"] span,
+html body #root .od-hero button span {
+  display: inline-block !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  max-width: none !important;
+  position: static !important;
+  transform: none !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+}
+
+/* ✅ Lahat ng children — visible */
+html body #root button[class*="print"] *,
+html body #root button[class*="receipt"] *,
+html body #root .od-hero button * {
+  opacity: 1 !important;
+  visibility: visible !important;
+  overflow: visible !important;
+  max-width: none !important;
+}
+
+/* ==========================================================================
+   4️⃣ HOVER STATE
+   ========================================================================== */
+
+html body #root button[class*="print"]:hover,
+html body #root button[class*="receipt"]:hover,
+html body #root .od-hero button:hover {
+  transform: translateY(-2px) !important;
+  background: #3A3A3A !important;
+  background-color: #3A3A3A !important;
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ==========================================================================
+   5️⃣ ORDER HERO — Siguraduhing may space
+   ✅ Walang clip sa button
+   ========================================================================== */
+
+html body #root .od-hero,
+html body #root .order-details-hero {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+  padding: 1.5rem 1.75rem !important;
+  border-radius: 1.25rem !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+
+  /* ✅ Dark banner */
+  background: #1A1A1A !important;
+  background-color: #1A1A1A !important;
+  background-image: none !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* ✅ Lahat ng direct children — walang overflow */
+html body #root .od-hero > *,
+html body #root .order-details-hero > * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+/* ==========================================================================
+   6️⃣ SIGURADUHING WALANG OVERFLOW HIDDEN SA BUTTON PARENT
+   ✅ Baka ang parent ay nag-hide
+   ========================================================================== */
+
+html body #root .od-hero__header,
+html body #root .order-details-hero__header,
+html body #root .od-hero > div,
+html body #root .order-details-hero > div {
+  overflow: visible !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* ==========================================================================
+   7️⃣ FALLBACK — Kung naka-clip pa rin, force full width
+   ========================================================================== */
+
+html body #root button[class*="print"]:not([class*="cancel"]),
+html body #root button[class*="receipt"]:not([class*="cancel"]) {
+  /* ✅ Force expand */
+  flex: 0 0 auto !important;
+  align-self: flex-end !important;
+
+  /* ✅ Full text visible */
+  text-indent: 0 !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+}
+
+/* ==========================================================================
+   8️⃣ RESPONSIVE — Mobile
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  html body #root .od-hero,
+  html body #root .order-details-hero {
+    padding: 1.25rem 1rem !important;
+    gap: 0.75rem !important;
+  }
+
+  html body #root button[class*="print"],
+  html body #root .od-hero button {
+    padding: 0.6rem 1.15rem !important;
+    font-size: 0.78rem !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    justify-content: center !important;
+  }
+
+  html body #root button[class*="print"] .react-icon,
+  html body #root .od-hero button .react-icon {
+    width: 0.9rem !important;
+    height: 0.9rem !important;
+    min-width: 0.9rem !important;
+    min-height: 0.9rem !important;
+  }
+}
+
+/* ==========================================================================
+   9️⃣ REDUCED MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html body #root button[class*="print"],
+  html body #root .od-hero button {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+/* ==========================================================================
+   ✨ ORDER HERO — MUTED ELEGANT (katulad ng Order History header)
+   ✅ Dark muted purple base
+   ✅ Subtle gradient + soft light source sa kanan
+   ✅ Cream text
+   ✅ Auto-flip sa lahat ng 10 themes
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ ORDER HERO — MUTED SURFACE (hindi flashy gradient)
+   ========================================================================== */
+
+html body #root .od-hero,
+html body #root .order-details-hero,
+html body #root .order-detail__hero,
+html body #root .order-header,
+html body #root .od-header {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+  padding: 1.75rem 2rem !important;
+  border-radius: 1.5rem !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  isolation: isolate !important;
+
+  /* ✨ MUTED — surface-2 base, soft accent glow sa kanan */
+  background:
+    radial-gradient(
+      ellipse 60% 100% at 100% 50%,
+      rgba(var(--theme-primary-rgb), 0.15) 0%,
+      transparent 70%
+    ),
+    linear-gradient(
+      135deg,
+      var(--theme-surface-2) 0%,
+      var(--theme-surface) 45%,
+      var(--theme-surface-2) 100%
+    ) !important;
+
+  background-color: var(--theme-surface-2) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  /* ✨ Soft shadow — premium, hindi harsh */
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.15) inset,
+    0 12px 32px -12px rgba(0, 0, 0, 0.35),
+    0 4px 8px -4px rgba(0, 0, 0, 0.2) !important;
+  -webkit-box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.15) inset,
+    0 12px 32px -12px rgba(0, 0, 0, 0.35),
+    0 4px 8px -4px rgba(0, 0, 0, 0.2) !important;
+
+  border: 1px solid var(--theme-border) !important;
+}
+
+/* ✨ Vertical divider line sa gitna (katulad ng Order History) */
+html body #root .od-hero::before,
+html body #root .order-details-hero::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 15% !important;
+  bottom: 15% !important;
+  left: 55% !important;
+  width: 1px !important;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(var(--theme-primary-rgb), 0.15) 20%,
+    rgba(var(--theme-primary-rgb), 0.2) 50%,
+    rgba(var(--theme-primary-rgb), 0.15) 80%,
+    transparent 100%
+  ) !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+/* ✨ Subtle top gloss */
+html body #root .od-hero::after,
+html body #root .order-details-hero::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 40% !important;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    transparent 100%
+  ) !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+/* ✅ Lahat ng text — muted */
+html body #root .od-hero *,
+html body #root .od-hero h1,
+html body #root .od-hero h2,
+html body #root .od-hero p,
+html body #root .order-details-hero * {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+/* ✅ Order ID — cream/white text */
+html body #root .od-hero__id,
+html body #root .order-details-hero__id {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+  font-weight: 800 !important;
+}
+
+/* ✅ Date — muted */
+html body #root .od-hero__date {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 1 !important;
+}
+
+/* ✅ "Placed on" label */
+html body #root .od-hero__date,
+html body #root .od-hero__date span {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ==========================================================================
+   2️⃣ STATUS BADGE — theme-aware, subtle
+   ========================================================================== */
+
+html body #root .od-hero__status,
+html body #root .od-hero [class*="status"],
+html body #root .od-hero [class*="badge"] {
+  background: rgba(var(--theme-danger-rgb), 0.15) !important;
+  background-color: rgba(var(--theme-danger-rgb), 0.15) !important;
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+  border: 1px solid rgba(var(--theme-danger-rgb), 0.3) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+}
+
+html body #root .od-hero__status-dot {
+  background: var(--theme-danger) !important;
+  box-shadow: 0 0 0 2px rgba(var(--theme-danger-rgb), 0.25) !important;
+}
+
+/* ✅ Pending status badge */
+html body #root .od-hero__status[class*="pending"],
+html body #root .od-hero [class*="badge"][class*="pending"] {
+  background: rgba(var(--theme-warning-rgb), 0.15) !important;
+  color: var(--theme-warning) !important;
+  -webkit-text-fill-color: var(--theme-warning) !important;
+  border-color: rgba(var(--theme-warning-rgb), 0.3) !important;
+}
+
+/* ✅ Processing badge */
+html body #root .od-hero__status[class*="processing"],
+html body #root .od-hero [class*="badge"][class*="processing"] {
+  background: rgba(var(--theme-primary-rgb), 0.15) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.3) !important;
+}
+
+/* ✅ Completed badge */
+html body #root .od-hero__status[class*="completed"],
+html body #root .od-hero [class*="badge"][class*="completed"] {
+  background: rgba(var(--theme-success-rgb), 0.15) !important;
+  color: var(--theme-success) !important;
+  -webkit-text-fill-color: var(--theme-success) !important;
+  border-color: rgba(var(--theme-success-rgb), 0.3) !important;
+}
+
+/* ==========================================================================
+   3️⃣ PRINT RECEIPT BUTTON — Elegant pill (cream sa dark surface)
+   ========================================================================== */
+
+html body #root .od-hero button,
+html body #root .od-hero a[class*="btn"],
+html body #root .od-hero .od-hero__print,
+html body #root .order-details-hero button,
+html body #root button[class*="print"],
+html body #root button[class*="receipt"] {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+
+  padding: 0.7rem 1.35rem !important;
+  width: auto !important;
+  min-width: fit-content !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 2.5rem !important;
+
+  overflow: visible !important;
+  text-overflow: clip !important;
+
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.2) !important;
+  border-radius: 999px !important;
+
+  /* ✨ Elegant — primary bg, on-primary text */
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  background-color: var(--theme-primary) !important;
+  background-image: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+
+  font-family: inherit !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  letter-spacing: 0.01em !important;
+
+  cursor: pointer !important;
+  text-decoration: none !important;
+
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+  margin: 0 !important;
+  margin-left: auto !important;
+  box-sizing: border-box !important;
+
+  /* ✨ Soft glow */
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.2) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+    0 6px 16px -6px rgba(var(--theme-primary-rgb), 0.45),
+    0 2px 4px rgba(0, 0, 0, 0.1) !important;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.25s ease,
+    filter 0.2s ease !important;
+}
+
+/* ✅ Icon sa loob */
+html body #root .od-hero button .react-icon,
+html body #root .od-hero button svg,
+html body #root .od-hero .od-hero__print .react-icon,
+html body #root .od-hero .od-hero__print svg,
+html body #root button[class*="print"] .react-icon,
+html body #root button[class*="print"] svg,
+html body #root button[class*="receipt"] .react-icon,
+html body #root button[class*="receipt"] svg {
+  width: 1rem !important;
+  height: 1rem !important;
+  min-width: 1rem !important;
+  min-height: 1rem !important;
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
+  fill: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+
+  position: static !important;
+  transform: none !important;
+  margin: 0 !important;
+}
+
+/* ✅ Text span */
+html body #root .od-hero button span,
+html body #root button[class*="print"] span {
+  display: inline-block !important;
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  max-width: none !important;
+  position: static !important;
+  transform: none !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+}
+
+/* ✅ Hover — lift + brighter */
+html body #root .od-hero button:hover,
+html body #root .od-hero .od-hero__print:hover,
+html body #root button[class*="print"]:hover {
+  transform: translateY(-2px) !important;
+  filter: brightness(1.06) !important;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.25) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.15) inset,
+    0 12px 24px -6px rgba(var(--theme-primary-rgb), 0.55),
+    0 4px 8px rgba(0, 0, 0, 0.12) !important;
+}
+
+html body #root .od-hero button:active {
+  transform: translateY(0) scale(0.98) !important;
+}
+
+/* ==========================================================================
+   4️⃣ CANCEL ORDER BUTTON — Ghost elegant
+   ========================================================================== */
+
+html body #root .od-hero .od-hero__cancel,
+html body #root .od-hero button[class*="cancel"],
+html body #root .od-hero button[class*="danger"] {
+  background: rgba(var(--theme-danger-rgb), 0.1) !important;
+  background-color: rgba(var(--theme-danger-rgb), 0.1) !important;
+  background-image: none !important;
+
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+
+  border: 1px solid rgba(var(--theme-danger-rgb), 0.35) !important;
+
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+
+  margin-left: 0 !important;
+}
+
+html body #root .od-hero .od-hero__cancel:hover {
+  background: rgba(var(--theme-danger-rgb), 0.18) !important;
+  background-color: rgba(var(--theme-danger-rgb), 0.18) !important;
+  border-color: rgba(var(--theme-danger-rgb), 0.5) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 14px -4px rgba(var(--theme-danger-rgb), 0.3) !important;
+}
+
+html body #root .od-hero .od-hero__cancel .react-icon,
+html body #root .od-hero .od-hero__cancel svg {
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+  stroke: currentColor !important;
+}
+
+/* ==========================================================================
+   5️⃣ LOCK NOTE — subtle
+   ========================================================================== */
+
+html body #root .od-hero__lock-note {
+  background: rgba(var(--theme-warning-rgb), 0.08) !important;
+  background-color: rgba(var(--theme-warning-rgb), 0.08) !important;
+  border: 1px solid rgba(var(--theme-warning-rgb), 0.25) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body #root .od-hero__lock-note .react-icon {
+  color: var(--theme-warning) !important;
+  -webkit-text-fill-color: var(--theme-warning) !important;
+  stroke: currentColor !important;
+}
+
+/* ==========================================================================
+   6️⃣ HERO BODY + BG — transparent
+   ========================================================================== */
+
+html body #root .od-hero__bg {
+  display: none !important;
+  background: transparent !important;
+  background-image: none !important;
+}
+
+html body #root .od-hero__body {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* ==========================================================================
+   7️⃣ PER-THEME — Siguraduhing maganda ang contrast
+   ✅ Bawat theme may tamang muted tone
+   ========================================================================== */
+
+/* ✅ MIDNIGHT NAVY — soft blue tint */
+[data-theme='midnight-navy'] html body #root .od-hero {
+  background:
+    radial-gradient(
+      ellipse 60% 100% at 100% 50%,
+      rgba(123, 167, 225, 0.18) 0%,
+      transparent 70%
+    ),
+    linear-gradient(135deg, #1B2742 0%, #222F4D 50%, #1B2742 100%) !important;
+}
+
+/* ✅ MATTE BLACK — soft gold tint */
+[data-theme='matte-black'] html body #root .od-hero {
+  background:
+    radial-gradient(
+      ellipse 60% 100% at 100% 50%,
+      rgba(212, 165, 116, 0.15) 0%,
+      transparent 70%
+    ),
+    linear-gradient(135deg, #1A1A1A 0%, #252525 50%, #1A1A1A 100%) !important;
+}
+
+/* ✅ CHARCOAL GRAY — soft silver tint */
+[data-theme='charcoal-gray'] html body #root .od-hero {
+  background:
+    radial-gradient(
+      ellipse 60% 100% at 100% 50%,
+      rgba(168, 184, 200, 0.12) 0%,
+      transparent 70%
+    ),
+    linear-gradient(135deg, #2A2A2A 0%, #353535 50%, #2A2A2A 100%) !important;
+}
+
+/* ✅ DEEP FOREST — soft green tint */
+[data-theme='deep-forest'] html body #root .od-hero {
+  background:
+    radial-gradient(
+      ellipse 60% 100% at 100% 50%,
+      rgba(127, 200, 162, 0.15) 0%,
+      transparent 70%
+    ),
+    linear-gradient(135deg, #153029 0%, #1C3D33 50%, #153029 100%) !important;
+}
+
+/* ✅ DARK PLUM — soft purple tint */
+[data-theme='dark-plum'] html body #root .od-hero {
+  background:
+    radial-gradient(
+      ellipse 60% 100% at 100% 50%,
+      rgba(200, 160, 212, 0.15) 0%,
+      transparent 70%
+    ),
+    linear-gradient(135deg, #2A1A30 0%, #382444 50%, #2A1A30 100%) !important;
+}
+
+/* ✅ CREAM YELLOW — soft cream */
+[data-theme='cream-yellow'] html body #root .od-hero {
+  background:
+    radial-gradient(
+      ellipse 60% 100% at 100% 50%,
+      rgba(166, 122, 10, 0.1) 0%,
+      transparent 70%
+    ),
+    linear-gradient(135deg, #FBF6E9 0%, #EFE8D3 50%, #FBF6E9 100%) !important;
+  color: #1F1408 !important;
+  -webkit-text-fill-color: #1F1408 !important;
+}
+
+[data-theme='cream-yellow'] html body #root .od-hero__id {
+  color: #1F1408 !important;
+  -webkit-text-fill-color: #1F1408 !important;
+}
+
+[data-theme='cream-yellow'] html body #root .od-hero__date {
+  color: #4A3A20 !important;
+  -webkit-text-fill-color: #4A3A20 !important;
+}
+
+/* ✅ WARM BEIGE — soft beige */
+[data-theme='warm-beige'] html body #root .od-hero {
+  background:
+    radial-gradient(
+      ellipse 60% 100% at 100% 50%,
+      rgba(125, 99, 63, 0.1) 0%,
+      transparent 70%
+    ),
+    linear-gradient(135deg, #F5EFE0 0%, #E5DBC4 50%, #F5EFE0 100%) !important;
+  color: #1F1408 !important;
+  -webkit-text-fill-color: #1F1408 !important;
+}
+
+[data-theme='warm-beige'] html body #root .od-hero__id {
+  color: #1F1408 !important;
+  -webkit-text-fill-color: #1F1408 !important;
+}
+
+[data-theme='warm-beige'] html body #root .od-hero__date {
+  color: #4A3820 !important;
+  -webkit-text-fill-color: #4A3820 !important;
+}
+
+/* ✅ PURE WHITE — soft gray */
+[data-theme='pure-white'] html body #root .od-hero {
+  background:
+    radial-gradient(
+      ellipse 60% 100% at 100% 50%,
+      rgba(42, 42, 42, 0.06) 0%,
+      transparent 70%
+    ),
+    linear-gradient(135deg, #FBFBFB 0%, #EDEDED 50%, #FBFBFB 100%) !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+[data-theme='pure-white'] html body #root .od-hero__id {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+[data-theme='pure-white'] html body #root .od-hero__date {
+  color: #2A2A2A !important;
+  -webkit-text-fill-color: #2A2A2A !important;
+}
+
+/* ✅ SOFT GRAY — soft slate */
+[data-theme='soft-gray'] html body #root .od-hero {
+  background:
+    radial-gradient(
+      ellipse 60% 100% at 100% 50%,
+      rgba(63, 72, 84, 0.08) 0%,
+      transparent 70%
+    ),
+    linear-gradient(135deg, #F3F4F6 0%, #D8DBE0 50%, #F3F4F6 100%) !important;
+  color: #0F1820 !important;
+  -webkit-text-fill-color: #0F1820 !important;
+}
+
+[data-theme='soft-gray'] html body #root .od-hero__id {
+  color: #0F1820 !important;
+  -webkit-text-fill-color: #0F1820 !important;
+}
+
+[data-theme='soft-gray'] html body #root .od-hero__date {
+  color: #2A3540 !important;
+  -webkit-text-fill-color: #2A3540 !important;
+}
+
+/* ✅ PALE BLUSH — soft rose (CURRENT theme) */
+[data-theme='pale-blush'] html body #root .od-hero {
+  background:
+    radial-gradient(
+      ellipse 60% 100% at 100% 50%,
+      rgba(166, 88, 104, 0.12) 0%,
+      transparent 70%
+    ),
+    linear-gradient(135deg, #FBF0F3 0%, #F0D8DF 50%, #FBF0F3 100%) !important;
+  color: #1A0A10 !important;
+  -webkit-text-fill-color: #1A0A10 !important;
+  border-color: rgba(166, 88, 104, 0.2) !important;
+}
+
+[data-theme='pale-blush'] html body #root .od-hero__id {
+  color: #1A0A10 !important;
+  -webkit-text-fill-color: #1A0A10 !important;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5) !important;
+}
+
+[data-theme='pale-blush'] html body #root .od-hero__date {
+  color: #4A2028 !important;
+  -webkit-text-fill-color: #4A2028 !important;
+}
+
+/* ✅ Vertical divider — softer sa light themes */
+[data-theme-mode='light'] html body #root .od-hero::before,
+[data-theme-mode='light'] html body #root .order-details-hero::before {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.06) 20%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 80%,
+    transparent 100%
+  ) !important;
+}
+
+/* ✅ Top gloss — hindi visible sa light themes */
+[data-theme-mode='light'] html body #root .od-hero::after {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    transparent 100%
+  ) !important;
+}
+
+/* ==========================================================================
+   8️⃣ RESPONSIVE — Mobile
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  html body #root .od-hero {
+    padding: 1.25rem 1rem !important;
+    gap: 0.75rem !important;
+    border-radius: 1.25rem !important;
+  }
+
+  html body #root .od-hero__id {
+    font-size: 1.35rem !important;
+  }
+
+  /* ✅ Hide divider sa mobile */
+  html body #root .od-hero::before {
+    display: none !important;
+  }
+
+  html body #root .od-hero button,
+  html body #root button[class*="print"] {
+    padding: 0.6rem 1.15rem !important;
+    font-size: 0.78rem !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    justify-content: center !important;
+  }
+}
+
+/* ==========================================================================
+   9️⃣ REDUCED MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html body #root .od-hero button {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+/* ==========================================================================
+   🔧 FIX: SEARCH + ALL STATUSES — TABI-TABI (isang row lang)
+   ✅ Search bar = flexible (kumukuha ng natitirang space)
+   ✅ Dropdown = fixed width (hindi lumiliit)
+   ✅ Pantay sa isang row
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ TOOLBAR CONTAINER — flex row, hindi column
+   ========================================================================== */
+
+html body #root .dashboard-toolbar {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 0.75rem !important;
+
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+
+  padding: 0 !important;
+  margin: 0 0 1rem 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  flex-wrap: nowrap !important;   /* ✅ Huwag mag-wrap sa bagong row */
+}
+
+/* ==========================================================================
+   2️⃣ SEARCH WRAPPER — flexible, kumukuha ng natitirang space
+   ========================================================================== */
+
+html body #root .dashboard-toolbar__search,
+html body #root .dashboard-toolbar .dashboard-toolbar__search {
+  display: block !important;
+  flex: 1 1 auto !important;    /* ✅ Lumaki, kumukuha ng space */
+  min-width: 0 !important;      /* ✅ Pwedeng lumiliit */
+  max-width: none !important;
+
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* ==========================================================================
+   3️⃣ SEARCH INPUT — punuin yung wrapper
+   ========================================================================== */
+
+html body #root .dashboard-toolbar__search input,
+html body #root .dashboard-toolbar input[type="search"],
+html body #root .dashboard-toolbar input[type="text"] {
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 999px !important;
+
+  padding: 0.7rem 1.15rem !important;
+  height: 2.75rem !important;      /* ✅ Fixed height — pantay sa dropdown */
+
+  outline: none !important;
+  box-shadow: none !important;
+
+  font-family: inherit !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+html body #root .dashboard-toolbar__search input:focus {
+  border-color: var(--theme-primary) !important;
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.12) !important;
+}
+
+/* ==========================================================================
+   4️⃣ DROPDOWN "All statuses" — fixed width, pantay height
+   ========================================================================== */
+
+html body #root .dashboard-toolbar__select,
+html body #root .dashboard-toolbar select,
+html body #root select[aria-label="Filter by status"] {
+  display: inline-block !important;
+  flex: 0 0 auto !important;        /* ✅ Hindi lumaki, hindi lumiliit */
+  width: auto !important;
+  min-width: 10rem !important;      /* ✅ Minimum na lapad */
+  max-width: 12rem !important;
+
+  height: 2.75rem !important;       /* ✅ Pantay sa search height */
+  box-sizing: border-box !important;
+
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 999px !important;
+
+  padding: 0 2.5rem 0 1.15rem !important;
+
+  outline: none !important;
+  box-shadow: none !important;
+
+  font-family: inherit !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+
+  /* ✅ Custom chevron */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.9rem center !important;
+  background-size: 1rem !important;
+
+  cursor: pointer !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+
+  /* ✅ Align sa vertical center */
+  align-self: center !important;
+  vertical-align: middle !important;
+}
+
+html body #root .dashboard-toolbar__select:focus,
+html body #root .dashboard-toolbar select:focus {
+  border-color: var(--theme-primary) !important;
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.12) !important;
+  outline: none !important;
+}
+
+/* ==========================================================================
+   5️⃣ RESPONSIVE — stack lang sa napakaliit na screen
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  html body #root .dashboard-toolbar {
+    flex-wrap: wrap !important;
+  }
+
+  html body #root .dashboard-toolbar__search {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+  }
+
+  html body #root .dashboard-toolbar__select {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+/* ==========================================================================
+   🔧 FIX: CART SUMMARY PICKUP — Flatten sa isang clean card
+   ✅ Tanggalin ang double borders
+   ✅ Proper text layout para sa 3 lines
+   ✅ Theme-aware sa 10 palettes
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ PICKUP CONTAINER — outer card
+   ✅ Isang border lang
+   ✅ Flex layout: icon | text copy | arrow
+   ========================================================================== */
+
+html body #root .cart-summary__pickup {
+  /* ✅ Reset */
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 0.75rem !important;
+
+  width: 100% !important;
+  padding: 1rem 1.15rem !important;
+  box-sizing: border-box !important;
+
+  /* ✅ Isang border lang */
+  background: var(--theme-surface-2, var(--theme-surface)) !important;
+  background-color: var(--theme-surface-2, var(--theme-surface)) !important;
+  background-image: none !important;
+
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 0.85rem !important;
+
+  /* ✅ Walang extra shadow */
+  box-shadow: none !important;
+
+  /* ✅ Reset */
+  margin: 1rem 0 0 0 !important;
+  overflow: hidden !important;
+
+  /* ✅ Theme-aware text */
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+/* ==========================================================================
+   2️⃣ PICKUP ICON (📍) — fixed size, naka-top
+   ========================================================================== */
+
+html body #root .cart-summary__pickup-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: 2rem !important;
+  height: 2rem !important;
+  min-width: 2rem !important;
+  min-height: 2rem !important;
+
+  flex-shrink: 0 !important;
+  margin-top: 0.1rem !important;
+
+  /* ✅ Icon circle */
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  background-color: rgba(var(--theme-primary-rgb), 0.12) !important;
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.22) !important;
+  border-radius: 50% !important;
+
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+html body #root .cart-summary__pickup-icon .react-icon,
+html body #root .cart-summary__pickup-icon svg {
+  width: 1rem !important;
+  height: 1rem !important;
+
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  stroke: currentColor !important;
+  fill: none !important;
+}
+
+/* ==========================================================================
+   3️⃣ PICKUP COPY — laman ng text, walang border
+   ✅ Tanggalin lahat ng background/border/padding
+   ========================================================================== */
+
+html body #root .cart-summary__pickup-copy {
+  /* ✅ Reset — plain text container lang */
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.2rem !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  overflow: visible !important;
+}
+
+/* ==========================================================================
+   4️⃣ PICKUP LABEL — "Pickup Location" (bold heading)
+   ========================================================================== */
+
+html body #root .cart-summary__pickup-label {
+  display: block !important;
+
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  /* ✅ Walang border/bg */
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+
+  text-shadow: none !important;
+}
+
+/* ==========================================================================
+   5️⃣ PICKUP TITLE — "SJCM Campus" (subtext)
+   ========================================================================== */
+
+html body #root .cart-summary__pickup-title {
+  display: block !important;
+
+  font-size: 0.78rem !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 1 !important;
+
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+
+  text-shadow: none !important;
+}
+
+/* ==========================================================================
+   6️⃣ PICKUP NOTE — "Please bring a valid school ID for pickup."
+   ✅ Allow wrap sa space lang
+   ✅ Walang truncation
+   ========================================================================== */
+
+html body #root .cart-summary__pickup-note {
+  display: block !important;
+
+  font-size: 0.72rem !important;
+  font-weight: 400 !important;
+  line-height: 1.45 !important;
+
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 0.9 !important;
+
+  /* ✅ Allow wrap sa space lang — walang word break */
+  white-space: normal !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  hyphens: none !important;
+
+  /* ✅ Walang truncation */
+  overflow: visible !important;
+  text-overflow: clip !important;
+
+  /* ✅ Reset box properties */
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0.1rem 0 0 0 !important;
+
+  text-shadow: none !important;
+}
+
+/* ==========================================================================
+   7️⃣ PICKUP CHEVRON (→) — nasa dulo, naka-align sa dulo
+   ========================================================================== */
+
+html body #root .cart-summary__pickup-chev {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: 1rem !important;
+  height: 1rem !important;
+  min-width: 1rem !important;
+  min-height: 1rem !important;
+
+  flex-shrink: 0 !important;
+
+  /* ✅ Position sa ibaba-right */
+  align-self: flex-end !important;
+  margin-top: auto !important;
+
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  stroke: currentColor !important;
+  fill: none !important;
+
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* ==========================================================================
+   8️⃣ SIGURADUHING WALANG DOUBLE BORDER SA PARENT
+   ✅ Tanggalin ang anumang wrapper borders
+   ========================================================================== */
+
+html body #root .cart-summary__pickup > *:not(.cart-summary__pickup-icon):not(.cart-summary__pickup-chev) {
+  /* ✅ Lahat ng text wrappers — walang border */
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* ✅ Kung ang parent mismo ay may border, i-keep yun */
+html body #root .cart-summary__pickup {
+  /* ✅ Single border lang */
+  border: 1px solid var(--theme-border) !important;
+}
+
+/* ==========================================================================
+   9️⃣ LIGHT THEMES — siguraduhing readable
+   ========================================================================== */
+
+[data-theme-mode='light'] html body #root .cart-summary__pickup {
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+}
+
+[data-theme-mode='light'] html body #root .cart-summary__pickup-label {
+  color: var(--theme-text) !important;
+}
+
+[data-theme-mode='light'] html body #root .cart-summary__pickup-title,
+[data-theme-mode='light'] html body #root .cart-summary__pickup-note {
+  color: var(--theme-text-muted) !important;
+}
+
+/* ==========================================================================
+   🔟 DARK THEMES — proper contrast
+   ========================================================================== */
+
+[data-theme-mode='dark'] html body #root .cart-summary__pickup {
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  border-color: var(--theme-border) !important;
+}
+
+[data-theme-mode='dark'] html body #root .cart-summary__pickup-label {
+  color: var(--theme-text) !important;
+}
+
+[data-theme-mode='dark'] html body #root .cart-summary__pickup-title,
+[data-theme-mode='dark'] html body #root .cart-summary__pickup-note {
+  color: var(--theme-text-muted) !important;
+}
+
+/* ==========================================================================
+   1️⃣1️⃣ RESPONSIVE — mobile
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  html body #root .cart-summary__pickup {
+    padding: 0.85rem 1rem !important;
+    gap: 0.6rem !important;
+  }
+
+  html body #root .cart-summary__pickup-label {
+    font-size: 0.78rem !important;
+  }
+
+  html body #root .cart-summary__pickup-title {
+    font-size: 0.72rem !important;
+  }
+
+  html body #root .cart-summary__pickup-note {
+    font-size: 0.68rem !important;
+  }
+}

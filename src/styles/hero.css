@@ -1239,3 +1239,2711 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* ============================================================
+   🎨 HOME PAGE — CLAYMORPHISM × NEUMORPHISM
+   ✅ Buttons — Clay raised
+   ✅ Cards — Clay raised
+   ✅ Walang glass
+   ============================================================ */
+
+/* ============================================================
+   1. HERO BUTTONS — CLAY RAISED
+   ✅ "Browse catalog" (primary) — clay accent
+   ✅ "My orders" / "Sign in" (secondary) — clay ghost
+   ============================================================ */
+
+/* ✅ PRIMARY — Clay accent */
+.hero-actions .button--primary,
+.hero-actions .button.button--primary,
+.hero-actions .button--pill.button--primary {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  padding: 0.85rem 1.75rem !important;
+  border: none !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+
+  /* ✅ CLAY raised */
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.35),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+
+  transition: box-shadow 0.2s ease !important;
+}
+
+/* ✅ Clay gloss */
+.hero-actions .button--primary::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 50% !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%) !important;
+  border-radius: 999px 999px 0 0 !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+.hero-actions .button--primary > * {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.hero-actions .button--primary:hover {
+  transform: none !important;
+  box-shadow:
+    0 10px 22px rgba(var(--theme-primary-rgb), 0.45),
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.18),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ✅ SECONDARY — Clay ghost (surface raised) */
+.hero-actions .button--secondary,
+.hero-actions .button.button--secondary {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  padding: 0.85rem 1.75rem !important;
+  border: none !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+
+  /* ✅ CLAY raised */
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+
+  transition: box-shadow 0.2s ease !important;
+}
+
+[data-theme-mode='dark'] .hero-actions .button--secondary {
+  background: var(--theme-surface-2) !important;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.25),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.35),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+.hero-actions .button--secondary::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 50% !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, transparent 100%) !important;
+  border-radius: 999px 999px 0 0 !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+.hero-actions .button--secondary > * {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.hero-actions .button--secondary:hover {
+  transform: none !important;
+  color: var(--theme-primary-hover) !important;
+  -webkit-text-fill-color: var(--theme-primary-hover) !important;
+  box-shadow:
+    0 8px 18px rgba(var(--theme-primary-rgb), 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ============================================================
+   2. HOME CARDS — CLAY RAISED
+   ✅ Product cards, category cards
+   ============================================================ */
+
+.home-card {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 1.25rem !important;
+  overflow: hidden !important;
+  text-decoration: none !important;
+
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  /* ✅ CLAY raised */
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+
+  transition: box-shadow 0.25s ease !important;
+}
+
+[data-theme-mode='dark'] .home-card {
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+.home-card:hover {
+  transform: none !important;
+  border-color: var(--theme-primary) !important;
+  box-shadow:
+    0 12px 28px rgba(var(--theme-primary-rgb), 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ✅ Card media */
+.home-card__media {
+  position: relative !important;
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  border-bottom: 1px solid var(--theme-border) !important;
+  overflow: hidden !important;
+}
+
+[data-theme-mode='dark'] .home-card__media {
+  background: var(--theme-surface) !important;
+}
+
+/* ✅ Card body */
+.home-card__body {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.35rem !important;
+  padding: 1rem !important;
+  background: transparent !important;
+}
+
+/* ✅ Card name */
+.home-card__name {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  font-family: var(--font-display, 'Fraunces', serif) !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.3 !important;
+  margin: 0 !important;
+}
+
+/* ✅ Card category */
+.home-card__category {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+  margin: 0 !important;
+}
+
+/* ✅ Card price */
+.home-card__price {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace) !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  font-variant-numeric: tabular-nums !important;
+  margin: 0.15rem 0 0.5rem !important;
+}
+
+/* ✅ Card badge */
+.home-card__badge {
+  position: absolute !important;
+  top: 0.65rem !important;
+  left: 0.65rem !important;
+  padding: 0.35rem 0.7rem !important;
+  border-radius: 0.65rem !important;
+  z-index: 2 !important;
+
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 0.62rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  border: none !important;
+
+  /* ✅ CLAY mini */
+  box-shadow:
+    0 4px 10px rgba(var(--theme-primary-rgb), 0.35),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.25) !important;
+}
+
+/* ============================================================
+   3. HOME CARD CTA — CLAY RAISED (View / Browse)
+   ============================================================ */
+
+.home-card__cta {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.4rem !important;
+  width: 100% !important;
+  margin-top: auto !important;
+  padding: 0.7rem 1.15rem !important;
+  border: none !important;
+  border-radius: 0.85rem !important;
+  overflow: hidden !important;
+
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+
+  /* ✅ CLAY */
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+
+  transition: box-shadow 0.2s ease !important;
+}
+
+.home-card__cta::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 50% !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%) !important;
+  border-radius: 0.85rem 0.85rem 0 0 !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+.home-card__cta > * {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.home-card__cta .react-icon,
+.home-card__cta svg {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
+  width: 0.9rem !important;
+  height: 0.9rem !important;
+  flex-shrink: 0 !important;
+}
+
+.home-card:hover .home-card__cta {
+  box-shadow:
+    0 8px 18px rgba(var(--theme-primary-rgb), 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.18),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ============================================================
+   4. CATEGORY CARD — CLAY (home-card--category)
+   ✅ Icon circle — clay raised
+   ============================================================ */
+
+.home-card--category .home-card__media--icon {
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  padding: 1.5rem !important;
+  display: grid !important;
+  place-items: center !important;
+  min-height: 8rem !important;
+}
+
+[data-theme-mode='dark'] .home-card--category .home-card__media--icon {
+  background: var(--theme-surface) !important;
+}
+
+/* ✅ Icon circle — CLAY */
+.home-card__icon-circle {
+  display: grid !important;
+  place-items: center !important;
+  width: 4rem !important;
+  height: 4rem !important;
+  border-radius: 50% !important;
+
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  border: 1px solid var(--theme-border) !important;
+
+  /* ✅ CLAY */
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+
+  transition: box-shadow 0.2s ease !important;
+}
+
+[data-theme-mode='dark'] .home-card__icon-circle {
+  background: var(--theme-surface-2) !important;
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.25),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.35),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+.home-card__icon-circle .react-icon,
+.home-card__icon-circle svg {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
+  width: 1.75rem !important;
+  height: 1.75rem !important;
+}
+
+.home-card--category:hover .home-card__icon-circle {
+  transform: none !important;
+  box-shadow:
+    0 12px 24px rgba(var(--theme-primary-rgb), 0.25),
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 3px 6px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ============================================================
+   5. VISIT PANEL BUTTON — CLAY RAISED (Browse catalog)
+   ============================================================ */
+
+.visit-panel .button--secondary,
+.visit-panel .button.button--block {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  width: 100% !important;
+  padding: 0.85rem 1.5rem !important;
+  border: none !important;
+  border-radius: 1rem !important;
+  overflow: hidden !important;
+
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+
+  /* ✅ CLAY */
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.35),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.25) !important;
+
+  transition: box-shadow 0.2s ease !important;
+}
+
+.visit-panel .button--secondary::before,
+.visit-panel .button.button--block::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 50% !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%) !important;
+  border-radius: 1rem 1rem 0 0 !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+.visit-panel .button--secondary > *,
+.visit-panel .button.button--block > * {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.visit-panel .button--secondary:hover,
+.visit-panel .button.button--block:hover {
+  transform: none !important;
+  box-shadow:
+    0 10px 22px rgba(var(--theme-primary-rgb), 0.45),
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.18),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ============================================================
+   6. VISIT PANEL — NEUMORPHISM INSET (small card)
+   ============================================================ */
+
+.visit-panel__icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  border-radius: 0.6rem !important;
+  flex-shrink: 0 !important;
+
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+
+  /* ✅ NEUMORPHIC INSET */
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.08),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+[data-theme-mode='dark'] .visit-panel__icon {
+  background: var(--theme-surface) !important;
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.5),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.04) !important;
+}
+
+.visit-panel__icon .react-icon,
+.visit-panel__icon svg {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+/* ============================================================
+   7. BEST FINDS PANEL — CLAY RAISED
+   ============================================================ */
+
+.home-highlights__panel {
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 1.25rem !important;
+
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+
+  /* ✅ CLAY */
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4) !important;
+}
+
+[data-theme-mode='dark'] .home-highlights__panel {
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06) !important;
+}
+
+.home-highlights__panel:hover {
+  transform: none !important;
+}
+
+/* ============================================================
+   8. HOME SECTION LINK — theme-aware
+   ✅ "View all", "All merchandise", "See more"
+   ============================================================ */
+
+.home-section__link {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease !important;
+}
+
+.home-section__link:hover {
+  color: var(--theme-primary-hover) !important;
+  -webkit-text-fill-color: var(--theme-primary-hover) !important;
+  transform: none !important;
+}
+
+.home-section__link .react-icon,
+.home-section__link svg {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  stroke: currentColor !important;
+  width: 0.85rem !important;
+  height: 0.85rem !important;
+  transform: none !important;
+}
+
+/* ============================================================
+   9. QUEUE BADGE — CLAY mini
+   ============================================================ */
+
+.queue-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.4rem !important;
+  padding: 0.4rem 0.85rem !important;
+  border-radius: 999px !important;
+
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.25) !important;
+
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+
+  /* ✅ CLAY mini */
+  box-shadow:
+    0 3px 8px rgba(var(--theme-primary-rgb), 0.15),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.05),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+}
+
+.queue-badge > span {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   10. RESPONSIVE — Mobile
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .hero-actions .button--primary,
+  .hero-actions .button--secondary {
+    padding: 0.75rem 1.35rem !important;
+    font-size: 0.85rem !important;
+  }
+
+  .home-card {
+    border-radius: 1rem !important;
+  }
+
+  .home-card__cta {
+    padding: 0.6rem 0.9rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  .home-card__icon-circle {
+    width: 3.25rem !important;
+    height: 3.25rem !important;
+  }
+
+  .home-card__icon-circle .react-icon {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
+}
+
+/* ============================================================
+   11. REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-actions .button--primary,
+  .hero-actions .button--secondary,
+  .home-card,
+  .home-card__cta,
+  .home-card__icon-circle,
+  .visit-panel .button--secondary,
+  .home-highlights__panel {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
+   ✨ HERO TITLE HALO — mas kitang glow, elegant
+   ✅ Target: #hero-title .hero-title + span.pick-up-on-campus
+   ✅ Theme-aware sa lahat ng 10 palettes
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ HERO TITLE — main "Reserve today." glow
+   ========================================================================== */
+
+html body #root #hero-title,
+html body #root .hero-title,
+html body #root h1.hero-title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  /* ✅ MAS MALAKAS na halo — pero elegant pa rin */
+  text-shadow:
+    0 0 32px rgba(var(--theme-primary-rgb), 0.28),
+    0 0 64px rgba(var(--theme-primary-rgb), 0.15),
+    0 0 96px rgba(var(--theme-primary-rgb), 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ==========================================================================
+   2️⃣ ITALIC PART — "Pick up on campus." mas malakas na glow
+   ========================================================================== */
+
+html body #root #hero-title span,
+html body #root .hero-title span,
+html body #root .hero-title .pick-up-on-campus,
+html body #root span[class*="pick-up"] {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  font-style: italic !important;
+
+  /* ✅ MAS MALAKAS na halo — ito yung focal point */
+  text-shadow:
+    0 0 36px rgba(var(--theme-primary-rgb), 0.45),
+    0 0 72px rgba(var(--theme-primary-rgb), 0.22),
+    0 0 108px rgba(var(--theme-primary-rgb), 0.12),
+    0 2px 4px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ==========================================================================
+   3️⃣ PER-THEME — eksaktong glow color bawat palette
+   ========================================================================== */
+
+/* ✅ PALE BLUSH — soft rose glow */
+[data-theme='pale-blush'] html body #root .hero-title {
+  text-shadow:
+    0 0 32px rgba(166, 88, 104, 0.25),
+    0 0 64px rgba(196, 122, 140, 0.14),
+    0 0 96px rgba(166, 88, 104, 0.08),
+    0 2px 4px rgba(26, 10, 16, 0.06) !important;
+}
+
+[data-theme='pale-blush'] html body #root .hero-title span {
+  text-shadow:
+    0 0 38px rgba(166, 88, 104, 0.5),
+    0 0 76px rgba(196, 122, 140, 0.25),
+    0 0 114px rgba(166, 88, 104, 0.12),
+    0 2px 4px rgba(26, 10, 16, 0.06) !important;
+}
+
+/* ✅ MIDNIGHT NAVY — blue glow */
+[data-theme='midnight-navy'] html body #root .hero-title {
+  text-shadow:
+    0 0 32px rgba(123, 167, 225, 0.35),
+    0 0 64px rgba(155, 192, 237, 0.18),
+    0 0 96px rgba(123, 167, 225, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme='midnight-navy'] html body #root .hero-title span {
+  text-shadow:
+    0 0 38px rgba(123, 167, 225, 0.6),
+    0 0 76px rgba(155, 192, 237, 0.3),
+    0 0 114px rgba(123, 167, 225, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ✅ MATTE BLACK — warm gold glow */
+[data-theme='matte-black'] html body #root .hero-title {
+  text-shadow:
+    0 0 32px rgba(212, 165, 116, 0.32),
+    0 0 64px rgba(229, 181, 132, 0.16),
+    0 0 96px rgba(212, 165, 116, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme='matte-black'] html body #root .hero-title span {
+  text-shadow:
+    0 0 38px rgba(212, 165, 116, 0.55),
+    0 0 76px rgba(229, 181, 132, 0.28),
+    0 0 114px rgba(212, 165, 116, 0.14),
+    0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ✅ CHARCOAL GRAY — cool silver glow */
+[data-theme='charcoal-gray'] html body #root .hero-title {
+  text-shadow:
+    0 0 32px rgba(168, 184, 200, 0.3),
+    0 0 64px rgba(200, 208, 220, 0.15),
+    0 0 96px rgba(168, 184, 200, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme='charcoal-gray'] html body #root .hero-title span {
+  text-shadow:
+    0 0 38px rgba(168, 184, 200, 0.5),
+    0 0 76px rgba(200, 208, 220, 0.25),
+    0 0 114px rgba(168, 184, 200, 0.12),
+    0 2px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ✅ DEEP FOREST — soft green glow */
+[data-theme='deep-forest'] html body #root .hero-title {
+  text-shadow:
+    0 0 32px rgba(127, 200, 162, 0.3),
+    0 0 64px rgba(168, 224, 192, 0.15),
+    0 0 96px rgba(127, 200, 162, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme='deep-forest'] html body #root .hero-title span {
+  text-shadow:
+    0 0 38px rgba(127, 200, 162, 0.55),
+    0 0 76px rgba(168, 224, 192, 0.28),
+    0 0 114px rgba(127, 200, 162, 0.14),
+    0 2px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ✅ DARK PLUM — soft purple glow */
+[data-theme='dark-plum'] html body #root .hero-title {
+  text-shadow:
+    0 0 32px rgba(200, 160, 212, 0.32),
+    0 0 64px rgba(217, 184, 226, 0.16),
+    0 0 96px rgba(200, 160, 212, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme='dark-plum'] html body #root .hero-title span {
+  text-shadow:
+    0 0 38px rgba(200, 160, 212, 0.55),
+    0 0 76px rgba(217, 184, 226, 0.28),
+    0 0 114px rgba(200, 160, 212, 0.14),
+    0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ✅ CREAM YELLOW — warm gold glow */
+[data-theme='cream-yellow'] html body #root .hero-title {
+  text-shadow:
+    0 0 32px rgba(166, 122, 10, 0.22),
+    0 0 64px rgba(125, 82, 48, 0.12),
+    0 0 96px rgba(166, 122, 10, 0.06),
+    0 2px 4px rgba(31, 20, 8, 0.06) !important;
+}
+
+[data-theme='cream-yellow'] html body #root .hero-title span {
+  text-shadow:
+    0 0 38px rgba(166, 122, 10, 0.42),
+    0 0 76px rgba(125, 82, 48, 0.22),
+    0 0 114px rgba(166, 122, 10, 0.1),
+    0 2px 4px rgba(31, 20, 8, 0.06) !important;
+}
+
+/* ✅ WARM BEIGE — warm brown glow */
+[data-theme='warm-beige'] html body #root .hero-title {
+  text-shadow:
+    0 0 32px rgba(125, 99, 63, 0.25),
+    0 0 64px rgba(148, 110, 72, 0.14),
+    0 0 96px rgba(125, 99, 63, 0.08),
+    0 2px 4px rgba(31, 20, 8, 0.06) !important;
+}
+
+[data-theme='warm-beige'] html body #root .hero-title span {
+  text-shadow:
+    0 0 38px rgba(125, 99, 63, 0.48),
+    0 0 76px rgba(148, 110, 72, 0.24),
+    0 0 114px rgba(125, 99, 63, 0.12),
+    0 2px 4px rgba(31, 20, 8, 0.06) !important;
+}
+
+/* ✅ PURE WHITE — neutral gray glow */
+[data-theme='pure-white'] html body #root .hero-title {
+  text-shadow:
+    0 0 28px rgba(42, 42, 42, 0.15),
+    0 0 56px rgba(74, 74, 74, 0.08),
+    0 0 84px rgba(42, 42, 42, 0.04),
+    0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme='pure-white'] html body #root .hero-title span {
+  text-shadow:
+    0 0 34px rgba(42, 42, 42, 0.3),
+    0 0 68px rgba(74, 74, 74, 0.15),
+    0 0 102px rgba(42, 42, 42, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* ✅ SOFT GRAY — cool slate glow */
+[data-theme='soft-gray'] html body #root .hero-title {
+  text-shadow:
+    0 0 32px rgba(63, 72, 84, 0.22),
+    0 0 64px rgba(90, 98, 110, 0.12),
+    0 0 96px rgba(63, 72, 84, 0.06),
+    0 2px 4px rgba(15, 24, 32, 0.06) !important;
+}
+
+[data-theme='soft-gray'] html body #root .hero-title span {
+  text-shadow:
+    0 0 38px rgba(63, 72, 84, 0.42),
+    0 0 76px rgba(90, 98, 110, 0.22),
+    0 0 114px rgba(63, 72, 84, 0.1),
+    0 2px 4px rgba(15, 24, 32, 0.06) !important;
+}
+
+/* ==========================================================================
+   4️⃣ RESPONSIVE — subtle sa mobile
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  html body #root .hero-title {
+    text-shadow:
+      0 0 24px rgba(var(--theme-primary-rgb), 0.22),
+      0 0 48px rgba(var(--theme-primary-rgb), 0.1) !important;
+  }
+
+  html body #root .hero-title span {
+    text-shadow:
+      0 0 28px rgba(var(--theme-primary-rgb), 0.4),
+      0 0 56px rgba(var(--theme-primary-rgb), 0.18) !important;
+  }
+}
+/* ==========================================================================
+   ✨ HERO DECORATIVE HALO — Soft blurred circles sa ilalim ng title
+   ✅ Subtle lang, hindi OA
+   ✅ Theme-aware sa 10 palettes
+   ✅ Hindi nakaka-block sa text/buttons
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ CONTAINER — relative para may anchor sa glow
+   ========================================================================== */
+
+html body #root .home-hero,
+html body #root .hero,
+html body #root [class*="home-hero"],
+html body #root main > section:first-of-type {
+  position: relative !important;
+  isolation: isolate !important;
+}
+
+/* ==========================================================================
+   2️⃣ SOFT RADIAL GLOW — nasa ibaba ng title (left side)
+   ✅ Primary color halo — subtle blend
+   ========================================================================== */
+
+html body #root .home-hero::after,
+html body #root [class*="home-hero"]::after,
+html body #root .hero::after {
+  content: '' !important;
+  position: absolute !important;
+
+  /* ✅ Positioning — sa ilalim ng title, left-center */
+  left: -10% !important;
+  bottom: 10% !important;
+
+  /* ✅ Size */
+  width: 55vw !important;
+  max-width: 720px !important;
+  height: 55vw !important;
+  max-height: 720px !important;
+
+  /* ✅ Soft radial glow — hindi solid */
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--theme-primary-rgb), 0.18) 0%,
+    rgba(var(--theme-primary-rgb), 0.1) 25%,
+    rgba(var(--theme-primary-rgb), 0.04) 45%,
+    transparent 70%
+  ) !important;
+
+  border-radius: 50% !important;
+  filter: blur(60px) !important;
+  -webkit-filter: blur(60px) !important;
+
+  pointer-events: none !important;
+  z-index: 0 !important;
+
+  opacity: 0.9 !important;
+  transition: opacity 0.5s ease !important;
+}
+
+/* ==========================================================================
+   3️⃣ SECOND GLOW — accent color, right side
+   ✅ Para balanced yung composition
+   ========================================================================== */
+
+html body #root .home-hero::before,
+html body #root [class*="home-hero"]::before,
+html body #root .hero::before {
+  content: '' !important;
+  position: absolute !important;
+
+  /* ✅ Positioning — sa gitna-right */
+  right: -15% !important;
+  top: 20% !important;
+
+  /* ✅ Size */
+  width: 45vw !important;
+  max-width: 580px !important;
+  height: 45vw !important;
+  max-height: 580px !important;
+
+  /* ✅ Accent radial glow — softer */
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--theme-accent-rgb), 0.14) 0%,
+    rgba(var(--theme-accent-rgb), 0.06) 30%,
+    rgba(var(--theme-accent-rgb), 0.02) 50%,
+    transparent 72%
+  ) !important;
+
+  border-radius: 50% !important;
+  filter: blur(70px) !important;
+  -webkit-filter: blur(70px) !important;
+
+  pointer-events: none !important;
+  z-index: 0 !important;
+
+  opacity: 0.85 !important;
+  transition: opacity 0.5s ease !important;
+}
+
+/* ==========================================================================
+   4️⃣ SIGURADUHING NASA TAAS NG GLOW YUNG CONTENT
+   ========================================================================== */
+
+html body #root .home-hero > *,
+html body #root [class*="home-hero"] > *,
+html body #root .hero > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* ==========================================================================
+   5️⃣ PER-THEME — Iba-ibang intensity base sa theme mode
+   ========================================================================== */
+
+/* ✅ LIGHT THEMES — subtle glow (para hindi OA sa light bg) */
+[data-theme-mode='light'] html body #root .home-hero::after,
+[data-theme-mode='light'] html body #root .hero::after {
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--theme-primary-rgb), 0.14) 0%,
+    rgba(var(--theme-primary-rgb), 0.06) 30%,
+    rgba(var(--theme-primary-rgb), 0.02) 50%,
+    transparent 72%
+  ) !important;
+  filter: blur(70px) !important;
+  -webkit-filter: blur(70px) !important;
+}
+
+[data-theme-mode='light'] html body #root .home-hero::before,
+[data-theme-mode='light'] html body #root .hero::before {
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--theme-accent-rgb), 0.1) 0%,
+    rgba(var(--theme-accent-rgb), 0.04) 35%,
+    rgba(var(--theme-accent-rgb), 0.015) 55%,
+    transparent 75%
+  ) !important;
+  filter: blur(80px) !important;
+  -webkit-filter: blur(80px) !important;
+}
+
+/* ✅ DARK THEMES — mas makikita yung glow */
+[data-theme-mode='dark'] html body #root .home-hero::after,
+[data-theme-mode='dark'] html body #root .hero::after {
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--theme-primary-rgb), 0.22) 0%,
+    rgba(var(--theme-primary-rgb), 0.12) 25%,
+    rgba(var(--theme-primary-rgb), 0.05) 45%,
+    transparent 70%
+  ) !important;
+  opacity: 1 !important;
+}
+
+[data-theme-mode='dark'] html body #root .home-hero::before,
+[data-theme-mode='dark'] html body #root .hero::before {
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--theme-accent-rgb), 0.16) 0%,
+    rgba(var(--theme-accent-rgb), 0.08) 30%,
+    rgba(var(--theme-accent-rgb), 0.03) 50%,
+    transparent 72%
+  ) !important;
+  opacity: 0.95 !important;
+}
+
+/* ==========================================================================
+   6️⃣ RESPONSIVE — smaller sa mobile
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  html body #root .home-hero::after,
+  html body #root .hero::after {
+    width: 80vw !important;
+    height: 80vw !important;
+    left: -30% !important;
+    bottom: 15% !important;
+    filter: blur(50px) !important;
+    -webkit-filter: blur(50px) !important;
+  }
+
+  html body #root .home-hero::before,
+  html body #root .hero::before {
+    width: 70vw !important;
+    height: 70vw !important;
+    right: -25% !important;
+    top: 25% !important;
+    filter: blur(55px) !important;
+    -webkit-filter: blur(55px) !important;
+  }
+}
+
+/* ==========================================================================
+   7️⃣ REDUCED MOTION — walang transition
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html body #root .home-hero::after,
+  html body #root .home-hero::before {
+    transition: none !important;
+  }
+}
+/* ==========================================================================
+   🎯 NAV SEARCH — PLAIN & CLEAN
+   ✅ Walang glass, walang glow, walang fancy border
+   ✅ Simple solid surface lang
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ WRAPPER — plain surface, isang border
+   ========================================================================== */
+
+html body #root .nav-search,
+html body .site-nav .nav-search,
+html body .nav-search {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+
+  /* ✅ Plain solid surface */
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  background-image: none !important;
+
+  /* ✅ Isang clean border */
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 999px !important;
+
+  padding: 0.5rem 0.85rem !important;
+  height: 2.5rem !important;
+  box-sizing: border-box !important;
+
+  /* ✅ Walang glow, walang shadow */
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+
+  /* ✅ Walang blur */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+
+  transition: border-color 0.2s ease, background-color 0.2s ease !important;
+}
+
+html body #root .nav-search:hover {
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.35) !important;
+  box-shadow: none !important;
+}
+
+html body #root .nav-search:focus-within {
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  border-color: var(--theme-primary) !important;
+
+  /* ✅ Minimal focus ring lang */
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.12) !important;
+}
+
+/* ==========================================================================
+   2️⃣ INPUT — transparent lang, walang effect
+   ========================================================================== */
+
+html body #root .nav-search__input,
+html body .site-nav .nav-search__input,
+html body input.nav-search__input,
+html body .nav-search__input:hover,
+html body .nav-search__input:focus,
+html body .nav-search__input:focus-visible,
+html body .nav-search__input:active {
+  /* ✅ Reset */
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  border: none !important;
+  border-radius: 0 !important;
+
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+
+  /* ✅ Layout */
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: 100% !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+  height: auto !important;
+
+  font-family: inherit !important;
+  font-size: 0.82rem !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}
+
+/* ✅ Placeholder */
+html body #root .nav-search__input::placeholder {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 0.7 !important;
+}
+
+/* ==========================================================================
+   3️⃣ ICON — plain muted
+   ========================================================================== */
+
+html body #root .nav-search > svg,
+html body .site-nav .nav-search > svg,
+html body .nav-search__icon {
+  width: 1rem !important;
+  height: 1rem !important;
+  flex-shrink: 0 !important;
+
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  stroke: currentColor !important;
+  fill: none !important;
+}
+
+html body #root .nav-search:focus-within > svg {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ==========================================================================
+   4️⃣ Ctrl+M BADGE — plain
+   ========================================================================== */
+
+html body #root .nav-search__kbd,
+html body .site-nav .nav-search__kbd {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  background: rgba(var(--theme-primary-rgb), 0.08) !important;
+  background-color: rgba(var(--theme-primary-rgb), 0.08) !important;
+
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.15) !important;
+  border-radius: 6px !important;
+
+  padding: 2px 6px !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  font-family: inherit !important;
+  line-height: 1 !important;
+
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* ==========================================================================
+   5️⃣ CATCH-ALL — tanggalin lahat ng glass/glow/blur
+   ✅ Para siguradong plain, walang natira
+   ========================================================================== */
+
+html body #root .nav-search *,
+html body .site-nav .nav-search * {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body #root .nav-search::before,
+html body #root .nav-search::after {
+  display: none !important;
+  content: none !important;
+}
+/* ==========================================================================
+   ✨ HOME PAGE — GLASSMORPHISM REFACTOR (SAFE VERSION)
+   ✅ WALANG override sa #root o body — campus.png intact
+   ✅ Glass panels + 3-col grid + centered categories
+   ========================================================================== */
+
+/* ==========================================================================
+   0️⃣ SAFETY — siguraduhing transparent pa rin yung #root
+   ✅ Ito lang ang #root rule — hindi nakikialam sa body::before
+   ========================================================================== */
+
+html body #root {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* ✅ Siguraduhing visible pa rin yung campus.png at vignette */
+html body::before,
+body::before {
+  /* Huwag galawin — hayaan lang existing values */
+  pointer-events: none !important;
+}
+
+html body::after,
+body::after {
+  pointer-events: none !important;
+}
+
+/* ✅ Siguraduhing nasa ibabaw yung content ng #root */
+html body #root > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* ==========================================================================
+   1️⃣ HOME SECTIONS — GLASSMORPHISM PANELS
+   ✅ backdrop-blur + semi-transparent bg + white border + soft shadow
+   ✅ Nakikita pa rin yung campus.png sa likod (blurred by backdrop-filter)
+   ========================================================================== */
+
+html body #root .home-section {
+  position: relative !important;
+  border-radius: 1.5rem !important;
+  padding: 2rem 2rem 2.25rem !important;
+  margin-bottom: 1.5rem !important;
+
+  /* ✅ GLASS — semi-transparent + blur */
+  background: rgba(255, 255, 255, 0.45) !important;
+  background-color: rgba(255, 255, 255, 0.45) !important;
+
+  backdrop-filter: blur(16px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+
+  /* ✅ Glass border — white tinted */
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+
+  /* ✅ Soft shadow */
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 8px 24px -12px rgba(0, 0, 0, 0.08),
+    0 2px 6px -2px rgba(0, 0, 0, 0.04) !important;
+  -webkit-box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 8px 24px -12px rgba(0, 0, 0, 0.08),
+    0 2px 6px -2px rgba(0, 0, 0, 0.04) !important;
+
+  overflow: hidden !important;
+  isolation: isolate !important;
+}
+
+/* ✅ Dark mode glass */
+[data-theme-mode='dark'] html body #root .home-section {
+  background: rgba(var(--theme-surface-rgb, 27, 39, 66), 0.55) !important;
+  background-color: rgba(var(--theme-surface-rgb, 27, 39, 66), 0.55) !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 8px 24px -12px rgba(0, 0, 0, 0.4),
+    0 2px 6px -2px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* ✅ Soft color blob sa loob ng bawat glass panel */
+html body #root .home-section::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -30% !important;
+  left: -15% !important;
+
+  width: 50% !important;
+  height: 70% !important;
+
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--theme-primary-rgb), 0.15) 0%,
+    rgba(var(--theme-primary-rgb), 0.05) 40%,
+    transparent 70%
+  ) !important;
+
+  border-radius: 50% !important;
+  filter: blur(70px) !important;
+  -webkit-filter: blur(70px) !important;
+
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+html body #root .home-section::after {
+  content: '' !important;
+  position: absolute !important;
+  bottom: -30% !important;
+  right: -15% !important;
+
+  width: 50% !important;
+  height: 70% !important;
+
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--theme-accent-rgb), 0.12) 0%,
+    rgba(var(--theme-accent-rgb), 0.04) 40%,
+    transparent 70%
+  ) !important;
+
+  border-radius: 50% !important;
+  filter: blur(80px) !important;
+  -webkit-filter: blur(80px) !important;
+
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+/* ✅ Content sa ibabaw ng glow blobs */
+html body #root .home-section > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* ==========================================================================
+   2️⃣ "SHOP BY NEED" — 3 cards centered, max 280px
+   ========================================================================== */
+
+html body #root .home-cards--categories {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: stretch !important;
+  gap: 1.5rem !important;
+
+  width: 100% !important;
+  margin: 0 auto !important;
+}
+
+/* ✅ Category card — max 280px */
+html body #root .home-card--category,
+html body #root .home-cards--categories .home-card {
+  flex: 0 1 280px !important;
+  width: 100% !important;
+  max-width: 280px !important;
+  min-width: 240px !important;
+}
+
+/* ==========================================================================
+   3️⃣ "NEWEST ARRIVALS" — STRICT 3-COLUMN GRID (3x2)
+   ========================================================================== */
+
+html body #root .home-cards--products {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;   /* ✅ Strict 3 columns */
+  gap: 1.5rem !important;
+
+  width: 100% !important;
+  align-items: stretch !important;
+}
+
+/* ✅ Each product card — punuin yung grid cell */
+html body #root .home-cards--products .home-card {
+  width: 100% !important;
+  max-width: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* ==========================================================================
+   4️⃣ CARD STYLING — Glass + better padding + text wrapping
+   ========================================================================== */
+
+html body #root .home-card {
+  position: relative !important;
+  border-radius: 1.15rem !important;
+  overflow: hidden !important;
+
+  /* ✅ Glass card */
+  background: rgba(255, 255, 255, 0.75) !important;
+  background-color: rgba(255, 255, 255, 0.75) !important;
+
+  backdrop-filter: blur(12px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(140%) !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 4px 12px -6px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.04) !important;
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
+}
+
+html body #root .home-card:hover {
+  transform: translateY(-4px) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.3) !important;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 16px 32px -12px rgba(var(--theme-primary-rgb), 0.25),
+    0 4px 8px -4px rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme-mode='dark'] html body #root .home-card {
+  background: rgba(var(--theme-surface-2-rgb, 34, 47, 77), 0.75) !important;
+  background-color: rgba(var(--theme-surface-2-rgb, 34, 47, 77), 0.75) !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 4px 12px -6px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ✅ CARD BODY — better inline padding */
+html body #root .home-card__body {
+  padding: 1.1rem 1.25rem 1.25rem !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.35rem !important;
+  flex: 1 1 auto !important;
+}
+
+/* ✅ PRODUCT NAME — wrap, hindi truncate */
+html body #root .home-card__name {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+
+  /* ✅ Allow wrap */
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+
+  /* ✅ Max 2 lines */
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  line-clamp: 2 !important;
+
+  margin: 0 0 0.35rem 0 !important;
+  padding: 0 !important;
+}
+
+/* ✅ CATEGORY — better contrast, wrap */
+html body #root .home-card__category {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  opacity: 0.85 !important;
+
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  line-height: 1.5 !important;
+
+  /* ✅ Allow wrap */
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+
+  /* ✅ Max 2 lines */
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  line-clamp: 2 !important;
+
+  margin: 0 0 0.5rem 0 !important;
+  padding: 0 0.15rem !important;
+}
+
+/* ✅ PRICE */
+html body #root .home-card__price {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+
+  font-family: var(--font-mono, monospace) !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+
+  margin: 0.35rem 0 0.75rem 0 !important;
+  padding: 0 0.15rem !important;
+}
+
+/* ✅ CTA BUTTON — full width, may padding */
+html body #root .home-card__cta {
+  margin-top: auto !important;
+  width: 100% !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.4rem !important;
+
+  padding: 0.6rem 1rem !important;
+  border-radius: 0.7rem !important;
+
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  ) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+
+  border: none !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+}
+
+/* ==========================================================================
+   5️⃣ SECTION HEADERS — better spacing
+   ========================================================================== */
+
+html body #root .home-section__header {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 1rem !important;
+  margin-bottom: 1.5rem !important;
+  flex-wrap: wrap !important;
+}
+
+html body #root .home-section__kicker {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 0.35rem 0 !important;
+}
+
+html body #root .home-section__title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  font-family: var(--font-display, 'Fraunces', serif) !important;
+  font-size: clamp(1.35rem, 2vw, 1.65rem) !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.01em !important;
+  margin: 0 0 0.5rem 0 !important;
+}
+
+html body #root .home-section__description {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  opacity: 0.85 !important;
+  font-size: 0.9rem !important;
+  line-height: 1.55 !important;
+  font-weight: 500 !important;
+  margin: 0 !important;
+  max-width: 42rem !important;
+}
+
+html body #root .home-section__link {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+
+  padding: 0.5rem 0.85rem !important;
+  border-radius: 999px !important;
+
+  background: rgba(var(--theme-primary-rgb), 0.08) !important;
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.2) !important;
+
+  text-decoration: none !important;
+  transition: background 0.2s ease !important;
+  flex-shrink: 0 !important;
+}
+
+html body #root .home-section__link:hover {
+  background: rgba(var(--theme-primary-rgb), 0.15) !important;
+}
+
+/* ==========================================================================
+   6️⃣ RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  /* ✅ Products — 2 columns sa tablet */
+  html body #root .home-cards--products {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  /* ✅ Products — 1 column sa mobile */
+  html body #root .home-cards--products {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ✅ Categories — stack sa mobile */
+  html body #root .home-cards--categories {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  html body #root .home-card--category {
+    flex: 0 1 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  html body #root .home-section {
+    padding: 1.5rem 1.25rem 1.75rem !important;
+    border-radius: 1.25rem !important;
+  }
+}
+
+/* ==========================================================================
+   7️⃣ REDUCED MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html body #root .home-card {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+/* ==========================================================================
+   🎯 HOME SECTIONS — TANGGALIN ANG GLASS PANEL BACKGROUND
+   ✅ Cards lang ang matitira — floating sa campus background
+   ✅ Walang "container" wrapper
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ HOME SECTIONS — transparent na
+   ========================================================================== */
+
+html body #root .home-section,
+html body #root .home-section--products,
+html body #root .home-section--categories {
+  /* ✅ Transparent background */
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+
+  /* ✅ Walang border */
+  border: none !important;
+  border-radius: 0 !important;
+
+  /* ✅ Walang shadow */
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+
+  /* ✅ Walang backdrop blur */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+
+  /* ✅ Walang extra padding — hayaan yung cards na may sariling space */
+  padding: 0 !important;
+
+  /* ✅ Keep margin para hindi dikit sa ibang section */
+  margin-bottom: 2.5rem !important;
+
+  /* ✅ Reset overflow */
+  overflow: visible !important;
+  isolation: auto !important;
+}
+
+/* ✅ Tanggalin yung glow blobs sa loob ng sections */
+html body #root .home-section::before,
+html body #root .home-section::after,
+html body #root .home-section--products::before,
+html body #root .home-section--products::after,
+html body #root .home-section--categories::before,
+html body #root .home-section--categories::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* ==========================================================================
+   2️⃣ SIGURADUHING NASA LOOB NG PAGE-SHELL PA RIN YUNG LAYOUT
+   ✅ Para aligned pa rin yung content sa container width
+   ========================================================================== */
+
+html body #root .home-section {
+  /* ✅ Keep alignment sa page-shell container */
+  width: min(100% - 2.5rem, 68rem) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: 68rem !important;
+}
+
+/* ✅ Kung yung page-shell mo ay may sariling width, i-align */
+html body #root .page-shell.home-section {
+  width: min(100% - 2.5rem, 68rem) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* ==========================================================================
+   3️⃣ SECTION HEADER — keep lang, walang background din
+   ========================================================================== */
+
+html body #root .home-section__header {
+  background: transparent !important;
+  background-color: transparent !important;
+  padding: 0 !important;
+  margin-bottom: 1.5rem !important;
+}
+
+/* ==========================================================================
+   4️⃣ CARDS — retain yung glass look nila
+   ✅ Sila na lang yung glass elements
+   ========================================================================== */
+
+html body #root .home-card {
+  /* ✅ Keep existing glass — hindi nabago */
+  position: relative !important;
+
+  /* ✅ Siguraduhing may contrast sa background */
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 8px 24px -8px rgba(0, 0, 0, 0.12),
+    0 2px 6px -2px rgba(0, 0, 0, 0.06) !important;
+  -webkit-box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 8px 24px -8px rgba(0, 0, 0, 0.12),
+    0 2px 6px -2px rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme-mode='dark'] html body #root .home-card {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 8px 24px -8px rgba(0, 0, 0, 0.5),
+    0 2px 6px -2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ✅ Hover — mas halata yung lift kasi floating na sila */
+html body #root .home-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 20px 40px -12px rgba(var(--theme-primary-rgb), 0.3),
+    0 6px 12px -4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ==========================================================================
+   5️⃣ RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  html body #root .home-section {
+    width: min(100% - 1.5rem, 100%) !important;
+    margin-bottom: 2rem !important;
+  }
+}
+/* ==========================================================================
+   🔧 FIX: PRODUCT NAME OVERLAP — Allow 3 lines + clear spacing
+   ✅ "Junior Philippine Institution of Accountancy Shirt" — full visibility
+   ✅ Walang overlap sa category text
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ PRODUCT NAME — Allow hanggang 3 lines
+   ✅ Para hindi maputol yung mahabang pangalan
+   ========================================================================== */
+
+html body #root .home-card__name,
+html body #root .home-card__body .home-card__name {
+  /* ✅ 3 lines instead of 2 */
+  display: -webkit-box !important;
+  -webkit-line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+  line-clamp: 3 !important;
+
+  /* ✅ Allow wrap */
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+
+  /* ✅ Better line-height para walang overlap */
+  line-height: 1.35 !important;
+
+  /* ✅ May margin sa ibaba — hiwalay sa category */
+  margin: 0 0 0.5rem 0 !important;
+  padding: 0 !important;
+
+  /* ✅ Minimum height para consistent lahat ng cards */
+  min-height: calc(1.35em * 2) !important;
+}
+
+/* ==========================================================================
+   2️⃣ CATEGORY — Siguraduhing walang overlap
+   ✅ May sariling space
+   ========================================================================== */
+
+html body #root .home-card__category,
+html body #root .home-card__body .home-card__category {
+  /* ✅ May margin sa taas — hiwalay sa name */
+  margin: 0.25rem 0 0.6rem 0 !important;
+  padding: 0 !important;
+
+  /* ✅ Position normal */
+  position: static !important;
+  display: block !important;
+
+  /* ✅ Walang overlap */
+  z-index: auto !important;
+
+  /* ✅ Line-height */
+  line-height: 1.45 !important;
+
+  /* ✅ Allow wrap, 2 lines max */
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+
+  /* ✅ Remove line-clamp para sa category — hayaan lang mag-wrap */
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+  line-clamp: unset !important;
+}
+
+/* ==========================================================================
+   3️⃣ CARD BODY — Siguraduhing flex column na may proper gap
+   ========================================================================== */
+
+html body #root .home-card__body {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.4rem !important;
+
+  /* ✅ Consistent padding */
+  padding: 1.15rem 1.35rem 1.35rem !important;
+
+  /* ✅ Min-height para lahat ng cards pantay */
+  min-height: 12rem !important;
+}
+
+/* ==========================================================================
+   4️⃣ PRICE — Siguraduhing nasa tamang posisyon
+   ========================================================================== */
+
+html body #root .home-card__price,
+html body #root .home-card__body .home-card__price {
+  position: static !important;
+  display: block !important;
+  margin: 0.5rem 0 0.85rem 0 !important;
+  padding: 0 !important;
+
+  /* ✅ Walang overlap */
+  z-index: auto !important;
+}
+
+/* ==========================================================================
+   5️⃣ CTA BUTTON — Nasa ilalim palagi
+   ========================================================================== */
+
+html body #root .home-card__cta,
+html body #root .home-card__body .home-card__cta {
+  margin-top: auto !important;
+  position: static !important;
+}
+
+/* ==========================================================================
+   6️⃣ RESPONSIVE — mobile adjustments
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  html body #root .home-card__name {
+    -webkit-line-clamp: 3 !important;
+    line-clamp: 3 !important;
+    font-size: 0.9rem !important;
+    line-height: 1.3 !important;
+  }
+
+  html body #root .home-card__category {
+    font-size: 0.68rem !important;
+    margin: 0.2rem 0 0.5rem 0 !important;
+  }
+
+  html body #root .home-card__body {
+    min-height: 11rem !important;
+    padding: 1rem 1.1rem 1.15rem !important;
+  }
+}
+/* ==========================================================================
+   🔧 FIX: SHOP BY NEED — Proper spacing sa 3 cards
+   ✅ Hindi na dikit-dikit
+   ✅ Naka-center pa rin
+   ✅ Balanced gap
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ CATEGORY ROW — Grid na may proper gap
+   ✅ Mas reliable kaysa flex para sa 3-column layout
+   ========================================================================== */
+
+html body #root .home-cards--categories,
+html body #root .home-section--categories .home-cards {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+
+  /* ✅ PROPER GAP — ito yung kulang kanina */
+  column-gap: 1.5rem !important;
+  row-gap: 1.5rem !important;
+  gap: 1.5rem !important;
+
+  /* ✅ Max width — para hindi OA lapad yung row */
+  width: 100% !important;
+  max-width: 960px !important;
+  margin: 0 auto !important;
+
+  /* ✅ Alignment */
+  justify-items: stretch !important;
+  align-items: stretch !important;
+
+  /* ✅ Reset sa dating flex */
+  flex-direction: unset !important;
+  justify-content: unset !important;
+  flex-wrap: unset !important;
+}
+
+/* ==========================================================================
+   2️⃣ EACH CATEGORY CARD — consistent width, may space sa pagitan
+   ========================================================================== */
+
+html body #root .home-card--category,
+html body #root .home-cards--categories .home-card {
+  /* ✅ Reset sa dating max-width na sumisira sa gap */
+  flex: unset !important;
+  flex-basis: unset !important;
+
+  /* ✅ Full width ng grid cell — gap na yung magbibigay ng space */
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+
+  /* ✅ Consistent */
+  box-sizing: border-box !important;
+  margin: 0 !important;
+
+  /* ✅ Display flex column */
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* ==========================================================================
+   3️⃣ MOBILE / TABLET — responsive
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  html body #root .home-cards--categories {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    max-width: 720px !important;
+    gap: 1.25rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  /* ✅ Stack sa mobile */
+  html body #root .home-cards--categories {
+    grid-template-columns: 1fr !important;
+    max-width: 100% !important;
+    gap: 1rem !important;
+  }
+
+  html body #root .home-card--category {
+    max-width: 100% !important;
+  }
+}
+/* ==========================================================================
+   🔧 FIX: "BEST FINDS" CARDS — proper width + text handling
+   ✅ Hindi na "UNIFORM S" (hiwalay na letter)
+   ✅ Hindi na "Uniform C" (hiwalay na letter)
+   ✅ Hindi na truncate yung "BSN Specialized..."
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ BEST FINDS GRID — 3 columns na may proper gap
+   ========================================================================== */
+
+html body #root .home-cards--best,
+html body #root .home-highlights__panel .home-cards {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+
+  gap: 1rem !important;
+
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+
+  /* ✅ Reset dating flex */
+  flex-direction: unset !important;
+  justify-content: unset !important;
+}
+
+/* ==========================================================================
+   2️⃣ BEST FINDS CARDS — proper width at flex layout
+   ✅ Hindi OA makitid
+   ========================================================================== */
+
+html body #root .home-cards--best .home-card,
+html body #root .home-highlights__panel .home-card {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+
+  /* ✅ Reset margin */
+  margin: 0 !important;
+
+  /* ✅ Minimum height para consistent */
+  min-height: auto !important;
+}
+
+/* ==========================================================================
+   3️⃣ CARD MEDIA — iwasan mag-shrink
+   ========================================================================== */
+
+html body #root .home-cards--best .home-card__media {
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  flex-shrink: 0 !important;
+  overflow: hidden !important;
+}
+
+html body #root .home-cards--best .home-card__media img,
+html body #root .home-cards--best .home-card__image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+/* ==========================================================================
+   4️⃣ CARD BODY — proper padding at text handling
+   ✅ Hindi na "UNIFORM S"
+   ========================================================================== */
+
+html body #root .home-cards--best .home-card__body {
+  padding: 0.85rem 0.95rem 1rem !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.35rem !important;
+  flex: 1 1 auto !important;
+
+  /* ✅ Min-height para pantay-pantay yung cards */
+  min-height: 9rem !important;
+
+  /* ✅ Overflow visible */
+  overflow: visible !important;
+}
+
+/* ==========================================================================
+   5️⃣ CATEGORY — "UNIFORMS" dapat isang salita
+   ✅ Hindi "UNIFORM" + "S" sa ibaba
+   ========================================================================== */
+
+html body #root .home-cards--best .home-card__category {
+  /* ✅ Iwasan mag-break ng salita */
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  hyphens: none !important;
+
+  /* ✅ Allow wrap sa space — pero hindi sa loob ng word */
+  white-space: normal !important;
+
+  /* ✅ Font size mas maliit ng kaunti */
+  font-size: 0.68rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  line-height: 1.45 !important;
+
+  /* ✅ Max lines */
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  line-clamp: 2 !important;
+  overflow: hidden !important;
+
+  margin: 0 0 0.5rem 0 !important;
+  padding: 0 !important;
+
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  opacity: 0.85 !important;
+}
+
+/* ==========================================================================
+   6️⃣ PRODUCT NAME — "Uniform C" dapat isang linya
+   ✅ Hindi "Uniform" + "C" sa ibaba
+   ========================================================================== */
+
+html body #root .home-cards--best .home-card__name {
+  /* ✅ Iwasan mag-break sa loob ng salita */
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  hyphens: none !important;
+
+  /* ✅ Allow wrap sa space */
+  white-space: normal !important;
+
+  /* ✅ 2 lines max */
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  line-clamp: 2 !important;
+  overflow: hidden !important;
+
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  margin: 0 0 0.35rem 0 !important;
+  padding: 0 !important;
+
+  /* ✅ Min height para pantay */
+  min-height: calc(1.3em * 2) !important;
+}
+
+/* ==========================================================================
+   7️⃣ PRICE — "From ₱1.00" dapat magkasama
+   ✅ Hindi "From" + "₱1.00" sa dalawang linya
+   ========================================================================== */
+
+html body #root .home-cards--best .home-card__price {
+  font-family: var(--font-mono, monospace) !important;
+  font-size: 0.92rem !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+
+  margin: auto 0 0 0 !important;
+  padding: 0 !important;
+
+  /* ✅ Allow wrap sa space lang */
+  white-space: normal !important;
+  word-break: keep-all !important;
+
+  /* ✅ Iwasan mag-break between "From" at "₱" */
+  overflow-wrap: normal !important;
+}
+
+/* ==========================================================================
+   8️⃣ RESPONSIVE — mobile
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  html body #root .home-cards--best {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.75rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  html body #root .home-cards--best {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.75rem !important;
+  }
+
+  html body #root .home-cards--best .home-card__name {
+    font-size: 0.82rem !important;
+  }
+
+  html body #root .home-cards--best .home-card__category {
+    font-size: 0.62rem !important;
+  }
+
+  html body #root .home-cards--best .home-card__price {
+    font-size: 0.85rem !important;
+  }
+}
+/* ==========================================================================
+   🎨 HOME CARDS — MATCH SA CATALOG CARD DESIGN
+   ✅ Gagamitin yung parehong design tokens ng catalog
+   ✅ Auto-adapt sa 10 themes
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ BASE CARD — match sa catalog
+   ✅ Dark surface sa dark themes, light surface sa light themes
+   ✅ Parehong structure sa catalog-card
+   ========================================================================== */
+
+html body #root .home-card,
+html body #root article.home-card,
+html body #root a.home-card {
+  /* ✅ Solid theme surface (same as catalog card) */
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  background-image: none !important;
+
+  /* ✅ Walang glass effect */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+
+  /* ✅ Subtle border */
+  border: 1px solid var(--theme-border) !important;
+
+  /* ✅ Soft shadow */
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 4px 12px -4px rgba(0, 0, 0, 0.08) !important;
+
+  /* ✅ Text color default */
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  border-radius: 0.85rem !important;
+  overflow: hidden !important;
+}
+
+/* ✅ Hover — subtle lift */
+html body #root .home-card:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.4) !important;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.08),
+    0 12px 24px -8px rgba(var(--theme-primary-rgb), 0.2),
+    0 4px 8px -4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ==========================================================================
+   2️⃣ CARD DETAILS/BODY — same surface as card
+   ========================================================================== */
+
+html body #root .home-card__body {
+  /* ✅ Solid surface — hindi glass */
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  background-image: none !important;
+
+  /* ✅ Subtle top border */
+  border-top: 1px solid var(--theme-border) !important;
+
+  /* ✅ Walang blur */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+
+  /* ✅ Premium padding */
+  padding: 1.1rem 1.25rem 1.25rem !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.4rem !important;
+  flex: 1 1 auto !important;
+  min-height: 10rem !important;
+}
+
+/* ==========================================================================
+   3️⃣ PRODUCT NAME — same as catalog
+   ✅ Light text sa dark, dark text sa light
+   ========================================================================== */
+
+html body #root .home-card__name {
+  /* ✅ Auto-contrast — theme-text */
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  /* ✅ Walang text shadow */
+  text-shadow: none !important;
+
+  /* ✅ Font weight */
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+
+  /* ✅ Wrap — 3 lines max */
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+
+  display: -webkit-box !important;
+  -webkit-line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+  line-clamp: 3 !important;
+
+  margin: 0 0 0.4rem 0 !important;
+  padding: 0 !important;
+}
+
+/* ==========================================================================
+   4️⃣ CATEGORY — muted text (same as catalog)
+   ✅ "Uniforms", "BSA", "BSBA" — muted para hindi attention-stealing
+   ========================================================================== */
+
+html body #root .home-card__category {
+  /* ✅ Muted theme text */
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 1 !important;
+
+  text-shadow: none !important;
+
+  font-size: 0.72rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  line-height: 1.4 !important;
+
+  /* ✅ Walang uppercase (match sa catalog) */
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-break: keep-all !important;
+
+  margin: 0 0 0.6rem 0 !important;
+  padding: 0 !important;
+}
+
+/* ==========================================================================
+   5️⃣ PRICE — bright accent (same as catalog)
+   ✅ "₱1.00" — kita sa dark card
+   ========================================================================== */
+
+html body #root .home-card__price {
+  /* ✅ Theme accent color */
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+
+  text-shadow: none !important;
+
+  font-family: var(--font-mono, monospace) !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+
+  margin: auto 0 0.75rem 0 !important;
+  padding: 0 !important;
+}
+
+/* ==========================================================================
+   6️⃣ CTA BUTTON — same as catalog "Select Options"
+   ✅ Light blue button with dark text
+   ========================================================================== */
+
+html body #root .home-card__cta {
+  /* ✅ Light accent bg */
+  background: var(--theme-primary) !important;
+  background-color: var(--theme-primary) !important;
+  background-image: none !important;
+
+  /* ✅ Dark text sa button */
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+
+  border: none !important;
+  border-radius: 0.6rem !important;
+
+  /* ✅ Padding */
+  padding: 0.7rem 1rem !important;
+  width: 100% !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.4rem !important;
+
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+
+  /* ✅ Subtle shadow */
+  box-shadow: 0 2px 6px -2px rgba(var(--theme-primary-rgb), 0.3) !important;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+
+  margin-top: auto !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+html body #root .home-card__cta:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 10px -2px rgba(var(--theme-primary-rgb), 0.4) !important;
+}
+
+/* ==========================================================================
+   7️⃣ SIGURADUHING TANGGAL LAHAT NG GLASS/BLUR
+   ✅ Hindi dapat tumagos yung campus background
+   ========================================================================== */
+
+html body #root .home-card *,
+html body #root .home-card__body *,
+html body #root .home-card__media * {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* ==========================================================================
+   8️⃣ CARD MEDIA — no changes, same as catalog
+   ========================================================================== */
+
+html body #root .home-card__media {
+  background: var(--theme-surface-2, var(--theme-surface)) !important;
+  background-color: var(--theme-surface-2, var(--theme-surface)) !important;
+  border-bottom: 1px solid var(--theme-border) !important;
+}
+
+html body #root .home-card__image,
+html body #root .home-card__media img {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  object-fit: cover !important;
+}
+
+/* ==========================================================================
+   9️⃣ PER-THEME REFINEMENTS
+   ✅ Small adjustments para mag-match sa specific theme
+   ========================================================================== */
+
+/* ✅ Dark themes — siguraduhing dark talaga */
+[data-theme='midnight-navy'] html body #root .home-card {
+  background: #1F2937 !important;
+  background-color: #1F2937 !important;
+  border-color: rgba(123, 167, 225, 0.15) !important;
+}
+
+[data-theme='midnight-navy'] html body #root .home-card__body {
+  background: #1F2937 !important;
+  background-color: #1F2937 !important;
+}
+
+[data-theme='matte-black'] html body #root .home-card {
+  background: #1F1F1F !important;
+  background-color: #1F1F1F !important;
+  border-color: rgba(212, 165, 116, 0.15) !important;
+}
+
+[data-theme='matte-black'] html body #root .home-card__body {
+  background: #1F1F1F !important;
+  background-color: #1F1F1F !important;
+}
+
+[data-theme='charcoal-gray'] html body #root .home-card {
+  background: #2A2A2A !important;
+  background-color: #2A2A2A !important;
+  border-color: rgba(168, 184, 200, 0.15) !important;
+}
+
+[data-theme='charcoal-gray'] html body #root .home-card__body {
+  background: #2A2A2A !important;
+  background-color: #2A2A2A !important;
+}
+
+[data-theme='deep-forest'] html body #root .home-card {
+  background: #1A2E28 !important;
+  background-color: #1A2E28 !important;
+  border-color: rgba(127, 200, 162, 0.15) !important;
+}
+
+[data-theme='deep-forest'] html body #root .home-card__body {
+  background: #1A2E28 !important;
+  background-color: #1A2E28 !important;
+}
+
+[data-theme='dark-plum'] html body #root .home-card {
+  background: #2A1F30 !important;
+  background-color: #2A1F30 !important;
+  border-color: rgba(200, 160, 212, 0.15) !important;
+}
+
+[data-theme='dark-plum'] html body #root .home-card__body {
+  background: #2A1F30 !important;
+  background-color: #2A1F30 !important;
+}
+
+/* ✅ Light themes — siguraduhing light talaga */
+[data-theme='cream-yellow'] html body #root .home-card {
+  background: #FBF6E9 !important;
+  background-color: #FBF6E9 !important;
+  border-color: #E5D9B8 !important;
+}
+
+[data-theme='cream-yellow'] html body #root .home-card__body {
+  background: #FBF6E9 !important;
+  background-color: #FBF6E9 !important;
+}
+
+[data-theme='warm-beige'] html body #root .home-card {
+  background: #F5EFE0 !important;
+  background-color: #F5EFE0 !important;
+  border-color: #D6C6A3 !important;
+}
+
+[data-theme='warm-beige'] html body #root .home-card__body {
+  background: #F5EFE0 !important;
+  background-color: #F5EFE0 !important;
+}
+
+[data-theme='pure-white'] html body #root .home-card {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  border-color: #DDDDDD !important;
+}
+
+[data-theme='pure-white'] html body #root .home-card__body {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+}
+
+[data-theme='soft-gray'] html body #root .home-card {
+  background: #F3F4F6 !important;
+  background-color: #F3F4F6 !important;
+  border-color: #C5C9D0 !important;
+}
+
+[data-theme='soft-gray'] html body #root .home-card__body {
+  background: #F3F4F6 !important;
+  background-color: #F3F4F6 !important;
+}
+
+[data-theme='pale-blush'] html body #root .home-card {
+  background: #FBF0F3 !important;
+  background-color: #FBF0F3 !important;
+  border-color: #E5C8D0 !important;
+}
+
+[data-theme='pale-blush'] html body #root .home-card__body {
+  background: #FBF0F3 !important;
+  background-color: #FBF0F3 !important;
+}
+
+/* ==========================================================================
+   🔟 RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  html body #root .home-card__body {
+    padding: 1rem 1.1rem 1.15rem !important;
+    min-height: 9rem !important;
+  }
+
+  html body #root .home-card__name {
+    font-size: 0.9rem !important;
+  }
+
+  html body #root .home-card__category {
+    font-size: 0.68rem !important;
+  }
+
+  html body #root .home-card__price {
+    font-size: 0.92rem !important;
+  }
+
+  html body #root .home-card__cta {
+    padding: 0.6rem 0.9rem !important;
+    font-size: 0.78rem !important;
+  }
+}

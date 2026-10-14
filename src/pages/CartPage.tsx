@@ -4,7 +4,6 @@ import { useMemo, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
-  MapPin,
   Minus,
   Package,
   Plus,
@@ -428,26 +427,7 @@ export default function CartPage() {
               </button>
             </div>
 
-            <div className="cart-summary__pickup">
-              <span className="cart-summary__pickup-icon">
-                <MapPin className="react-icon" aria-hidden="true" />
-              </span>
-              <span className="cart-summary__pickup-copy">
-                <span className="cart-summary__pickup-label">
-                  Pickup Location
-                </span>
-                <span className="cart-summary__pickup-title">
-                  SJCM Campus
-                </span>
-                <span className="cart-summary__pickup-note">
-                  Please bring a valid school ID for pickup.
-                </span>
-              </span>
-              <ArrowRight
-                className="react-icon cart-summary__pickup-chev"
-                aria-hidden="true"
-              />
-            </div>
+            {/* ✅ REMOVED: cart-summary__pickup block */}
           </aside>
         </div>
       </div>

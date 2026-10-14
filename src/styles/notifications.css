@@ -1,129 +1,431 @@
-.notification-bell { position: relative; display: inline-flex; align-items: center; }
+/* ==========================================================================
+   NOTIFICATIONS — Bell + Dropdown + Page
+   ✅ 100% THEME-AWARE — walang hardcoded colors
+   ✅ CLAYMORPHISM × NEUMORPHISM
+   ✅ Gumagana sa lahat ng 10 themes
+   ========================================================================== */
 
-.notification-bell__button {
+/* ==========================================================================
+   1️⃣ NOTIFICATION BELL — Base
+   ========================================================================== */
+
+.notification-bell {
   position: relative;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 2.35rem;
-  height: 2.35rem;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface-raised);
-  color: var(--color-text-muted);
-  transition: all 180ms var(--ease-standard);
 }
 
-.notification-bell__button:hover {
-  border-color: var(--color-brand);
-  background: var(--color-brand-soft);
-  color: var(--color-brand);
+/* ✅ Bell button — CLAYMORPHISM */
+.site-nav .notification-bell__button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: 1rem;
+  background: var(--theme-surface);
+  color: var(--theme-text-muted);
+  cursor: pointer;
+  overflow: visible;
+
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4);
+
+  transition: box-shadow 0.25s ease, color 0.25s ease;
 }
+
+[data-theme-mode='dark'] .site-nav .notification-bell__button {
+  background: var(--theme-surface-2);
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.45),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06);
+}
+
+/* ✅ Clay gloss — top half shine */
+.site-nav .notification-bell__button::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 100%);
+  border-radius: 1rem 1rem 0 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+[data-theme-mode='dark'] .site-nav .notification-bell__button::before {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 100%);
+}
+
+.site-nav .notification-bell__button > * {
+  position: relative;
+  z-index: 2;
+}
+
+.site-nav .notification-bell__button .react-icon,
+.site-nav .notification-bell__button svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: inherit;
+  -webkit-text-fill-color: inherit;
+  stroke: currentColor;
+  transform: none;
+}
+
+/* ✅ Hover — theme-aware, walang hardcoded */
+.site-nav .notification-bell__button:hover {
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 3px 6px rgba(255, 255, 255, 0.5);
+}
+
+[data-theme-mode='dark'] .site-nav .notification-bell__button:hover {
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.35),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.08);
+}
+
+/* ==========================================================================
+   2️⃣ NOTIFICATION BADGE — Clay mini
+   ========================================================================== */
 
 .notification-bell__badge {
   position: absolute;
   top: -4px;
   right: -4px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1.1rem;
-  height: 1.1rem;
-  padding: 0 0.2rem;
-  background: var(--color-danger);
-  color: white;
-  font-size: 0.55rem;
-  font-weight: 700;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.35rem;
   border-radius: 999px;
+
+  background: var(--theme-danger);
+  color: var(--theme-on-danger);
+  -webkit-text-fill-color: var(--theme-on-danger);
+
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.6rem;
+  font-weight: 800;
+  line-height: 1;
+
+  border: 2px solid var(--theme-surface);
+
+  box-shadow:
+    0 2px 6px rgba(var(--theme-danger-rgb), 0.4),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.25);
+
+  z-index: 5;
+  pointer-events: none;
 }
+
+[data-theme-mode='dark'] .notification-bell__badge {
+  border-color: var(--theme-surface-2);
+}
+
+/* ==========================================================================
+   3️⃣ NOTIFICATION DROPDOWN — CLAYMORPHISM PANEL
+   ✅ Walang hardcoded #ffffff o #1B2742
+   ========================================================================== */
 
 .notification-bell__dropdown {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 12px);
   right: 0;
-  width: 380px;
-  max-width: 90vw;
-  max-height: 480px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-line-strong);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-hover);
-  overflow: hidden;
-  z-index: 1000;
+  min-width: 380px;
+  max-width: 420px;
+  max-height: 560px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+
+  /* ✅ Theme-aware surface */
+  background: var(--theme-surface);
+  background-color: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 1.5rem;
+
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.08),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4);
+
+  animation: notificationSlideIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 100;
 }
 
-.notification-bell__header {
+[data-theme-mode='dark'] .notification-bell__dropdown {
+  background: var(--theme-surface-2);
+  background-color: var(--theme-surface-2);
+  border-color: var(--theme-border);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    0 8px 16px rgba(0, 0, 0, 0.4),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06);
+}
+
+@keyframes notificationSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ==========================================================================
+   4️⃣ NOTIFICATIONS HEADER — Clay mini
+   ========================================================================== */
+
+.notification-bell__header,
+.notifications-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.7rem 1rem;
-  border-bottom: 1px solid var(--color-line);
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+
+  background: transparent;
+  border-bottom: 1px solid var(--theme-border);
+
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  border-radius: 1.5rem 1.5rem 0 0;
 }
 
-.notification-bell__title { font-weight: 700; font-size: 0.85rem; color: var(--color-text); }
+.notification-bell__title,
+.notifications-title,
+.notifications-header__title {
+  font-family: var(--font-display, 'Fraunces', serif);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--theme-text);
+  -webkit-text-fill-color: var(--theme-text);
+  margin: 0;
+}
 
-.notification-bell__mark-all {
+/* ✅ "Mark all as read" — Clay mini button */
+.notification-bell__mark-all,
+.notifications-action,
+.notifications-header__action,
+button[class*="mark-all"] {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.15rem 0.5rem;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-sm);
-  background: none;
-  color: var(--color-text-muted);
-  font-size: 0.6rem;
-  font-weight: 600;
-  transition: all 180ms var(--ease-standard);
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border: none;
+  border-radius: 0.65rem;
+
+  background: var(--theme-surface-2);
+  background-color: var(--theme-surface-2);
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.05),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4);
+
+  transition: box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
-.notification-bell__mark-all:hover { border-color: var(--color-brand); color: var(--color-brand); }
-
-.notification-bell__list { overflow-y: auto; flex: 1; }
-
-.notification-bell__empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem 1rem;
-  color: var(--color-text-muted);
+/* ✅ Hover — theme-aware (walang hardcoded) */
+.notification-bell__mark-all:hover,
+.notifications-action:hover,
+.notifications-header__action:hover,
+button[class*="mark-all"]:hover {
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  background-color: rgba(var(--theme-primary-rgb), 0.1);
+  box-shadow:
+    0 3px 6px rgba(var(--theme-primary-rgb), 0.15),
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.05),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5);
 }
 
-.notification-bell__empty .react-icon { width: 2rem; height: 2rem; margin-bottom: 0.5rem; opacity: 0.3; }
-.notification-bell__empty p { margin: 0; font-size: 0.8rem; }
-
-.notification-bell__footer {
-  padding: 0.5rem 1rem;
-  border-top: 1px solid var(--color-line);
-  text-align: center;
+/* ✅ Danger action */
+.notifications-action--danger:hover {
+  background: rgba(var(--theme-danger-rgb), 0.1);
+  background-color: rgba(var(--theme-danger-rgb), 0.1);
+  color: var(--theme-danger);
+  -webkit-text-fill-color: var(--theme-danger);
 }
 
-.notification-bell__footer a {
-  color: var(--color-brand);
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: color 180ms var(--ease-standard);
+/* ==========================================================================
+   5️⃣ NOTIFICATION LIST — Container
+   ========================================================================== */
+
+.notification-bell__list {
+  overflow-y: auto;
+  flex: 1;
+  background: transparent;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--theme-primary-rgb), 0.25) transparent;
 }
 
-.notification-bell__footer a:hover { color: var(--color-brand-strong); }
+.notification-bell__list::-webkit-scrollbar {
+  width: 6px;
+}
 
-.notification-item {
-  display: flex;
-  gap: 0.75rem;
-  padding: 0.7rem 1rem;
-  border-bottom: 1px solid var(--color-line);
-  transition: background 160ms var(--ease-standard);
+.notification-bell__list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notification-bell__list::-webkit-scrollbar-thumb {
+  background: rgba(var(--theme-primary-rgb), 0.25);
+  border-radius: 3px;
+}
+
+/* ==========================================================================
+   6️⃣ NOTIFICATION ITEM — Clay card
+   ✅ Walang hardcoded brown/blue
+   ========================================================================== */
+
+.notification-item,
+.notification-card,
+.notifications-list__item {
   position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+
+  background: transparent;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid var(--theme-border);
+  border-radius: 0;
+
+  transition: background-color 0.2s ease;
 }
 
-.notification-item:hover { background: rgba(35, 26, 12, 0.02); }
-.notification-item--unread { background: rgba(63, 106, 134, 0.04); }
-.notification-item--unread:hover { background: rgba(63, 106, 134, 0.07); }
+/* ✅ Last item — walang border */
+.notification-item:last-child,
+.notification-card:last-child,
+.notifications-list__item:last-child {
+  border-bottom: none;
+  border-radius: 0 0 1.5rem 1.5rem;
+}
 
-.notification-item__icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.1rem; }
-.notification-item__content { flex: 1; min-width: 0; }
+/* ✅ Hover — theme-aware (WALANG hardcoded) */
+.notification-item:hover,
+.notification-card:hover,
+.notifications-list__item:hover {
+  background: rgba(var(--theme-primary-rgb), 0.06);
+  background-color: rgba(var(--theme-primary-rgb), 0.06);
+}
+
+/* ✅ Unread — clay accent tint */
+.notification-item--unread,
+.notification-card.is-unread,
+.notifications-list__item.is-unread {
+  background: rgba(var(--theme-primary-rgb), 0.08);
+  background-color: rgba(var(--theme-primary-rgb), 0.08);
+  border-left: 3px solid var(--theme-primary);
+}
+
+.notification-item--unread:hover,
+.notification-card.is-unread:hover,
+.notifications-list__item.is-unread:hover {
+  background: rgba(var(--theme-primary-rgb), 0.12);
+  background-color: rgba(var(--theme-primary-rgb), 0.12);
+}
+
+/* ==========================================================================
+   7️⃣ NOTIFICATION MEDIA — Clay mini thumbnail
+   ========================================================================== */
+
+.notification-item__media,
+.notification-card__media,
+.notification-item__thumb,
+.notification-card__thumb {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 0.75rem;
+  overflow: hidden;
+
+  background: var(--theme-surface-2);
+  background-color: var(--theme-surface-2);
+  border: 1px solid var(--theme-border);
+
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5);
+}
+
+[data-theme-mode='dark'] .notification-item__media,
+[data-theme-mode='dark'] .notification-card__media {
+  background: var(--theme-surface);
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.4),
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.06);
+}
+
+.notification-item__image,
+.notification-card__image,
+.notification-item__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.notification-item__emoji {
+  font-size: 1.35rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background: var(--theme-surface);
+}
+
+/* ==========================================================================
+   8️⃣ NOTIFICATION CONTENT — Text
+   ========================================================================== */
+
+.notification-item__content {
+  flex: 1;
+  min-width: 0;
+}
 
 .notification-item__header {
   display: flex;
@@ -132,91 +434,285 @@
   gap: 0.5rem;
 }
 
-.notification-item__title { font-weight: 600; color: var(--color-text); font-size: 0.8rem; }
-.notification-item__time { font-size: 0.55rem; color: var(--color-text-subtle); white-space: nowrap; }
+.notification-item__title,
+.notification-card__title {
+  font-family: var(--font-display, 'Fraunces', serif);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--theme-text);
+  -webkit-text-fill-color: var(--theme-text);
+  margin: 0 0 0.25rem;
+  line-height: 1.3;
+}
 
-.notification-item__message {
-  margin: 0.1rem 0 0.2rem;
-  color: var(--color-text-muted);
+.notification-item__time,
+.notification-card__time,
+.notification-item__date {
   font-size: 0.7rem;
-  line-height: 1.4;
+  color: var(--theme-text-muted);
+  -webkit-text-fill-color: var(--theme-text-muted);
+  opacity: 0.7;
+  white-space: nowrap;
 }
 
-.notification-item__actions { display: flex; gap: 0.5rem; margin-top: 0.3rem; flex-wrap: wrap; }
-
-.notification-item__mark-read {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2rem;
-  padding: 0.05rem 0.4rem;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-sm);
-  background: none;
-  color: var(--color-text-muted);
-  font-size: 0.55rem;
-  transition: all 180ms var(--ease-standard);
+.notification-item__message,
+.notification-card__message {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--theme-text-muted);
+  -webkit-text-fill-color: var(--theme-text-muted);
+  margin: 0.1rem 0 0.5rem;
 }
 
-.notification-item__mark-read:hover { border-color: var(--color-brand); color: var(--color-brand); }
+/* ==========================================================================
+   9️⃣ NOTIFICATION ACTIONS — Clay mini buttons
+   ✅ Walang hardcoded
+   ========================================================================== */
 
-.notification-item__link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2rem;
-  padding: 0.05rem 0.4rem;
-  border: 1px solid var(--color-brand);
-  border-radius: var(--radius-sm);
-  background: var(--color-brand-soft);
-  color: var(--color-brand);
-  font-size: 0.55rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 180ms var(--ease-standard);
+.notification-item__actions,
+.notification-card__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+  flex-wrap: wrap;
 }
 
-.notification-item__link:hover { background: rgba(179, 130, 44, 0.2); }
-
-.notification-item__delete {
+.notification-item__mark-read,
+.notification-item__link,
+.notification-item__delete,
+.notification-card__action,
+.notification-item__action {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.05rem 0.25rem;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  background: none;
-  color: var(--color-text-subtle);
-  font-size: 0.55rem;
-  transition: all 180ms var(--ease-standard);
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  border: none;
+  border-radius: 0.55rem;
+
+  background: var(--theme-surface-2);
+  background-color: var(--theme-surface-2);
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+
+  font-family: inherit;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.05),
+    inset 0 1px 2px rgba(255, 255, 255, 0.4);
+
+  transition: box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
-.notification-item__delete:hover { color: var(--color-danger); }
-.notification-item__delete .react-icon { width: 0.7rem; height: 0.7rem; }
+/* ✅ Hover — theme-aware */
+.notification-item__mark-read:hover,
+.notification-item__link:hover,
+.notification-card__action:hover,
+.notification-item__action:hover {
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  background-color: rgba(var(--theme-primary-rgb), 0.1);
+  box-shadow:
+    0 3px 6px rgba(var(--theme-primary-rgb), 0.15),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.05),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+}
 
-.notification-item__unread-dot { position: absolute; top: 0.7rem; right: 1rem; color: var(--color-brand); }
-.notification-item__unread-dot .react-icon { width: 0.5rem; height: 0.5rem; fill: var(--color-brand); }
+/* ✅ Delete — danger */
+.notification-item__delete {
+  background: transparent;
+  color: var(--theme-text-muted);
+  -webkit-text-fill-color: var(--theme-text-muted);
+  box-shadow: none;
+}
 
-.notification-item__meta { display: flex; gap: 0.5rem; margin-top: 0.1rem; }
-.notification-item__date { font-size: 0.55rem; color: var(--color-text-subtle); }
+.notification-item__delete:hover {
+  background: rgba(var(--theme-danger-rgb), 0.1);
+  background-color: rgba(var(--theme-danger-rgb), 0.1);
+  color: var(--theme-danger);
+  -webkit-text-fill-color: var(--theme-danger);
+  box-shadow: none;
+}
+
+.notification-item__delete .react-icon {
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+/* ✅ Unread dot */
+.notification-item__unread-dot {
+  position: absolute;
+  top: 0.7rem;
+  right: 1rem;
+  color: var(--theme-primary);
+}
+
+.notification-item__unread-dot .react-icon {
+  width: 0.5rem;
+  height: 0.5rem;
+  fill: var(--theme-primary);
+}
+
+/* ✅ Meta / Type badge */
+.notification-item__meta {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.1rem;
+}
 
 .notification-item__type {
   font-size: 0.5rem;
-  color: var(--color-text-subtle);
+  color: var(--theme-text-muted);
+  -webkit-text-fill-color: var(--theme-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: var(--color-surface-soft);
+  background: var(--theme-surface-2);
   padding: 0.05rem 0.4rem;
   border-radius: 999px;
 }
 
-/* Notifications page */
-.notifications-page { padding: 1.5rem; max-width: 800px; margin: 0 auto; }
+/* ==========================================================================
+   🔟 NOTIFICATION EMPTY STATE
+   ========================================================================== */
+
+.notification-bell__empty,
+.notifications-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  color: var(--theme-text-muted);
+  -webkit-text-fill-color: var(--theme-text-muted);
+  text-align: center;
+}
+
+.notification-bell__empty .react-icon,
+.notifications-empty__icon {
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.3;
+}
+
+.notification-bell__empty p,
+.notifications-empty__title {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--theme-text);
+  -webkit-text-fill-color: var(--theme-text);
+}
+
+.notifications-empty__description {
+  margin: 0.2rem 0 0;
+  font-size: 0.75rem;
+  color: var(--theme-text-muted);
+  -webkit-text-fill-color: var(--theme-text-muted);
+}
+
+/* ==========================================================================
+   1️⃣1️⃣ NOTIFICATION FOOTER — Clay button
+   ========================================================================== */
+
+.notification-bell__footer,
+.notifications-footer {
+  position: sticky;
+  bottom: 0;
+  padding: 1rem 1.25rem;
+  background: var(--theme-surface);
+  background-color: var(--theme-surface);
+  border-top: 1px solid var(--theme-border);
+  border-radius: 0 0 1.5rem 1.5rem;
+  text-align: center;
+  z-index: 5;
+}
+
+[data-theme-mode='dark'] .notification-bell__footer,
+[data-theme-mode='dark'] .notifications-footer {
+  background: var(--theme-surface-2);
+  background-color: var(--theme-surface-2);
+}
+
+.notification-bell__footer a,
+.notifications-footer a,
+.notifications-footer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.25rem;
+  border: none;
+  border-radius: 0.75rem;
+
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  );
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
+
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+
+  box-shadow:
+    0 4px 10px rgba(var(--theme-primary-rgb), 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.25);
+
+  transition: box-shadow 0.2s ease;
+}
+
+.notification-bell__footer a:hover,
+.notifications-footer a:hover,
+.notifications-footer button:hover {
+  box-shadow:
+    0 6px 14px rgba(var(--theme-primary-rgb), 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.18),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+/* ==========================================================================
+   1️⃣2️⃣ NOTIFICATIONS PAGE — Theme-aware
+   ========================================================================== */
+
+.notifications-page {
+  padding: 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
 
 .notifications-container {
-  background: var(--color-surface);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-lg);
+  background: var(--theme-surface);
+  background-color: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 1.5rem;
   overflow: hidden;
-  box-shadow: var(--shadow-panel);
+
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.04),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.05),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4);
+}
+
+[data-theme-mode='dark'] .notifications-container {
+  background: var(--theme-surface-2);
+  background-color: var(--theme-surface-2);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.35),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 3px 6px rgba(255, 255, 255, 0.06);
 }
 
 .notifications-header {
@@ -224,211 +720,293 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .notifications-back {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  color: var(--color-text-muted);
+  color: var(--theme-text-muted);
+  -webkit-text-fill-color: var(--theme-text-muted);
   font-size: 0.8rem;
   text-decoration: none;
-  transition: color 180ms var(--ease-standard);
+  transition: color 180ms ease;
 }
 
-.notifications-back:hover { color: var(--color-text); }
-.notifications-header__right { display: flex; align-items: center; gap: 0.75rem; }
-.notifications-title { margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--color-text); }
+.notifications-back:hover {
+  color: var(--theme-text);
+  -webkit-text-fill-color: var(--theme-text);
+}
 
+.notifications-header__right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* ✅ Count badge — clay pill */
 .notifications-count {
   font-size: 0.65rem;
-  color: var(--color-brand);
-  background: var(--color-brand-soft);
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  background: rgba(var(--theme-primary-rgb), 0.12);
   padding: 0.15rem 0.5rem;
   border-radius: 999px;
-  border: 1px solid rgba(179, 130, 44, 0.2);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.25);
+
+  box-shadow:
+    inset 0 -1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3);
 }
 
+/* ✅ Toolbar */
 .notifications-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem 1.25rem;
-  border-bottom: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--theme-border);
   flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-.notifications-filters { display: flex; gap: 0.25rem; }
+.notifications-filters {
+  display: flex;
+  gap: 0.25rem;
+}
 
 .notifications-filter {
-  padding: 0.15rem 0.6rem;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  background: none;
-  color: var(--color-text-muted);
+  padding: 0.35rem 0.75rem;
+  border: none;
+  border-radius: 0.6rem;
+  background: var(--theme-surface-2);
+  background-color: var(--theme-surface-2);
+  color: var(--theme-text-muted);
+  -webkit-text-fill-color: var(--theme-text-muted);
+  font-family: inherit;
   font-size: 0.7rem;
   font-weight: 600;
-  transition: all 180ms var(--ease-standard);
+  cursor: pointer;
+
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 1px 2px rgba(255, 255, 255, 0.4);
+
+  transition: box-shadow 0.18s ease, background-color 0.18s ease, color 0.18s ease;
 }
 
-.notifications-filter:hover { color: var(--color-text); }
+/* ✅ Hover — theme-aware */
+.notifications-filter:hover {
+  background: rgba(var(--theme-primary-rgb), 0.08);
+  background-color: rgba(var(--theme-primary-rgb), 0.08);
+  color: var(--theme-text);
+  -webkit-text-fill-color: var(--theme-text);
+}
 
+/* ✅ Active — clay accent */
 .notifications-filter--active {
-  border-color: var(--color-brand);
-  background: var(--color-brand-soft);
-  color: var(--color-brand);
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-primary-hover) 100%
+  );
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
+
+  box-shadow:
+    0 3px 6px rgba(var(--theme-primary-rgb), 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.25);
 }
 
-.notifications-actions { display: flex; gap: 0.5rem; }
-
-.notifications-action {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.1rem 0.6rem;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-sm);
-  background: none;
-  color: var(--color-text-muted);
-  font-size: 0.6rem;
-  font-weight: 600;
-  transition: all 180ms var(--ease-standard);
-}
-
-.notifications-action:hover { border-color: var(--color-brand); color: var(--color-brand); }
-.notifications-action--danger:hover { border-color: var(--color-danger); color: var(--color-danger); }
-
-.notifications-empty {
+/* ✅ Notifications actions */
+.notifications-actions {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 3rem 1.5rem;
-  text-align: center;
+  gap: 0.5rem;
 }
 
-.notifications-empty__icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
-.notifications-empty__title { margin: 0; color: var(--color-text); font-size: 1rem; font-weight: 600; }
-.notifications-empty__description { margin: 0.2rem 0 0; color: var(--color-text-muted); font-size: 0.75rem; }
-.notifications-list { padding: 0.25rem 0; }
-/* ============================================
-   NOTIFICATION ITEM — MEDIA (image o emoji)
-   ============================================ */
+/* ==========================================================================
+   1️⃣3️⃣ RESPONSIVE — Mobile
+   ========================================================================== */
 
-.notification-item__media {
-  display: grid;
-  width: 3rem;
-  height: 3rem;
-  flex-shrink: 0;
-  place-items: center;
-  border-radius: 0.6rem;
-  overflow: hidden;
-  background: var(--color-surface-raised, #f7f3ec);
-  border: 1px solid var(--color-line, rgba(35, 26, 12, 0.1));
+@media (max-width: 640px) {
+  .notification-bell__dropdown {
+    position: fixed;
+    top: 4.5rem;
+    right: 0.5rem;
+    left: 0.5rem;
+    min-width: auto;
+    max-width: calc(100vw - 1rem);
+    border-radius: 1.25rem;
+  }
+
+  .notification-item,
+  .notification-card {
+    padding: 0.85rem 1rem;
+  }
+
+  .notification-item__media,
+  .notification-card__media {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+  }
 }
 
-/* Product image */
-.notification-item__image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
+/* ==========================================================================
+   1️⃣4️⃣ REDUCED MOTION
+   ========================================================================== */
 
-/* Emoji fallback (kung walang product image) */
-.notification-item__emoji {
-  font-size: 1.35rem;
-  line-height: 1;
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 100%;
-  background: var(--color-surface, #fffcf4);
-}
-/* ============================================================
-   ✅ NOTIFICATION DROPDOWN — solid, readable
-   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .notification-bell__button,
+  .notification-bell__mark-all,
+  .notification-item,
+  .notification-item__mark-read,
+  .notification-item__link,
+  .notification-item__delete,
+  .notification-card__action,
+  .notification-item__action,
+  .notifications-filter,
+  .notification-bell__footer a,
+  .notifications-footer a {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
 
+  .notification-bell__dropdown {
+    animation: none !important;
+  }
+}
+/* ==========================================================================
+   🎯 1. NOTIFICATION DROPDOWN REFINEMENT
+   ✅ Mas maliit na width
+   ✅ Consistent vertical spacing
+   ✅ Actions visually secondary
+   ✅ Solid opaque bg
+   ========================================================================== */
+
+/* ✅ Dropdown — refined width + opaque */
 .notification-bell__dropdown {
-  /* ✅ Force solid white */
-  background: #ffffff !important;
+  /* ✅ Mas maliit na width — dati 380-420px */
+  width: 360px !important;
+  min-width: 360px !important;
+  max-width: 360px !important;
 
-  /* ✅ Strong border */
-  border: 1px solid rgba(35, 26, 12, 0.12) !important;
+  /* ✅ Solid opaque — walang transparency */
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
 
-  /* ✅ Strong shadow — readable overlay */
+  /* ✅ Stronger border */
+  border: 1px solid var(--theme-border-strong, var(--theme-border)) !important;
+
+  /* ✅ Balanseng shadow */
   box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.08),
-    0 16px 40px rgba(0, 0, 0, 0.12),
-    0 32px 64px rgba(0, 0, 0, 0.08) !important;
+    0 16px 32px rgba(0, 0, 0, 0.12),
+    0 4px 8px rgba(0, 0, 0, 0.06),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
 
-  /* ✅ Subtle glass hint lang */
-  backdrop-filter: blur(8px) saturate(120%);
-  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  /* ✅ Max height — para hindi masyadong mahaba */
+  max-height: 520px !important;
 }
 
-/* ✅ Dark mode — solid navy */
 [data-theme-mode='dark'] .notification-bell__dropdown {
-  background: #1B2742 !important;
-  border-color: rgba(38, 51, 81, 0.6) !important;
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
   box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.4),
-    0 16px 40px rgba(0, 0, 0, 0.5),
-    0 32px 64px rgba(0, 0, 0, 0.3) !important;
+    0 16px 32px rgba(0, 0, 0, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.35),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.06) !important;
 }
 
-/* ✅ Header, footer, items — solid backgrounds */
-.notification-bell__header,
+/* ✅ Consistent vertical spacing — items */
+.notification-item,
+.notification-card {
+  padding: 0.85rem 1rem !important;   /* ✅ Compact pero hindi sikip */
+  gap: 0.65rem !important;
+}
+
+/* ✅ Item content spacing */
+.notification-item__header {
+  gap: 0.4rem !important;
+  margin-bottom: 0.15rem !important;
+}
+
+.notification-item__message {
+  margin: 0.2rem 0 0.35rem !important;
+  font-size: 0.75rem !important;
+  line-height: 1.4 !important;
+}
+
+/* ✅ Actions — visually secondary */
+.notification-item__actions {
+  gap: 0.35rem !important;
+  margin-top: 0.35rem !important;
+}
+
+/* ✅ Actions — mas maliit, mas subtle */
+.notification-item__mark-read,
+.notification-item__link,
+.notification-item__delete,
+.notification-card__action {
+  font-size: 0.62rem !important;      /* ✅ Dati 0.68rem */
+  padding: 0.3rem 0.6rem !important;  /* ✅ Mas compact */
+  font-weight: 600 !important;        /* ✅ Hindi bold */
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+
+  /* ✅ Border para may definition */
+  border: 1px solid var(--theme-border) !important;
+}
+
+/* ✅ Hover — subtle lang */
+.notification-item__mark-read:hover,
+.notification-item__link:hover,
+.notification-card__action:hover {
+  border-color: var(--theme-primary) !important;
+  background: rgba(var(--theme-primary-rgb), 0.06) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ✅ Delete — mas subtle */
+.notification-item__delete {
+  border-color: transparent !important;
+  opacity: 0.5 !important;
+}
+
+.notification-item__delete:hover {
+  opacity: 1 !important;
+  border-color: var(--theme-danger) !important;
+  color: var(--theme-danger) !important;
+}
+
+/* ✅ Header — mas compact */
+.notification-bell__header {
+  padding: 0.85rem 1rem !important;
+}
+
+.notification-bell__title {
+  font-size: 0.9rem !important;
+}
+
+.notification-bell__mark-all {
+  padding: 0.35rem 0.7rem !important;
+  font-size: 0.65rem !important;
+}
+
+/* ✅ Footer — mas compact */
 .notification-bell__footer {
-  background: #ffffff;
+  padding: 0.75rem 1rem !important;
 }
 
-[data-theme-mode='dark'] .notification-bell__header,
-[data-theme-mode='dark'] .notification-bell__footer {
-  background: #1B2742;
-}
-
-.notification-bell__list {
-  background: #ffffff;
-}
-
-[data-theme-mode='dark'] .notification-bell__list {
-  background: #1B2742;
-}
-
-/* ✅ Notification items */
-.notification-item {
-  background: #ffffff;
-}
-
-[data-theme-mode='dark'] .notification-item {
-  background: #1B2742;
-}
-
-.notification-item:hover {
-  background: rgba(47, 107, 69, 0.04);
-}
-
-[data-theme-mode='dark'] .notification-item:hover {
-  background: rgba(95, 191, 138, 0.08);
-}
-
-.notification-item--unread {
-  background: rgba(63, 106, 134, 0.06);
-}
-
-[data-theme-mode='dark'] .notification-item--unread {
-  background: rgba(127, 168, 217, 0.12);
-}
-
-/* ✅ Notifications page container */
-.notifications-container {
-  background: #ffffff !important;
-  border: 1px solid rgba(35, 26, 12, 0.12) !important;
-}
-
-[data-theme-mode='dark'] .notifications-container {
-  background: #1B2742 !important;
-  border-color: rgba(38, 51, 81, 0.6) !important;
+.notification-bell__footer a {
+  padding: 0.5rem 1rem !important;
+  font-size: 0.72rem !important;
 }

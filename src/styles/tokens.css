@@ -4,36 +4,44 @@
    Dark: Midnight Navy, Matte Black, Charcoal Gray, Deep Forest, Dark Plum
    ✅ Background + text + accent + SUCCESS = SAME HUE
    ✅ FIX: :root standalone — walang conflict sa [data-theme]
-============================================================ */
+   ✅ REFACTORED: Walang duplicate, malinaw ang cascade
+   ============================================================ */
 
 /* ============================================================
    ✅ DEFAULT — CREAM YELLOW (light)
    Ito ang mag-a-apply kapag walang data-theme attribute sa <html>
-============================================================ */
+   ✅ Ito rin ang fallback para sa lahat ng themes
+   ============================================================ */
 :root {
   color-scheme: light;
 
+  /* Primary */
   --theme-primary: #B8860B;
   --theme-primary-hover: #966C09;
   --theme-primary-rgb: 184, 134, 11;
 
+  /* Accent */
   --theme-accent: #8B5E34;
   --theme-accent-hover: #734A28;
   --theme-accent-rgb: 139, 94, 52;
 
+  /* Background & Surfaces */
   --theme-bg: #FEF9E7;
   --theme-bg-solid: #FEF9E7;
   --theme-surface: #FFFFFF;
   --theme-surface-2: #FFFBF0;
   --theme-surface-raised: #FFFFFF;
 
+  /* Text */
   --theme-text: #2A2010;
   --theme-text-muted: #6B5B3A;
   --theme-text-subtle: rgba(42, 32, 16, 0.5);
 
+  /* Borders */
   --theme-border: #F0E5C0;
   --theme-border-strong: rgba(184, 134, 11, 0.3);
 
+  /* Semantic */
   --theme-success: #8B6914;
   --theme-success-rgb: 139, 105, 20;
   --theme-warning: #B8860B;
@@ -41,22 +49,50 @@
   --theme-danger: #A93C3C;
   --theme-danger-rgb: 169, 60, 60;
 
+  /* Shadows */
   --theme-shadow-sm: 0 1px 2px rgba(42, 32, 16, 0.06);
   --theme-shadow-md: 0 4px 12px rgba(42, 32, 16, 0.08);
   --theme-shadow-lg: 0 12px 32px rgba(42, 32, 16, 0.1);
   --theme-shadow-xl: 0 24px 48px rgba(42, 32, 16, 0.12);
 
+  /* Glass */
   --theme-glass-bg: rgba(255, 255, 255, 0.7);
   --theme-glass-border: rgba(255, 255, 255, 0.9);
+
+  /* Glows */
   --glow-brand: rgba(184, 134, 11, 0.15);
   --glow-info: rgba(107, 91, 58, 0.12);
+
+  /* ============================================================
+     ✅ SEMANTIC CONTRAST TOKENS — DEFAULT (LIGHT)
+     Ito ang fallback kapag walang data-theme-mode
+     ============================================================ */
+  --theme-on-primary: #FFFFFF;
+  --theme-on-primary-rgb: 255, 255, 255;
+  --theme-on-accent: #1A1209;
+  --theme-on-accent-rgb: 26, 18, 9;
+  --theme-on-success: #FFFFFF;
+  --theme-on-success-rgb: 255, 255, 255;
+  --theme-on-danger: #FFFFFF;
+  --theme-on-danger-rgb: 255, 255, 255;
+  --theme-on-warning: #1A1209;
+  --theme-on-warning-rgb: 26, 18, 9;
+
+  --theme-scrim: rgba(0, 0, 0, 0.04);
+  --theme-scrim-strong: rgba(0, 0, 0, 0.08);
+  --theme-surface-hover: var(--theme-surface-2);
+  --theme-surface-active: var(--theme-surface-raised);
 }
 
 /* ============================================================
    LIGHT — 5 VARIANTS
-============================================================ */
+   ✅ Ang bawat isa ay OVERRIDE ng :root
+   ✅ Ang [data-theme='cream-yellow'] ay pareho lang ng :root
+     kaya HINDI NA kailangan i-duplicate — pero iniwan ko
+     para malinaw sa JS na may attribute
+   ============================================================ */
 
-/* ----- 1. CREAM YELLOW ----- */
+/* ----- 1. CREAM YELLOW (same as :root — explicit) ----- */
 [data-theme='cream-yellow'] {
   color-scheme: light;
 
@@ -95,6 +131,7 @@
 
   --theme-glass-bg: rgba(255, 255, 255, 0.7);
   --theme-glass-border: rgba(255, 255, 255, 0.9);
+
   --glow-brand: rgba(184, 134, 11, 0.15);
   --glow-info: rgba(107, 91, 58, 0.12);
 }
@@ -138,6 +175,7 @@
 
   --theme-glass-bg: rgba(252, 248, 238, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.9);
+
   --glow-brand: rgba(139, 111, 71, 0.15);
   --glow-info: rgba(107, 91, 71, 0.12);
 }
@@ -181,6 +219,7 @@
 
   --theme-glass-bg: rgba(248, 248, 248, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.9);
+
   --glow-brand: rgba(51, 51, 51, 0.15);
   --glow-info: rgba(74, 74, 74, 0.12);
 }
@@ -224,6 +263,7 @@
 
   --theme-glass-bg: rgba(255, 255, 255, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.9);
+
   --glow-brand: rgba(75, 85, 99, 0.15);
   --glow-info: rgba(107, 114, 128, 0.12);
 }
@@ -267,13 +307,17 @@
 
   --theme-glass-bg: rgba(255, 255, 255, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.9);
+
   --glow-brand: rgba(184, 99, 122, 0.15);
   --glow-info: rgba(107, 74, 82, 0.12);
 }
 
 /* ============================================================
    DARK — 5 VARIANTS
-============================================================ */
+   ✅ Bawat isa ay may kanya-kanyang on-* tokens
+   ✅ HINDI na kailangan ng [data-theme-mode='dark'] override
+     kasi ang bawat theme ay may sariling on-* values
+   ============================================================ */
 
 /* ----- 6. MIDNIGHT NAVY ----- */
 [data-theme='midnight-navy'] {
@@ -314,8 +358,21 @@
 
   --theme-glass-bg: rgba(27, 39, 66, 0.75);
   --theme-glass-border: rgba(123, 167, 225, 0.15);
+
   --glow-brand: rgba(123, 167, 225, 0.25);
   --glow-info: rgba(176, 185, 204, 0.2);
+
+  /* ✅ On-* tokens — dark theme */
+  --theme-on-primary: #0E1626;
+  --theme-on-primary-rgb: 14, 22, 38;
+  --theme-on-accent: #0E1626;
+  --theme-on-accent-rgb: 14, 22, 38;
+  --theme-on-success: #0E1626;
+  --theme-on-success-rgb: 14, 22, 38;
+  --theme-on-danger: #FFFFFF;
+  --theme-on-danger-rgb: 255, 255, 255;
+  --theme-on-warning: #0E1626;
+  --theme-on-warning-rgb: 14, 22, 38;
 }
 
 /* ----- 7. MATTE BLACK ----- */
@@ -357,8 +414,21 @@
 
   --theme-glass-bg: rgba(26, 26, 26, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.1);
+
   --glow-brand: rgba(212, 165, 116, 0.25);
   --glow-info: rgba(184, 176, 160, 0.2);
+
+  /* ✅ On-* tokens — dark warm theme */
+  --theme-on-primary: #1A1209;
+  --theme-on-primary-rgb: 26, 18, 9;
+  --theme-on-accent: #1A1209;
+  --theme-on-accent-rgb: 26, 18, 9;
+  --theme-on-success: #1A1209;
+  --theme-on-success-rgb: 26, 18, 9;
+  --theme-on-danger: #FFFFFF;
+  --theme-on-danger-rgb: 255, 255, 255;
+  --theme-on-warning: #1A1209;
+  --theme-on-warning-rgb: 26, 18, 9;
 }
 
 /* ----- 8. CHARCOAL GRAY ----- */
@@ -400,8 +470,21 @@
 
   --theme-glass-bg: rgba(42, 42, 42, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.1);
+
   --glow-brand: rgba(168, 184, 200, 0.25);
   --glow-info: rgba(168, 176, 184, 0.2);
+
+  /* ✅ On-* tokens — dark cool theme */
+  --theme-on-primary: #1A1A1A;
+  --theme-on-primary-rgb: 26, 26, 26;
+  --theme-on-accent: #1A1A1A;
+  --theme-on-accent-rgb: 26, 26, 26;
+  --theme-on-success: #1A1A1A;
+  --theme-on-success-rgb: 26, 26, 26;
+  --theme-on-danger: #FFFFFF;
+  --theme-on-danger-rgb: 255, 255, 255;
+  --theme-on-warning: #1A1A1A;
+  --theme-on-warning-rgb: 26, 26, 26;
 }
 
 /* ----- 9. DEEP FOREST ----- */
@@ -443,8 +526,21 @@
 
   --theme-glass-bg: rgba(21, 48, 41, 0.75);
   --theme-glass-border: rgba(127, 200, 162, 0.15);
+
   --glow-brand: rgba(127, 200, 162, 0.25);
   --glow-info: rgba(168, 188, 179, 0.2);
+
+  /* ✅ On-* tokens — dark green theme */
+  --theme-on-primary: #0A1F1A;
+  --theme-on-primary-rgb: 10, 31, 26;
+  --theme-on-accent: #0A1F1A;
+  --theme-on-accent-rgb: 10, 31, 26;
+  --theme-on-success: #0A1F1A;
+  --theme-on-success-rgb: 10, 31, 26;
+  --theme-on-danger: #FFFFFF;
+  --theme-on-danger-rgb: 255, 255, 255;
+  --theme-on-warning: #0A1F1A;
+  --theme-on-warning-rgb: 10, 31, 26;
 }
 
 /* ----- 10. DARK PLUM ----- */
@@ -486,35 +582,29 @@
 
   --theme-glass-bg: rgba(42, 26, 48, 0.75);
   --theme-glass-border: rgba(200, 160, 212, 0.15);
+
   --glow-brand: rgba(200, 160, 212, 0.25);
   --glow-info: rgba(192, 176, 200, 0.2);
+
+  /* ✅ On-* tokens — dark purple theme */
+  --theme-on-primary: #1A0E1F;
+  --theme-on-primary-rgb: 26, 14, 31;
+  --theme-on-accent: #1A0E1F;
+  --theme-on-accent-rgb: 26, 14, 31;
+  --theme-on-success: #1A0E1F;
+  --theme-on-success-rgb: 26, 14, 31;
+  --theme-on-danger: #FFFFFF;
+  --theme-on-danger-rgb: 255, 255, 255;
+  --theme-on-warning: #1A0E1F;
+  --theme-on-warning-rgb: 26, 14, 31;
 }
 
 /* ============================================================
-   ✅ SEMANTIC CONTRAST TOKENS
-   ✅ Standalone — HINDI naka-group sa :root
-   ✅ Base sa data-theme-mode attribute (naka-set ng JS)
-============================================================ */
+   ✅ MODE-BASED OVERRIDES (LIGHT)
+   ✅ Ito ay para sa mga theme na walang explicit on-* tokens
+   ✅ Ang light themes ay gumagamit ng default :root values
+   ============================================================ */
 
-/* ✅ Default (walang data-theme-mode) = light — safe fallback */
-:root {
-  --theme-on-primary: #FFFFFF;
-  --theme-on-primary-rgb: 255, 255, 255;
-  --theme-on-accent: #1A1209;
-  --theme-on-accent-rgb: 26, 18, 9;
-  --theme-on-success: #FFFFFF;
-  --theme-on-success-rgb: 255, 255, 255;
-  --theme-on-danger: #FFFFFF;
-  --theme-on-danger-rgb: 255, 255, 255;
-  --theme-on-warning: #1A1209;
-  --theme-on-warning-rgb: 26, 18, 9;
-  --theme-scrim: rgba(0, 0, 0, 0.04);
-  --theme-scrim-strong: rgba(0, 0, 0, 0.08);
-  --theme-surface-hover: var(--theme-surface-2);
-  --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
-}
-
-/* ✅ Light mode override */
 [data-theme-mode='light'] {
   --theme-on-primary: #FFFFFF;
   --theme-on-primary-rgb: 255, 255, 255;
@@ -526,102 +616,19 @@
   --theme-on-danger-rgb: 255, 255, 255;
   --theme-on-warning: #1A1209;
   --theme-on-warning-rgb: 26, 18, 9;
+
   --theme-scrim: rgba(0, 0, 0, 0.04);
   --theme-scrim-strong: rgba(0, 0, 0, 0.08);
   --theme-surface-hover: var(--theme-surface-2);
-  --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
-}
-
-/* ✅ Dark mode override */
-[data-theme-mode='dark'] {
-  --theme-on-primary: #0E1626;
-  --theme-on-primary-rgb: 14, 22, 38;
-  --theme-on-accent: #0E1626;
-  --theme-on-accent-rgb: 14, 22, 38;
-  --theme-on-success: #0E1626;
-  --theme-on-success-rgb: 14, 22, 38;
-  --theme-on-danger: #0E1626;
-  --theme-on-danger-rgb: 14, 22, 38;
-  --theme-on-warning: #0E1626;
-  --theme-on-warning-rgb: 14, 22, 38;
-  --theme-scrim: rgba(255, 255, 255, 0.04);
-  --theme-scrim-strong: rgba(255, 255, 255, 0.08);
-  --theme-surface-hover: var(--theme-surface-2);
-  --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
+  --theme-surface-active: var(--theme-surface-raised);
 }
 
 /* ============================================================
-   ✅ PER-THEME on-* OVERRIDES
-   (mas specific kaysa [data-theme-mode] — para sa unique colors)
-============================================================ */
-
-[data-theme='matte-black'] {
-  --theme-on-primary: #1A1209;
-  --theme-on-primary-rgb: 26, 18, 9;
-  --theme-on-accent: #1A1209;
-  --theme-on-accent-rgb: 26, 18, 9;
-  --theme-on-success: #1A1209;
-  --theme-on-success-rgb: 26, 18, 9;
-}
-
-[data-theme='deep-forest'] {
-  --theme-on-primary: #0A1F1A;
-  --theme-on-primary-rgb: 10, 31, 26;
-  --theme-on-accent: #0A1F1A;
-  --theme-on-accent-rgb: 10, 31, 26;
-  --theme-on-success: #0A1F1A;
-  --theme-on-success-rgb: 10, 31, 26;
-}
-
-[data-theme='dark-plum'] {
-  --theme-on-primary: #1A0E1F;
-  --theme-on-primary-rgb: 26, 14, 31;
-  --theme-on-accent: #1A0E1F;
-  --theme-on-accent-rgb: 26, 14, 31;
-  --theme-on-success: #1A0E1F;
-  --theme-on-success-rgb: 26, 14, 31;
-}
-
-[data-theme='charcoal-gray'] {
-  --theme-on-primary: #1A1A1A;
-  --theme-on-primary-rgb: 26, 26, 26;
-  --theme-on-accent: #1A1A1A;
-  --theme-on-accent-rgb: 26, 26, 26;
-  --theme-on-success: #1A1A1A;
-  --theme-on-success-rgb: 26, 26, 26;
-}
-
-[data-theme='midnight-navy'] {
-  --theme-on-primary: #0E1626;
-  --theme-on-primary-rgb: 14, 22, 38;
-  --theme-on-accent: #0E1626;
-  --theme-on-accent-rgb: 14, 22, 38;
-  --theme-on-success: #0E1626;
-  --theme-on-success-rgb: 14, 22, 38;
-}
-
-[data-theme='pure-white'] {
-  --theme-on-primary: #FFFFFF;
-  --theme-on-primary-rgb: 255, 255, 255;
-  --theme-on-accent: #FFFFFF;
-  --theme-on-accent-rgb: 255, 255, 255;
-  --theme-on-success: #FFFFFF;
-  --theme-on-success-rgb: 255, 255, 255;
-} 
-/* ============================================================
-   🎯 FINAL FIX: Hero Ghost Buttons Visibility
+   🎯 HERO GHOST BUTTONS FIX
    ✅ Ang "My orders" button ay hindi visible sa light themes
-   ✅ Kasi puti ang text at puti ang background
    ✅ Fix: gumamit ng theme-aware contrast
    ============================================================ */
 
-/* ============================================================
-   1️⃣ HERO GHOST BUTTONS — Theme-aware contrast
-   ✅ Sa light themes: dark text + light bg
-   ✅ Sa dark themes: light text + subtle bg
-   ============================================================ */
-
-/* ✅ Base — gumamit ng theme variables */
 .hero-actions [class*="--ghost"],
 .hero-actions [class*="--secondary"],
 .hero-actions .button--secondary,
@@ -632,10 +639,10 @@
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
   border-radius: 1rem;
-  background: var(--theme-surface) !important;
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  border: 1px solid var(--theme-border) !important;
+  background: var(--theme-surface);
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  border: 1px solid var(--theme-border);
   font-family: inherit;
   font-size: 0.88rem;
   font-weight: 700;
@@ -653,10 +660,10 @@
 [data-theme-mode='dark'] .hero-actions [class*="--secondary"],
 [data-theme-mode='dark'] .hero-actions .button--secondary,
 [data-theme-mode='dark'] .hero-actions .btn-secondary {
-  background: var(--theme-surface-2) !important;
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  border: 1px solid var(--theme-border-strong) !important;
+  background: var(--theme-surface-2);
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  border: 1px solid var(--theme-border-strong);
   box-shadow:
     0 4px 10px rgba(0, 0, 0, 0.35),
     0 1px 2px rgba(0, 0, 0, 0.25),
@@ -664,15 +671,14 @@
     inset 0 2px 4px rgba(255, 255, 255, 0.06);
 }
 
-/* ✅ Hover state — theme-aware */
 .hero-actions [class*="--ghost"]:hover,
 .hero-actions [class*="--secondary"]:hover,
 .hero-actions .button--secondary:hover,
 .hero-actions .btn-secondary:hover {
-  background: rgba(var(--theme-primary-rgb), 0.1) !important;
-  color: var(--theme-primary-hover) !important;
-  -webkit-text-fill-color: var(--theme-primary-hover) !important;
-  border-color: var(--theme-primary) !important;
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  color: var(--theme-primary-hover);
+  -webkit-text-fill-color: var(--theme-primary-hover);
+  border-color: var(--theme-primary);
   transform: translateY(-2px) scale(1.02);
   box-shadow:
     0 8px 16px rgba(var(--theme-primary-rgb), 0.2),
@@ -681,10 +687,7 @@
     inset 0 2px 4px rgba(255, 255, 255, 0.6);
 }
 
-/* ============================================================
-   2️⃣ HERO PRIMARY BUTTON — Siguraduhing visible
-   ============================================================ */
-
+/* ✅ Hero primary button */
 .hero-actions [class*="--primary"],
 .hero-actions .button--primary,
 .hero-actions .btn-primary {
@@ -698,10 +701,10 @@
     135deg,
     var(--theme-primary) 0%,
     var(--theme-primary-hover) 100%
-  ) !important;
-  color: var(--theme-on-primary) !important;
-  -webkit-text-fill-color: var(--theme-on-primary) !important;
-  border: none !important;
+  );
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
+  border: none;
   font-family: inherit;
   font-size: 0.88rem;
   font-weight: 700;
@@ -726,106 +729,93 @@
     inset 0 3px 6px rgba(255, 255, 255, 0.3);
 }
 
-/* ============================================================
-   3️⃣ HERO BULLET ICONS — Theme-aware
-   ============================================================ */
-
+/* ✅ Hero bullet icons */
 .hero-bullet__icon {
-  background: rgba(var(--theme-primary-rgb), 0.1) !important;
-  border: 1px solid rgba(var(--theme-primary-rgb), 0.25) !important;
-  color: var(--theme-primary) !important;
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.25);
+  color: var(--theme-primary);
 }
 
 .hero-bullet__icon svg,
 .hero-bullet__icon .react-icon {
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  stroke: currentColor !important;
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  stroke: currentColor;
 }
 
 [data-theme-mode='dark'] .hero-bullet__icon {
-  background: rgba(var(--theme-primary-rgb), 0.15) !important;
-  border-color: rgba(var(--theme-primary-rgb), 0.35) !important;
+  background: rgba(var(--theme-primary-rgb), 0.15);
+  border-color: rgba(var(--theme-primary-rgb), 0.35);
 }
 
-/* ============================================================
-   4️⃣ HERO BULLETS — Text visibility
-   ============================================================ */
-
+/* ✅ Hero bullet text */
 .hero-bullet,
 .hero-bullet strong {
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
+  color: var(--theme-text);
+  -webkit-text-fill-color: var(--theme-text);
 }
 
 .hero-bullet small {
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  color: var(--theme-text-muted);
+  -webkit-text-fill-color: var(--theme-text-muted);
 }
 
-/* ============================================================
-   5️⃣ HERO BULLETS — Divider lines
-   ============================================================ */
-
+/* ✅ Hero bullet divider */
 .hero-bullet:not(:last-child)::after {
-  background: var(--theme-border) !important;
+  background: var(--theme-border);
 }
 
 .hero-bullets {
-  border-top-color: var(--theme-border) !important;
+  border-top-color: var(--theme-border);
 }
 
 /* ============================================================
-   6️⃣ LAHAT NG GHOST BUTTONS — Lahat ng pages
+   🎯 GLOBAL GHOST BUTTONS — Lahat ng pages
    ✅ I-apply ang fix sa lahat ng ghost buttons
    ============================================================ */
 
-/* ✅ Settings, profile, cart, at iba pa */
 button[class*="--ghost"]:not([class*="hero"]),
 button[class*="--secondary"]:not([class*="hero"]),
 a[class*="--ghost"]:not([class*="hero"]),
 a[class*="--secondary"]:not([class*="hero"]) {
-  background: var(--theme-surface) !important;
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  border: 1px solid var(--theme-border) !important;
+  background: var(--theme-surface);
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  border: 1px solid var(--theme-border);
 }
 
 [data-theme-mode='dark'] button[class*="--ghost"]:not([class*="hero"]),
 [data-theme-mode='dark'] button[class*="--secondary"]:not([class*="hero"]),
 [data-theme-mode='dark'] a[class*="--ghost"]:not([class*="hero"]),
 [data-theme-mode='dark'] a[class*="--secondary"]:not([class*="hero"]) {
-  background: var(--theme-surface-2) !important;
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  border-color: var(--theme-border-strong) !important;
+  background: var(--theme-surface-2);
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  border-color: var(--theme-border-strong);
 }
 
 button[class*="--ghost"]:hover:not(:disabled):not([class*="hero"]),
 button[class*="--secondary"]:hover:not(:disabled):not([class*="hero"]),
 a[class*="--ghost"]:hover:not([class*="hero"]),
 a[class*="--secondary"]:hover:not([class*="hero"]) {
-  background: rgba(var(--theme-primary-rgb), 0.1) !important;
-  color: var(--theme-primary-hover) !important;
-  -webkit-text-fill-color: var(--theme-primary-hover) !important;
-  border-color: var(--theme-primary) !important;
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  color: var(--theme-primary-hover);
+  -webkit-text-fill-color: var(--theme-primary-hover);
+  border-color: var(--theme-primary);
   transform: translateY(-1px);
 }
 
-/* ============================================================
-   7️⃣ CART SUMMARY GHOST BUTTON — Fix
-   ============================================================ */
-
+/* ✅ Cart summary ghost button */
 .cart-summary__btn--ghost,
 .checkout-btn--secondary,
 .gcash-modal__btn--ghost,
 .od-modal__btn--ghost,
 .settings-btn--ghost,
 .dashboard-gate__btn--ghost {
-  background: var(--theme-surface) !important;
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  border: 1px solid var(--theme-border) !important;
+  background: var(--theme-surface);
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  border: 1px solid var(--theme-border);
 }
 
 [data-theme-mode='dark'] .cart-summary__btn--ghost,
@@ -834,1470 +824,53 @@ a[class*="--secondary"]:hover:not([class*="hero"]) {
 [data-theme-mode='dark'] .od-modal__btn--ghost,
 [data-theme-mode='dark'] .settings-btn--ghost,
 [data-theme-mode='dark'] .dashboard-gate__btn--ghost {
-  background: var(--theme-surface-2) !important;
-  border-color: var(--theme-border-strong) !important;
+  background: var(--theme-surface-2);
+  border-color: var(--theme-border-strong);
 }
 
-/* ============================================================
-   8️⃣ PRODUCT RELATED CARD CTA — Fix
-   ============================================================ */
-
+/* ✅ Product related card CTA */
 .product-related__card button,
 .product-related__card a[class*="--primary"] {
-  color: var(--theme-on-primary) !important;
-  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
 }
 
 /* ============================================================
-   9️⃣ SIGURADUHING WALANG PUTI SA PUTI
+   🎯 SIGURADUHING WALANG PUTI SA PUTI
    ✅ Force text color sa lahat ng buttons
    ============================================================ */
 
-/* ✅ Lahat ng primary buttons — dark text sa light accent, light text sa dark accent */
 button[class*="--primary"]:not(:disabled),
 a[class*="--primary"]:not(.is-disabled) {
-  color: var(--theme-on-primary) !important;
-  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
 }
 
-/* ✅ Lahat ng ghost buttons — theme-aware text */
 button[class*="--ghost"]:not(:disabled),
 button[class*="--secondary"]:not(:disabled),
 a[class*="--ghost"]:not(.is-disabled),
 a[class*="--secondary"]:not(.is-disabled) {
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
+  color: var(--theme-text);
+  -webkit-text-fill-color: var(--theme-text);
 }
 
 button[class*="--ghost"]:hover:not(:disabled),
 button[class*="--secondary"]:hover:not(:disabled),
 a[class*="--ghost"]:hover:not(.is-disabled),
 a[class*="--secondary"]:hover:not(.is-disabled) {
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
 }
 
-/* ============================================================
-   🔟 SPAN INHERIT — Siguraduhing sumasama ang text color
-   ============================================================ */
-
+/* ✅ Span inherit */
 button > span,
 button > *,
 a[class*="btn"] > span,
 a[class*="btn"] > *,
 a[class*="cta"] > span,
 a[class*="cta"] > * {
-  color: inherit !important;
-  -webkit-text-fill-color: inherit !important;
-  fill: currentColor !important;
-  stroke: currentColor !important;
-}
-/* ============================================================
-   🎯 ICON VISIBILITY — HUWAG BAGUHIN ANG HITSUURA
-   ✅ Icons ay mananatiling visible sa lahat ng state
-   ✅ Hindi dumidilim, hindi nagbabago ng color
-   ✅ Naka-apply sa lahat ng 10 themes
-   ============================================================ */
-
-/* ============================================================
-   1️⃣ NAVBAR ICONS — Consistent sa lahat ng state
-   ✅ Mananatiling light/visible
-   ============================================================ */
-
-.site-nav .react-icon,
-.site-nav svg,
-.site-nav .nav-action .react-icon,
-.site-nav .nav-action svg,
-.site-nav .nav-action--accent .react-icon,
-.site-nav .nav-action--accent svg,
-.site-nav .notification-bell__button .react-icon,
-.site-nav .notification-bell__button svg,
-.site-nav .nav-search__icon,
-.site-nav .nav-search__icon svg,
-.site-nav .nav-avatar-chevron,
-.site-nav .nav-avatar-chevron svg,
-.site-nav .brand__logo,
-.site-nav .brand__mark .react-icon,
-.site-nav .brand__mark svg {
-  color: currentColor !important;
-  -webkit-text-fill-color: currentColor !important;
-  stroke: currentColor !important;
-  fill: none !important;
-  opacity: 1 !important;
-  filter: none !important;
-}
-
-/* ✅ Icons sa nav-action — base state */
-.site-nav .nav-action .react-icon,
-.site-nav .nav-action svg {
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  stroke: var(--theme-text) !important;
-  opacity: 1 !important;
-}
-
-/* ✅ Icons sa nav-action — hover state (HINDI NAGBABAGO) */
-.site-nav .nav-action:hover .react-icon,
-.site-nav .nav-action:hover svg {
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  stroke: var(--theme-text) !important;
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-/* ✅ Icons sa nav-action — active state (HINDI NAGBABAGO) */
-.site-nav .nav-action.is-active .react-icon,
-.site-nav .nav-action.is-active svg,
-.site-nav .nav-action[aria-current="page"] .react-icon,
-.site-nav .nav-action[aria-current="page"] svg {
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  stroke: var(--theme-text) !important;
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-/* ✅ Icons sa accent button (Sign in) — on-primary */
-.site-nav .nav-action--accent .react-icon,
-.site-nav .nav-action--accent svg {
-  color: var(--theme-on-primary) !important;
-  -webkit-text-fill-color: var(--theme-on-primary) !important;
-  stroke: var(--theme-on-primary) !important;
-  opacity: 1 !important;
-}
-
-.site-nav .nav-action--accent:hover .react-icon,
-.site-nav .nav-action--accent:hover svg {
-  color: var(--theme-on-primary) !important;
-  -webkit-text-fill-color: var(--theme-on-primary) !important;
-  stroke: var(--theme-on-primary) !important;
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-/* ============================================================
-   2️⃣ NOTIFICATION BELL ICON — Consistent
-   ============================================================ */
-
-.site-nav .notification-bell__button .react-icon,
-.site-nav .notification-bell__button svg {
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  stroke: var(--theme-text) !important;
-  opacity: 1 !important;
-}
-
-.site-nav .notification-bell__button:hover .react-icon,
-.site-nav .notification-bell__button:hover svg {
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  stroke: var(--theme-text) !important;
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-/* ============================================================
-   3️⃣ AVATAR CHEVRON — Consistent
-   ============================================================ */
-
-.site-nav .nav-avatar-chevron,
-.site-nav .nav-avatar-chevron svg {
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  stroke: var(--theme-text-muted) !important;
-  opacity: 1 !important;
-}
-
-.site-nav .nav-avatar:hover .nav-avatar-chevron,
-.site-nav .nav-avatar:hover .nav-avatar-chevron svg {
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  stroke: var(--theme-text-muted) !important;
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-/* ============================================================
-   4️⃣ SEARCH ICON — Consistent
-   ============================================================ */
-
-.site-nav .nav-search__icon,
-.site-nav .nav-search__icon svg {
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  stroke: var(--theme-text-muted) !important;
-  opacity: 1 !important;
-}
-
-.site-nav .nav-search:focus-within .nav-search__icon,
-.site-nav .nav-search:focus-within .nav-search__icon svg {
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  stroke: var(--theme-text-muted) !important;
-  opacity: 1 !important;
-}
-
-/* ============================================================
-   5️⃣ BRAND MARK ICON — Consistent
-   ============================================================ */
-
-.site-nav .brand__mark .react-icon,
-.site-nav .brand__mark svg {
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  stroke: var(--theme-primary) !important;
-  opacity: 1 !important;
-}
-
-.site-nav .brand:hover .brand__mark .react-icon,
-.site-nav .brand:hover .brand__mark svg {
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  stroke: var(--theme-primary) !important;
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-/* ============================================================
-   6️⃣ GLOBAL ICON SAFEGUARD — Lahat ng icons
-   ✅ Hindi dumidilim, hindi nagbabago ng color sa hover
-   ============================================================ */
-
-/* ✅ Lahat ng icons sa loob ng buttons — consistent */
-button .react-icon,
-button svg,
-a[class*="btn"] .react-icon,
-a[class*="btn"] svg,
-a[class*="cta"] .react-icon,
-a[class*="cta"] svg {
-  color: currentColor !important;
-  -webkit-text-fill-color: currentColor !important;
-  stroke: currentColor !important;
-  opacity: 1 !important;
-  filter: none !important;
-}
-
-/* ✅ Icons sa hover — HINDI nagbabago ng color */
-button:hover .react-icon,
-button:hover svg,
-a[class*="btn"]:hover .react-icon,
-a[class*="btn"]:hover svg,
-a[class*="cta"]:hover .react-icon,
-a[class*="cta"]:hover svg {
-  color: currentColor !important;
-  -webkit-text-fill-color: currentColor !important;
-  stroke: currentColor !important;
-  opacity: 1 !important;
-  filter: none !important;
-}
-
-/* ============================================================
-   7️⃣ SIDEBAR ICONS — Consistent sa lahat ng state
-   ============================================================ */
-
-.settings-sidebar__item .react-icon,
-.settings-sidebar__item svg,
-.profile-sidebar__item .react-icon,
-.profile-sidebar__item svg,
-.dashboard-sidebar__item .react-icon,
-.dashboard-sidebar__item svg,
-.notifications-sidebar__item .react-icon,
-.notifications-sidebar__item svg,
-.order-sidebar-nav__item .react-icon,
-.order-sidebar-nav__item svg {
-  color: currentColor !important;
-  -webkit-text-fill-color: currentColor !important;
-  stroke: currentColor !important;
-  opacity: 1 !important;
-  filter: none !important;
-}
-
-/* ✅ Sidebar icons sa hover — HINDI nagbabago */
-.settings-sidebar__item:hover .react-icon,
-.settings-sidebar__item:hover svg,
-.profile-sidebar__item:hover .react-icon,
-.profile-sidebar__item:hover svg,
-.dashboard-sidebar__item:hover .react-icon,
-.dashboard-sidebar__item:hover svg,
-.notifications-sidebar__item:hover .react-icon,
-.notifications-sidebar__item:hover svg,
-.order-sidebar-nav__item:hover .react-icon,
-.order-sidebar-nav__item:hover svg {
-  color: currentColor !important;
-  -webkit-text-fill-color: currentColor !important;
-  stroke: currentColor !important;
-  opacity: 1 !important;
-  filter: none !important;
-  transform: none !important;
-}
-
-/* ✅ Sidebar icons sa active state */
-.settings-sidebar__item.is-active .react-icon,
-.settings-sidebar__item.is-active svg,
-.profile-sidebar__item.is-active .react-icon,
-.profile-sidebar__item.is-active svg,
-.dashboard-sidebar__item.is-active .react-icon,
-.dashboard-sidebar__item.is-active svg,
-.notifications-sidebar__item.is-active .react-icon,
-.notifications-sidebar__item.is-active svg,
-.order-sidebar-nav__item.is-active .react-icon,
-.order-sidebar-nav__item.is-active svg {
-  color: currentColor !important;
-  -webkit-text-fill-color: currentColor !important;
-  stroke: currentColor !important;
-  opacity: 1 !important;
-  filter: none !important;
-}
-
-/* ============================================================
-   8️⃣ HERO BULLET ICONS — Consistent
-   ============================================================ */
-
-.hero-bullet__icon .react-icon,
-.hero-bullet__icon svg {
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  stroke: var(--theme-primary) !important;
-  opacity: 1 !important;
-  filter: none !important;
-}
-
-.hero-bullet__icon:hover .react-icon,
-.hero-bullet__icon:hover svg {
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  stroke: var(--theme-primary) !important;
-  opacity: 1 !important;
-  filter: none !important;
-  transform: none !important;
-}
-
-/* ============================================================
-   9️⃣ CARD ICONS — Consistent
-   ============================================================ */
-
-.home-card__icon-circle .react-icon,
-.home-card__icon-circle svg,
-.visit-panel__icon .react-icon,
-.visit-panel__icon svg,
-.dashboard-summary__icon .react-icon,
-.dashboard-summary__icon svg,
-.checkout-section__icon .react-icon,
-.checkout-section__icon svg {
-  color: currentColor !important;
-  -webkit-text-fill-color: currentColor !important;
-  stroke: currentColor !important;
-  opacity: 1 !important;
-  filter: none !important;
-}
-
-.home-card__icon-circle:hover .react-icon,
-.home-card__icon-circle:hover svg,
-.home-card--category:hover .home-card__icon-circle .react-icon,
-.home-card--category:hover .home-card__icon-circle svg {
-  color: currentColor !important;
-  -webkit-text-fill-color: currentColor !important;
-  stroke: currentColor !important;
-  opacity: 1 !important;
-  filter: none !important;
-  transform: none !important;
-}
-
-/* ============================================================
-   🔟 DISABLE LAHAT NG ICON TRANSFORM SA HOVER
-   ✅ Walang scale, rotate, o transform
-   ============================================================ */
-
-.react-icon,
-.react-icon:hover,
-svg,
-svg:hover,
-[class*="icon"] .react-icon:hover,
-[class*="icon"]:hover .react-icon,
-[class*="icon"]:hover svg,
-button:hover .react-icon,
-button:hover svg,
-a:hover .react-icon,
-a:hover svg {
-  transform: none !important;
-  rotate: 0deg !important;
-  scale: 1 !important;
-}
-
-/* ============================================================
-   1️⃣1️⃣ RETAIN ICON SIZE — Hindi nagbabago
-   ============================================================ */
-
-.site-nav .react-icon,
-.site-nav svg {
-  width: 1rem !important;
-  height: 1rem !important;
-  min-width: 1rem !important;
-  min-height: 1rem !important;
-}
-
-.site-nav .nav-avatar-chevron,
-.site-nav .nav-avatar-chevron svg {
-  width: 0.85rem !important;
-  height: 0.85rem !important;
-}
-
-.site-nav .notification-bell__button .react-icon,
-.site-nav .notification-bell__button svg {
-  width: 1.1rem !important;
-  height: 1.1rem !important;
-}
-/* ============================================================
-   🎯 DISABLE ALL HOVER — Lahat ng pages at themes
-   ✅ Walang hover effect sa kahit anong element
-   ✅ Naka-apply sa lahat ng 10 themes
-   ============================================================ */
-
-/* ============================================================
-   1️⃣ NAVBAR — Walang hover
-   ============================================================ */
-
-.site-nav,
-.site-nav:hover,
-.site-nav .nav-action,
-.site-nav .nav-action:hover,
-.site-nav .nav-action--accent,
-.site-nav .nav-action--accent:hover,
-.site-nav .nav-action.is-active,
-.site-nav .nav-action[aria-current="page"],
-.site-nav .notification-bell__button,
-.site-nav .notification-bell__button:hover,
-.site-nav .nav-avatar,
-.site-nav .nav-avatar:hover,
-.site-nav .nav-avatar-frame,
-.site-nav .nav-avatar:hover .nav-avatar-frame,
-.site-nav .nav-dropdown-item,
-.site-nav .nav-dropdown-item:hover,
-.site-nav .nav-dropdown-item--danger,
-.site-nav .nav-dropdown-item--danger:hover,
-.site-nav .nav-dropdown-item--themes,
-.site-nav .nav-dropdown-item--themes:hover,
-.site-nav .brand,
-.site-nav .brand:hover,
-.site-nav .brand__logo,
-.site-nav .brand:hover .brand__logo,
-.site-nav .nav-search,
-.site-nav .nav-search:hover,
-.site-nav .nav-search__input:hover,
-.site-nav .nav-search__clear,
-.site-nav .nav-search__clear:hover {
-  transform: none !important;
-  box-shadow: none !important;
-}
-
-/* ✅ Retain ang background/border states (walang transform) */
-.site-nav .nav-action,
-.site-nav .notification-bell__button,
-.site-nav .nav-avatar {
-  transition: none !important;
-}
-
-/* ============================================================
-   2️⃣ BUTTONS — Walang hover
-   ============================================================ */
-
-button,
-button:hover,
-button:active,
-button:focus,
-a[class*="btn"],
-a[class*="btn"]:hover,
-a[class*="cta"],
-a[class*="cta"]:hover,
-a[class*="button"],
-a[class*="button"]:hover,
-button[class*="--primary"],
-button[class*="--primary"]:hover,
-button[class*="--ghost"],
-button[class*="--ghost"]:hover,
-button[class*="--secondary"],
-button[class*="--secondary"]:hover,
-a[class*="--primary"],
-a[class*="--primary"]:hover,
-a[class*="--ghost"],
-a[class*="--ghost"]:hover,
-a[class*="--secondary"],
-a[class*="--secondary"]:hover,
-.cart-summary__btn,
-.cart-summary__btn:hover,
-.cart-summary__btn--primary:hover,
-.cart-summary__btn--ghost:hover,
-.checkout-summary__submit:hover,
-.checkout-btn--primary:hover,
-.checkout-btn--secondary:hover,
-.dashboard-summary__cta:hover,
-.dashboard-gate__btn--primary:hover,
-.dashboard-gate__btn--ghost:hover,
-.settings-btn,
-.settings-btn:hover,
-.settings-btn--primary:hover,
-.settings-btn--ghost:hover,
-.gcash-modal__btn,
-.gcash-modal__btn:hover,
-.gcash-modal__btn--primary:hover,
-.gcash-modal__btn--ghost:hover,
-.od-modal__btn,
-.od-modal__btn:hover,
-.od-modal__btn--primary:hover,
-.od-modal__btn--ghost:hover,
-.site-footer__cta-btn:hover,
-.home-card__cta:hover,
-.catalog-card__cta:hover,
-.catalog-card__btn:hover,
-.product-panel__cta:hover,
-.product-card__btn:hover,
-.favorites-card__btn:hover,
-.favorites-card__cta:hover,
-.favorites-empty__cta:hover,
-.catalog-empty__cta:hover,
-.checkout-empty__cta:hover,
-.select-options-btn:hover,
-.hero-actions button,
-.hero-actions button:hover,
-.hero-actions a,
-.hero-actions a:hover,
-.product-qty__btn,
-.product-qty__btn:hover,
-.cart-item__qty-btn,
-.cart-item__qty-btn:hover,
-.cart-item__remove,
-.cart-item__remove:hover,
-.favorites-card__remove,
-.favorites-card__remove:hover,
-.hero-carousel__btn,
-.hero-carousel__btn:hover,
-.hero-carousel__dot,
-.hero-carousel__dot:hover,
-.product-gallery__nav,
-.product-gallery__nav:hover,
-.product-gallery__wish,
-.product-gallery__wish:hover,
-.product-gallery__thumb,
-.product-gallery__thumb:hover,
-.notification-card__action,
-.notification-card__action:hover,
-.notification-card__link,
-.notification-card__link:hover,
-.settings-photo__btn:hover,
-.settings-photo__badge:hover,
-.settings-modal__close:hover,
-.cancel-modal__close:hover,
-.cancel-modal__btn:hover,
-.payment-option:hover,
-.gcash-modal__option:hover {
-  transform: none !important;
-  filter: none !important;
-}
-
-/* ✅ Retain ang bg/color states (walang transform/filter) */
-button,
-a[class*="btn"],
-a[class*="cta"],
-a[class*="button"] {
-  transition: none !important;
-}
-
-/* ============================================================
-   3️⃣ CARDS — Walang hover
-   ============================================================ */
-
-.home-card,
-.home-card:hover,
-.catalog-card,
-.catalog-card:hover,
-.product-card,
-.product-card:hover,
-.product-related__card,
-.product-related__card:hover,
-.favorites-card,
-.favorites-card:hover,
-.notification-card,
-.notification-card:hover,
-.order-card,
-.order-card:hover,
-.profile-card,
-.profile-card:hover,
-.profile-side__card,
-.profile-side__card:hover,
-.dashboard-summary__card,
-.dashboard-summary__card:hover,
-.settings-panel,
-.settings-panel:hover,
-.cart-items,
-.cart-items:hover,
-.cart-summary,
-.cart-summary:hover,
-.checkout-section,
-.checkout-section:hover,
-.checkout-summary,
-.checkout-summary:hover,
-.od-card,
-.od-card:hover,
-.od-rail-card,
-.od-rail-card:hover,
-.home-section,
-.home-section:hover,
-.home-highlights__panel,
-.home-highlights__panel:hover,
-.hero-carousel__viewport,
-.hero-carousel__viewport:hover {
-  transform: none !important;
-  filter: none !important;
-}
-
-/* ✅ Retain ang bg/shadow (walang transform) */
-.home-card,
-.catalog-card,
-.product-card,
-.product-related__card,
-.favorites-card,
-.notification-card,
-.order-card {
-  transition: none !important;
-}
-
-/* ✅ Image zoom sa loob ng card — walang hover */
-.home-card:hover .home-card__image,
-.catalog-card:hover .catalog-card__image,
-.product-card:hover .product-card__image,
-.product-related__card:hover .product-related__image,
-.favorites-card:hover .favorites-card__image,
-.order-card:hover .order-card__thumb-img,
-.cart-item:hover .cart-item__media img {
-  transform: none !important;
-}
-
-/* ============================================================
-   4️⃣ LINKS — Walang hover
-   ============================================================ */
-
-a,
-a:hover,
-a:focus,
-a:active,
-a:not([class*="btn"]):not([class*="cta"]):not([class*="button"]):hover,
-.product-breadcrumb__link,
-.product-breadcrumb__link:hover,
-.home-section__link,
-.home-section__link:hover,
-.site-footer__links a,
-.site-footer__links a:hover,
-.site-footer__meta a,
-.site-footer__meta a:hover,
-.site-footer__contact a,
-.site-footer__contact a:hover,
-.site-footer__top,
-.site-footer__top:hover,
-.product-related__link,
-.product-related__link:hover,
-.notification-banner__link,
-.notification-banner__link:hover,
-.home-card__link,
-.home-card__link:hover,
-.hero-photo__link,
-.hero-photo__link:hover,
-.favorites-back,
-.favorites-back:hover,
-.notifications-back,
-.notifications-back:hover,
-.order-back,
-.order-back:hover,
-.checkout-hero__back,
-.checkout-hero__back:hover {
-  transform: none !important;
-  filter: none !important;
-  text-decoration: none !important;
-}
-
-/* ============================================================
-   5️⃣ NAV ITEMS / SIDEBAR ITEMS — Walang hover
-   ============================================================ */
-
-[class*="sidebar__item"],
-[class*="sidebar__item"]:hover,
-[class*="nav-item"],
-[class*="nav-item"]:hover,
-[class*="nav-link"],
-[class*="nav-link"]:hover,
-.dashboard-sidebar__item,
-.dashboard-sidebar__item:hover,
-.settings-sidebar__item,
-.settings-sidebar__item:hover,
-.profile-sidebar__item,
-.profile-sidebar__item:hover,
-.notifications-sidebar__item,
-.notifications-sidebar__item:hover,
-.order-sidebar-nav__item,
-.order-sidebar-nav__item:hover,
-.settings-quicklink,
-.settings-quicklink:hover {
-  transform: none !important;
-  filter: none !important;
-}
-
-/* ============================================================
-   6️⃣ ICONS — Walang hover, walang transform
-   ============================================================ */
-
-.react-icon,
-.react-icon:hover,
-svg,
-svg:hover,
-[class*="icon"]:hover,
-[class*="icon"]:hover .react-icon,
-button:hover .react-icon,
-button:hover svg,
-a:hover .react-icon,
-a:hover svg,
-.card:hover .react-icon,
-.home-card:hover .react-icon,
-.catalog-card:hover .react-icon,
-.product-card:hover .react-icon,
-.hero-bullet__icon:hover,
-.hero-bullet__icon:hover .react-icon,
-.home-card__icon-circle:hover,
-.home-card--category:hover .home-card__icon-circle,
-.visit-panel__icon:hover,
-.settings-panel__icon:hover,
-.checkout-section__icon:hover,
-.dashboard-summary__icon:hover,
-.nav-avatar-chevron,
-.nav-avatar:hover .nav-avatar-chevron {
-  transform: none !important;
-  rotate: 0deg !important;
-  scale: 1 !important;
-  filter: none !important;
-}
-
-/* ============================================================
-   7️⃣ INPUTS, TEXTAREAS, SELECTS — Walang hover
-   ✅ Retain focus (accessibility)
-   ============================================================ */
-
-input:hover,
-textarea:hover,
-select:hover,
-.nav-search__input:hover,
-.dashboard-toolbar__search input:hover,
-.dashboard-toolbar__select:hover,
-.settings-field__input:hover,
-.settings-field__select:hover,
-.field__input:hover {
-  transform: none !important;
-  border-color: inherit !important;
-  box-shadow: inherit !important;
-}
-
-/* ✅ Retain focus states */
-input:focus,
-textarea:focus,
-select:focus {
-  outline: none !important;
-}
-
-/* ============================================================
-   8️⃣ TABS, CHIPS, BADGES — Walang hover
-   ============================================================ */
-
-[class*="tab"]:hover,
-[class*="chip"]:hover,
-[class*="badge"]:hover,
-.notifications-tab:hover,
-.appearance-tab:hover,
-.settings-tab:hover,
-.product-tabs__tab:hover,
-.home-card__badge:hover,
-.catalog-card__badge:hover,
-.favorites-card__badge:hover,
-.notification-bell__badge:hover,
-.nav-cart-count:hover {
-  transform: none !important;
-  filter: none !important;
-}
-
-/* ============================================================
-   9️⃣ HERO — Walang hover
-   ============================================================ */
-
-.hero-shell,
-.hero-shell:hover,
-.hero-carousel,
-.hero-carousel:hover,
-.hero-carousel__viewport,
-.hero-carousel__viewport:hover,
-.hero-carousel__caption,
-.hero-carousel__caption:hover,
-.hero-carousel__dots,
-.hero-carousel__dots:hover,
-.hero-photo__frame,
-.hero-photo__frame:hover,
-.hero-photo__overlay,
-.hero-photo__overlay:hover,
-.hero-photo__signage,
-.hero-photo__signage:hover,
-.hero-photo__tag,
-.hero-photo__tag:hover,
-.cart-hero,
-.cart-hero:hover,
-.catalog-hero,
-.catalog-hero:hover,
-.checkout-hero,
-.checkout-hero:hover,
-.dashboard-hero,
-.dashboard-hero:hover,
-.settings-hero,
-.settings-hero:hover,
-.notifications-hero,
-.notifications-hero:hover,
-.favorites-hero,
-.favorites-hero:hover,
-.od-hero,
-.od-hero:hover {
-  transform: none !important;
-  filter: none !important;
-}
-
-/* ============================================================
-   🔟 PRODUCT SIZES / VARIANTS — Walang hover
-   ✅ Retain selected state
-   ============================================================ */
-
-.product-variant,
-.product-variant:hover,
-.product-variant:focus,
-.product-variant.is-selected,
-.product-variant.is-selected:hover {
-  transform: none !important;
-  filter: none !important;
-}
-
-/* ✅ Retain selected bg */
-.product-variant.is-selected {
-  background: var(--theme-primary) !important;
-  color: var(--theme-on-primary) !important;
-  -webkit-text-fill-color: var(--theme-on-primary) !important;
-  border-color: var(--theme-primary) !important;
-}
-
-/* ============================================================
-   1️⃣1️⃣ BACKGROUND — Walang hover
-   ============================================================ */
-
-body,
-body:hover,
-body::before,
-body::before:hover,
-body::after,
-body::after:hover,
-html,
-html:hover {
-  transform: none !important;
-  filter: none !important;
-}
-
-/* ============================================================
-   1️⃣2️⃣ MGA THUMBNAILS, AVATARS, WISHLIST — Walang hover
-   ============================================================ */
-
-.product-gallery__thumb,
-.product-gallery__thumb:hover,
-.product-gallery__wish,
-.product-gallery__wish:hover,
-.product-gallery__nav,
-.product-gallery__nav:hover,
-.product-gallery__dot,
-.product-gallery__dot:hover,
-.cart-item__media,
-.cart-item__media:hover,
-.cart-item__remove,
-.cart-item__remove:hover,
-.checkout-summary__item,
-.checkout-summary__item:hover,
-.settings-address,
-.settings-address:hover,
-.cart-summary__pickup,
-.cart-summary__pickup:hover,
-.payment-option,
-.payment-option:hover,
-.gcash-modal__option,
-.gcash-modal__option:hover {
-  transform: none !important;
-  filter: none !important;
-}
-
-/* ✅ Retain selected/active states (walang transform) */
-.product-gallery__thumb.is-active {
-  border: 2px solid var(--theme-primary) !important;
-}
-
-.product-gallery__wish.is-active {
-  background: var(--theme-primary) !important;
-  color: var(--theme-on-primary) !important;
-}
-
-.payment-option.is-selected,
-.gcash-modal__option.is-selected {
-  border-color: var(--theme-primary) !important;
-  background: rgba(var(--theme-primary-rgb), 0.08) !important;
-}
-
-/* ============================================================
-   1️⃣3️⃣ RETAIN — Focus states (accessibility)
-   ============================================================ */
-
-:where(button, a, input, select, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--theme-primary) !important;
-  outline-offset: 2px !important;
-  border-radius: 0.4rem !important;
-}
-
-/* ============================================================
-   1️⃣4️⃣ RETAIN — Cursor states
-   ============================================================ */
-
-button:not(:disabled),
-a,
-[role="button"],
-[tabindex]:not([tabindex="-1"]) {
-  cursor: pointer;
-}
-
-button:disabled,
-[aria-disabled="true"] {
-  cursor: not-allowed;
-}
-
-/* ============================================================
-   1️⃣5️⃣ REDUCED MOTION — Accessibility
-   ============================================================ */
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    transition: none !important;
-    animation: none !important;
-    transform: none !important;
-  }
-}
-/* ============================================================
-   🎯 CATALOG LAYOUT FIX — Pantay-pantay na
-   ✅ Ayusin ang categories sidebar
-   ✅ Ayusin ang card heights
-   ✅ Naka-apply sa lahat ng 10 themes
-   ============================================================ */
-
-/* ============================================================
-   1️⃣ CATALOG BODY — Stable 2-column layout
-   ============================================================ */
-
-.catalog-body {
-  display: grid !important;
-  grid-template-columns: 15rem minmax(0, 1fr) !important;
-  gap: 1.25rem !important;
-  align-items: start !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-/* ✅ Categories column — fixed width */
-.catalog-categories {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 1rem !important;
-  position: sticky !important;
-  top: 5rem !important;
-  width: 15rem !important;
-  max-width: 15rem !important;
-  min-width: 15rem !important;
-  flex-shrink: 0 !important;
-  box-sizing: border-box !important;
-}
-
-/* ✅ FIX: Categories card — alisin ang 20rem padding */
-.catalog-categories__card {
-  background: var(--theme-surface) !important;
-  border: 1px solid var(--theme-border) !important;
-  border-radius: 1rem !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  box-shadow: var(--theme-shadow-sm) !important;
-  padding: 1rem !important;  /* ✅ Dating 20rem — sobrang laki! */
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
-
-/* ✅ Categories title */
-.catalog-categories__title {
-  margin: 0 0 0.75rem !important;
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  font-family: var(--font-display, 'Fraunces', serif) !important;
-  font-size: 0.9rem !important;
-  font-weight: 700 !important;
-}
-
-/* ✅ Categories list */
-.catalog-categories__list {
-  list-style: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0.15rem !important;
-  width: 100% !important;
-  overflow: hidden !important;
-}
-
-/* ✅ FIX: Category item — alisin ang 82% width */
-.catalog-category {
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.65rem !important;
-  width: 100% !important;  /* ✅ Dating 82% */
-  max-width: 100% !important;
-  padding: 0.55rem 0.6rem !important;
-  border: 0 !important;
-  border-radius: 0.55rem !important;
-  background: transparent !important;
-  cursor: pointer !important;
-  text-align: left !important;
-  font-family: inherit !important;
-  transition: background 150ms ease !important;
-  box-sizing: border-box !important;
-  overflow: hidden !important;
-}
-
-.catalog-category:hover {
-  background: var(--theme-surface-2) !important;
-}
-
-.catalog-category.is-active {
-  background: rgba(var(--theme-primary-rgb), 0.12) !important;
-}
-
-/* ✅ FIX: Category icon — consistent size */
-.catalog-category__icon {
-  display: grid !important;
-  width: 1.9rem !important;
-  height: 1.9rem !important;
-  min-width: 1.9rem !important;
-  min-height: 1.9rem !important;
-  flex-shrink: 0 !important;
-  place-items: center !important;
-  border-radius: 0.5rem !important;
-  background: var(--theme-surface-2) !important;
-  color: var(--theme-primary) !important;
-}
-
-.catalog-category.is-active .catalog-category__icon {
-  background: var(--theme-primary) !important;
-  color: var(--theme-on-primary) !important;
-}
-
-/* ✅ FIX: Category label — truncate */
-.catalog-category__label {
-  flex: 1 1 auto !important;
-  min-width: 0 !important;
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  font-size: 0.8rem !important;
-  font-weight: 600 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-  max-width: 100% !important;
-}
-
-/* ✅ FIX: Category count */
-.catalog-category__count {
-  flex: 0 0 auto !important;
-  padding: 0.15rem 0.55rem !important;
-  border-radius: 999px !important;
-  background: var(--theme-surface-2) !important;
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace) !important;
-  font-size: 0.68rem !important;
-  font-weight: 700 !important;
-  min-width: 1.75rem !important;
-  text-align: center !important;
-  margin-left: auto !important;
-}
-
-.catalog-category.is-active .catalog-category__count {
-  background: var(--theme-primary) !important;
-  color: var(--theme-on-primary) !important;
-}
-
-/* ✅ FIX: Categories note — alisin ang 82% width */
-.catalog-categories__note {
-  display: grid !important;
-  gap: 0.4rem !important;
-  width: 100% !important;  /* ✅ Dating 82% */
-  max-width: 100% !important;
-  padding: 1rem !important;
-  border-radius: 1rem !important;
-  background: var(--theme-surface-2) !important;
-  border: 1px solid var(--theme-border) !important;
-  text-align: center !important;
-  box-sizing: border-box !important;
-}
-
-.catalog-categories__note .react-icon {
-  width: 1.5rem !important;
-  height: 1.5rem !important;
-  color: var(--theme-primary) !important;
-  margin: 0 auto !important;
-}
-
-.catalog-categories__note-title {
-  margin: 0 !important;
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  font-family: var(--font-display, 'Fraunces', serif) !important;
-  font-size: 0.82rem !important;
-  font-weight: 700 !important;
-}
-
-.catalog-categories__note-text {
-  margin: 0 !important;
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  font-size: 0.7rem !important;
-  line-height: 1.4 !important;
-}
-
-/* ============================================================
-   2️⃣ CATALOG GRID — Pantay-pantay na cards
-   ============================================================ */
-
-.catalog-grid-section {
-  min-width: 0 !important;
-  width: 100% !important;
-  overflow: hidden !important;
-}
-
-/* ✅ Grid — 4 columns, pantay ang heights */
-.catalog-grid {
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: 1rem !important;
-  align-items: stretch !important;
-  grid-auto-rows: 1fr !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-/* ✅ Card — consistent height */
-.catalog-card {
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100% !important;
-  min-width: 0 !important;
-  min-height: 22rem !important;
-  background: var(--theme-surface) !important;
-  border: 1px solid var(--theme-border) !important;
-  border-radius: 1rem !important;
-  overflow: hidden !important;
-  box-shadow: var(--theme-shadow-sm) !important;
-  transition: all 200ms ease !important;
-  box-sizing: border-box !important;
-}
-
-/* ✅ Card media — consistent aspect ratio */
-.catalog-card__media {
-  position: relative !important;
-  display: grid !important;
-  aspect-ratio: 1 / 1 !important;
-  place-items: center !important;
-  background: var(--theme-surface-2) !important;
-  border-bottom: 1px solid var(--theme-border) !important;
-  overflow: hidden !important;
-  flex-shrink: 0 !important;
-}
-
-/* ✅ Card body — flex column */
-.catalog-card__body {
-  display: flex !important;
-  flex-direction: column !important;
-  flex: 1 !important;
-  gap: 0.4rem !important;
-  padding: 0.9rem !important;
-  min-width: 0 !important;
-  overflow: hidden !important;
-}
-
-/* ✅ FIX: Card name — truncate sa 2 lines */
-.catalog-card__name {
-  margin: 0 !important;
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  font-family: var(--font-display, 'Fraunces', serif) !important;
-  font-size: 0.88rem !important;
-  font-weight: 700 !important;
-  line-height: 1.35 !important;
-  display: -webkit-box !important;
-  -webkit-line-clamp: 2 !important;
-  -webkit-box-orient: vertical !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  word-break: break-word !important;
-  overflow-wrap: anywhere !important;
-  min-height: 2.6em !important;
-  max-height: 2.7em !important;
-}
-
-/* ✅ Card category */
-.catalog-card__category {
-  margin: 0 !important;
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  font-size: 0.7rem !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-  min-width: 0 !important;
-}
-
-/* ✅ Card price */
-.catalog-card__price {
-  margin: 0.2rem 0 0.6rem !important;
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace) !important;
-  font-size: 0.95rem !important;
-  font-weight: 700 !important;
-  white-space: nowrap !important;
-}
-
-/* ✅ FIX: CTA — nasa baba, consistent height */
-.catalog-card__cta {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 0.4rem !important;
-  width: 100% !important;
-  padding: 0.7rem 0.75rem !important;
-  border: none !important;
-  border-radius: 0.55rem !important;
-  background: linear-gradient(
-    135deg,
-    var(--theme-primary) 0%,
-    var(--theme-primary-hover) 100%
-  ) !important;
-  color: var(--theme-on-primary) !important;
-  -webkit-text-fill-color: var(--theme-on-primary) !important;
-  font-family: inherit !important;
-  font-size: 0.78rem !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-  transition: all 150ms ease !important;
-  margin-top: auto !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  min-height: 2.5rem !important;
-}
-
-/* ✅ CTA icon at text */
-.catalog-card__cta .react-icon,
-.catalog-card__cta svg {
-  color: inherit !important;
-  -webkit-text-fill-color: inherit !important;
-  stroke: currentColor !important;
-  flex-shrink: 0 !important;
-}
-
-.catalog-card__cta span {
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  max-width: 100% !important;
-}
-
-/* ============================================================
-   3️⃣ RESPONSIVE — Pantay pa rin sa lahat ng sizes
-   ============================================================ */
-
-/* ✅ Large desktop (>= 1400px) — 4 columns */
-@media (min-width: 1400px) {
-  .catalog-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  }
-}
-
-/* ✅ Medium desktop (1200px - 1399px) — 4 columns */
-@media (min-width: 1200px) and (max-width: 1399px) {
-  .catalog-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  }
-}
-
-/* ✅ Small desktop (1100px - 1199px) — 3 columns */
-@media (min-width: 1100px) and (max-width: 1199px) {
-  .catalog-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  }
-}
-
-/* ✅ Tablet (900px - 1099px) — 3 columns, smaller sidebar */
-@media (min-width: 900px) and (max-width: 1099px) {
-  .catalog-body {
-    grid-template-columns: 13rem minmax(0, 1fr) !important;
-  }
-  .catalog-categories {
-    width: 13rem !important;
-    max-width: 13rem !important;
-    min-width: 13rem !important;
-  }
-  .catalog-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  }
-}
-
-/* ✅ Small tablet (720px - 899px) — 2 columns, stacked */
-@media (max-width: 899px) {
-  .catalog-body {
-    grid-template-columns: 1fr !important;
-  }
-  .catalog-categories {
-    position: static !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-  }
-  .catalog-categories__list {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 0.35rem !important;
-  }
-  .catalog-category__label {
-    white-space: normal !important;
-    text-overflow: initial !important;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 1 !important;
-    -webkit-box-orient: vertical !important;
-  }
-  .catalog-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 0.75rem !important;
-  }
-  .catalog-toolbar {
-    grid-template-columns: 1fr 1fr !important;
-  }
-}
-
-/* ✅ Mobile (max-width: 719px) — 2 columns */
-@media (max-width: 719px) {
-  .catalog-toolbar {
-    grid-template-columns: 1fr !important;
-  }
-  .catalog-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 0.65rem !important;
-  }
-  .catalog-card {
-    min-height: 18rem !important;
-  }
-  .catalog-card__name {
-    font-size: 0.8rem !important;
-  }
-}
-
-/* ✅ Small mobile (max-width: 480px) — 1 column */
-@media (max-width: 480px) {
-  .catalog-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .catalog-categories__list {
-    grid-template-columns: 1fr !important;
-  }
-}
-
-/* ============================================================
-   4️⃣ CATALOG HERO — Pantay
-   ============================================================ */
-
-.catalog-hero {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 1.5rem !important;
-  padding: 1.75rem 2rem !important;
-  margin-bottom: 1.25rem !important;
-  border-radius: 1rem !important;
-  background: var(--theme-surface) !important;
-  border: 1px solid var(--theme-border) !important;
-  box-shadow: var(--theme-shadow-md) !important;
-  position: relative !important;
-  overflow: hidden !important;
-}
-
-.catalog-hero__copy {
-  position: relative !important;
-  z-index: 1 !important;
-  max-width: 32rem !important;
-}
-
-.catalog-hero__kicker {
-  margin: 0 0 0.35rem !important;
-  color: var(--theme-accent) !important;
-  -webkit-text-fill-color: var(--theme-accent) !important;
-  font-size: 0.68rem !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.13em !important;
-  text-transform: uppercase !important;
-}
-
-.catalog-hero__title {
-  margin: 0 !important;
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  font-family: var(--font-display, 'Fraunces', serif) !important;
-  font-size: clamp(1.75rem, 4vw, 2.75rem) !important;
-  font-weight: 700 !important;
-  letter-spacing: -0.02em !important;
-  line-height: 1.05 !important;
-}
-
-.catalog-hero__description {
-  margin: 0.4rem 0 0 !important;
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  font-size: 0.85rem !important;
-}
-
-/* ============================================================
-   5️⃣ CATALOG TOOLBAR — Pantay
-   ============================================================ */
-
-.catalog-toolbar {
-  display: grid !important;
-  grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)) !important;
-  gap: 0.65rem !important;
-  margin-bottom: 1.25rem !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-.catalog-toolbar__search input,
-.catalog-toolbar__select {
-  width: 100% !important;
-  min-height: 2.65rem !important;
-  padding: 0.6rem 1rem !important;
-  border: 1px solid var(--theme-border) !important;
-  border-radius: 999px !important;
-  background: var(--theme-surface) !important;
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  font-size: 0.85rem !important;
-  outline: 0 !important;
-  box-sizing: border-box !important;
+  color: inherit;
+  -webkit-text-fill-color: inherit;
+  fill: currentColor;
+  stroke: currentColor;
 }

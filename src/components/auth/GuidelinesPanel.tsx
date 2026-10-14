@@ -1,3 +1,5 @@
+// src/components/auth/GuidelinesPanel.tsx
+
 import { useState } from 'react';
 import {
   ChevronDown,
@@ -5,6 +7,8 @@ import {
   HelpCircle,
   ShieldCheck,
   UserRound,
+  Clock,      // ✅ BAGONG IDAGDAG
+  Package,    // ✅ BAGONG IDAGDAG
 } from 'lucide-react';
 import type { GuidelineItem } from './authTypes';
 
@@ -27,6 +31,20 @@ const guidelines: GuidelineItem[] = [
     body: 'Double-check your email, student ID number, and password before creating an account so order updates reach you.',
     icon: 'review',
   },
+  // ✅ BAGONG ITEM — Campus pickup
+  {
+    id: 'pickup',
+    label: 'Campus pickup only',
+    body: 'All items are for pickup at the SJCM Supply Office. Bring a valid school ID when collecting your reservation.',
+    icon: 'pickup',
+  },
+  // ✅ BAGONG ITEM — Order updates
+  {
+    id: 'updates',
+    label: 'Track your reservation',
+    body: 'Check your dashboard for live stock updates and pickup status. You will also receive email notifications for order changes.',
+    icon: 'updates',
+  },
   {
     id: 'support',
     label: 'Need help?',
@@ -43,13 +61,16 @@ function GuidelineIcon({ icon }: { icon: GuidelineItem['icon'] }) {
         ? ShieldCheck
         : icon === 'review'
           ? FileText
-          : HelpCircle;
+          : icon === 'pickup'
+            ? Package           // ✅ BAGONG ICON
+            : icon === 'updates'
+              ? Clock           // ✅ BAGONG ICON
+              : HelpCircle;
 
   return <Icon className="react-icon" aria-hidden="true" />;
 }
 
 export default function GuidelinesPanel() {
-  /* ✅ DEFAULT: null — lahat naka-close */
   const [openId, setOpenId] = useState<GuidelineItem['id'] | null>(null);
 
   return (
