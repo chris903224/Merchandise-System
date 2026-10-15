@@ -2105,3 +2105,143 @@ label.profile-form-label {
     transform: none !important;
   }
 }
+/* ============================================================
+   ✅ PROFILE PAGE — LOCK + UNLOCKED FIELD STYLING
+   ✅ I-append sa PINAKADULO ng ProfilePage.css
+============================================================ */
+
+/* ---------- FORM LABEL — flex para sa lock badge ---------- */
+.profile-form-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  flex-wrap: wrap;
+}
+
+/* ---------- LOCK BADGE ---------- */
+.profile-form-lock {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+
+  font-size: 0.6rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+
+  color: rgba(var(--theme-primary-rgb), 0.7) !important;
+  background: rgba(var(--theme-primary-rgb), 0.08) !important;
+
+  padding: 0.1rem 0.5rem !important;
+  border-radius: 999px !important;
+  line-height: 1.4 !important;
+}
+
+.profile-form-lock .react-icon {
+  width: 0.6rem !important;
+  height: 0.6rem !important;
+  stroke-width: 2.6 !important;
+  color: rgba(var(--theme-primary-rgb), 0.7) !important;
+}
+
+/* ============================================================
+   ✅ BASE FIELD — para sa UNLOCKED at LOCKED
+   ============================================================ */
+.profile-form-field {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.6rem !important;
+
+  padding: 0.7rem 0.9rem !important;
+  min-height: 2.7rem !important;
+
+  border-radius: 0.6rem !important;
+  border: 1px solid var(--color-line-strong, var(--theme-border)) !important;
+
+  background: var(--color-surface-raised, var(--theme-surface-2)) !important;
+  color: var(--color-text, var(--theme-text)) !important;
+  font-size: 0.88rem !important;
+  line-height: 1.4 !important;
+}
+
+/* ✅ Icon inside field */
+.profile-form-field > .react-icon {
+  width: 1rem !important;
+  height: 1rem !important;
+  min-width: 1rem !important;
+  min-height: 1rem !important;
+
+  color: rgba(var(--theme-primary-rgb), 0.65) !important;
+  stroke-width: 2.2 !important;
+  flex-shrink: 0 !important;
+}
+
+/* ✅ Text */
+.profile-form-field > span {
+  flex: 1 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-weight: 500 !important;
+}
+
+/* ============================================================
+   ✅ LOCKED variant — striped background + muted tone
+   ============================================================ */
+.profile-form-field--locked {
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(var(--theme-primary-rgb), 0.03),
+    rgba(var(--theme-primary-rgb), 0.03) 8px,
+    rgba(var(--theme-primary-rgb), 0.05) 8px,
+    rgba(var(--theme-primary-rgb), 0.05) 16px
+  ) !important;
+
+  border-color: rgba(var(--theme-primary-rgb), 0.12) !important;
+  color: rgba(34, 26, 16, 0.75) !important;
+
+  box-shadow:
+    inset 1px 1px 3px rgba(var(--theme-primary-rgb), 0.04),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.5) !important;
+
+  cursor: not-allowed !important;
+}
+
+/* ---------- DARK THEME ---------- */
+[data-theme-mode='dark'] .profile-form-field--locked {
+  color: rgba(248, 233, 201, 0.8) !important;
+  -webkit-text-fill-color: rgba(248, 233, 201, 0.8) !important;
+}
+
+[data-theme-mode='dark'] .profile-form-lock {
+  color: rgba(var(--theme-accent-rgb), 0.9) !important;
+  background: rgba(var(--theme-accent-rgb), 0.12) !important;
+}
+
+[data-theme-mode='dark'] .profile-form-lock .react-icon {
+  color: rgba(var(--theme-accent-rgb), 0.9) !important;
+}
+
+/* ---------- MOBILE ---------- */
+@media (max-width: 640px) {
+  .profile-form-field {
+    padding: 0.65rem 0.8rem !important;
+    min-height: 2.55rem !important;
+    font-size: 0.85rem !important;
+  }
+
+  .profile-form-field > .react-icon {
+    width: 0.95rem !important;
+    height: 0.95rem !important;
+  }
+
+  .profile-form-lock {
+    font-size: 0.55rem !important;
+    padding: 0.08rem 0.45rem !important;
+  }
+}
+
+/* ============================================================
+   ✅ END — PROFILE LOCK + UNLOCKED STYLING
+============================================================ */

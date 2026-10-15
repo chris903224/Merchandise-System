@@ -3947,3 +3947,1424 @@ html body #root .home-card__media img {
     font-size: 0.78rem !important;
   }
 }
+/* ============================================================
+   ✅ HERO CAROUSEL — SMOOTH SLIDE TRANSITION
+   ✅ Fade + slide effect sa bawat scroll
+   ✅ I-append sa PINAKADULO ng HomePage.css
+============================================================ */
+
+/* ============================================================
+   1️⃣ VIEWPORT — container para sa smooth transitions
+   ============================================================ */
+.hero-carousel {
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.hero-carousel__viewport {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  border-radius: inherit !important;
+}
+
+/* ============================================================
+   2️⃣ FRAME — slide transition animation
+   ✅ Fade + subtle scale + slide up
+   ============================================================ */
+.hero-carousel__frame {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+
+  /* ✅ Smooth entry animation */
+  animation: heroSlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+}
+
+@keyframes heroSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* ============================================================
+   3️⃣ IMAGE — smooth zoom on load
+   ============================================================ */
+.hero-carousel__image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+
+  /* ✅ Subtle zoom para may life ang transition */
+  animation: heroImageZoom 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+}
+
+@keyframes heroImageZoom {
+  0% {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ============================================================
+   4️⃣ CAPTION — fade + slide up (delayed para layered effect)
+   ============================================================ */
+.hero-carousel__caption {
+  animation: heroCaptionIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both !important;
+}
+
+@keyframes heroCaptionIn {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   5️⃣ NAV BUTTONS — smooth feedback
+   ============================================================ */
+.hero-carousel__btn {
+  transition:
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.25s ease,
+    box-shadow 0.25s ease !important;
+}
+
+.hero-carousel__btn:hover {
+  transform: scale(1.08) !important;
+}
+
+.hero-carousel__btn:active {
+  transform: scale(0.94) !important;
+  transition-duration: 0.1s !important;
+}
+
+/* ============================================================
+   6️⃣ DOTS — smooth active state
+   ============================================================ */
+.hero-carousel__dot {
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.25s ease,
+    width 0.3s ease !important;
+}
+
+.hero-carousel__dot.is-active {
+  transform: scale(1.2) !important;
+  animation: dotPulse 1.5s ease-in-out infinite !important;
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(var(--theme-primary-rgb), 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(var(--theme-primary-rgb), 0);
+  }
+}
+
+/* ============================================================
+   7️⃣ FRAME — may static transition pa rin (fallback)
+   ✅ Kahit walang animation, may smooth change pa rin
+   ============================================================ */
+.hero-photo__frame {
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* ============================================================
+   8️⃣ REDUCED MOTION — respect user preference
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .hero-carousel__frame,
+  .hero-carousel__image,
+  .hero-carousel__caption,
+  .hero-carousel__btn,
+  .hero-carousel__dot,
+  .hero-photo__frame {
+    animation: none !important;
+    transition: opacity 0.15s ease !important;
+    transform: none !important;
+  }
+}
+
+/* ============================================================
+   ✅ END — HERO CAROUSEL TRANSITIONS
+============================================================ */
+/* ============================================================
+   ✅ FIX — Scroll reveal race condition
+   ✅ Siguraduhing laging visible ang cards pag-load
+   ✅ I-append sa PINAKADULO ng HomePage.css
+============================================================ */
+
+/* ============================================================
+   1️⃣ SAFETY NET — default visible pag-load
+   ✅ Kung hindi naka-trigger ang observer, visible pa rin
+   ✅ Naka-override sa JS one-shot logic
+   ============================================================ */
+
+/* ✅ Base state — visible by default kung hindi naka-observe */
+.home-cards {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* ✅ Bawat card — visible by default */
+.home-cards .home-card {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* ============================================================
+   2️⃣ REVEAL ANIMATION — override lang kapag may .scroll-reveal
+   ✅ Kung walang scroll-reveal class, visible agad
+   ============================================================ */
+
+/* ✅ Scroll reveal container — hidden initial state */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+/* ✅ Kapag visible na */
+.scroll-reveal.is-visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* ✅ Staggered items — hidden initial */
+.scroll-reveal .scroll-reveal__item {
+  opacity: 0;
+  transform: translateY(28px) scale(0.96);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: opacity, transform;
+}
+
+/* ✅ Kapag visible na — may stagger delay */
+.scroll-reveal.is-visible .scroll-reveal__item {
+  opacity: 1 !important;
+  transform: translateY(0) scale(1) !important;
+  transition-delay: calc(var(--stagger-index, 0) * 80ms);
+}
+
+/* ============================================================
+   3️⃣ FALLBACK — kapag hindi gumana ang observer (safety)
+   ✅ Auto-visible pagkatapos ng 1.5s (JS hook override)
+   ✅ Gagamit ng CSS animation fallback
+   ============================================================ */
+@keyframes scrollRevealFallback {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.scroll-reveal:not(.is-visible) {
+  animation: scrollRevealFallback 0.8s cubic-bezier(0.22, 1, 0.36, 1) 1.2s forwards;
+}
+
+.scroll-reveal:not(.is-visible) .scroll-reveal__item {
+  animation: scrollRevealFallback 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 1.2s forwards;
+  animation-delay: calc(1.2s + var(--stagger-index, 0) * 80ms);
+}
+
+/* ============================================================
+   4️⃣ REDUCED MOTION — visible agad
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal,
+  .scroll-reveal .scroll-reveal__item,
+  .home-cards,
+  .home-cards .home-card {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ============================================================
+   ✅ END — SCROLL REVEAL FIX
+============================================================ */
+/* ============================================================
+   ✅ FULL SCROLL-TRIGGERED ANIMATION — LAHAT ng products
+   ✅ Gumagamit ng `animation-timeline: view()` — native CSS
+   ✅ Bawat card mag-a-animate habang nag-i-scroll pababa
+   ✅ Hindi na kailangan mag-rely sa JS `isVisible` state
+   ✅ I-append sa PINAKADULO ng HomePage.css
+============================================================ */
+
+/* ============================================================
+   1️⃣ HOME SECTION — auto fade-in via scroll timeline
+   ============================================================ */
+.home-section {
+  animation: sectionReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 30%;
+}
+
+@keyframes sectionReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   2️⃣ SECTION HEADER — slide up
+   ============================================================ */
+.home-section__header {
+  animation: headerReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 32%;
+}
+
+@keyframes headerReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-section__kicker {
+  animation: kickerReveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 35%;
+}
+
+@keyframes kickerReveal {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.home-section__title {
+  animation: titleReveal 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 35%;
+}
+
+@keyframes titleReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.home-section__description {
+  animation: descReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+@keyframes descReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-section__link {
+  animation: linkReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+@keyframes linkReveal {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ============================================================
+   3️⃣ B AWAT PRODUCT CARD — staggered pop-in via scroll
+   ✅ Bawat card mag-a-animate habang pumapasok sa viewport
+   ============================================================ */
+.home-cards .home-card,
+.home-cards .home-card.scroll-reveal__item,
+.home-cards .home-card.is-visible {
+  animation: cardReveal 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+  animation-timeline: view() !important;
+  animation-range: entry 5% cover 32% !important;
+
+  /* ✅ Reset yung JS-based opacity para umandar ang CSS animation */
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+@keyframes cardReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.92);
+    filter: blur(6px);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* ✅ Stagger via nth-child — bawat card may 100ms delay */
+.home-cards .home-card:nth-child(1) { animation-delay: 0ms; }
+.home-cards .home-card:nth-child(2) { animation-delay: 100ms; }
+.home-cards .home-card:nth-child(3) { animation-delay: 200ms; }
+.home-cards .home-card:nth-child(4) { animation-delay: 300ms; }
+.home-cards .home-card:nth-child(5) { animation-delay: 400ms; }
+.home-cards .home-card:nth-child(6) { animation-delay: 500ms; }
+.home-cards .home-card:nth-child(7) { animation-delay: 600ms; }
+.home-cards .home-card:nth-child(8) { animation-delay: 700ms; }
+.home-cards .home-card:nth-child(9) { animation-delay: 800ms; }
+.home-cards .home-card:nth-child(10) { animation-delay: 900ms; }
+
+/* ============================================================
+   4️⃣ HIGHLIGHTS GRID — slide in from sides
+   ============================================================ */
+.home-highlights__grid {
+  animation: gridReveal 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 30%;
+}
+
+@keyframes gridReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-highlights__panel:first-child {
+  animation: panelSlideLeft 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 5% cover 35%;
+}
+
+@keyframes panelSlideLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.home-highlights__panel.visit-panel {
+  animation: panelSlideRight 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 5% cover 35%;
+}
+
+@keyframes panelSlideRight {
+  0% {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ============================================================
+   5️⃣ VISIT PANEL LIST — staggered items
+   ============================================================ */
+.visit-panel__list li {
+  animation: visitItemReveal 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-timeline: view();
+  animation-range: entry 10% cover 40%;
+}
+
+.visit-panel__list li:nth-child(1) { animation-delay: 100ms; }
+.visit-panel__list li:nth-child(2) { animation-delay: 200ms; }
+.visit-panel__list li:nth-child(3) { animation-delay: 300ms; }
+
+@keyframes visitItemReveal {
+  0% {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ============================================================
+   6️⃣ HOME CARD — clay hover (retained)
+   ============================================================ */
+.home-card {
+  transition:
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.35s ease !important;
+}
+
+.home-card:hover {
+  transform: translateY(-6px) scale(1.015) !important;
+  box-shadow:
+    0 4px 8px rgba(var(--theme-primary-rgb), 0.08),
+    0 16px 40px -12px rgba(var(--theme-primary-rgb), 0.28) !important;
+}
+
+.home-card__media img,
+.home-card__media picture {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.home-card:hover .home-card__media img {
+  transform: scale(1.05) !important;
+}
+
+/* ============================================================
+   7️⃣ HERO — initial load animations
+   ============================================================ */
+.hero-copy {
+  animation: heroCopyIn 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes heroCopyIn {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.hero-title {
+  animation: heroTitleIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+}
+
+@keyframes heroTitleIn {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.96);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.hero-photo {
+  animation: heroPhotoIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+}
+
+@keyframes heroPhotoIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.94);
+    filter: blur(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* ============================================================
+   8️⃣ FALLBACK — para sa browsers na walang animation-timeline
+   ✅ Auto-show after short delay
+   ============================================================ */
+@supports not (animation-timeline: view()) {
+  .home-cards .home-card,
+  .home-cards .home-card.scroll-reveal__item {
+    opacity: 0;
+    transform: translateY(32px) scale(0.95);
+    animation: none;
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .home-cards .home-card.is-visible {
+    opacity: 1 !important;
+    transform: translateY(0) scale(1) !important;
+    transition-delay: calc(var(--stagger-index, 0) * 100ms);
+  }
+
+  .scroll-reveal:not(.is-visible) {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+
+  .scroll-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   9️⃣ REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-timeline: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .home-section,
+  .home-section__header,
+  .home-section__kicker,
+  .home-section__title,
+  .home-section__description,
+  .home-section__link,
+  .home-cards .home-card,
+  .home-highlights__grid,
+  .home-highlights__panel,
+  .visit-panel__list li,
+  .hero-copy,
+  .hero-title,
+  .hero-photo {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+/* ============================================================
+   ✅ END — FULL SCROLL-TRIGGERED ANIMATION
+============================================================ */
+/* ============================================================
+   ✅ SIMPLE FADE IN — walang bounce, walang paalon
+   ✅ Trigger via .is-visible (JS IntersectionObserver)
+   ✅ I-append sa PINAKADULO ng HomePage.css
+============================================================ */
+
+/* ============================================================
+   1️⃣ SECTION HEADER — fade in
+   ============================================================ */
+.home-section__header {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.home-section__header.is-visible {
+  opacity: 1;
+}
+
+/* ✅ Kicker, title, description, link — fade in */
+.home-section__kicker,
+.home-section__title,
+.home-section__description,
+.home-section__link {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.home-section__header.is-visible .home-section__kicker {
+  opacity: 1;
+  transition-delay: 0.05s;
+}
+
+.home-section__header.is-visible .home-section__title {
+  opacity: 1;
+  transition-delay: 0.1s;
+}
+
+.home-section__header.is-visible .home-section__description {
+  opacity: 1;
+  transition-delay: 0.15s;
+}
+
+.home-section__header.is-visible .home-section__link {
+  opacity: 1;
+  transition-delay: 0.2s;
+}
+
+/* ============================================================
+   2️⃣ PRODUCT / CATEGORY CARDS — simple fade in with stagger
+   ============================================================ */
+.scroll-reveal__item {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.scroll-reveal__item.is-visible {
+  opacity: 1;
+  transition-delay: calc(var(--stagger-index, 0) * 100ms);
+}
+
+/* ============================================================
+   3️⃣ HIGHLIGHTS PANEL — fade in
+   ============================================================ */
+.home-highlights__panel {
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+
+.home-highlights__panel.is-visible {
+  opacity: 1;
+}
+
+.home-highlights__panel.visit-panel.is-visible {
+  transition-delay: 0.1s;
+}
+
+/* ============================================================
+   4️⃣ VISIT PANEL LIST — staggered fade in
+   ============================================================ */
+.visit-panel__list li {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.visit-panel.is-visible .visit-panel__list li {
+  opacity: 1;
+}
+
+.visit-panel.is-visible .visit-panel__list li:nth-child(1) {
+  transition-delay: 0.15s;
+}
+.visit-panel.is-visible .visit-panel__list li:nth-child(2) {
+  transition-delay: 0.25s;
+}
+.visit-panel.is-visible .visit-panel__list li:nth-child(3) {
+  transition-delay: 0.35s;
+}
+
+/* ============================================================
+   5️⃣ HERO — simple fade in on load
+   ============================================================ */
+.hero-copy {
+  animation: heroFadeIn 0.8s ease both;
+}
+
+@keyframes heroFadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.hero-title {
+  animation: heroFadeIn 0.8s ease 0.15s both;
+}
+
+.hero-photo {
+  animation: heroFadeIn 0.9s ease 0.25s both;
+}
+
+/* ============================================================
+   6️⃣ HOME CARD — clay hover (retained)
+   ============================================================ */
+.home-card {
+  transition: box-shadow 0.35s ease !important;
+}
+
+.home-card:hover {
+  box-shadow:
+    0 4px 8px rgba(var(--theme-primary-rgb), 0.08),
+    0 16px 40px -12px rgba(var(--theme-primary-rgb), 0.28) !important;
+}
+
+/* ============================================================
+   7️⃣ REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .home-section__header,
+  .home-section__kicker,
+  .home-section__title,
+  .home-section__description,
+  .home-section__link,
+  .scroll-reveal__item,
+  .home-highlights__panel,
+  .visit-panel__list li,
+  .hero-copy,
+  .hero-title,
+  .hero-photo {
+    opacity: 1 !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ============================================================
+   ✅ END — SIMPLE FADE IN
+   /* ============================================================
+   ⚡ SNAPPY SCROLL REVEAL — v2 (lean, mabilis, walang lag)
+   ✅ PALITAN yung buong v1 "PREMIUM SCROLL REVEAL" block nito
+      (burahin ang luma, i-paste ito sa PINAKADULO ng HomePage.css)
+   ✅ Walang blur (yun ang nagpapa-lag), maiksing galaw, mabilis na stagger
+   ✅ Card lang ang nag-a-animate — hindi na kasama ang bawat child
+   ✅ Gumagamit ng filter:opacity / translate / scale (GPU-friendly)
+============================================================ */
+
+:root {
+  --px-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* 0️⃣ Patayin ang lumang view()/keyframe animations */
+html body #root .home-section,
+html body #root .home-highlights__grid,
+html body #root .home-highlights__panel,
+html body #root .home-section__header,
+html body #root .home-section__kicker,
+html body #root .home-section__title,
+html body #root .home-section__description,
+html body #root .home-section__link,
+html body #root .visit-panel__list li {
+  animation: none;
+  animation-timeline: auto;
+}
+
+/* 1️⃣ SECTION HEADERS */
+html body #root .home-section__header {
+  position: relative;
+  opacity: 1;
+  border-bottom-color: transparent;
+}
+
+html body #root .home-section__header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    var(--theme-primary) 0%,
+    rgba(var(--theme-primary-rgb), 0.35) 28%,
+    var(--theme-border) 70%
+  );
+  transform-origin: left center;
+  scale: 0 1;
+  pointer-events: none;
+  transition: scale 0.6s var(--px-ease);
+}
+
+html body #root .home-section__kicker,
+html body #root .home-section__title,
+html body #root .home-section__description,
+html body #root .home-section__link {
+  opacity: 1;
+  filter: opacity(0);
+  translate: 0 14px;
+  transition:
+    filter 0.4s ease var(--px-d, 0s),
+    translate 0.5s var(--px-ease) var(--px-d, 0s),
+    background 0.2s ease,
+    color 0.2s ease !important;
+}
+
+html body #root .home-section__kicker     { --px-d: 0s; }
+html body #root .home-section__title      { --px-d: 0.04s; }
+html body #root .home-section__description{ --px-d: 0.08s; }
+html body #root .home-section__link       { --px-d: 0.1s; }
+
+html body #root .home-section__kicker::before {
+  transform-origin: left center;
+  scale: 0 1;
+  transition: scale 0.5s var(--px-ease) 0.05s;
+}
+
+html body #root .home-section__header.is-visible::after,
+html body #root .home-highlights__panel.is-visible .home-section__header::after,
+html body #root .home-section__header.is-visible .home-section__kicker::before,
+html body #root .home-highlights__panel.is-visible .home-section__kicker::before {
+  scale: 1 1;
+}
+
+html body #root .home-section__header.is-visible .home-section__kicker,
+html body #root .home-section__header.is-visible .home-section__title,
+html body #root .home-section__header.is-visible .home-section__description,
+html body #root .home-section__header.is-visible .home-section__link,
+html body #root .home-highlights__panel.is-visible .home-section__kicker,
+html body #root .home-highlights__panel.is-visible .home-section__title,
+html body #root .home-highlights__panel.is-visible .home-section__description,
+html body #root .home-highlights__panel.is-visible .home-section__link {
+  filter: none;
+  translate: 0 0;
+}
+
+/* 2️⃣ CARDS — isang layer lang, mabilis */
+html body #root .home-card.scroll-reveal__item {
+  --px-d: calc(var(--stagger-index, 0) * 40ms);
+
+  animation: none !important;
+  animation-timeline: auto !important;
+
+  filter: opacity(0);
+  translate: 0 18px;
+  scale: 0.98;
+
+  transition:
+    filter 0.4s ease var(--px-d),
+    translate 0.5s var(--px-ease) var(--px-d),
+    scale 0.5s var(--px-ease) var(--px-d),
+    transform 0.3s var(--px-ease),
+    box-shadow 0.3s ease,
+    border-color 0.2s ease !important;
+}
+
+html body #root .home-card.scroll-reveal__item:not(.is-visible) {
+  will-change: filter, translate, scale;
+}
+
+html body #root .home-card.scroll-reveal__item.is-visible {
+  filter: none;
+  translate: 0 0;
+  scale: 1;
+}
+
+/* Hover — simple lift, walang bounce */
+html body #root .home-card.scroll-reveal__item.is-visible:hover {
+  transform: translateY(-4px) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.45) !important;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    0 14px 30px -12px rgba(var(--theme-primary-rgb), 0.35) !important;
+}
+
+/* Image — banayad na zoom lang sa hover (walang entry zoom) */
+html body #root .home-card .home-card__media img,
+html body #root .home-card .home-card__image {
+  transition: transform 0.4s var(--px-ease) !important;
+}
+
+/* 3️⃣ PANELS */
+html body #root .home-highlights__panel {
+  opacity: 1;
+  filter: opacity(0);
+  translate: 0 20px;
+  transition:
+    filter 0.45s ease var(--px-d, 0s),
+    translate 0.55s var(--px-ease) var(--px-d, 0s);
+}
+
+html body #root .home-highlights__panel.visit-panel {
+  --px-d: 0.06s;
+}
+
+html body #root .home-highlights__panel.is-visible {
+  filter: none;
+  translate: 0 0;
+}
+
+html body #root .visit-panel__list li {
+  opacity: 1;
+  filter: opacity(0);
+  translate: -10px 0;
+  transition:
+    filter 0.35s ease var(--px-d, 0s),
+    translate 0.4s var(--px-ease) var(--px-d, 0s);
+}
+
+html body #root .visit-panel__list li:nth-child(1) { --px-d: 0.1s; }
+html body #root .visit-panel__list li:nth-child(2) { --px-d: 0.16s; }
+html body #root .visit-panel__list li:nth-child(3) { --px-d: 0.22s; }
+
+html body #root .visit-panel.is-visible .visit-panel__list li {
+  filter: none;
+  translate: 0 0;
+}
+
+/* 4️⃣ Scroll progress bar (compositor-only, magaan) */
+@supports (animation-timeline: scroll()) {
+  html::before {
+    content: '';
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 3px;
+    z-index: 9999;
+    pointer-events: none;
+    background: linear-gradient(
+      90deg,
+      var(--theme-accent, #7ba7e1),
+      var(--theme-primary, #7ba7e1)
+    );
+    transform-origin: 0 50%;
+    scale: 0 1;
+    animation: pxProgress linear both;
+    animation-timeline: scroll(root block);
+  }
+
+  @keyframes pxProgress {
+    to { scale: 1 1; }
+  }
+}
+
+/* 5️⃣ Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html body #root .home-section__kicker,
+  html body #root .home-section__title,
+  html body #root .home-section__description,
+  html body #root .home-section__link,
+  html body #root .home-card.scroll-reveal__item,
+  html body #root .home-highlights__panel,
+  html body #root .visit-panel__list li {
+    filter: none !important;
+    translate: none !important;
+    scale: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  html body #root .home-section__header::after,
+  html body #root .home-section__kicker::before {
+    scale: 1 1 !important;
+    transition: none !important;
+  }
+
+  html::before {
+    display: none !important;
+  }
+}
+
+/* ✅ END — SNAPPY SCROLL REVEAL v2 */
+/* ============================================================
+   ✅ WELCOME UNIFORM MODAL — centered + blur backdrop
+   ✅ Lalabas ONCE per bagong account
+   ✅ I-append sa PINAKADULO ng HomePage.css
+============================================================ */
+
+/* ============================================================
+   1️⃣ MODAL OVERLAY — backdrop with blur
+   ============================================================ */
+.welcome-uniform-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: grid;
+  place-items: center;
+
+  padding: 1.5rem;
+
+  /* ✅ Dark blurred backdrop */
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+
+  animation: welcomeModalFadeIn 0.35s ease-out both;
+}
+
+.welcome-uniform-modal.is-closing {
+  animation: welcomeModalFadeOut 0.35s ease-in both;
+}
+
+@keyframes welcomeModalFadeIn {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px) saturate(100%);
+    -webkit-backdrop-filter: blur(0px) saturate(100%);
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+  }
+}
+
+@keyframes welcomeModalFadeOut {
+  0% {
+    opacity: 1;
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+  }
+  100% {
+    opacity: 0;
+    backdrop-filter: blur(0px) saturate(100%);
+    -webkit-backdrop-filter: blur(0px) saturate(100%);
+  }
+}
+
+/* ✅ Dark theme adjustments */
+[data-theme-mode='dark'] .welcome-uniform-modal {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+/* ============================================================
+   2️⃣ MODAL CONTENT — centered card with clay effect
+   ============================================================ */
+.welcome-uniform-modal__content {
+  position: relative;
+  width: 100%;
+  max-width: 26rem;
+  padding: 2rem 1.75rem 1.75rem;
+
+  border-radius: 1.25rem;
+
+  /* ✅ Clay surface */
+  background: var(--theme-surface);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.12);
+
+  box-shadow:
+    inset 3px 3px 8px rgba(0, 0, 0, 0.04),
+    inset -3px -3px 8px rgba(255, 255, 255, 0.55),
+    0 24px 60px -12px rgba(0, 0, 0, 0.35),
+    0 8px 24px -8px rgba(var(--theme-primary-rgb), 0.2);
+
+  text-align: center;
+
+  animation: welcomeModalPopIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.is-closing .welcome-uniform-modal__content {
+  animation: welcomeModalPopOut 0.3s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+@keyframes welcomeModalPopIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes welcomeModalPopOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.94);
+  }
+}
+
+/* ✅ Dark theme */
+[data-theme-mode='dark'] .welcome-uniform-modal__content {
+  box-shadow:
+    inset 3px 3px 8px rgba(0, 0, 0, 0.35),
+    inset -3px -3px 8px rgba(255, 255, 255, 0.04),
+    0 24px 60px -12px rgba(0, 0, 0, 0.6),
+    0 8px 24px -8px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================================
+   3️⃣ ICON — sparkles badge
+   ============================================================ */
+.welcome-uniform-modal__icon {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto 1.1rem;
+
+  border-radius: 1rem;
+
+  background: linear-gradient(
+    135deg,
+    rgba(var(--theme-primary-rgb), 0.18) 0%,
+    rgba(var(--theme-accent-rgb, var(--theme-primary-rgb)), 0.12) 100%
+  );
+  color: var(--theme-primary);
+
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.04),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.55),
+    0 6px 16px -6px rgba(var(--theme-primary-rgb), 0.35);
+
+  animation: welcomeIconFloat 2.4s ease-in-out infinite;
+}
+
+@keyframes welcomeIconFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.welcome-uniform-modal__icon .react-icon {
+  width: 1.65rem;
+  height: 1.65rem;
+  stroke-width: 2.2;
+}
+
+[data-theme-mode='dark'] .welcome-uniform-modal__icon {
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.35),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.05),
+    0 6px 16px -6px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================
+   4️⃣ TITLE + DESCRIPTION
+   ============================================================ */
+.welcome-uniform-modal__title {
+  margin: 0 0 0.5rem;
+  color: var(--theme-text);
+  -webkit-text-fill-color: var(--theme-text);
+  font-family: var(--font-display, 'Fraunces', serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.welcome-uniform-modal__desc {
+  margin: 0 0 1.5rem;
+  color: var(--theme-text-muted);
+  -webkit-text-fill-color: var(--theme-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  max-width: 22rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ============================================================
+   5️⃣ ACTIONS — buttons
+   ============================================================ */
+.welcome-uniform-modal__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.welcome-uniform-modal__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+
+  padding: 0.85rem 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+
+  cursor: pointer;
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+
+  /* ✅ Clay soft raised */
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.05),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.5),
+    0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-uniform-modal__btn .react-icon {
+  width: 1rem;
+  height: 1rem;
+  stroke-width: 2.4;
+  flex-shrink: 0;
+}
+
+/* ✅ PRIMARY — Yes */
+.welcome-uniform-modal__btn--primary {
+  background: var(--theme-primary);
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
+  border-color: var(--theme-primary);
+}
+
+.welcome-uniform-modal__btn--primary:hover {
+  background: var(--theme-primary-hover);
+  border-color: var(--theme-primary-hover);
+  transform: translateY(-2px);
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.08),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.15),
+    0 6px 18px -4px rgba(var(--theme-primary-rgb), 0.45);
+}
+
+.welcome-uniform-modal__btn--primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ✅ SECONDARY — No */
+.welcome-uniform-modal__btn--secondary {
+  background: var(--theme-surface-2, var(--theme-surface));
+  color: var(--theme-text);
+  -webkit-text-fill-color: var(--theme-text);
+  border-color: rgba(var(--theme-primary-rgb), 0.2);
+}
+
+.welcome-uniform-modal__btn--secondary:hover {
+  background: rgba(var(--theme-primary-rgb), 0.08);
+  border-color: rgba(var(--theme-primary-rgb), 0.4);
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  transform: translateY(-2px);
+}
+
+.welcome-uniform-modal__btn--secondary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+[data-theme-mode='dark'] .welcome-uniform-modal__btn {
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.35),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.04),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================================
+   6️⃣ CLOSE BUTTON — top-right
+   ============================================================ */
+.welcome-uniform-modal__close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.6rem;
+  border: 1px solid transparent;
+
+  background: transparent;
+  color: var(--theme-text-muted);
+
+  display: grid;
+  place-items: center;
+
+  cursor: pointer;
+  transition: all 0.18s ease;
+  z-index: 2;
+}
+
+.welcome-uniform-modal__close:hover {
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  color: var(--theme-primary);
+  border-color: rgba(var(--theme-primary-rgb), 0.2);
+  transform: rotate(90deg);
+}
+
+.welcome-uniform-modal__close .react-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  stroke-width: 2.3;
+}
+
+/* ============================================================
+   7️⃣ MOBILE
+   ============================================================ */
+@media (max-width: 640px) {
+  .welcome-uniform-modal {
+    padding: 1rem;
+  }
+
+  .welcome-uniform-modal__content {
+    padding: 1.75rem 1.4rem 1.4rem;
+    max-width: 100%;
+    border-radius: 1.1rem;
+  }
+
+  .welcome-uniform-modal__icon {
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .welcome-uniform-modal__icon .react-icon {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+
+  .welcome-uniform-modal__title {
+    font-size: 1.1rem;
+  }
+
+  .welcome-uniform-modal__desc {
+    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .welcome-uniform-modal__btn {
+    padding: 0.75rem 1.1rem;
+    font-size: 0.88rem;
+  }
+
+  .welcome-uniform-modal__close {
+    top: 0.55rem;
+    right: 0.55rem;
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+/* ============================================================
+   8️⃣ REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .welcome-uniform-modal,
+  .welcome-uniform-modal.is-closing,
+  .welcome-uniform-modal__content,
+  .is-closing .welcome-uniform-modal__content,
+  .welcome-uniform-modal__icon {
+    animation: none !important;
+    transition: opacity 0.15s ease !important;
+    transform: none !important;
+  }
+}
+
+/* ============================================================
+   ✅ END — WELCOME UNIFORM MODAL
+============================================================ */

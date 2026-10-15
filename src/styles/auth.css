@@ -1,12 +1,15 @@
 /* ==========================================================================
-   Saint Jude College Manila — Auth Experience
-   ✅ Layout Fixed — walang overflow, stable ang fields
-   ✅ Inputs — FLAT (walang neumorphism)
-   ✅ Password Toggle — Nasa LOOB ng field
-   ✅ Buttons — Claymorphism (raised + gloss)
-   ✅ Panels — Glassmorphism (translucent + blur)
-   ✅ THEME-AWARE (10 themes)
-   ✅ WALANG DUPLICATE
+   Saint Jude College Manila — Auth Experience (refactored)
+
+   • Isang rule lang kada component — walang duplicate, walang "FINAL FIX" layers
+   • Walang :hover kahit saan (focus / active / disabled lang ang natira)
+   • Inputs: neumorphism inset (parehong edge as before)
+   • Buttons: claymorphism  |  Panels: glassmorphism
+   • Theme-aware (lahat galing sa --theme-* variables)
+
+   Specificity note:
+   Ang form controls (input / select / date / eye toggle / autofill) ay naka-scope
+   sa `html body #root .auth-experience` para hindi sila matalo ng global styles.
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
@@ -25,47 +28,51 @@ body:has(.auth-experience) {
 }
 
 /* ==========================================================================
-   2. PAGE WRAPPER
+   2. PAGE WRAPPER + DESIGN TOKENS
    ========================================================================== */
 
 .auth-experience {
+  /* legacy aliases (ginagamit ng ibang components) */
   --ink: var(--theme-bg-solid);
   --pine-900: var(--theme-bg-solid);
   --pine-800: var(--theme-surface);
   --pine-700: var(--theme-surface-2);
   --pine-600: var(--theme-surface-raised, var(--theme-surface-2));
-
   --brand-500: var(--theme-primary);
   --brand-400: var(--theme-primary);
   --brand-300: var(--theme-primary-hover);
-
   --gold-400: var(--theme-accent);
   --gold-300: var(--theme-accent);
-
   --cream-100: var(--theme-text);
   --cream-200: var(--theme-text-muted);
   --sage-300: var(--theme-text-muted);
   --sage-500: var(--theme-text-subtle, var(--theme-text-muted));
-
   --hairline: var(--theme-border);
   --hairline-strong: var(--theme-border-strong);
-
   --glass-fill: var(--theme-glass-bg);
   --glass-fill-soft: var(--theme-glass-bg);
-
   --danger-400: var(--theme-danger);
   --warning-400: var(--theme-warning);
   --success-400: var(--theme-success);
-
   --shadow-deep: var(--theme-shadow-xl);
+
+  /* radii + fonts */
   --radius-xl: 30px;
   --radius-lg: 22px;
   --radius-md: 16px;
   --radius-sm: 10px;
-
   --font-display: 'Fraunces', 'Iowan Old Style', ui-serif, Georgia, serif;
   --font-ui: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  /* neumorphism — EDITO LANG ITO para baguhin ang edge ng lahat ng fields */
+  --auth-inset: inset 3px 3px 6px rgba(0, 0, 0, 0.08),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.6);
+  --auth-inset-soft: inset 3px 3px 6px rgba(0, 0, 0, 0.06),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.5);
+  --auth-ring: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.2);
+  --auth-ring-danger: 0 0 0 3px rgba(var(--theme-danger-rgb), 0.25);
+  --auth-field-h: 3.25rem;
 
   position: relative;
   isolation: auto;
@@ -77,7 +84,6 @@ body:has(.auth-experience) {
   justify-content: center;
   gap: clamp(16px, 2.6vw, 32px);
   padding: clamp(16px, 2.5vw, 32px) clamp(16px, 4vw, 56px) clamp(40px, 5vw, 72px);
-
   background: transparent !important;
   color: var(--theme-text);
   font-family: var(--font-ui);
@@ -96,7 +102,13 @@ body:has(.auth-experience) {
   }
 }
 
-/* ✅ Campus photo overlay */
+.auth-experience *,
+.auth-experience *::before,
+.auth-experience *::after {
+  box-sizing: border-box;
+}
+
+/* campus photo overlay */
 .auth-experience::before {
   content: '';
   position: fixed;
@@ -110,7 +122,7 @@ body:has(.auth-experience) {
   pointer-events: none;
 }
 
-/* ✅ Theme-aware tint overlay */
+/* theme tint overlay */
 .auth-experience::after {
   content: '';
   position: fixed;
@@ -123,12 +135,6 @@ body:has(.auth-experience) {
     color-mix(in srgb, var(--theme-bg-solid) 90%, transparent) 100%
   );
   pointer-events: none;
-}
-
-.auth-experience *,
-.auth-experience *::before,
-.auth-experience *::after {
-  box-sizing: border-box;
 }
 
 .auth-experience__header,
@@ -148,7 +154,7 @@ body:has(.auth-experience) {
 }
 
 /* ==========================================================================
-   3. HEADER / QUICK LOGIN — GLASSMORPHISM
+   3. HEADER + QUICK LOGIN
    ========================================================================== */
 
 .auth-experience__header {
@@ -170,31 +176,22 @@ body:has(.auth-experience) {
   display: flex;
   align-items: center;
   gap: 16px;
-  text-decoration: none;
-  color: inherit;
   min-width: 0;
+  color: inherit;
+  text-decoration: none;
 }
 
-/* ✅ Brand logo — claymorphism */
 .auth-brand__logo {
   width: 44px;
   height: 44px;
+  flex-shrink: 0;
   border-radius: 50%;
   object-fit: cover;
   border: 1px solid var(--theme-border-strong);
-  flex-shrink: 0;
-  transition: box-shadow 400ms ease;
   box-shadow:
     0 6px 12px rgba(0, 0, 0, 0.1),
     inset 0 -2px 4px rgba(0, 0, 0, 0.08),
     inset 0 2px 4px rgba(255, 255, 255, 0.4);
-}
-
-.auth-brand:hover .auth-brand__logo {
-  box-shadow:
-    0 8px 20px rgba(var(--theme-primary-rgb), 0.25),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.1),
-    inset 0 2px 4px rgba(255, 255, 255, 0.5);
 }
 
 .auth-brand__copy {
@@ -206,8 +203,8 @@ body:has(.auth-experience) {
 
 .auth-brand__name {
   font-family: var(--font-display);
-  font-weight: 600;
   font-size: 17px;
+  font-weight: 600;
   letter-spacing: 0.01em;
   color: var(--theme-text);
   white-space: nowrap;
@@ -216,8 +213,8 @@ body:has(.auth-experience) {
 .auth-brand__divider {
   width: 1px;
   height: 22px;
-  background: var(--theme-border-strong);
   flex-shrink: 0;
+  background: var(--theme-border-strong);
 }
 
 .auth-brand__tagline {
@@ -242,97 +239,52 @@ body:has(.auth-experience) {
   gap: 10px;
 }
 
-/* ✅ Quick login field — FLAT */
-.auth-quick-login__field {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0 0.85rem;
-  border-radius: 999px;
-  background: var(--theme-surface);
-  border: 1px solid var(--theme-border);
-  min-height: 2.65rem;
-  box-shadow: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.auth-quick-login__field:focus-within {
-  border-color: var(--theme-primary);
-  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.15);
-}
-
 .auth-quick-login__field .react-icon {
   position: static;
+  order: 1;
   flex-shrink: 0;
   width: 15px;
   height: 15px;
   color: var(--theme-text-muted);
+  stroke: currentColor;
   pointer-events: none;
-  order: 1;
 }
 
 .auth-quick-login__field:focus-within .react-icon {
   color: var(--theme-primary);
 }
 
-.auth-quick-login__input {
-  flex: 1 1 auto;
-  min-width: 0;
-  width: 100%;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--theme-text);
-  font-family: var(--font-ui);
-  font-size: 13px;
-  outline: none;
-  min-height: 2.65rem;
-  caret-color: var(--theme-primary);
-  order: 2;
-  box-shadow: none;
-}
-
-.auth-quick-login__input::placeholder {
-  color: var(--theme-text-muted);
-  opacity: 0.7;
-}
-
-/* ✅ Quick login submit — claymorphism */
 .auth-quick-login__submit {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 0 1.5rem;
   min-height: 2.65rem;
-  border-radius: 999px;
   border: none;
+  border-radius: 999px;
+  overflow: hidden;
   background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
   color: var(--theme-on-primary);
   -webkit-text-fill-color: var(--theme-on-primary);
   font-family: var(--font-ui);
-  font-weight: 700;
   font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  overflow: hidden;
   box-shadow:
     0 6px 14px rgba(var(--theme-primary-rgb), 0.35),
     0 2px 4px rgba(0, 0, 0, 0.08),
     inset 0 -3px 6px rgba(0, 0, 0, 0.15),
     inset 0 3px 6px rgba(255, 255, 255, 0.25);
-  transition: box-shadow 350ms ease;
 }
 
 .auth-quick-login__submit::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  inset: 0 0 auto 0;
   height: 50%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
   border-radius: 999px 999px 0 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
   pointer-events: none;
 }
 
@@ -345,16 +297,7 @@ body:has(.auth-experience) {
   width: 14px;
   height: 14px;
   color: inherit;
-  -webkit-text-fill-color: inherit;
   stroke: currentColor;
-}
-
-.auth-quick-login__submit:hover:not(:disabled) {
-  box-shadow:
-    0 10px 22px rgba(var(--theme-primary-rgb), 0.45),
-    0 2px 4px rgba(0, 0, 0, 0.1),
-    inset 0 -3px 6px rgba(0, 0, 0, 0.18),
-    inset 0 3px 6px rgba(255, 255, 255, 0.3);
 }
 
 .auth-quick-login__submit:disabled {
@@ -370,7 +313,7 @@ body:has(.auth-experience) {
 }
 
 /* ==========================================================================
-   4. CONTENT GRID — GLASSMORPHISM
+   4. CONTENT GRID — GLASS
    ========================================================================== */
 
 .auth-experience__content {
@@ -378,24 +321,25 @@ body:has(.auth-experience) {
   display: grid;
   grid-template-columns: 1fr 0.82fr 1.05fr;
   align-items: stretch;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow: hidden;
   border-radius: var(--radius-xl);
   border: 1px solid var(--theme-glass-border);
   background: var(--theme-glass-bg);
-  backdrop-filter: blur(28px) saturate(150%);
-  -webkit-backdrop-filter: blur(28px) saturate(150%);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
   box-shadow: var(--theme-shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  overflow: hidden;
-  max-height: 720px;
-  min-height: 600px;
 }
 
 .auth-experience__content > * {
   position: relative;
-  padding: clamp(26px, 2.8vw, 40px);
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  padding: clamp(26px, 2.8vw, 40px);
   overflow-x: hidden;
+  overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(var(--theme-primary-rgb), 0.2) transparent;
 }
@@ -409,12 +353,8 @@ body:has(.auth-experience) {
 }
 
 .auth-experience__content > *::-webkit-scrollbar-thumb {
-  background: rgba(var(--theme-primary-rgb), 0.2);
   border-radius: 3px;
-}
-
-.auth-experience__content > *::-webkit-scrollbar-thumb:hover {
-  background: rgba(var(--theme-primary-rgb), 0.35);
+  background: rgba(var(--theme-primary-rgb), 0.2);
 }
 
 .auth-experience__content > *:not(:last-child) {
@@ -422,18 +362,15 @@ body:has(.auth-experience) {
 }
 
 @media (max-width: 1080px) {
+  .auth-experience {
+    justify-content: flex-start;
+  }
   .auth-experience__content {
     grid-template-columns: 1fr;
-    max-height: none;
-    min-height: 0;
-    height: auto;
   }
   .auth-experience__content > *:not(:last-child) {
     border-right: none;
     border-bottom: 1px solid var(--theme-border);
-  }
-  .auth-experience {
-    justify-content: flex-start;
   }
 }
 
@@ -451,50 +388,45 @@ body:has(.auth-experience) {
 
 .auth-section-heading__eyebrow {
   display: block;
+  margin-bottom: 10px;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--theme-accent);
-  margin-bottom: 10px;
 }
 
 .auth-section-heading h2 {
+  margin: 0 0 8px;
   font-family: var(--font-display);
   font-size: clamp(22px, 2vw, 27px);
   font-weight: 600;
   color: var(--theme-text);
-  margin: 0 0 8px;
 }
 
 .auth-section-heading p {
   margin: 0;
+  max-width: 34ch;
   font-size: 13.5px;
   line-height: 1.5;
   color: var(--theme-text-muted);
-  max-width: 34ch;
 }
 
 .auth-guidelines__list {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  list-style: none;
   margin: 0;
   padding: 0;
+  list-style: none;
 }
 
 .auth-guideline {
+  overflow: hidden;
   border: 1px solid var(--theme-border);
   border-radius: var(--radius-md);
   background: rgba(var(--theme-primary-rgb), 0.03);
-  overflow: hidden;
   transition: border-color 300ms ease, background-color 300ms ease;
-}
-
-.auth-guideline:hover:not(.is-open) {
-  border-color: var(--theme-border-strong);
-  background: rgba(var(--theme-primary-rgb), 0.05);
 }
 
 .auth-guideline.is-open {
@@ -508,22 +440,16 @@ body:has(.auth-experience) {
   align-items: center;
   gap: 12px;
   padding: 13px 14px;
-  background: none;
   border: none;
+  background: none;
   color: var(--theme-text);
   font-family: var(--font-ui);
   font-size: 13.5px;
   font-weight: 600;
   text-align: left;
   cursor: pointer;
-  transition: color 300ms ease;
 }
 
-.auth-guideline__trigger:hover {
-  color: var(--theme-primary);
-}
-
-/* ✅ Guideline icon — claymorphism */
 .auth-guideline__icon {
   display: grid;
   place-items: center;
@@ -556,8 +482,8 @@ body:has(.auth-experience) {
 .auth-guideline__chevron {
   width: 16px;
   height: 16px;
-  color: var(--theme-text-muted);
   flex-shrink: 0;
+  color: var(--theme-text-muted);
   transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -572,14 +498,8 @@ body:has(.auth-experience) {
 }
 
 @keyframes guideline-content-in {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ==========================================================================
@@ -587,8 +507,8 @@ body:has(.auth-experience) {
    ========================================================================== */
 
 .auth-experience__content > .auth-marquee {
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
 .auth-marquee {
@@ -603,44 +523,35 @@ body:has(.auth-experience) {
   max-height: 400px;
   overflow: hidden;
   border-radius: var(--radius-lg);
+  outline: none;
   mask-image: linear-gradient(180deg, transparent, black 8%, black 92%, transparent);
   -webkit-mask-image: linear-gradient(180deg, transparent, black 8%, black 92%, transparent);
-  outline: none;
 }
 
 .auth-marquee__track {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
   animation: auth-marquee-scroll 22s linear infinite;
 }
 
-.auth-marquee__viewport:hover .auth-marquee__track,
+/* pause para sa keyboard users (hover pause tinanggal) */
 .auth-marquee__viewport:focus-within .auth-marquee__track {
   animation-play-state: paused;
 }
 
-/* ✅ Marquee card — claymorphism */
 .auth-marquee__card {
-  border-radius: 16px;
+  flex-shrink: 0;
   overflow: hidden;
   border: 1px solid var(--theme-border);
-  flex-shrink: 0;
+  border-radius: 16px;
   box-shadow:
     0 8px 20px rgba(0, 0, 0, 0.1),
     inset 0 -2px 4px rgba(0, 0, 0, 0.05),
     inset 0 2px 4px rgba(255, 255, 255, 0.3);
-  transition: box-shadow 400ms ease;
-}
-
-.auth-marquee__card:hover {
-  box-shadow:
-    0 14px 30px rgba(var(--theme-primary-rgb), 0.2),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.08),
-    inset 0 2px 4px rgba(255, 255, 255, 0.4);
 }
 
 .auth-marquee__card img {
@@ -654,51 +565,42 @@ body:has(.auth-experience) {
 .auth-marquee__caption {
   margin: 0;
   font-family: var(--font-display);
-  font-style: italic;
   font-size: 1.05rem;
+  font-style: italic;
   font-weight: 500;
   letter-spacing: 0.02em;
   line-height: 1.35;
-  color: var(--theme-accent);
   text-align: center;
+  color: var(--theme-accent);
 }
 
 @keyframes auth-marquee-scroll {
   from { transform: translateY(0); }
-  to { transform: translateY(-50%); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .auth-marquee__track {
-    animation: none;
-  }
+  to   { transform: translateY(-50%); }
 }
 
 /* ==========================================================================
-   7. AUTH CARD — GLASSMORPHISM
+   7. AUTH CARD
    ========================================================================== */
-
-.auth-experience__content > .auth-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  height: 100%;
-  padding: 1.5rem 1.5rem 1.75rem;
-  overflow-y: auto;
-  scrollbar-width: thin;
-}
 
 .auth-card {
   position: relative;
   display: flex;
   flex-direction: column;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background-color: var(--theme-surface);
   background-image: var(--auth-card-background, none);
   background-size: cover;
   background-position: center;
-  background-color: var(--theme-surface);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  isolation: isolate;
+}
+
+.auth-experience__content > .auth-card {
+  justify-content: flex-start;
+  height: auto;
+  padding: 1.1rem 1.4rem 1.2rem;
+  scrollbar-width: thin;
 }
 
 .auth-card::before {
@@ -718,36 +620,36 @@ body:has(.auth-experience) {
 .auth-card__header {
   position: relative;
   z-index: 1;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.7rem;
 }
 
 .auth-card__eyebrow {
   display: inline-block;
+  margin-bottom: 0.45rem;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--theme-accent);
+  color: var(--theme-on-accent);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--theme-on-accent);
-  background: var(--theme-accent);
-  padding: 5px 12px;
-  border-radius: 999px;
-  margin-bottom: 0.65rem;
 }
 
 .auth-card__title {
+  margin: 0 0 0.2rem;
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 2.4vw, 1.85rem);
+  font-size: clamp(1.35rem, 2.2vw, 1.65rem);
   font-weight: 600;
   color: var(--theme-text);
-  margin: 0 0 0.4rem;
 }
 
 .auth-card__description {
+  max-width: 40ch;
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   line-height: 1.5;
   color: var(--theme-text-muted);
-  max-width: 40ch;
 }
 
 .auth-card__body {
@@ -763,49 +665,42 @@ body:has(.auth-experience) {
 .auth-card__switch {
   position: relative;
   z-index: 1;
-  margin: 1.5rem 0 0.5rem;
-  padding: 0.75rem 0 0;
-  text-align: center;
-  font-size: 0.85rem;
-  color: var(--theme-text-muted);
   flex-shrink: 0;
+  margin: 0.4rem 0 0;
+  padding: 0.5rem 0 0;
   border-top: 1px solid var(--theme-border);
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--theme-text-muted);
   visibility: visible !important;
   opacity: 1 !important;
 }
 
 .auth-card__switch a,
 .auth-card__switch button {
+  margin-left: 0.25rem;
   color: var(--theme-accent);
   -webkit-text-fill-color: var(--theme-accent);
   font-weight: 700;
   text-decoration: none;
-  margin-left: 0.25rem;
-  transition: color 300ms ease;
-}
-
-.auth-card__switch a:hover,
-.auth-card__switch button:hover {
-  color: var(--theme-primary);
-  -webkit-text-fill-color: var(--theme-primary);
 }
 
 /* ==========================================================================
-   8. FORM — FLAT INPUTS
+   8. FORM LAYOUT (fields, labels, hints, errors)
    ========================================================================== */
 
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.55rem;
 }
 
 .auth-field {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  min-width: 0;
+  gap: 0.3rem;
   width: 100%;
+  min-width: 0;
 }
 
 .auth-field__relative {
@@ -814,21 +709,91 @@ body:has(.auth-experience) {
   min-width: 0;
 }
 
-/* ✅ Stable 2-column grid */
+.auth-field label {
+  display: block;
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--theme-text);
+}
+
+.auth-field__required {
+  margin-left: 2px;
+  color: var(--theme-danger, #e57575);
+  -webkit-text-fill-color: var(--theme-danger, #e57575);
+  font-size: 0.85em;
+  font-weight: 700;
+}
+
+/* label (kaliwa) + maliit na hint (kanan) — iisang row, pantay ang rhythm */
+.auth-field__label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.auth-field__label-row > label {
+  flex: 0 0 auto;
+  overflow: visible;
+  white-space: nowrap;
+}
+
+.auth-field__aside {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 1 auto;
+  gap: 0.2rem;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.66rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--theme-text-muted);
+  text-transform: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.auth-field__aside strong {
+  color: var(--theme-text);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.auth-field__aside.is-success {
+  color: var(--theme-success);
+}
+
+.auth-field__aside.is-danger {
+  color: var(--theme-danger);
+}
+
+.auth-field__aside .react-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex-shrink: 0;
+  stroke-width: 2.8;
+}
+
+/* 2-column grid */
 .auth-field-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 1rem;
+  gap: 0.6rem;
   width: 100%;
   max-width: 100%;
-  box-sizing: border-box;
 }
 
 .auth-field-grid > * {
+  width: 100%;
   min-width: 0;
   max-width: 100%;
-  width: 100%;
-  box-sizing: border-box;
 }
 
 @media (max-width: 540px) {
@@ -837,212 +802,15 @@ body:has(.auth-experience) {
   }
 }
 
-.auth-field label {
-  display: block;
-  font-family: var(--font-ui);
-  font-size: 12.5px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: var(--theme-text);
-  margin-bottom: 0.15rem;
-}
-
-/* ✅ INPUT WRAP — FLAT */
-.auth-input-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0 1rem;
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  min-height: 3rem;
-  border-radius: 0.85rem;
-  box-sizing: border-box;
-  background: var(--theme-surface);
-  background-color: var(--theme-surface);
-  border: 1px solid var(--theme-border);
-  box-shadow: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-/* ✅ Focus state */
-.auth-input-wrap:focus-within {
-  border-color: var(--theme-primary);
-  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.15);
-}
-
-/* ✅ Error state */
-.auth-input-wrap.has-error {
-  border-color: var(--theme-danger);
-  box-shadow: 0 0 0 3px rgba(var(--theme-danger-rgb), 0.15);
-}
-
-/* ✅ Valid state */
-.auth-input-wrap.is-valid {
-  border-color: var(--theme-success);
-  box-shadow: 0 0 0 3px rgba(var(--theme-success-rgb), 0.15);
-}
-
-/* ✅ Input icon */
-.auth-input-wrap > .react-icon {
-  position: static;
-  flex-shrink: 0;
-  width: 1.05rem;
-  height: 1.05rem;
-  color: var(--theme-text-muted);
-  pointer-events: none;
-  order: 1;
-  transition: color 0.2s ease;
-}
-
-.auth-input-wrap:focus-within > .react-icon {
-  color: var(--theme-primary);
-}
-
-/* ✅ Input mismo — transparent */
-.auth-input {
-  flex: 1 1 auto;
-  min-width: 0;
-  width: 100%;
-  max-width: 100%;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--theme-text);
-  font-family: var(--font-ui);
-  font-size: 0.9rem;
-  outline: none;
-  min-height: 3rem;
-  caret-color: var(--theme-primary);
-  order: 2;
-  box-sizing: border-box;
-  box-shadow: none;
-}
-
-.auth-input::placeholder {
-  color: var(--theme-text-muted);
-  opacity: 0.7;
-}
-
-.auth-input:disabled {
-  opacity: 0.5;
-}
-
-.auth-input.has-error {
-  color: var(--theme-danger);
-}
-
-.auth-input.is-valid {
-  color: var(--theme-success);
-}
-
-.auth-input--with-toggle {
-  padding-right: 0;
-}
-
-.auth-input--otp {
-  padding: 16px 18px;
-  border-radius: 999px;
-  letter-spacing: 0.65em;
-  font-size: 22px;
-  font-weight: 700;
-  text-align: center;
-  text-indent: 0.4em;
-}
-
-.auth-input--otp::placeholder {
-  color: var(--theme-text-muted);
-  font-weight: 400;
-  letter-spacing: 0.65em;
-}
-
-/* ==========================================================================
-   ✅ PASSWORD TOGGLE — Nasa LOOB ng field
-   ========================================================================== */
-
-/* ✅ Wrap — reserve space sa kanan */
-.auth-input-wrap:has(.auth-password-toggle),
-.auth-input-wrap--has-toggle {
-  position: relative;
-  padding-right: 3.25rem;
-}
-
-/* ✅ Password toggle — absolute inside */
-.auth-password-toggle {
-  position: absolute;
-  right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 2rem;
-  height: 2rem;
-  min-width: 2rem;
-  min-height: 2rem;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 0.5rem;
-  border: none;
-  background: var(--theme-surface-2);
-  background-color: var(--theme-surface-2);
-  color: var(--theme-text-muted);
-  -webkit-text-fill-color: var(--theme-text-muted);
-  cursor: pointer;
-  z-index: 2;
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.06),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.05),
-    inset 0 1px 2px rgba(255, 255, 255, 0.4);
-  transition: color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-}
-
-.auth-password-toggle:hover {
-  color: var(--theme-primary);
-  -webkit-text-fill-color: var(--theme-primary);
-  background: var(--theme-surface);
-  background-color: var(--theme-surface);
-  transform: translateY(-50%);
-  box-shadow:
-    0 3px 6px rgba(0, 0, 0, 0.08),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.06),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5);
-}
-
-.auth-password-toggle .react-icon,
-.auth-password-toggle svg {
-  width: 0.9rem;
-  height: 0.9rem;
-  color: inherit;
-  -webkit-text-fill-color: inherit;
-  stroke: currentColor;
-  transform: none;
-}
-
-/* ✅ Siguraduhing walang extra padding sa input */
-.auth-input-wrap .auth-input--with-toggle {
-  padding-right: 0;
-  margin-right: 0;
-  min-width: 0;
-}
-
-/* ✅ Error / Hint */
+.auth-hint,
 .auth-error {
-  font-size: 12px;
-  color: var(--theme-danger);
-  animation: auth-error-slide 240ms ease both;
-}
-
-@keyframes auth-error-slide {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  margin: 0;
+  font-size: 0.7rem;
+  line-height: 1.3;
 }
 
 .auth-hint {
-  font-size: 11.5px;
   color: var(--theme-text-muted);
-  line-height: 1.4;
 }
 
 .auth-hint strong {
@@ -1052,25 +820,16 @@ body:has(.auth-experience) {
   letter-spacing: 0.02em;
 }
 
-.auth-hint--success {
-  color: var(--theme-success);
-  font-weight: 600;
-  font-size: 11.5px;
-  margin-top: 4px;
+.auth-hint--success,
+.auth-hint--error {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  font-weight: 600;
 }
 
-.auth-hint--error {
-  color: var(--theme-danger);
-  font-weight: 600;
-  font-size: 11.5px;
-  margin-top: 4px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
+.auth-hint--success { color: var(--theme-success); }
+.auth-hint--error   { color: var(--theme-danger); }
 
 .auth-hint--success .react-icon,
 .auth-hint--error .react-icon {
@@ -1079,30 +838,409 @@ body:has(.auth-experience) {
   stroke-width: 2.8;
 }
 
+.auth-error {
+  color: var(--theme-danger);
+  animation: auth-error-slide 240ms ease both;
+}
+
+@keyframes auth-error-slide {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.auth-form__note {
+  text-align: center;
+}
+
+/* ---- Register form tweaks ---- */
+.auth-form--register {
+  --auth-field-h: 2.6rem;
+  gap: 0.55rem;
+}
+
+/* bukas pataas ang password popover para hindi maputol sa baba ng card */
+.auth-form--register .password-popover {
+  top: auto;
+  bottom: calc(100% + 8px);
+}
+
 /* ==========================================================================
-   9. SUBMIT BUTTON — CLAYMORPHISM
+   9. FORM CONTROLS — neumorphism inset (walang hover)
    ========================================================================== */
 
-.auth-submit {
+/* ---- 9.1 Field wrapper ---- */
+html body #root .auth-experience .auth-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: var(--auth-field-h);
+  padding: 0 1rem;
+  border: none !important;
+  border-radius: 0.85rem;
+  background: var(--theme-surface-2) !important;
+  box-shadow: var(--auth-inset) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  outline: none;
+  transition: box-shadow 0.2s ease;
+}
+
+html body #root .auth-experience .auth-input-wrap:focus-within {
+  box-shadow: var(--auth-inset), var(--auth-ring) !important;
+}
+
+/* error ring — ang class ay nasa <input>, kaya :has() */
+html body #root .auth-experience .auth-input-wrap.has-error,
+html body #root .auth-experience .auth-input-wrap:has(> .auth-input.has-error) {
+  box-shadow: var(--auth-inset), var(--auth-ring-danger) !important;
+}
+
+/* reserve space para sa eye toggle — may hangin sa pagitan ng text at icon */
+html body #root .auth-experience .auth-input-wrap:has(.auth-password-toggle),
+html body #root .auth-experience .auth-input-wrap--has-toggle {
+  padding-right: 3.5rem;
+}
+
+/* mas masikip sa loob ng 2-column grid */
+html body #root .auth-experience .auth-field-grid .auth-input-wrap {
+  gap: 0.5rem;
+  padding-left: 0.8rem;
+}
+
+html body #root .auth-experience .auth-field-grid .auth-input-wrap:has(.auth-password-toggle) {
+  padding-right: 2.7rem;
+}
+
+html body #root .auth-experience .auth-field-grid .auth-password-toggle {
+  right: 0.3rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  min-width: 1.75rem;
+  min-height: 1.75rem;
+}
+
+/* leading icon */
+html body #root .auth-experience .auth-input-wrap > .react-icon {
+  position: static;
+  order: 1;
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  color: var(--theme-text-muted);
+  stroke: currentColor;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+html body #root .auth-experience .auth-input-wrap:focus-within > .react-icon {
+  color: var(--theme-primary);
+}
+
+/* ---- 9.2 Input (transparent, nasa wrapper ang edge) ---- */
+html body #root .auth-experience .auth-input {
+  order: 2;
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: var(--auth-field-h);
+  margin: 0;
+  padding: 0;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  filter: none;
+  outline: none !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  caret-color: var(--theme-primary);
+  font-family: var(--font-ui);
+  font-size: 0.88rem;
+}
+
+html body #root .auth-experience .auth-input::placeholder {
+  color: var(--theme-text-muted);
+  -webkit-text-fill-color: var(--theme-text-muted);
+  opacity: 0.7;
+}
+
+html body #root .auth-experience .auth-input:disabled {
+  opacity: 0.5;
+}
+
+/* ---- 9.3 Autofill — walang lighter strip, walang glow ----
+   (Hindi gagamit ng inset box-shadow: tinatakpan nito ang neumorphism ng wrapper) */
+html body #root .auth-experience .auth-input:-webkit-autofill,
+html body #root .auth-experience .auth-quick-login__input:-webkit-autofill {
+  -webkit-text-fill-color: var(--theme-text) !important;
+  caret-color: var(--theme-primary);
+  transition: background-color 600000s 0s, color 600000s 0s !important;
+}
+
+html body #root .auth-experience .auth-input:autofill,
+html body #root .auth-experience .auth-quick-login__input:autofill {
+  -webkit-text-fill-color: var(--theme-text) !important;
+  background: transparent !important;
+  transition: background-color 600000s 0s, color 600000s 0s !important;
+}
+
+/* ---- 9.4 Select (Course / Year Level) ----
+   Native pill tinanggal; ang chevron ay galing sa wrapper ::after */
+html body #root .auth-experience select.auth-input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  min-width: 0;
+  padding: 0 1.6rem 0 0 !important;
+  background: transparent none !important;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 1;
+}
+
+/* placeholder state (walang napili) */
+html body #root .auth-experience select.auth-input:required:invalid {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  font-weight: 500;
+}
+
+html body #root .auth-experience select.auth-input option {
+  padding: 8px 12px;
+  background: var(--theme-surface-2, #382444) !important;
+  color: var(--theme-text, #f0f5ff) !important;
+  -webkit-text-fill-color: var(--theme-text, #f0f5ff) !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+html body #root .auth-experience select.auth-input option[value=''] {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+html body #root .auth-experience .auth-input-wrap:has(> select)::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0.95rem;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-right: 2px solid var(--theme-text-muted);
+  border-bottom: 2px solid var(--theme-text-muted);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+  transition: border-color 0.2s ease;
+}
+
+html body #root .auth-experience .auth-input-wrap:has(> select):focus-within::after {
+  border-color: var(--theme-primary);
+}
+
+/* ---- 9.5 Date input ---- */
+html body #root .auth-experience input.auth-input[type='date'] {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* walang laman = muted, parang placeholder */
+html body #root .auth-experience input.auth-input[type='date']:invalid:not(:focus) {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+html body #root .auth-experience input.auth-input[type='date']::-webkit-datetime-edit,
+html body #root .auth-experience input.auth-input[type='date']::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+  background: transparent;
+}
+
+html body #root .auth-experience input.auth-input[type='date']::-webkit-calendar-picker-indicator {
+  width: 16px;
+  height: 16px;
+  margin: 0 0 0 0.25rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  opacity: 0.6;
+  filter: invert(0.7);
+}
+
+[data-theme-mode='light'] input.auth-input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(0.3);
+}
+
+/* ---- 9.6 OTP (standalone input, walang wrapper) ---- */
+html body #root .auth-experience input.auth-input.auth-input--otp {
+  flex: none;
+  min-height: 3.4rem;
+  padding: 0 1.1rem !important;
+  border-radius: 999px !important;
+  background: var(--theme-surface-2) !important;
+  box-shadow: var(--auth-inset) !important;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.65em;
+  text-align: center;
+  text-indent: 0.65em;
+  transition: box-shadow 0.2s ease;
+}
+
+html body #root .auth-experience input.auth-input.auth-input--otp:focus {
+  box-shadow: var(--auth-inset), var(--auth-ring) !important;
+}
+
+html body #root .auth-experience input.auth-input.auth-input--otp.has-error {
+  box-shadow: var(--auth-inset), var(--auth-ring-danger) !important;
+}
+
+html body #root .auth-experience .auth-input--otp::placeholder {
+  font-weight: 400;
+  letter-spacing: 0.65em;
+}
+
+/* ---- 9.7 Password eye toggle — nasa LOOB ng field, flat ---- */
+html body #root .auth-experience .auth-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  min-height: 2rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--theme-text-muted);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+html body #root .auth-experience .auth-password-toggle svg,
+html body #root .auth-experience .auth-password-toggle .react-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  color: inherit;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  transform: none;
+}
+
+/* outline lang ang eye, hindi solid blob */
+html body #root .auth-experience .auth-password-toggle svg,
+html body #root .auth-experience .auth-password-toggle svg * {
+  fill: none !important;
+}
+
+/* ---- 9.8 Quick login (header) field ---- */
+html body #root .auth-experience .auth-quick-login__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.65rem;
+  padding: 0 0.85rem;
+  border: none !important;
+  border-radius: 999px;
+  background: var(--theme-surface-2) !important;
+  box-shadow: var(--auth-inset) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transition: box-shadow 0.2s ease;
+}
+
+html body #root .auth-experience .auth-quick-login__field:focus-within {
+  box-shadow: var(--auth-inset), var(--auth-ring) !important;
+}
+
+html body #root .auth-experience .auth-quick-login__input {
+  order: 2;
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  min-height: 2.65rem;
+  padding: 0;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  caret-color: var(--theme-primary);
+  font-family: var(--font-ui);
+  font-size: 13px;
+}
+
+html body #root .auth-experience .auth-quick-login__input::placeholder {
+  color: var(--theme-text-muted);
+  -webkit-text-fill-color: var(--theme-text-muted);
+  opacity: 0.7;
+}
+
+/* ---- 9.9 Mobile ---- */
+@media (max-width: 768px) {
+  .auth-experience {
+    --auth-field-h: 3rem;
+  }
+  .auth-form--register {
+    --auth-field-h: 2.75rem;
+  }
+  html body #root .auth-experience .auth-input-wrap:has(.auth-password-toggle),
+  html body #root .auth-experience .auth-input-wrap--has-toggle {
+    padding-right: 3.1rem;
+  }
+  html body #root .auth-experience .auth-password-toggle {
+    right: 0.4rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    min-width: 1.75rem;
+    min-height: 1.75rem;
+  }
+}
+
+/* ==========================================================================
+   10. BUTTONS — CLAYMORPHISM
+   ========================================================================== */
+
+.auth-submit,
+.register-modal__btn {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   width: 100%;
-  margin-top: 0.5rem;
-  padding: 0.9rem 1.5rem;
-  min-height: 3rem;
-  border-radius: 1rem;
   border: none;
+  overflow: hidden;
   background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
   color: var(--theme-on-primary);
   -webkit-text-fill-color: var(--theme-on-primary);
   font-family: var(--font-ui);
   font-weight: 700;
-  font-size: 0.95rem;
   cursor: pointer;
-  overflow: hidden;
   box-shadow:
     0 8px 20px rgba(var(--theme-primary-rgb), 0.35),
     0 2px 4px rgba(0, 0, 0, 0.08),
@@ -1111,19 +1249,36 @@ body:has(.auth-experience) {
   transition: box-shadow 300ms ease;
 }
 
-.auth-submit::before {
+.auth-submit {
+  min-height: 2.6rem;
+  margin-top: 0.3rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 1rem;
+  font-size: 0.88rem;
+}
+
+.register-modal__btn {
+  padding: 14px 24px;
+  border-radius: 999px;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+}
+
+.auth-submit::before,
+.register-modal__btn::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  inset: 0 0 auto 0;
   height: 50%;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
-  border-radius: 1rem 1rem 0 0;
   pointer-events: none;
 }
 
-.auth-submit > * {
+.auth-submit::before     { border-radius: 1rem 1rem 0 0; }
+.register-modal__btn::before { border-radius: 999px 999px 0 0; }
+
+.auth-submit > *,
+.register-modal__btn > * {
   position: relative;
   z-index: 1;
 }
@@ -1132,19 +1287,11 @@ body:has(.auth-experience) {
   width: 17px;
   height: 17px;
   color: inherit;
-  -webkit-text-fill-color: inherit;
   stroke: currentColor;
 }
 
-.auth-submit:hover:not(:disabled) {
-  box-shadow:
-    0 14px 30px rgba(var(--theme-primary-rgb), 0.45),
-    0 4px 8px rgba(0, 0, 0, 0.1),
-    inset 0 -3px 6px rgba(0, 0, 0, 0.18),
-    inset 0 3px 6px rgba(255, 255, 255, 0.3);
-}
-
-.auth-submit:active:not(:disabled) {
+.auth-submit:active:not(:disabled),
+.register-modal__btn:active {
   box-shadow:
     0 3px 8px rgba(0, 0, 0, 0.1),
     inset 0 3px 6px rgba(0, 0, 0, 0.2),
@@ -1158,7 +1305,7 @@ body:has(.auth-experience) {
 }
 
 /* ==========================================================================
-   10. TEXT BUTTON + FORGOT LINK
+   11. TEXT BUTTON / FORGOT LINK
    ========================================================================== */
 
 .auth-text-button {
@@ -1167,25 +1314,20 @@ body:has(.auth-experience) {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  background: none;
   border: none;
+  background: none;
+  color: var(--theme-text-muted);
   font-family: var(--font-ui);
   font-size: 12.5px;
   font-weight: 600;
-  color: var(--theme-text-muted);
-  cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 3px;
-  transition: color 300ms ease;
+  cursor: pointer;
 }
 
 .auth-text-button .react-icon {
   width: 13px;
   height: 13px;
-}
-
-.auth-text-button:hover {
-  color: var(--theme-primary);
 }
 
 .auth-forgot-row {
@@ -1200,31 +1342,26 @@ body:has(.auth-experience) {
   align-self: flex-end;
   margin-top: -6px;
   margin-bottom: 2px;
+  color: var(--theme-accent);
   font-size: 0.78rem;
   font-weight: 600;
-  color: var(--theme-accent);
   text-decoration: none;
-  transition: color 300ms ease;
-}
-
-.auth-forgot-link:hover {
-  color: var(--theme-primary);
 }
 
 /* ==========================================================================
-   11. CALLOUTS / STAGE ICON / OTP
+   12. CALLOUTS / STAGE ICON / OTP META
    ========================================================================== */
 
 .auth-callout {
   display: flex;
   align-items: flex-start;
   gap: 10px;
+  margin-bottom: 16px;
   padding: 12px 14px;
+  border: 1px solid;
   border-radius: var(--radius-sm);
   font-size: 13px;
   line-height: 1.5;
-  margin-bottom: 16px;
-  border: 1px solid;
 }
 
 .auth-callout .react-icon {
@@ -1246,7 +1383,6 @@ body:has(.auth-experience) {
   color: var(--theme-warning);
 }
 
-/* ✅ Stage icon — claymorphism */
 .auth-stage-icon {
   display: grid;
   place-items: center;
@@ -1273,8 +1409,8 @@ body:has(.auth-experience) {
 }
 
 @keyframes auth-stage-pulse {
-  0% { transform: scale(0.85); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
 }
 
 .auth-otp-meta {
@@ -1295,18 +1431,13 @@ body:has(.auth-experience) {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: none;
   border: none;
+  background: none;
   color: var(--theme-accent);
   font-family: var(--font-ui);
   font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
-  transition: color 300ms ease;
-}
-
-.auth-otp-meta button:hover:not(:disabled) {
-  color: var(--theme-primary);
 }
 
 .auth-otp-meta button:disabled {
@@ -1320,7 +1451,7 @@ body:has(.auth-experience) {
 }
 
 /* ==========================================================================
-   12. SUCCESS STAGE
+   13. SUCCESS STAGE
    ========================================================================== */
 
 .auth-success {
@@ -1336,8 +1467,8 @@ body:has(.auth-experience) {
 .auth-success__icon {
   width: 52px;
   height: 52px;
-  color: var(--theme-success);
   margin-bottom: 6px;
+  color: var(--theme-success);
 }
 
 .auth-success p {
@@ -1354,25 +1485,24 @@ body:has(.auth-experience) {
 }
 
 @keyframes auth-stage-fade-in {
-  0% { opacity: 0; transform: translateY(6px); }
-  100% { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ==========================================================================
-   13. PASSWORD STRENGTH RULES — FLAT PANEL
+   14. PASSWORD RULES PANEL (inline, ginagamit sa login) — neumorphism inset
    ========================================================================== */
 
 .auth-password-rules {
-  list-style: none;
-  margin: 0.4rem 0 0;
-  padding: 0.65rem 0.85rem;
-  border-radius: 0.85rem;
-  border: 1px solid var(--theme-border);
-  background: var(--theme-surface);
-  background-color: var(--theme-surface);
-  box-shadow: none;
   display: grid;
-  gap: 0.35rem;
+  gap: 0.4rem;
+  margin: 0.5rem 0 0;
+  padding: 0.75rem 0.9rem;
+  list-style: none;
+  border: none;
+  border-radius: 0.85rem;
+  background: var(--theme-surface-2);
+  box-shadow: var(--auth-inset-soft);
 }
 
 .auth-password-rule {
@@ -1391,44 +1521,27 @@ body:has(.auth-experience) {
   stroke-width: 2.5;
 }
 
-.auth-password-rule.is-pending {
-  color: var(--theme-text-muted);
-}
-
-.auth-password-rule.is-pending .react-icon {
-  color: var(--theme-danger);
-}
-
-.auth-password-rule.is-passed {
-  color: var(--theme-success);
-}
-
-.auth-password-rule.is-passed .react-icon {
-  color: var(--theme-success);
-}
+.auth-password-rule.is-pending { color: var(--theme-text-muted); }
+.auth-password-rule.is-pending .react-icon { color: var(--theme-danger); }
+.auth-password-rule.is-passed,
+.auth-password-rule.is-passed .react-icon { color: var(--theme-success); }
 
 /* ==========================================================================
-   14. STUDENT ID VALIDATION
+   15. FIELD STATUS ICON / COUNTER
    ========================================================================== */
-
-.auth-field__required {
-  color: var(--theme-danger);
-  margin-left: 2px;
-  font-weight: 700;
-}
 
 .auth-input__status {
   position: absolute;
-  right: 12px;
   top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
+  right: 12px;
+  z-index: 2;
   display: grid;
   place-items: center;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
+  transform: translateY(-50%);
   pointer-events: none;
-  z-index: 2;
 }
 
 .auth-input__status .react-icon {
@@ -1447,8 +1560,8 @@ body:has(.auth-experience) {
 }
 
 @keyframes auth-status-pop {
-  0% { transform: translateY(-50%) scale(0.5); opacity: 0; }
-  100% { transform: translateY(-50%) scale(1); opacity: 1; }
+  from { transform: translateY(-50%) scale(0.5); opacity: 0; }
+  to   { transform: translateY(-50%) scale(1);   opacity: 1; }
 }
 
 .auth-hint-row {
@@ -1461,8 +1574,8 @@ body:has(.auth-experience) {
 
 .auth-hint--counter {
   font-family: var(--font-mono);
-  font-weight: 700;
   font-size: 11.5px;
+  font-weight: 700;
   color: var(--theme-text-muted);
   transition: color 0.2s ease;
 }
@@ -1472,15 +1585,15 @@ body:has(.auth-experience) {
 }
 
 /* ==========================================================================
-   15. REGISTRATION REQUIREMENTS PANEL
+   16. REGISTRATION REQUIREMENTS PANEL
    ========================================================================== */
 
 .auth-requirement-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: grid;
   gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .auth-requirement {
@@ -1488,15 +1601,9 @@ body:has(.auth-experience) {
   align-items: flex-start;
   gap: 12px;
   padding: 12px 14px;
-  border-radius: var(--radius-sm);
   border: 1px solid var(--theme-border);
+  border-radius: var(--radius-sm);
   background: rgba(var(--theme-primary-rgb), 0.04);
-  transition: border-color 300ms ease, background-color 300ms ease;
-}
-
-.auth-requirement:hover {
-  border-color: var(--theme-border-strong);
-  background: rgba(var(--theme-primary-rgb), 0.06);
 }
 
 .auth-requirement__icon {
@@ -1546,12 +1653,12 @@ body:has(.auth-experience) {
 }
 
 .auth-requirement__desc code {
-  font-family: var(--font-mono);
-  font-size: 11.5px;
   padding: 2px 6px;
   border-radius: 4px;
   background: rgba(var(--theme-primary-rgb), 0.1);
   color: var(--theme-primary);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
   font-weight: 700;
   letter-spacing: 0.03em;
 }
@@ -1560,16 +1667,16 @@ body:has(.auth-experience) {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
+  margin-top: 2px;
   color: var(--theme-success);
   stroke-width: 2.5;
-  margin-top: 2px;
 }
 
 .auth-requirements-note {
   margin-top: 16px;
   padding: 12px 14px;
-  border-radius: var(--radius-sm);
   border: 1px solid rgba(var(--theme-accent-rgb), 0.25);
+  border-radius: var(--radius-sm);
   background: rgba(var(--theme-accent-rgb), 0.08);
   color: var(--theme-text);
   font-size: 12.5px;
@@ -1582,7 +1689,7 @@ body:has(.auth-experience) {
 }
 
 /* ==========================================================================
-   16. REGISTER MODAL — GLASSMORPHISM
+   17. REGISTER MODAL — GLASS
    ========================================================================== */
 
 .register-modal-backdrop {
@@ -1600,7 +1707,7 @@ body:has(.auth-experience) {
 
 @keyframes registerModalFadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 }
 
 .register-modal {
@@ -1608,37 +1715,37 @@ body:has(.auth-experience) {
   max-width: 480px;
   max-height: calc(100vh - 40px);
   overflow-y: auto;
-  background: var(--theme-glass-bg);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  padding: 28px 24px 24px;
   border: 1px solid var(--theme-glass-border);
   border-radius: 24px;
+  background: var(--theme-glass-bg);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.15),
     0 24px 64px rgba(0, 0, 0, 0.4),
     0 8px 24px rgba(0, 0, 0, 0.25);
-  padding: 28px 24px 24px;
   animation: registerModalPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes registerModalPop {
   from { opacity: 0; transform: scale(0.9) translateY(20px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .register-modal__header {
-  text-align: center;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 .register-modal__eyebrow {
   display: inline-block;
+  margin-bottom: 8px;
   font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--theme-accent);
-  margin-bottom: 8px;
 }
 
 .register-modal__title {
@@ -1646,26 +1753,24 @@ body:has(.auth-experience) {
   font-family: var(--font-display);
   font-size: 24px;
   font-weight: 700;
-  color: var(--theme-text);
   line-height: 1.15;
+  color: var(--theme-text);
 }
 
 .register-modal__desc {
-  margin: 0;
-  font-size: 13px;
-  color: var(--theme-text-muted);
-  line-height: 1.5;
   max-width: 340px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--theme-text-muted);
 }
 
 .register-modal__list {
-  list-style: none;
-  margin: 0 0 16px;
-  padding: 0;
   display: grid;
   gap: 8px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
 }
 
 .register-modal__item {
@@ -1673,15 +1778,9 @@ body:has(.auth-experience) {
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  background: rgba(var(--theme-primary-rgb), 0.05);
   border: 1px solid var(--theme-border);
   border-radius: 12px;
-  transition: border-color 300ms ease, background-color 300ms ease;
-}
-
-.register-modal__item:hover {
-  background: rgba(var(--theme-primary-rgb), 0.08);
-  border-color: rgba(var(--theme-primary-rgb), 0.3);
+  background: rgba(var(--theme-primary-rgb), 0.05);
 }
 
 .register-modal__icon {
@@ -1730,12 +1829,12 @@ body:has(.auth-experience) {
 }
 
 .register-modal__hint code {
-  font-family: var(--font-mono);
-  font-size: 11px;
   padding: 1px 5px;
   border-radius: 4px;
   background: rgba(var(--theme-primary-rgb), 0.12);
   color: var(--theme-primary);
+  font-family: var(--font-mono);
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.02em;
 }
@@ -1749,14 +1848,14 @@ body:has(.auth-experience) {
 }
 
 .register-modal__note {
+  margin-bottom: 20px;
   padding: 12px 14px;
-  border-radius: 10px;
   border: 1px solid rgba(var(--theme-accent-rgb), 0.25);
+  border-radius: 10px;
   background: rgba(var(--theme-accent-rgb), 0.1);
   color: var(--theme-text);
   font-size: 12.5px;
   line-height: 1.5;
-  margin-bottom: 20px;
 }
 
 .register-modal__note strong {
@@ -1769,66 +1868,10 @@ body:has(.auth-experience) {
   justify-content: center;
 }
 
-/* ✅ Register modal btn — claymorphism */
-.register-modal__btn {
-  position: relative;
-  width: 100%;
-  padding: 14px 24px;
-  border: none;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--theme-primary), var(--theme-primary-hover));
-  color: var(--theme-on-primary);
-  -webkit-text-fill-color: var(--theme-on-primary);
-  font-family: var(--font-ui);
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  cursor: pointer;
-  overflow: hidden;
-  box-shadow:
-    0 8px 20px rgba(var(--theme-primary-rgb), 0.35),
-    0 2px 4px rgba(0, 0, 0, 0.08),
-    inset 0 -3px 6px rgba(0, 0, 0, 0.15),
-    inset 0 3px 6px rgba(255, 255, 255, 0.25);
-  transition: box-shadow 300ms ease;
-}
-
-.register-modal__btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 50%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
-  border-radius: 999px 999px 0 0;
-  pointer-events: none;
-}
-
-.register-modal__btn > * {
-  position: relative;
-  z-index: 1;
-}
-
-.register-modal__btn:hover {
-  box-shadow:
-    0 14px 30px rgba(var(--theme-primary-rgb), 0.45),
-    0 4px 8px rgba(0, 0, 0, 0.1),
-    inset 0 -3px 6px rgba(0, 0, 0, 0.18),
-    inset 0 3px 6px rgba(255, 255, 255, 0.3);
-}
-
-.register-modal__btn:active {
-  box-shadow:
-    0 3px 8px rgba(0, 0, 0, 0.1),
-    inset 0 3px 6px rgba(0, 0, 0, 0.2),
-    inset 0 -2px 4px rgba(255, 255, 255, 0.15);
-}
-
 @media (max-width: 640px) {
   .register-modal {
-    border-radius: 20px;
     padding: 24px 20px 20px;
+    border-radius: 20px;
   }
   .register-modal__title {
     font-size: 20px;
@@ -1854,7 +1897,7 @@ body:has(.auth-experience) {
 }
 
 /* ==========================================================================
-   17. PASSWORD POPOVER — GLASSMORPHISM
+   18. PASSWORD POPOVER — GLASS
    ========================================================================== */
 
 .password-popover {
@@ -1863,25 +1906,24 @@ body:has(.auth-experience) {
   left: 0;
   right: 0;
   z-index: 100;
-  background: var(--theme-glass-bg);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  max-width: 100%;
+  padding: 12px 14px;
   border: 1px solid var(--theme-glass-border);
   border-radius: 12px;
+  background: var(--theme-glass-bg);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.12),
     0 12px 32px rgba(0, 0, 0, 0.25),
     0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 12px 14px;
-  animation: passwordPopoverIn 0.2s ease-out;
   pointer-events: none;
-  max-width: 100%;
-  box-sizing: border-box;
+  animation: passwordPopoverIn 0.2s ease-out;
 }
 
 @keyframes passwordPopoverIn {
   from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .password-popover.is-all-passed {
@@ -1898,8 +1940,8 @@ body:has(.auth-experience) {
 .password-popover__title {
   font-size: 11px;
   font-weight: 700;
-  text-transform: uppercase;
   letter-spacing: 0.05em;
+  text-transform: uppercase;
   color: var(--theme-text-muted);
 }
 
@@ -1908,11 +1950,11 @@ body:has(.auth-experience) {
 }
 
 .password-popover__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: grid;
   gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .password-popover__rule {
@@ -1920,8 +1962,8 @@ body:has(.auth-experience) {
   align-items: center;
   gap: 6px;
   font-size: 11.5px;
-  line-height: 1.3;
   font-weight: 500;
+  line-height: 1.3;
   transition: color 300ms ease;
 }
 
@@ -1932,13 +1974,8 @@ body:has(.auth-experience) {
   stroke-width: 2.8;
 }
 
-.password-popover__rule.is-pending {
-  color: var(--theme-text-muted);
-}
-
-.password-popover__rule.is-pending .react-icon {
-  color: var(--theme-danger);
-}
+.password-popover__rule.is-pending { color: var(--theme-text-muted); }
+.password-popover__rule.is-pending .react-icon { color: var(--theme-danger); }
 
 .password-popover__rule.is-passed {
   color: var(--theme-success);
@@ -1951,8 +1988,8 @@ body:has(.auth-experience) {
 
 @media (max-width: 480px) {
   .password-popover {
-    font-size: 11px;
     padding: 10px 12px;
+    font-size: 11px;
   }
   .password-popover__rule {
     font-size: 11px;
@@ -1960,15 +1997,15 @@ body:has(.auth-experience) {
 }
 
 /* ==========================================================================
-   18. MISC
+   19. MISC / ACCESSIBILITY / REDUCED MOTION
    ========================================================================== */
 
 .auth-sr-only {
   position: absolute;
   width: 1px;
   height: 1px;
-  padding: 0;
   margin: -1px;
+  padding: 0;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
@@ -1980,1174 +2017,21 @@ body:has(.auth-experience) {
   outline-offset: 2px;
 }
 
-/* ==========================================================================
-   19. RESPONSIVE — Large desktop
-   ========================================================================== */
-
-@media (min-width: 1400px) {
-  .auth-experience__content {
-    max-height: 760px;
-    min-height: 640px;
-  }
-}
-
-@media (max-width: 1400px) and (min-width: 1081px) {
-  .auth-experience__content {
-    max-height: 700px;
-    min-height: 580px;
-  }
-}
-
-/* ==========================================================================
-   20. REDUCED MOTION
-   ========================================================================== */
-
 @media (prefers-reduced-motion: reduce) {
+  .auth-marquee__track {
+    animation: none;
+  }
+
   .auth-input,
+  .auth-input-wrap,
   .auth-quick-login__input,
+  .auth-quick-login__field,
   .auth-submit,
-  .auth-quick-login__submit,
   .register-modal__btn,
-  .auth-text-button,
-  .auth-forgot-link,
-  .auth-password-toggle,
   .auth-guideline,
   .auth-guideline__chevron,
-  .auth-card,
-  .auth-marquee__card,
-  .auth-requirement,
-  .register-modal__item,
-  .auth-brand__logo,
   .password-popover {
     transition-duration: 0.01ms !important;
     animation: none !important;
-  }
-}
-/* ==========================================================================
-   ✅ FINAL: NEUMORPHISM INPUTS + EYE ICON INSIDE
-   ✅ Balik sa neumorphism inset (dating design)
-   ✅ Eye icon nasa LOOB ng field
-   ========================================================================== */
-
-/* ==========================================================================
-   1. AUTH INPUT WRAP — NEUMORPHISM INSET
-   ✅ Nakalubog (inset shadow)
-   ✅ Match sa dating design
-   ========================================================================== */
-
-.auth-input-wrap {
-  position: relative !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.65rem !important;
-  padding: 0 1rem !important;
-  min-height: 3.25rem !important;
-  border-radius: 0.85rem !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-
-  /* ✅ NEUMORPHISM INSET */
-  background: var(--theme-surface-2) !important;
-  background-color: var(--theme-surface-2) !important;
-  border: none !important;
-
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.6) !important;
-
-  transition: box-shadow 0.2s ease !important;
-}
-
-/* ✅ Dark mode — neumorphism */
-[data-theme-mode='dark'] .auth-input-wrap,
-[data-theme='midnight-navy'] .auth-input-wrap,
-[data-theme='matte-black'] .auth-input-wrap,
-[data-theme='charcoal-gray'] .auth-input-wrap,
-[data-theme='deep-forest'] .auth-input-wrap,
-[data-theme='dark-plum'] .auth-input-wrap {
-  background: var(--theme-surface-2) !important;
-  background-color: var(--theme-surface-2) !important;
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.5),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.04) !important;
-}
-
-/* ✅ Focus state — neumorphism + accent ring */
-.auth-input-wrap:focus-within {
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.6),
-    0 0 0 3px rgba(var(--theme-primary-rgb), 0.2) !important;
-}
-
-/* ✅ Error state */
-.auth-input-wrap.has-error {
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.6),
-    0 0 0 3px rgba(var(--theme-danger-rgb), 0.2) !important;
-}
-
-/* ✅ Valid state */
-.auth-input-wrap.is-valid {
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.6),
-    0 0 0 3px rgba(var(--theme-success-rgb), 0.2) !important;
-}
-
-/* ==========================================================================
-   2. AUTH INPUT — Transparent
-   ========================================================================== */
-
-.auth-input {
-  flex: 1 1 auto !important;
-  min-width: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  background: transparent !important;
-  background-color: transparent !important;
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  font-family: var(--font-ui) !important;
-  font-size: 0.92rem !important;
-  outline: none !important;
-  min-height: 3.25rem !important;
-  caret-color: var(--theme-primary) !important;
-  box-shadow: none !important;
-}
-
-/* ✅ Input icon — nasa loob */
-.auth-input-wrap > .react-icon {
-  position: static !important;
-  flex-shrink: 0 !important;
-  width: 1.05rem !important;
-  height: 1.05rem !important;
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  stroke: currentColor !important;
-  pointer-events: none !important;
-  order: 1 !important;
-}
-
-.auth-input-wrap:focus-within > .react-icon {
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-}
-
-/* ==========================================================================
-   3. PASSWORD TOGGLE — Nasa LOOB ng field
-   ✅ Absolute positioning sa kanan
-   ✅ Clay mini style
-   ========================================================================== */
-
-/* ✅ Reserve space sa kanan para sa toggle */
-.auth-input-wrap:has(.auth-password-toggle),
-.auth-input-wrap--has-toggle {
-  padding-right: 3.25rem !important;
-}
-
-/* ✅ Password toggle — absolute inside */
-.auth-password-toggle {
-  position: absolute !important;
-  right: 0.5rem !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: 2rem !important;
-  height: 2rem !important;
-  min-width: 2rem !important;
-  min-height: 2rem !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  display: grid !important;
-  place-items: center !important;
-  border-radius: 0.5rem !important;
-  border: none !important;
-  background: var(--theme-surface) !important;
-  background-color: var(--theme-surface) !important;
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  cursor: pointer !important;
-  z-index: 3 !important;
-  flex-shrink: 0 !important;
-
-  /* ✅ Clay mini */
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.06),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.05),
-    inset 0 1px 2px rgba(255, 255, 255, 0.4) !important;
-
-  transition: color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease !important;
-}
-
-.auth-password-toggle:hover {
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  background: var(--theme-surface) !important;
-  background-color: var(--theme-surface) !important;
-  transform: translateY(-50%) !important;
-  box-shadow:
-    0 3px 6px rgba(0, 0, 0, 0.08),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.06),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5) !important;
-}
-
-.auth-password-toggle .react-icon,
-.auth-password-toggle svg {
-  width: 0.9rem !important;
-  height: 0.9rem !important;
-  color: inherit !important;
-  -webkit-text-fill-color: inherit !important;
-  stroke: currentColor !important;
-  transform: none !important;
-}
-
-/* ✅ Siguraduhing walang extra padding sa input */
-.auth-input-wrap .auth-input--with-toggle {
-  padding-right: 0 !important;
-  margin-right: 0 !important;
-  min-width: 0 !important;
-}
-
-/* ==========================================================================
-   4. QUICK LOGIN FIELD (HEADER) — Neumorphism din
-   ✅ Match sa main form
-   ========================================================================== */
-
-.auth-quick-login__field {
-  position: relative !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.5rem !important;
-  padding: 0 0.85rem !important;
-  border-radius: 999px !important;
-  min-height: 2.65rem !important;
-
-  /* ✅ NEUMORPHISM INSET */
-  background: var(--theme-surface-2) !important;
-  background-color: var(--theme-surface-2) !important;
-  border: none !important;
-
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.6) !important;
-
-  transition: box-shadow 0.2s ease !important;
-}
-
-[data-theme-mode='dark'] .auth-quick-login__field {
-  background: var(--theme-surface-2) !important;
-  background-color: var(--theme-surface-2) !important;
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.5),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.04) !important;
-}
-
-.auth-quick-login__field:focus-within {
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.6),
-    0 0 0 3px rgba(var(--theme-primary-rgb), 0.2) !important;
-}
-
-.auth-quick-login__field .react-icon {
-  position: static !important;
-  flex-shrink: 0 !important;
-  width: 15px !important;
-  height: 15px !important;
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  stroke: currentColor !important;
-  pointer-events: none !important;
-  order: 1 !important;
-}
-
-.auth-quick-login__field:focus-within .react-icon {
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-}
-
-.auth-quick-login__input {
-  flex: 1 1 auto !important;
-  min-width: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  background: transparent !important;
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  font-family: var(--font-ui) !important;
-  font-size: 13px !important;
-  outline: none !important;
-  min-height: 2.65rem !important;
-  caret-color: var(--theme-primary) !important;
-  order: 2 !important;
-  box-shadow: none !important;
-}
-
-/* ==========================================================================
-   5. PASSWORD RULES PANEL — Neumorphism din
-   ✅ Match sa input wrap
-   ========================================================================== */
-
-.auth-password-rules {
-  list-style: none !important;
-  margin: 0.5rem 0 0 !important;
-  padding: 0.75rem 0.9rem !important;
-  border-radius: 0.85rem !important;
-  border: none !important;
-
-  /* ✅ NEUMORPHISM INSET */
-  background: var(--theme-surface-2) !important;
-  background-color: var(--theme-surface-2) !important;
-
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.06),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.5) !important;
-
-  display: grid !important;
-  gap: 0.4rem !important;
-}
-
-[data-theme-mode='dark'] .auth-password-rules {
-  background: var(--theme-surface-2) !important;
-  background-color: var(--theme-surface-2) !important;
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.4),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.03) !important;
-}
-
-/* ==========================================================================
-   6. RESPONSIVE — Compact sa mobile
-   ========================================================================== */
-
-@media (max-width: 768px) {
-  .auth-input-wrap {
-    min-height: 3rem !important;
-  }
-
-  .auth-input {
-    min-height: 3rem !important;
-  }
-
-  .auth-input-wrap:has(.auth-password-toggle),
-  .auth-input-wrap--has-toggle {
-    padding-right: 2.85rem !important;
-  }
-
-  .auth-password-toggle {
-    width: 1.75rem !important;
-    height: 1.75rem !important;
-    min-width: 1.75rem !important;
-    min-height: 1.75rem !important;
-    right: 0.4rem !important;
-  }
-
-  .auth-password-toggle .react-icon,
-  .auth-password-toggle svg {
-    width: 0.85rem !important;
-    height: 0.85rem !important;
-  }
-}
-/* ==========================================================================
-   🚫 FINAL: KILL ALL SHADOWS — Flat inputs, walang glow
-   ✅ Naka-pinakadulo — pinakamalakas na selector
-   ========================================================================== */
-
-/* ==========================================================================
-   1. AUTH INPUT WRAP — Force flat, KILL LAHAT ng shadow
-   ========================================================================== */
-
-html body .auth-input-wrap,
-html body .auth-experience .auth-input-wrap,
-html body .auth-card .auth-input-wrap,
-html body form .auth-input-wrap,
-html[data-theme] body .auth-input-wrap,
-html[data-theme] body .auth-card .auth-input-wrap,
-html[data-theme-mode] body .auth-input-wrap,
-html[data-theme-mode] body .auth-card .auth-input-wrap,
-.auth-input-wrap,
-.auth-input-wrap:hover,
-.auth-input-wrap:not(:focus-within),
-.auth-input-wrap:focus,
-.auth-input-wrap:focus-within,
-.auth-input-wrap:active {
-  /* ✅ FLAT — solid bg + border */
-  background: var(--theme-surface) !important;
-  background-color: var(--theme-surface) !important;
-  border: 1px solid var(--theme-border) !important;
-  border-radius: 0.85rem !important;
-
-  /* ✅ KILL LAHAT NG SHADOW */
-  box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  -moz-box-shadow: none !important;
-
-  /* ✅ KILL OUTLINE / RING */
-  outline: none !important;
-  outline-offset: 0 !important;
-
-  /* ✅ KILL GLOW */
-  filter: none !important;
-  text-shadow: none !important;
-}
-
-/* ==========================================================================
-   2. DARK MODE — Flat din
-   ========================================================================== */
-
-[data-theme-mode='dark'] .auth-input-wrap,
-[data-theme='midnight-navy'] .auth-input-wrap,
-[data-theme='matte-black'] .auth-input-wrap,
-[data-theme='charcoal-gray'] .auth-input-wrap,
-[data-theme='deep-forest'] .auth-input-wrap,
-[data-theme='dark-plum'] .auth-input-wrap {
-  background: var(--theme-surface) !important;
-  background-color: var(--theme-surface) !important;
-  border: 1px solid var(--theme-border) !important;
-  box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-}
-
-/* ==========================================================================
-   3. FOCUS STATE — Minimal lang, walang glow
-   ✅ Border lang ang nagbabago
-   ✅ Walang ring/glow
-   ========================================================================== */
-
-.auth-input-wrap:focus-within,
-html body .auth-input-wrap:focus-within,
-html body .auth-card .auth-input-wrap:focus-within {
-  border-color: var(--theme-primary) !important;
-  background: var(--theme-surface) !important;
-  background-color: var(--theme-surface) !important;
-
-  /* ✅ WALANG RING/GLOW */
-  box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  outline: none !important;
-}
-
-/* ==========================================================================
-   4. AUTH INPUT — Walang anumang shadow
-   ========================================================================== */
-
-.auth-input,
-.auth-input-wrap input,
-.auth-input:hover,
-.auth-input:focus,
-.auth-input:focus-visible,
-.auth-input:active,
-input.auth-input {
-  background: transparent !important;
-  background-color: transparent !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  filter: none !important;
-}
-
-/* ==========================================================================
-   5. PASSWORD TOGGLE — Walang shadow
-   ========================================================================== */
-
-.auth-password-toggle,
-.auth-password-toggle:hover {
-  background: transparent !important;
-  background-color: transparent !important;
-  box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  outline: none !important;
-}
-
-.auth-password-toggle:hover {
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-}
-
-/* ==========================================================================
-   6. QUICK LOGIN FIELD (HEADER) — Flat din
-   ========================================================================== */
-
-.auth-quick-login__field,
-.auth-quick-login__field:hover,
-.auth-quick-login__field:not(:focus-within),
-.auth-quick-login__field:focus-within,
-.auth-quick-login__field:active {
-  background: var(--theme-surface) !important;
-  background-color: var(--theme-surface) !important;
-  border: 1px solid var(--theme-border) !important;
-  box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  outline: none !important;
-}
-
-.auth-quick-login__field:focus-within {
-  border-color: var(--theme-primary) !important;
-  box-shadow: none !important;
-}
-
-/* ==========================================================================
-   7. PASSWORD RULES PANEL — Flat din
-   ========================================================================== */
-
-.auth-password-rules,
-.auth-password-rules:hover {
-  background: var(--theme-surface) !important;
-  background-color: var(--theme-surface) !important;
-  border: 1px solid var(--theme-border) !important;
-  box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  outline: none !important;
-}
-
-/* ==========================================================================
-   8. DARK MODE — Flat pa rin
-   ========================================================================== */
-
-[data-theme-mode='dark'] .auth-quick-login__field,
-[data-theme-mode='dark'] .auth-password-rules,
-[data-theme='midnight-navy'] .auth-quick-login__field,
-[data-theme='midnight-navy'] .auth-password-rules,
-[data-theme='matte-black'] .auth-quick-login__field,
-[data-theme='matte-black'] .auth-password-rules {
-  background: var(--theme-surface) !important;
-  background-color: var(--theme-surface) !important;
-  border: 1px solid var(--theme-border) !important;
-  box-shadow: none !important;
-}
-
-/* ==========================================================================
-   9. KILL LAHAT NG PSEUDO-ELEMENT SHADOWS
-   ========================================================================== */
-
-.auth-input-wrap::before,
-.auth-input-wrap::after,
-.auth-input-wrap *::before,
-.auth-input-wrap *::after,
-.auth-quick-login__field::before,
-.auth-quick-login__field::after {
-  box-shadow: none !important;
-  filter: none !important;
-  text-shadow: none !important;
-}
-
-/* ==========================================================================
-   10. ACCESSIBILITY — Focus-visible lang (keyboard)
-   ✅ Sa keyboard lang may ring (walang glow sa mouse)
-   ========================================================================== */
-
-.auth-input-wrap:focus-visible,
-.auth-input:focus-visible {
-  outline: 2px solid var(--theme-primary) !important;
-  outline-offset: 2px !important;
-  box-shadow: none !important;
-}
-/* ==========================================================================
-   🚫 ULTRA FORCE: KILL ALL SHADOWS ON AUTH INPUTS
-   ✅ Pinakamalakas na selector — override LAHAT
-   ========================================================================== */
-
-/* ✅ ULTRA SPECIFICITY — 5 classes deep + attribute */
-html body #root div.auth-experience div.auth-experience__content section.auth-card form.auth-form div.auth-input-wrap input.auth-input,
-html body #root div.auth-experience div.auth-experience__content section.auth-card form.auth-form div.auth-input-wrap input.auth-input:hover,
-html body #root div.auth-experience div.auth-experience__content section.auth-card form.auth-form div.auth-input-wrap input.auth-input:focus,
-html body #root div.auth-experience div.auth-experience__content section.auth-card form.auth-form div.auth-input-wrap input.auth-input:focus-visible,
-html body #root div.auth-experience div.auth-experience__content section.auth-card form.auth-form div.auth-input-wrap input.auth-input:active {
-  /* ✅ KILL INSET SHADOW */
-  box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  -moz-box-shadow: none !important;
-
-  /* ✅ KILL BLUR */
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-
-  /* ✅ KILL OUTLINE */
-  outline: none !important;
-  outline-offset: 0 !important;
-
-  /* ✅ KILL BORDER */
-  border: none !important;
-
-  /* ✅ KILL BACKGROUND */
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-
-  /* ✅ KILL FILTER */
-  filter: none !important;
-
-  /* ✅ Text */
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-}
-
-/* ✅ Same para sa WRAP */
-html body #root div.auth-experience div.auth-experience__content section.auth-card form.auth-form div.auth-input-wrap,
-html body #root div.auth-experience div.auth-experience__content section.auth-card form.auth-form div.auth-input-wrap:hover,
-html body #root div.auth-experience div.auth-experience__content section.auth-card form.auth-form div.auth-input-wrap:focus,
-html body #root div.auth-experience div.auth-experience__content section.auth-card form.auth-form div.auth-input-wrap:focus-within,
-html body #root div.auth-experience div.auth-experience__content section.auth-card form.auth-form div.auth-input-wrap:focus-visible,
-html body #root div.auth-experience div.auth-experience__content section.auth-card form.auth-form div.auth-input-wrap:active {
-  /* ✅ FLAT — solid bg + border */
-  background: var(--theme-surface) !important;
-  background-color: var(--theme-surface) !important;
-  border: 1px solid var(--theme-border) !important;
-  border-radius: 0.85rem !important;
-
-  /* ✅ KILL SHADOW */
-  box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  -moz-box-shadow: none !important;
-
-  /* ✅ KILL BLUR */
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-
-  /* ✅ KILL OUTLINE */
-  outline: none !important;
-  outline-offset: 0 !important;
-}
-
-/* ✅ Focus state — border lang */
-html body #root div.auth-experience div.auth-experience__content section.auth-card form.auth-form div.auth-input-wrap:focus-within {
-  border-color: var(--theme-primary) !important;
-}
-
-/* ==========================================================================
-   ✅ OVERRIDE SA `element.style` (inline) — Kung naka-inline
-   ✅ Ito ay specific para sa DevTools na `element.style`
-   ========================================================================== */
-
-/* ✅ Force lahat ng inputs sa auth — targeted by #root */
-html body #root input.auth-input,
-html body #root input.auth-input:focus,
-html body #root input.auth-input:focus-visible,
-html body #root input.auth-input:hover,
-html body #root input.auth-input:active {
-  box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  outline: none !important;
-  border: none !important;
-  background: transparent !important;
-  background-color: transparent !important;
-}
-
-/* ✅ Force lahat ng wrappers sa auth */
-html body #root .auth-input-wrap,
-html body #root .auth-input-wrap:focus,
-html body #root .auth-input-wrap:focus-within,
-html body #root .auth-input-wrap:hover {
-  background: var(--theme-surface) !important;
-  background-color: var(--theme-surface) !important;
-  border: 1px solid var(--theme-border) !important;
-  box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  outline: none !important;
-}
-
-/* ==========================================================================
-   ✅ SIGURADUHING WALANG `element.style` NA MAKAKALUSOT
-   ✅ Catch-all sa #root
-   ========================================================================== */
-
-html body #root .auth-experience input,
-html body #root .auth-experience input:focus,
-html body #root .auth-experience input:focus-visible,
-html body #root .auth-experience input:hover,
-html body #root .auth-card input,
-html body #root .auth-card input:focus,
-html body #root .auth-card input:focus-visible,
-html body #root .auth-card input:hover {
-  box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  outline: none !important;
-  border: none !important;
-  background: transparent !important;
-  background-color: transparent !important;
-  filter: none !important;
-  text-shadow: none !important;
-}
-
-/* ==========================================================================
-   ✅ I-KILL ANG `autofill` GLOW (Chrome)
-   ========================================================================== */
-
-html body #root input.auth-input:-webkit-autofill,
-html body #root input.auth-input:-webkit-autofill:hover,
-html body #root input.auth-input:-webkit-autofill:focus,
-html body #root input.auth-input:-webkit-autofill:active,
-html body #root .auth-input-wrap input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 1000px var(--theme-surface) inset !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  background: transparent !important;
-  background-color: transparent !important;
-  border: none !important;
-  outline: none !important;
-  transition: background-color 9999s ease-in-out 0s !important;
-}
-
-html body #root .auth-input-wrap:has(input:-webkit-autofill) {
-  background: var(--theme-surface) !important;
-  background-color: var(--theme-surface) !important;
-  border-color: var(--theme-border) !important;
-  box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-/* ==========================================================================
-   ✅ I-KEEP ANG EYE ICON — Nasa loob pa rin
-   ========================================================================== */
-
-html body #root .auth-password-toggle,
-html body #root .auth-password-toggle:hover,
-html body #root .auth-password-toggle:focus,
-html body #root .auth-password-toggle:focus-visible {
-  position: absolute !important;
-  right: 0.5rem !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: 2rem !important;
-  height: 2rem !important;
-  display: grid !important;
-  place-items: center !important;
-  border-radius: 0.5rem !important;
-  border: none !important;
-  background: transparent !important;
-  background-color: transparent !important;
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  cursor: pointer !important;
-  z-index: 3 !important;
-  box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  outline: none !important;
-}
-
-html body #root .auth-password-toggle:hover {
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-}
-
-html body #root .auth-input-wrap:has(.auth-password-toggle) {
-  padding-right: 3.25rem !important;
-}
-
-/* ==========================================================================
-   ✅ RETAIN GLASS SA PANELS — Hindi sa inputs
-   ========================================================================== */
-
-html body #root .auth-experience__header,
-html body #root .auth-experience__content,
-html body #root .register-modal,
-html body #root .password-popover {
-  backdrop-filter: blur(22px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(22px) saturate(140%) !important;
-}
-/* ==========================================================================
-   ✅ NEUMORPHISM INPUTS — INSET SHADOW (proper)
-   ✅ Nasa PINAKADULO — pinakamalakas na selector
-   ✅ Walang nakalabas na glow
-   ✅ Eye icon retained
-   ========================================================================== */
-
-/* ==========================================================================
-   1️⃣ AUTH INPUT WRAP — NEUMORPHISM INSET
-   ✅ Nakalubog (inset shadow)
-   ✅ Walang outer glow
-   ========================================================================== */
-
-html body .auth-input-wrap,
-html body .auth-experience .auth-input-wrap,
-html body .auth-card .auth-input-wrap,
-html body #root .auth-input-wrap,
-html body #root .auth-experience .auth-input-wrap,
-html body #root .auth-card .auth-input-wrap {
-  position: relative !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.65rem !important;
-  padding: 0 1rem !important;
-  min-height: 3.25rem !important;
-  border-radius: 0.85rem !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-
-  /* ✅ NEUMORPHISM — solid bg */
-  background: var(--theme-surface-2) !important;
-  background-color: var(--theme-surface-2) !important;
-
-  /* ✅ WALANG BORDER */
-  border: none !important;
-
-  /* ✅ NEUMORPHISM INSET — nakalubog */
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.6) !important;
-  -webkit-box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.6) !important;
-
-  /* ✅ KILL BACKDROP BLUR */
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-
-  /* ✅ KILL OUTLINE */
-  outline: none !important;
-  outline-offset: 0 !important;
-
-  /* ✅ Smooth transition */
-  transition: box-shadow 0.2s ease !important;
-}
-
-/* ✅ DARK MODE — Neumorphism inset */
-[data-theme-mode='dark'] html body .auth-input-wrap,
-[data-theme-mode='dark'] html body #root .auth-input-wrap,
-[data-theme='midnight-navy'] html body .auth-input-wrap,
-[data-theme='midnight-navy'] html body #root .auth-input-wrap,
-[data-theme='matte-black'] html body .auth-input-wrap,
-[data-theme='matte-black'] html body #root .auth-input-wrap,
-[data-theme='charcoal-gray'] html body .auth-input-wrap,
-[data-theme='charcoal-gray'] html body #root .auth-input-wrap,
-[data-theme='deep-forest'] html body .auth-input-wrap,
-[data-theme='deep-forest'] html body #root .auth-input-wrap,
-[data-theme='dark-plum'] html body .auth-input-wrap,
-[data-theme='dark-plum'] html body #root .auth-input-wrap {
-  background: var(--theme-surface-2) !important;
-  background-color: var(--theme-surface-2) !important;
-  border: none !important;
-
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.5),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.04) !important;
-  -webkit-box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.5),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.04) !important;
-
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-/* ✅ Focus state — neumorphism inset + accent ring */
-html body .auth-input-wrap:focus-within,
-html body #root .auth-input-wrap:focus-within,
-html body .auth-experience .auth-input-wrap:focus-within,
-html body .auth-card .auth-input-wrap:focus-within {
-  background: var(--theme-surface-2) !important;
-  background-color: var(--theme-surface-2) !important;
-  border: none !important;
-
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.6),
-    0 0 0 3px rgba(var(--theme-primary-rgb), 0.2) !important;
-  -webkit-box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.6),
-    0 0 0 3px rgba(var(--theme-primary-rgb), 0.2) !important;
-}
-
-[data-theme-mode='dark'] html body .auth-input-wrap:focus-within,
-[data-theme-mode='dark'] html body #root .auth-input-wrap:focus-within {
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.5),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.04),
-    0 0 0 3px rgba(var(--theme-primary-rgb), 0.25) !important;
-  -webkit-box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.5),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.04),
-    0 0 0 3px rgba(var(--theme-primary-rgb), 0.25) !important;
-}
-
-/* ✅ Error state */
-html body .auth-input-wrap.has-error,
-html body #root .auth-input-wrap.has-error {
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.6),
-    0 0 0 3px rgba(var(--theme-danger-rgb), 0.2) !important;
-}
-
-/* ✅ Valid state */
-html body .auth-input-wrap.is-valid,
-html body #root .auth-input-wrap.is-valid {
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.6),
-    0 0 0 3px rgba(var(--theme-success-rgb), 0.2) !important;
-}
-
-/* ==========================================================================
-   2️⃣ AUTH INPUT MISMO — Transparent, walang shadow
-   ========================================================================== */
-
-html body input.auth-input,
-html body input.auth-input:hover,
-html body input.auth-input:focus,
-html body input.auth-input:focus-visible,
-html body input.auth-input:active,
-html body #root input.auth-input,
-html body #root input.auth-input:hover,
-html body #root input.auth-input:focus,
-html body #root input.auth-input:focus-visible,
-html body #root input.auth-input:active,
-html body .auth-input-wrap input.auth-input,
-html body .auth-input-wrap input.auth-input:focus {
-  /* ✅ TRANSPARENT — nasa wrap na ang bg */
-  background: transparent !important;
-  background-color: transparent !important;
-
-  /* ✅ WALANG BORDER */
-  border: none !important;
-  border-radius: 0 !important;
-
-  /* ✅ WALANG SHADOW — nasa wrap na */
-  box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  -moz-box-shadow: none !important;
-
-  /* ✅ KILL BLUR */
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-
-  /* ✅ KILL OUTLINE */
-  outline: none !important;
-  outline-offset: 0 !important;
-
-  /* ✅ KILL FILTER */
-  filter: none !important;
-  text-shadow: none !important;
-
-  /* ✅ Text */
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  caret-color: var(--theme-primary) !important;
-}
-
-/* ==========================================================================
-   3️⃣ EYE ICON — Nasa loob, retained
-   ========================================================================== */
-
-html body .auth-password-toggle,
-html body #root .auth-password-toggle,
-html body .auth-password-toggle:hover,
-html body #root .auth-password-toggle:hover,
-html body .auth-password-toggle:focus,
-html body #root .auth-password-toggle:focus,
-html body .auth-password-toggle:focus-visible,
-html body #root .auth-password-toggle:focus-visible,
-html body .auth-password-toggle:active,
-html body #root .auth-password-toggle:active {
-  /* ✅ Absolute position — nasa loob */
-  position: absolute !important;
-  right: 0.5rem !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-
-  /* ✅ Compact */
-  width: 2rem !important;
-  height: 2rem !important;
-  min-width: 2rem !important;
-  min-height: 2rem !important;
-  padding: 0 !important;
-  margin: 0 !important;
-
-  display: grid !important;
-  place-items: center !important;
-  border-radius: 0.5rem !important;
-  border: none !important;
-
-  /* ✅ Transparent */
-  background: transparent !important;
-  background-color: transparent !important;
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
-  cursor: pointer !important;
-  z-index: 3 !important;
-  flex-shrink: 0 !important;
-
-  /* ✅ WALANG GLOW — nasa wrap na ang neumorphism */
-  box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  outline: none !important;
-  filter: none !important;
-
-  transition: color 0.2s ease, background-color 0.2s ease !important;
-}
-
-html body .auth-password-toggle:hover,
-html body #root .auth-password-toggle:hover {
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  background: rgba(var(--theme-primary-rgb), 0.08) !important;
-  background-color: rgba(var(--theme-primary-rgb), 0.08) !important;
-  transform: translateY(-50%) !important;
-}
-
-html body .auth-password-toggle .react-icon,
-html body .auth-password-toggle svg,
-html body #root .auth-password-toggle .react-icon,
-html body #root .auth-password-toggle svg {
-  width: 0.95rem !important;
-  height: 0.95rem !important;
-  color: inherit !important;
-  -webkit-text-fill-color: inherit !important;
-  stroke: currentColor !important;
-  transform: none !important;
-}
-
-/* ✅ Reserve space para sa eye icon */
-html body .auth-input-wrap:has(.auth-password-toggle),
-html body #root .auth-input-wrap:has(.auth-password-toggle),
-html body .auth-input-wrap--has-toggle,
-html body #root .auth-input-wrap--has-toggle {
-  padding-right: 3.25rem !important;
-}
-
-html body .auth-input-wrap .auth-input--with-toggle,
-html body #root .auth-input-wrap .auth-input--with-toggle {
-  padding-right: 0 !important;
-  margin-right: 0 !important;
-  min-width: 0 !important;
-}
-
-/* ==========================================================================
-   4️⃣ QUICK LOGIN (HEADER) — Same neumorphism
-   ========================================================================== */
-
-html body .auth-quick-login__field,
-html body #root .auth-quick-login__field {
-  position: relative !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.5rem !important;
-  padding: 0 0.85rem !important;
-  min-height: 2.65rem !important;
-  border-radius: 999px !important;
-
-  background: var(--theme-surface-2) !important;
-  background-color: var(--theme-surface-2) !important;
-  border: none !important;
-
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.6) !important;
-
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-[data-theme-mode='dark'] html body .auth-quick-login__field,
-[data-theme-mode='dark'] html body #root .auth-quick-login__field {
-  background: var(--theme-surface-2) !important;
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.5),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.04) !important;
-}
-
-html body .auth-quick-login__field:focus-within,
-html body #root .auth-quick-login__field:focus-within {
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.6),
-    0 0 0 3px rgba(var(--theme-primary-rgb), 0.2) !important;
-}
-
-html body input.auth-quick-login__input,
-html body input.auth-quick-login__input:focus,
-html body input.auth-quick-login__input:focus-visible {
-  background: transparent !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-/* ==========================================================================
-   5️⃣ PASSWORD RULES PANEL — Neumorphism inset
-   ========================================================================== */
-
-html body .auth-password-rules,
-html body #root .auth-password-rules {
-  background: var(--theme-surface-2) !important;
-  background-color: var(--theme-surface-2) !important;
-  border: none !important;
-
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.06),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.5) !important;
-
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-/* ==========================================================================
-   6️⃣ AUTOFILL — Alisin ang browser glow
-   ========================================================================== */
-
-html body input.auth-input:-webkit-autofill,
-html body #root input.auth-input:-webkit-autofill,
-html body input.auth-input:-webkit-autofill:hover,
-html body input.auth-input:-webkit-autofill:focus,
-html body input.auth-input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 1000px var(--theme-surface-2) inset !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
-  background: transparent !important;
-  background-color: transparent !important;
-  border: none !important;
-  outline: none !important;
-  caret-color: var(--theme-primary) !important;
-  transition: background-color 9999s ease-in-out 0s !important;
-}
-
-html body .auth-input-wrap:has(input:-webkit-autofill),
-html body #root .auth-input-wrap:has(input:-webkit-autofill) {
-  background: var(--theme-surface-2) !important;
-  background-color: var(--theme-surface-2) !important;
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.6) !important;
-}
-
-[data-theme-mode='dark'] html body .auth-input-wrap:has(input:-webkit-autofill) {
-  box-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.5),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.04) !important;
-}
-
-/* ==========================================================================
-   7️⃣ RESPONSIVE
-   ========================================================================== */
-
-@media (max-width: 768px) {
-  html body .auth-input-wrap {
-    min-height: 3rem !important;
-  }
-
-  html body .auth-input-wrap:has(.auth-password-toggle),
-  html body .auth-input-wrap--has-toggle {
-    padding-right: 2.85rem !important;
-  }
-
-  html body .auth-password-toggle {
-    width: 1.75rem !important;
-    height: 1.75rem !important;
-    min-width: 1.75rem !important;
-    min-height: 1.75rem !important;
-    right: 0.4rem !important;
   }
 }

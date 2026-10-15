@@ -14,6 +14,9 @@ export interface AuthUser {
   email: string;
   role: UserRole;
   studentId?: string;
+  course?: string;
+  yearLevel?: string;
+  dateOfBirth?: string;
   profilePicture?: string;
   emailVerified: boolean;
 }
@@ -34,6 +37,9 @@ export interface RegisterPayload {
   email: string;
   password: string;
   studentId: string;
+  course: string;
+  yearLevel: string;
+  dateOfBirth: string;
 }
 
 // ============================================
@@ -61,6 +67,22 @@ export class StudentIdAlreadyRegisteredError extends Error {
 export async function registerUser(payload: RegisterPayload) {
   const normalizedEmail = payload.email.trim().toLowerCase();
   const normalizedStudentId = payload.studentId.trim();
+  const normalizedCourse = payload.course.trim();
+  const normalizedYearLevel = payload.yearLevel.trim();
+  const normalizedDob = payload.dateOfBirth.trim();
+
+  /* ✅ VALIDATION — lahat ng fields required */
+  if (
+    !payload.name.trim() ||
+    !normalizedEmail ||
+    !payload.password ||
+    !normalizedStudentId ||
+    !normalizedCourse ||
+    !normalizedYearLevel ||
+    !normalizedDob
+  ) {
+    throw new Error('All fields are required. Please complete the form.');
+  }
 
   /* ✅ PRE-CHECK #1: Existing email? */
   const { data: existingEmail, error: emailCheckError } = await supabase
@@ -92,7 +114,7 @@ export async function registerUser(payload: RegisterPayload) {
     throw new StudentIdAlreadyRegisteredError();
   }
 
-  /* ✅ PROCEED: signUp */
+  /* ✅ PROCEED: signUp — isama lahat ng metadata */
   const { data, error } = await supabase.auth.signUp({
     email: normalizedEmail,
     password: payload.password,
@@ -101,6 +123,9 @@ export async function registerUser(payload: RegisterPayload) {
         name: payload.name.trim(),
         role: 'Student',
         student_id: normalizedStudentId,
+        course_strand: normalizedCourse,
+        year_level: normalizedYearLevel,
+        date_of_birth: normalizedDob,
       },
     },
   });
@@ -337,7 +362,10 @@ export function mapSupabaseUser(user: SupabaseAuthUser): AuthUser {
     email: user.email || '',
     role: ((meta.role as string) || 'Student') as UserRole,
     studentId: meta.student_id as string | undefined,
+    course: meta.course_strand as string | undefined,
+    yearLevel: meta.year_level as string | undefined,
+    dateOfBirth: meta.date_of_birth as string | undefined,
     profilePicture: meta.profile_picture as string | undefined,
     emailVerified: true,
   };
-}
+} 

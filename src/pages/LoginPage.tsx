@@ -56,7 +56,7 @@ function PasswordStrength({ value }: { value: string }) {
 export default function LoginPage() {
   const navigate = useNavigate();
   const toast = useToast();
-  const { signIn } = useApp();
+  const { signIn, refreshOnboarding } = useApp();
 
   /* ============================================
      ✅ TOP HEADER FORM — INDEPENDENT STATE
@@ -91,6 +91,9 @@ export default function LoginPage() {
 
   /* ============================================
      ✅ SHARED LOGIN HANDLER
+     ✅ Palaging → HomePage (/)
+     ✅ Ang WelcomeUniformModal na ang bahala mag-decide
+        kung lalabas ba (base sa DB record)
      ============================================ */
   const performLogin = async (
     identifier: string,
@@ -122,6 +125,8 @@ export default function LoginPage() {
       const appRole = user.role === 'Staff' ? 'School Staff' : user.role;
 
       clear();
+
+      /* ✅ Sign in to app store */
       signIn({
         id: user.id,
         name: user.name,
@@ -130,7 +135,17 @@ export default function LoginPage() {
         idNumber: user.studentId ?? '',
         organization: 'SJCM General',
       });
+
+      /* ✅ Refresh onboarding status from Supabase */
+      await refreshOnboarding();
+
       toast(`Welcome back, ${user.name}.`, 'success');
+
+      /* ✅ Palaging redirect sa HOMEPAGE (/) */
+      /* ✅ WelcomeUniformModal ang mag-decide kung lalabas:
+         - Walang DB record → modal lalabas
+         - May DB record na (yes/no) → hindi lalabas
+      */
       navigate('/', { replace: true });
     } catch (error) {
       const newStatus = recordFailure();

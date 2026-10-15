@@ -2818,3 +2818,896 @@ html body .site-nav .nav-action--accent svg {
   color: var(--theme-primary) !important;
   -webkit-text-fill-color: var(--theme-primary) !important;
 }
+/* ============================================================
+   ✅ TEXT COLOR FIX ONLY — Profile cover text
+   ✅ Walang babaguhin sa layout, background, shadow, border
+   ✅ Color lang ng text ang a-adjust
+   ✅ I-append sa PINAKADULO ng CSS
+============================================================ */
+
+/* ---------- 1. PROFILE NAME — "CHRISTIAN JR. VILLANUEVA" ---------- */
+.profile-cover .profile-name,
+.profile-cover-content .profile-name,
+[data-theme] .profile-cover .profile-name,
+[data-theme-mode='light'] .profile-cover .profile-name,
+[data-theme-mode='dark'] .profile-cover .profile-name {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  text-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.7),
+    0 1px 4px rgba(0, 0, 0, 0.85) !important;
+}
+
+/* ---------- 2. META ROW — "Student · SJCM General · @user" ---------- */
+.profile-cover .profile-meta-row,
+.profile-cover .profile-meta-row span,
+[data-theme] .profile-cover .profile-meta-row span,
+[data-theme-mode='light'] .profile-cover .profile-meta-row span,
+[data-theme-mode='dark'] .profile-cover .profile-meta-row span {
+  color: rgba(255, 255, 255, 0.95) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.95) !important;
+  text-shadow:
+    0 1px 5px rgba(0, 0, 0, 0.65),
+    0 1px 2px rgba(0, 0, 0, 0.85) !important;
+}
+
+/* ---------- 3. "Active" STATUS PILL TEXT ---------- */
+.profile-cover .profile-status-pill,
+[data-theme-mode='light'] .profile-cover .profile-status-pill,
+[data-theme-mode='dark'] .profile-cover .profile-status-pill {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ---------- 4. EDIT COVER BUTTON TEXT ---------- */
+.profile-cover-edit,
+[data-theme-mode='light'] .profile-cover-edit,
+[data-theme-mode='dark'] .profile-cover-edit {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+.profile-cover-edit .react-icon,
+.profile-cover-edit svg {
+  color: #FFFFFF !important;
+  stroke: currentColor !important;
+}
+
+/* ---------- 5. PROFILE TAB TEXT ---------- */
+[data-theme-mode='light'] .profile-tab.is-active {
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+}
+
+[data-theme-mode='light'] .profile-tab:not(.is-active) {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ---------- 6. PROFILE CARD TITLE + SUBTITLE ---------- */
+.profile-card-title {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.profile-card-title .react-icon {
+  color: var(--theme-primary) !important;
+  stroke: currentColor !important;
+}
+
+.profile-card-subtitle {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ---------- 7. FORM LABEL + LOCK BADGE TEXT ---------- */
+.profile-form-label {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.profile-form-lock {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.profile-form-lock .react-icon {
+  color: currentColor !important;
+  stroke: currentColor !important;
+}
+
+/* ---------- 8. FORM FIELD VALUE TEXT ---------- */
+.profile-form-field > span {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+.profile-form-field--locked > span {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+.profile-form-field > .react-icon {
+  color: var(--theme-primary) !important;
+  stroke: currentColor !important;
+}
+
+/* ---------- 9. EDIT PROFILE BUTTON TEXT ---------- */
+.profile-edit-btn {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+.profile-edit-btn .react-icon {
+  color: var(--theme-primary) !important;
+  stroke: currentColor !important;
+}
+
+/* ============================================================
+   ✅ END — TEXT COLOR FIX ONLY
+============================================================ */
+/* ============================================================
+   ✅ PROFILE SIDE CARDS — CLAYMORPHISM (compact + UX-friendly)
+   ✅ Maliliit, malambot na edges, tactile feel
+   ✅ Walang babaguhin sa layout structure
+   ✅ I-append sa PINAKADULO ng ProfilePage.css
+============================================================ */
+
+/* ============================================================
+   1️⃣ SIDE CARD — clay container
+   ============================================================ */
+.profile-side__card {
+  position: relative !important;
+
+  /* ✅ Clay surface — soft raised look */
+  background: var(--theme-surface-2, var(--theme-surface)) !important;
+
+  /* ✅ Clay edges — soft inner + outer shadow */
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.06),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.55),
+    0 2px 4px rgba(var(--theme-primary-rgb), 0.04),
+    0 6px 14px -8px rgba(var(--theme-primary-rgb), 0.15) !important;
+
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.06) !important;
+  border-radius: 1rem !important;
+
+  padding: 1rem 1.1rem !important;
+  transition:
+    box-shadow 0.25s ease,
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* ✅ Hover — subtle lift */
+.profile-side__card:hover {
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.05),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.65),
+    0 4px 8px rgba(var(--theme-primary-rgb), 0.06),
+    0 10px 24px -10px rgba(var(--theme-primary-rgb), 0.2) !important;
+}
+
+/* ✅ Dark theme — adjust clay highlights */
+[data-theme-mode='dark'] .profile-side__card {
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.35),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    0 6px 14px -8px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme-mode='dark'] .profile-side__card:hover {
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.4),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.07),
+    0 4px 8px rgba(0, 0, 0, 0.2),
+    0 10px 24px -10px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ============================================================
+   2️⃣ SIDE CARD HEADER — compact
+   ============================================================ */
+.profile-side__header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.5rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.profile-side__title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em !important;
+}
+
+.profile-side__title .react-icon {
+  width: 1rem !important;
+  height: 1rem !important;
+  stroke-width: 2.3 !important;
+  color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   3️⃣ VERIFIED PILL — clay style
+   ============================================================ */
+.profile-side__pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.3rem !important;
+
+  padding: 0.2rem 0.6rem !important;
+  border-radius: 999px !important;
+
+  /* ✅ Clay pill */
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+
+  box-shadow:
+    inset 1px 1px 2px rgba(0, 0, 0, 0.05),
+    inset -1px -1px 2px rgba(255, 255, 255, 0.4),
+    0 1px 2px rgba(var(--theme-primary-rgb), 0.15) !important;
+
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.15) !important;
+}
+
+/* ============================================================
+   4️⃣ STATUS LIST — compact clay chips
+   ============================================================ */
+.profile-status-list {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.4rem !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  list-style: none !important;
+}
+
+.profile-status-item {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+
+  padding: 0.4rem 0.7rem !important;
+  border-radius: 0.65rem !important;
+
+  /* ✅ Small clay chip */
+  background: var(--theme-surface) !important;
+
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.05),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.55),
+    0 1px 2px rgba(var(--theme-primary-rgb), 0.04) !important;
+
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.06) !important;
+
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease !important;
+}
+
+.profile-status-item:hover {
+  transform: translateY(-1px) !important;
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.04),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.65),
+    0 4px 8px -4px rgba(var(--theme-primary-rgb), 0.15) !important;
+}
+
+.profile-status-item .react-icon {
+  width: 0.85rem !important;
+  height: 0.85rem !important;
+  stroke-width: 2.5 !important;
+  flex-shrink: 0 !important;
+}
+
+.profile-status-item .react-icon.is-met {
+  color: var(--theme-primary) !important;
+}
+
+.profile-status-item .react-icon.is-pending {
+  color: var(--theme-text-muted) !important;
+  opacity: 0.5 !important;
+}
+
+/* ✅ Dark theme adjustment */
+[data-theme-mode='dark'] .profile-status-item {
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.4),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.04),
+    0 1px 2px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ============================================================
+   5️⃣ QUICK ACTIONS — clay buttons
+   ============================================================ */
+.profile-quick-actions {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+}
+
+.profile-quick-action {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.7rem !important;
+
+  padding: 0.7rem 0.85rem !important;
+  border-radius: 0.85rem !important;
+
+  /* ✅ Clay button */
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.05),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.55),
+    0 2px 4px rgba(var(--theme-primary-rgb), 0.04),
+    0 4px 10px -6px rgba(var(--theme-primary-rgb), 0.12) !important;
+
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.06) !important;
+
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.2s ease !important;
+}
+
+.profile-quick-action:hover {
+  transform: translateY(-2px) !important;
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.04),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.65),
+    0 4px 8px rgba(var(--theme-primary-rgb), 0.08),
+    0 10px 20px -8px rgba(var(--theme-primary-rgb), 0.2) !important;
+}
+
+.profile-quick-action:active {
+  transform: translateY(0) scale(0.98) !important;
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.4) !important;
+}
+
+/* ✅ Dark theme adjustment */
+[data-theme-mode='dark'] .profile-quick-action {
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.4),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    0 4px 10px -6px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme-mode='dark'] .profile-quick-action:hover {
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.45),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.07),
+    0 4px 8px rgba(0, 0, 0, 0.2),
+    0 10px 20px -8px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ============================================================
+   6️⃣ QUICK ACTION ICON — clay circle
+   ============================================================ */
+.profile-quick-action__icon {
+  display: grid !important;
+  place-items: center !important;
+
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  border-radius: 0.65rem !important;
+
+  flex-shrink: 0 !important;
+
+  /* ✅ Clay icon surface */
+  box-shadow:
+    inset 2px 2px 3px rgba(0, 0, 0, 0.08),
+    inset -2px -2px 3px rgba(255, 255, 255, 0.5) !important;
+
+  transition: transform 0.2s ease !important;
+}
+
+.profile-quick-action:hover .profile-quick-action__icon {
+  transform: scale(1.06) !important;
+}
+
+.profile-quick-action__icon .react-icon {
+  width: 1rem !important;
+  height: 1rem !important;
+  stroke-width: 2.3 !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* ✅ Color variants — clay tints */
+.profile-quick-action__icon--teal {
+  background: rgba(20, 184, 166, 0.14) !important;
+  color: #0F766E !important;
+}
+
+.profile-quick-action__icon--pink {
+  background: rgba(var(--theme-primary-rgb), 0.14) !important;
+  color: var(--theme-primary) !important;
+}
+
+.profile-quick-action__icon--purple {
+  background: rgba(139, 92, 246, 0.14) !important;
+  color: #6D28D9 !important;
+}
+
+.profile-quick-action__icon--blue {
+  background: rgba(59, 130, 246, 0.14) !important;
+  color: #1D4ED8 !important;
+}
+
+/* ✅ Dark theme icon colors — mas maliwanag */
+[data-theme-mode='dark'] .profile-quick-action__icon--teal {
+  background: rgba(45, 212, 191, 0.18) !important;
+  color: #5EEAD4 !important;
+}
+
+[data-theme-mode='dark'] .profile-quick-action__icon--pink {
+  background: rgba(var(--theme-primary-rgb), 0.2) !important;
+  color: var(--theme-primary) !important;
+}
+
+[data-theme-mode='dark'] .profile-quick-action__icon--purple {
+  background: rgba(167, 139, 250, 0.18) !important;
+  color: #C4B5FD !important;
+}
+
+[data-theme-mode='dark'] .profile-quick-action__icon--blue {
+  background: rgba(96, 165, 250, 0.18) !important;
+  color: #93C5FD !important;
+}
+
+/* ============================================================
+   7️⃣ QUICK ACTION TEXT
+   ============================================================ */
+.profile-quick-action__text {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.1rem !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.profile-quick-action__label {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+}
+
+.profile-quick-action__desc {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  font-size: 0.7rem !important;
+  font-weight: 500 !important;
+  line-height: 1.3 !important;
+}
+
+/* ============================================================
+   8️⃣ CHEVRON — subtle clay arrow
+   ============================================================ */
+.profile-quick-action__chev {
+  width: 0.9rem !important;
+  height: 0.9rem !important;
+  stroke-width: 2.3 !important;
+  color: var(--theme-text-muted) !important;
+  opacity: 0.6 !important;
+  flex-shrink: 0 !important;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease !important;
+}
+
+.profile-quick-action:hover .profile-quick-action__chev {
+  transform: translateX(3px) !important;
+  color: var(--theme-primary) !important;
+  opacity: 1 !important;
+}
+
+/* ============================================================
+   9️⃣ EMPTY NOTE — compact clay
+   ============================================================ */
+.profile-empty-note {
+  padding: 0.75rem 0.85rem !important;
+  border-radius: 0.65rem !important;
+
+  background: rgba(var(--theme-primary-rgb), 0.04) !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+
+  font-size: 0.78rem !important;
+  font-style: italic !important;
+  text-align: center !important;
+
+  box-shadow:
+    inset 1px 1px 3px rgba(0, 0, 0, 0.04),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.4) !important;
+
+  border: 1px dashed rgba(var(--theme-primary-rgb), 0.15) !important;
+
+  margin: 0 !important;
+}
+
+/* ============================================================
+   🔟 REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .profile-side__card,
+  .profile-status-item,
+  .profile-quick-action,
+  .profile-quick-action__icon,
+  .profile-quick-action__chev {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* ============================================================
+   ✅ END — CLAYMORPHISM SIDE CARDS
+============================================================ */
+/* ============================================================
+   ✅ REMOVE HOVER — Profile tabs at buttons
+   ✅ Walang background change sa hover
+   ✅ I-append sa PINAKADULO ng ProfilePage.css
+============================================================ */
+
+/* ============================================================
+   1️⃣ PROFILE TABS — walang hover background
+   ============================================================ */
+.profile-tab,
+.profile-tab:hover,
+.profile-tab:focus,
+.profile-tab:active,
+.profile-tab:not(.is-active):hover,
+.profile-tab:not(.is-active):focus,
+.profile-tab:not(.is-active):active {
+  /* ✅ Walang hover background */
+  background: transparent !important;
+  background-color: transparent !important;
+
+  /* ✅ Walang transform */
+  transform: none !important;
+
+  /* ✅ Walang box-shadow change */
+  box-shadow: none !important;
+
+  /* ✅ Walang border change */
+  border-color: transparent !important;
+
+  /* ✅ Walang text color change sa hover */
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+
+  /* ✅ Transition removed */
+  transition: none !important;
+}
+
+/* ✅ Active tab — retain ang existing style */
+.profile-tab.is-active,
+.profile-tab.is-active:hover,
+.profile-tab.is-active:focus,
+.profile-tab.is-active:active {
+  background: var(--theme-primary) !important;
+  background-color: var(--theme-primary) !important;
+
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+
+  transform: none !important;
+  border-color: transparent !important;
+  transition: none !important;
+}
+
+/* ============================================================
+   2️⃣ PROFILE TABS CONTAINER — walang hover
+   ============================================================ */
+.profile-tabs,
+.profile-tabs:hover,
+.profile-tabs:focus,
+.profile-tabs:active {
+  background: transparent !important;
+  background-color: transparent !important;
+  transform: none !important;
+  box-shadow: none !important;
+  transition: none !important;
+}
+
+/* ============================================================
+   3️⃣ EDIT PROFILE BUTTON — walang hover
+   ============================================================ */
+.profile-edit-btn,
+.profile-edit-btn:hover,
+.profile-edit-btn:focus,
+.profile-edit-btn:active {
+  background: var(--theme-surface-2, var(--theme-surface)) !important;
+  background-color: var(--theme-surface-2, var(--theme-surface)) !important;
+
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+
+  border-color: rgba(var(--theme-primary-rgb), 0.2) !important;
+
+  transform: none !important;
+  box-shadow: none !important;
+  transition: none !important;
+}
+
+/* ============================================================
+   4️⃣ QUICK ACTIONS — walang hover lift
+   ============================================================ */
+.profile-quick-action,
+.profile-quick-action:hover,
+.profile-quick-action:focus,
+.profile-quick-action:active {
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+
+  transform: none !important;
+  transition: none !important;
+
+  /* ✅ Retain clay shadow (hindi hover) */
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.05),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.55),
+    0 2px 4px rgba(var(--theme-primary-rgb), 0.04),
+    0 4px 10px -6px rgba(var(--theme-primary-rgb), 0.12) !important;
+}
+
+[data-theme-mode='dark'] .profile-quick-action,
+[data-theme-mode='dark'] .profile-quick-action:hover {
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.4),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    0 4px 10px -6px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ✅ Icon — no scale on hover */
+.profile-quick-action__icon,
+.profile-quick-action:hover .profile-quick-action__icon {
+  transform: none !important;
+}
+
+/* ✅ Chevron — no slide on hover */
+.profile-quick-action__chev,
+.profile-quick-action:hover .profile-quick-action__chev {
+  transform: none !important;
+  color: var(--theme-text-muted) !important;
+  opacity: 0.6 !important;
+}
+
+/* ============================================================
+   5️⃣ STATUS ITEMS — walang hover
+   ============================================================ */
+.profile-status-item,
+.profile-status-item:hover,
+.profile-status-item:focus,
+.profile-status-item:active {
+  transform: none !important;
+  transition: none !important;
+}
+
+/* ============================================================
+   6️⃣ SIDE CARD — walang hover
+   ============================================================ */
+.profile-side__card,
+.profile-side__card:hover,
+.profile-side__card:focus {
+  transform: none !important;
+  transition: none !important;
+}
+
+/* ============================================================
+   7️⃣ GLOBAL — remove hover sa lahat ng profile elements
+   ============================================================ */
+.profile-shell :where(button, a, [role="tab"]):hover {
+  transform: none !important;
+}
+
+.profile-shell :where(button, a, [role="tab"]):focus,
+.profile-shell :where(button, a, [role="tab"]):active {
+  transform: none !important;
+}
+
+/* ============================================================
+   ✅ END — REMOVE HOVER
+============================================================ 
+/* ============================================================
+   ✅ REMOVE HOVER — Profile tabs at buttons
+   ✅ Walang background change sa hover
+   ✅ I-append sa PINAKADULO ng ProfilePage.css
+============================================================ */
+
+/* ============================================================
+   1️⃣ PROFILE TABS — walang hover background
+   ============================================================ */
+.profile-tab,
+.profile-tab:hover,
+.profile-tab:focus,
+.profile-tab:active,
+.profile-tab:not(.is-active):hover,
+.profile-tab:not(.is-active):focus,
+.profile-tab:not(.is-active):active {
+  /* ✅ Walang hover background */
+  background: transparent !important;
+  background-color: transparent !important;
+
+  /* ✅ Walang transform */
+  transform: none !important;
+
+  /* ✅ Walang box-shadow change */
+  box-shadow: none !important;
+
+  /* ✅ Walang border change */
+  border-color: transparent !important;
+
+  /* ✅ Walang text color change sa hover */
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+
+  /* ✅ Transition removed */
+  transition: none !important;
+}
+
+/* ✅ Active tab — retain ang existing style */
+.profile-tab.is-active,
+.profile-tab.is-active:hover,
+.profile-tab.is-active:focus,
+.profile-tab.is-active:active {
+  background: var(--theme-primary) !important;
+  background-color: var(--theme-primary) !important;
+
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+
+  transform: none !important;
+  border-color: transparent !important;
+  transition: none !important;
+}
+
+/* ============================================================
+   2️⃣ PROFILE TABS CONTAINER — walang hover
+   ============================================================ */
+.profile-tabs,
+.profile-tabs:hover,
+.profile-tabs:focus,
+.profile-tabs:active {
+  background: transparent !important;
+  background-color: transparent !important;
+  transform: none !important;
+  box-shadow: none !important;
+  transition: none !important;
+}
+
+/* ============================================================
+   3️⃣ EDIT PROFILE BUTTON — walang hover
+   ============================================================ */
+.profile-edit-btn,
+.profile-edit-btn:hover,
+.profile-edit-btn:focus,
+.profile-edit-btn:active {
+  background: var(--theme-surface-2, var(--theme-surface)) !important;
+  background-color: var(--theme-surface-2, var(--theme-surface)) !important;
+
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+
+  border-color: rgba(var(--theme-primary-rgb), 0.2) !important;
+
+  transform: none !important;
+  box-shadow: none !important;
+  transition: none !important;
+}
+
+/* ============================================================
+   4️⃣ QUICK ACTIONS — walang hover lift
+   ============================================================ */
+.profile-quick-action,
+.profile-quick-action:hover,
+.profile-quick-action:focus,
+.profile-quick-action:active {
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+
+  transform: none !important;
+  transition: none !important;
+
+  /* ✅ Retain clay shadow (hindi hover) */
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.05),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.55),
+    0 2px 4px rgba(var(--theme-primary-rgb), 0.04),
+    0 4px 10px -6px rgba(var(--theme-primary-rgb), 0.12) !important;
+}
+
+[data-theme-mode='dark'] .profile-quick-action,
+[data-theme-mode='dark'] .profile-quick-action:hover {
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.4),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    0 4px 10px -6px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ✅ Icon — no scale on hover */
+.profile-quick-action__icon,
+.profile-quick-action:hover .profile-quick-action__icon {
+  transform: none !important;
+}
+
+/* ✅ Chevron — no slide on hover */
+.profile-quick-action__chev,
+.profile-quick-action:hover .profile-quick-action__chev {
+  transform: none !important;
+  color: var(--theme-text-muted) !important;
+  opacity: 0.6 !important;
+}
+
+/* ============================================================
+   5️⃣ STATUS ITEMS — walang hover
+   ============================================================ */
+.profile-status-item,
+.profile-status-item:hover,
+.profile-status-item:focus,
+.profile-status-item:active {
+  transform: none !important;
+  transition: none !important;
+}
+
+/* ============================================================
+   6️⃣ SIDE CARD — walang hover
+   ============================================================ */
+.profile-side__card,
+.profile-side__card:hover,
+.profile-side__card:focus {
+  transform: none !important;
+  transition: none !important;
+}
+
+/* ============================================================
+   7️⃣ GLOBAL — remove hover sa lahat ng profile elements
+   ============================================================ */
+.profile-shell :where(button, a, [role="tab"]):hover {
+  transform: none !important;
+}
+
+.profile-shell :where(button, a, [role="tab"]):focus,
+.profile-shell :where(button, a, [role="tab"]):active {
+  transform: none !important;
+}
+
+/* ============================================================
+   ✅ END — REMOVE HOVER
+============================================================ */
