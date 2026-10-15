@@ -1,32 +1,31 @@
 // src/pages/admin/ProductsPage.tsx
 
-import { useState, useEffect, useCallback } from 'react';
-import { Plus } from 'lucide-react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { Plus, ChevronLeft, ChevronRight, Search, X } from 'lucide-react';
 import { AdminPageHeader, AdminChip, AdminModal } from '../../components/admin';
 import {
   getProducts,
   updateProduct,
   addProduct,
+  getProductCategories,
 } from '../../services/admin';
 import type { AdminProduct } from '../../store/adminStore';
 
-const FILTERS = [
-  { id: 'all', label: 'All Products' },
-  { id: 'uniforms', label: 'Uniforms' },
-  { id: 'shirts', label: 'Shirts' },
-  { id: 'laces', label: 'ID Laces' },
-  { id: 'low-stock', label: 'Low Stock' },
-];
+/* ✅ Items per page */
+const ITEMS_PER_PAGE = 8;
 
 /* ✅ Common sizes for reference */
 const COMMON_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
 
 export default function ProductsPage() {
   const [filter, setFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const [refreshKey, setRefreshKey] = useState(0);
 
   // Data state
-  const [products, setProducts] = useState<AdminProduct[]>([]);
+  const [allProducts, setAllProducts] = useState<AdminProduct[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -34,6 +33,27 @@ export default function ProductsPage() {
   const [editingProduct, setEditingProduct] = useState<AdminProduct | null>(null);
   const [stockProduct, setStockProduct] = useState<AdminProduct | null>(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
+
+  /* ============================================
+     LOAD CATEGORIES (async)
+     ============================================ */
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadCategories() {
+      try {
+        const cats = await getProductCategories();
+        if (!cancelled) setCategories(cats);
+      } catch (error) {
+        console.error('[ProductsPage] Failed to load categories:', error);
+      }
+    }
+
+    loadCategories();
+    return () => {
+      cancelled = true;
+    };
+  }, [refreshKey]);
 
   /* ============================================
      LOAD PRODUCTS (async)
@@ -45,7 +65,7 @@ export default function ProductsPage() {
       setIsLoading(true);
       try {
         const data = await getProducts(filter);
-        if (!cancelled) setProducts(data);
+        if (!cancelled) setAllProducts(data);
       } catch (error) {
         console.error('[ProductsPage] Failed to load:', error);
       } finally {
@@ -60,8 +80,79 @@ export default function ProductsPage() {
   }, [filter, refreshKey]);
 
   /* ============================================
+     RESET PAGE ON FILTER / SEARCH CHANGE
+     ============================================ */
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter, searchQuery]);
+
+  /* ============================================
+     SEARCH + PAGINATION
+     ============================================ */
+  const filteredProducts = useMemo(() => {
+    if (!searchQuery.trim()) return allProducts;
+    const q = searchQuery.toLowerCase().trim();
+    return allProducts.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        (p.organization?.toLowerCase().includes(q) ?? false)
+    );
+  }, [allProducts, searchQuery]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / ITEMS_PER_PAGE));
+  const safePage = Math.min(Math.max(1, currentPage), totalPages);
+
+  const paginatedProducts = useMemo(() => {
+    const start = (safePage - 1) * ITEMS_PER_PAGE;
+    return filteredProducts.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredProducts, safePage]);
+
+  const rangeStart = filteredProducts.length === 0 ? 0 : (safePage - 1) * ITEMS_PER_PAGE + 1;
+  const rangeEnd = Math.min(safePage * ITEMS_PER_PAGE, filteredProducts.length);
+
+  /* ============================================
+     CATEGORY COUNTS (computed from ALL products)
+     ============================================ */
+  const [allForCounts, setAllForCounts] = useState<AdminProduct[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadAll() {
+      try {
+        const data = await getProducts('all');
+        if (!cancelled) setAllForCounts(data);
+      } catch {
+        // counts will just be 0
+      }
+    }
+    loadAll();
+    return () => { cancelled = true; };
+  }, [refreshKey]);
+
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const p of allForCounts) {
+      const cat = p.category || 'Other';
+      counts[cat] = (counts[cat] ?? 0) + 1;
+    }
+    return counts;
+  }, [allForCounts]);
+
+  const lowStockCount = useMemo(() => {
+    return allForCounts.filter(
+      (p) => p.stockState === 'low-stock' || p.stockState === 'out'
+    ).length;
+  }, [allForCounts]);
+
+  /* ============================================
      HANDLERS
      ============================================ */
+
+  const handleFilterChange = (newFilter: string) => {
+    setFilter(newFilter);
+    setSearchQuery('');
+  };
 
   const handleSaveEdit = useCallback(
     async (updates: Partial<AdminProduct>) => {
@@ -116,6 +207,24 @@ export default function ProductsPage() {
     []
   );
 
+  /* ============================================
+     ALL CATEGORIES for modal dropdowns
+     (includes Interest Based Organizations)
+     ============================================ */
+  const allCategoryOptions = useMemo(() => {
+    const set = new Set<string>();
+    for (const p of allForCounts) {
+      if (p.category) set.add(p.category);
+    }
+    // Also ensure categories from the filter list are included
+    for (const cat of categories) {
+      set.add(cat);
+    }
+    // Always include Interest Based Organizations as an option
+    set.add('Interest Based Organizations');
+    return Array.from(set).sort();
+  }, [allForCounts, categories]);
+
   return (
     <>
       <AdminPageHeader
@@ -133,29 +242,156 @@ export default function ProductsPage() {
         }
       />
 
-      {/* Filters */}
-      <div className="admin-filter-row">
-        {FILTERS.map((f) => (
+      {/* ✅ Dynamic Filter Row */}
+      <div
+        className="admin-filter-row"
+        style={{ overflowX: 'auto', paddingBottom: '4px' }}
+      >
+        {/* All Products */}
+        <AdminChip
+          label="All Products"
+          active={filter === 'all'}
+          onClick={() => handleFilterChange('all')}
+          count={allForCounts.length}
+        />
+
+        {/* Dynamic category chips */}
+        {categories.map((cat) => (
           <AdminChip
-            key={f.id}
-            label={f.label}
-            active={filter === f.id}
-            onClick={() => setFilter(f.id)}
+            key={cat}
+            label={cat}
+            active={filter === cat}
+            onClick={() => handleFilterChange(cat)}
+            count={categoryCounts[cat] ?? 0}
           />
         ))}
+
+        {/* Low Stock */}
+        <AdminChip
+          label="Low Stock"
+          active={filter === 'low-stock'}
+          onClick={() => handleFilterChange('low-stock')}
+          count={lowStockCount}
+        />
       </div>
 
-      {/* Products grid */}
+      {/* ✅ Search Bar */}
+      <div className="admin-search-bar" style={{
+        position: 'relative',
+        marginTop: '12px',
+        marginBottom: '4px',
+        maxWidth: '400px',
+      }}>
+        <Search
+          className="react-icon"
+          style={{
+            position: 'absolute',
+            left: '12px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: '16px',
+            height: '16px',
+            color: 'var(--admin-ink-400)',
+            pointerEvents: 'none',
+          }}
+        />
+        <input
+          type="search"
+          placeholder="Search products..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '10px 36px 10px 38px',
+            border: '1px solid var(--admin-line)',
+            borderRadius: 'var(--admin-radius-sm)',
+            fontSize: '13px',
+            fontFamily: 'inherit',
+            background: '#fff',
+            color: 'var(--admin-ink-900)',
+            outline: 'none',
+            transition: 'border-color 0.15s ease',
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = 'var(--admin-brand-400)';
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = 'var(--admin-line)';
+          }}
+        />
+        {searchQuery && (
+          <button
+            type="button"
+            onClick={() => setSearchQuery('')}
+            style={{
+              position: 'absolute',
+              right: '8px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '4px',
+              color: 'var(--admin-ink-400)',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            aria-label="Clear search"
+          >
+            <X className="react-icon" style={{ width: '14px', height: '14px' }} />
+          </button>
+        )}
+      </div>
+
+      {/* ✅ Results summary */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '16px',
+        fontSize: '13px',
+        color: 'var(--admin-ink-500)',
+      }}>
+        <span>
+          {isLoading
+            ? 'Loading products…'
+            : filteredProducts.length === 0
+              ? 'No products found'
+              : `Showing ${rangeStart}–${rangeEnd} of ${filteredProducts.length} product${filteredProducts.length === 1 ? '' : 's'}`}
+        </span>
+      </div>
+
+      {/* ✅ Products grid */}
       <div className="admin-shop-grid">
         {isLoading ? (
           <p className="admin-empty">Loading products…</p>
-        ) : products.length === 0 ? (
-          <p className="admin-empty">No products in this category.</p>
+        ) : filteredProducts.length === 0 ? (
+          <p className="admin-empty">
+            {searchQuery
+              ? `No products matching "${searchQuery}" in this category.`
+              : 'No products in this category.'}
+          </p>
         ) : (
-          products.map((p) => (
+          paginatedProducts.map((p) => (
             <article key={p.id} className="admin-shop-card">
               <div className="admin-shop-card__image">
                 <img src={p.img} alt={p.name} loading="lazy" />
+                {/* ✅ Category badge overlay */}
+                <span
+                  className="admin-badge admin-badge--in-stock"
+                  style={{
+                    position: 'absolute',
+                    top: '8px',
+                    left: '8px',
+                    zIndex: 2,
+                    fontSize: '10.5px',
+                    padding: '3px 8px',
+                    background: 'var(--admin-pine-800)',
+                    color: '#fff',
+                  }}
+                >
+                  {p.category}
+                </span>
               </div>
               <div className="admin-shop-card__body">
                 <span className={`admin-badge admin-badge--${p.stockState}`}>
@@ -190,6 +426,62 @@ export default function ProductsPage() {
           ))
         )}
       </div>
+
+      {/* ✅ Pagination */}
+      {filteredProducts.length > ITEMS_PER_PAGE && (
+        <div
+          className="admin-pagination"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '4px',
+            marginTop: '24px',
+            paddingBottom: '16px',
+          }}
+        >
+          <button
+            type="button"
+            className="admin-btn admin-btn--ghost"
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={safePage <= 1}
+            aria-label="Previous page"
+            style={{ minWidth: '36px', padding: '6px' }}
+          >
+            <ChevronLeft className="react-icon" style={{ width: '16px', height: '16px' }} />
+          </button>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              type="button"
+              className={`admin-btn ${page === safePage ? 'admin-btn--primary' : 'admin-btn--ghost'}`}
+              onClick={() => setCurrentPage(page)}
+              aria-label={`Page ${page}`}
+              aria-current={page === safePage ? 'page' : undefined}
+              style={{
+                minWidth: '36px',
+                padding: '6px 10px',
+                fontSize: '13px',
+                fontWeight: page === safePage ? 700 : 500,
+              }}
+            >
+              {page}
+            </button>
+          ))}
+
+          <button
+            type="button"
+            className="admin-btn admin-btn--ghost"
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={safePage >= totalPages}
+            aria-label="Next page"
+            style={{ minWidth: '36px', padding: '6px' }}
+          >
+            <ChevronRight className="react-icon" style={{ width: '16px', height: '16px' }} />
+          </button>
+        </div>
+      )}
 
       {/* ============================================
           EDIT MODAL — with Sizes
@@ -248,9 +540,11 @@ export default function ProductsPage() {
               <div className="admin-modal__field">
                 <label>Category</label>
                 <select name="category" defaultValue={editingProduct.category}>
-                  <option>Uniforms</option>
-                  <option>Shirts</option>
-                  <option>ID Laces</option>
+                  {allCategoryOptions.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="admin-modal__field">
@@ -398,9 +692,11 @@ export default function ProductsPage() {
             <div className="admin-modal__field">
               <label>Category</label>
               <select name="category">
-                <option>Uniforms</option>
-                <option>Shirts</option>
-                <option>ID Laces</option>
+                {allCategoryOptions.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="admin-modal__field">

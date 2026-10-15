@@ -15,6 +15,7 @@
   --admin-pine-800: #0f2f21;
   --admin-pine-700: #163c2b;
   --admin-brand-500: #22915c;
+  --admin-brand-text: #176b42;
   --admin-brand-400: #2fb072;
   --admin-brand-100: #e6f4ec;
   --admin-gold-400: #d8b978;
@@ -25,17 +26,18 @@
   --admin-ink-900: #0a1f15;
   --admin-ink-700: #2c3a32;
   --admin-ink-500: #5c6b62;
-  --admin-ink-400: #7a8b80;
+  --admin-ink-400: #65736a;
   --admin-ink-300: #a0aaa3;
+  --admin-gold-text: #73571f;
   --admin-line: #e5e8e3;
   --admin-line-soft: #eef0ec;
-  --admin-danger: #e05252;
+  --admin-danger: #ab3030;
   --admin-danger-bg: #fbeaea;
-  --admin-success: #22915c;
+  --admin-success: #176b42;
   --admin-success-bg: #e6f4ec;
-  --admin-warning: #c98a1a;
+  --admin-warning: #8a5a00;
   --admin-warning-bg: #fbf3e2;
-  --admin-info: #3d7cc9;
+  --admin-info: #245c96;
   --admin-info-bg: #e8f1fb;
   --admin-font-ui: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --admin-font-display: 'Fraunces', Georgia, serif;
@@ -433,7 +435,8 @@
 }
 
 .admin-topbar__search input::placeholder {
-  color: var(--admin-ink-300);
+  color: var(--admin-ink-400);
+  opacity: 1;
 }
 
 .admin-topbar__search input:focus {
@@ -1521,6 +1524,7 @@
   font-family: var(--admin-font-display);
   font-size: 28px;
   font-weight: 600;
+  color: #f6f3ea;
   margin: 0 0 8px;
   line-height: 1.2;
 }
@@ -1623,7 +1627,7 @@
 .admin-chart__axis-label {
   font-family: inherit;
   font-size: 9.5px;
-  fill: var(--admin-ink-300);
+  fill: var(--admin-ink-400);
   font-weight: 500;
 }
 
@@ -2819,7 +2823,8 @@
 }
 
 .admin-login__input-wrap input::placeholder {
-  color: var(--admin-ink-300);
+  color: var(--admin-ink-400);
+  opacity: 1;
 }
 
 .admin-login__input-wrap input:focus {
@@ -3100,4 +3105,107 @@
 .admin-sidebar::before,
 .admin-sidebar::after {
   display: none !important;
+}
+
+/* Keep the fixed SJCM admin surfaces independent from student theme colors. */
+.admin-shell,
+.admin-login {
+  color-scheme: light;
+}
+
+.admin-login {
+  color: var(--admin-ink-900);
+}
+
+.admin-shell h1,
+.admin-shell h2,
+.admin-shell h3,
+.admin-shell h4,
+.admin-shell h5,
+.admin-shell h6,
+.admin-shell p,
+.admin-shell li,
+.admin-login h1,
+.admin-login h2,
+.admin-login h3,
+.admin-login h4,
+.admin-login h5,
+.admin-login h6,
+.admin-login p,
+.admin-login li {
+  -webkit-text-fill-color: currentColor;
+}
+
+.admin-shell button > *,
+.admin-login button > * {
+  color: inherit !important;
+  -webkit-text-fill-color: currentColor !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+.admin-shell .admin-topbar__avatar,
+.admin-shell .admin-topbar__bell-count {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+.admin-shell .admin-topbar__chevron {
+  color: var(--admin-ink-400) !important;
+}
+
+.admin-shell .admin-btn--primary {
+  background: linear-gradient(135deg, var(--admin-pine-700), var(--admin-brand-text));
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+}
+
+.admin-shell .admin-btn--primary:hover:not(:disabled) {
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+}
+
+.admin-shell .admin-btn--ghost {
+  background: #fff;
+  color: var(--admin-ink-700);
+  -webkit-text-fill-color: var(--admin-ink-700);
+  border-color: var(--admin-line);
+}
+
+.admin-shell .admin-btn--ghost:hover:not(:disabled) {
+  background: var(--admin-brand-100);
+  color: var(--admin-brand-text);
+  -webkit-text-fill-color: var(--admin-brand-text);
+  border-color: var(--admin-brand-400);
+}
+
+.admin-page-header__eyebrow {
+  color: var(--admin-gold-text);
+}
+
+.admin-shell .admin-btn--primary {
+  background: linear-gradient(135deg, var(--admin-pine-700), var(--admin-brand-text));
+}
+
+.admin-shell .admin-btn--ghost:hover:not(:disabled),
+.admin-shell .admin-chip:hover,
+.admin-shell .admin-dropdown__link,
+.admin-shell .admin-order-id,
+.admin-shell .admin-order-detail__section-title,
+.admin-shell .admin-panel__link,
+.admin-shell .admin-console-card__meta,
+.admin-login .admin-login__back,
+.admin-shell .admin-status-menu__item.is-current {
+  color: var(--admin-brand-text);
+  -webkit-text-fill-color: currentColor;
+}
+
+.admin-shell .admin-row-actions button:hover,
+.admin-shell .admin-shop-card__actions button:hover,
+.admin-shell .admin-cart-item__actions button:hover,
+.admin-shell .admin-org-card__actions button:hover,
+.admin-shell .admin-status-menu__trigger:hover:not(:disabled),
+.admin-shell .admin-quick-action:hover .admin-quick-action__icon {
+  background: var(--admin-brand-text);
+  border-color: var(--admin-brand-text);
 }

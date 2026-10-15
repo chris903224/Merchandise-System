@@ -1,12 +1,12 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+import './styles/index.css';
 import App from './App';
 import { AppProvider } from './store';
 import { ToastProvider } from './toast';
 import { ensureSeeded } from './data/seed';
 import { applyTheme, getStoredTheme } from './theme';
-import './styles/index.css';
 
 
 /**

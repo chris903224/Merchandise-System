@@ -6,6 +6,9 @@ import { AdminSidebar, AdminTopbar, AdminToastStack } from '../../components/adm
 import { useAdminStore } from '../../store/adminStore';
 import { readAdminSession } from '../../services/admin';
 import '../../styles/admin/admin.css';
+import '../../styles/admin/clay-theme.css';
+import '../../styles/admin/glass-theme.css';
+import { applyAdminTheme, getAdminTheme } from '../../lib/adminTheme';
 
 export default function AdminLayout() {
   const navigate = useNavigate();
@@ -25,6 +28,11 @@ export default function AdminLayout() {
       setSession(stored);
     }
   }, [navigate, session, setSession]);
+  
+  // Restore the saved admin appearance (default / clay / glass)
+  useEffect(() => {
+    applyAdminTheme(getAdminTheme(), false);
+  }, []);
 
   // Hindi pa naka-load yung session — render nothing
   if (!session && !readAdminSession()) {

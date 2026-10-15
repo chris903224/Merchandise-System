@@ -51,21 +51,41 @@ export async function getProducts(filter: string = 'all'): Promise<AdminProduct[
   const mapped = products.map(mapProductToAdmin);
 
   if (filter === 'all') return mapped;
-  if (filter === 'uniforms') return mapped.filter((p) => p.category === 'Uniforms');
-  if (filter === 'shirts')   return mapped.filter((p) => p.category === 'Shirts');
-  if (filter === 'laces')    return mapped.filter((p) => p.category === 'ID Laces');
   if (filter === 'low-stock') {
     return mapped.filter(
       (p) => p.stockState === 'low-stock' || p.stockState === 'out'
     );
   }
 
-  return mapped;
+  // ✅ Dynamic category filter — case-insensitive match
+  const lowerFilter = filter.toLowerCase();
+  return mapped.filter((p) => p.category?.toLowerCase() === lowerFilter);
 }
 
 export async function getAllProducts(): Promise<AdminProduct[]> {
   const products = await fetchProducts();
   return products.map(mapProductToAdmin);
+}
+
+/**
+ * ✅ Get unique product categories from actual product data.
+ * Excludes 'Interest Based Organizations' from the filter row.
+ */
+export async function getProductCategories(): Promise<string[]> {
+  const products = await fetchProducts();
+  const categories: string[] = [];
+
+  for (const product of products) {
+    if (
+      product.category &&
+      product.category !== 'Interest Based Organizations' &&
+      !categories.includes(product.category)
+    ) {
+      categories.push(product.category);
+    }
+  }
+
+  return categories;
 }
 
 /* ============================================

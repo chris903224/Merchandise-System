@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Save } from 'lucide-react';
 import { AdminPageHeader } from '../../components/admin';
+import { SystemPreferencesCard } from '../../components/admin';
 
 interface SettingGroup {
   id: string;
@@ -106,7 +107,10 @@ export default function SettingsPage() {
               </label>
             ))}
           </div>
+          
+          
         ))}
+        <SystemPreferencesCard />
       </div>
     </>
   );
