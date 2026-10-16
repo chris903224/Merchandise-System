@@ -4,36 +4,44 @@
    Dark: Midnight Navy, Matte Black, Charcoal Gray, Deep Forest, Dark Plum
    ✅ Background + text + accent + SUCCESS = SAME HUE
    ✅ FIX: :root standalone — walang conflict sa [data-theme]
-============================================================ */
+   ✅ REFACTORED: Walang duplicate, malinaw ang cascade
+   ============================================================ */
 
 /* ============================================================
    ✅ DEFAULT — CREAM YELLOW (light)
    Ito ang mag-a-apply kapag walang data-theme attribute sa <html>
-============================================================ */
+   ✅ Ito rin ang fallback para sa lahat ng themes
+   ============================================================ */
 :root {
   color-scheme: light;
 
+  /* Primary */
   --theme-primary: #B8860B;
   --theme-primary-hover: #966C09;
   --theme-primary-rgb: 184, 134, 11;
 
+  /* Accent */
   --theme-accent: #8B5E34;
   --theme-accent-hover: #734A28;
   --theme-accent-rgb: 139, 94, 52;
 
+  /* Background & Surfaces */
   --theme-bg: #FEF9E7;
   --theme-bg-solid: #FEF9E7;
   --theme-surface: #FFFFFF;
   --theme-surface-2: #FFFBF0;
   --theme-surface-raised: #FFFFFF;
 
+  /* Text */
   --theme-text: #2A2010;
   --theme-text-muted: #6B5B3A;
   --theme-text-subtle: rgba(42, 32, 16, 0.5);
 
+  /* Borders */
   --theme-border: #F0E5C0;
   --theme-border-strong: rgba(184, 134, 11, 0.3);
 
+  /* Semantic */
   --theme-success: #8B6914;
   --theme-success-rgb: 139, 105, 20;
   --theme-warning: #B8860B;
@@ -41,22 +49,50 @@
   --theme-danger: #A93C3C;
   --theme-danger-rgb: 169, 60, 60;
 
+  /* Shadows */
   --theme-shadow-sm: 0 1px 2px rgba(42, 32, 16, 0.06);
   --theme-shadow-md: 0 4px 12px rgba(42, 32, 16, 0.08);
   --theme-shadow-lg: 0 12px 32px rgba(42, 32, 16, 0.1);
   --theme-shadow-xl: 0 24px 48px rgba(42, 32, 16, 0.12);
 
+  /* Glass */
   --theme-glass-bg: rgba(255, 255, 255, 0.7);
   --theme-glass-border: rgba(255, 255, 255, 0.9);
+
+  /* Glows */
   --glow-brand: rgba(184, 134, 11, 0.15);
   --glow-info: rgba(107, 91, 58, 0.12);
+
+  /* ============================================================
+     ✅ SEMANTIC CONTRAST TOKENS — DEFAULT (LIGHT)
+     Ito ang fallback kapag walang data-theme-mode
+     ============================================================ */
+  --theme-on-primary: #FFFFFF;
+  --theme-on-primary-rgb: 255, 255, 255;
+  --theme-on-accent: #1A1209;
+  --theme-on-accent-rgb: 26, 18, 9;
+  --theme-on-success: #FFFFFF;
+  --theme-on-success-rgb: 255, 255, 255;
+  --theme-on-danger: #FFFFFF;
+  --theme-on-danger-rgb: 255, 255, 255;
+  --theme-on-warning: #1A1209;
+  --theme-on-warning-rgb: 26, 18, 9;
+
+  --theme-scrim: rgba(0, 0, 0, 0.04);
+  --theme-scrim-strong: rgba(0, 0, 0, 0.08);
+  --theme-surface-hover: var(--theme-surface-2);
+  --theme-surface-active: var(--theme-surface-raised);
 }
 
 /* ============================================================
    LIGHT — 5 VARIANTS
-============================================================ */
+   ✅ Ang bawat isa ay OVERRIDE ng :root
+   ✅ Ang [data-theme='cream-yellow'] ay pareho lang ng :root
+     kaya HINDI NA kailangan i-duplicate — pero iniwan ko
+     para malinaw sa JS na may attribute
+   ============================================================ */
 
-/* ----- 1. CREAM YELLOW ----- */
+/* ----- 1. CREAM YELLOW (same as :root — explicit) ----- */
 [data-theme='cream-yellow'] {
   color-scheme: light;
 
@@ -95,6 +131,7 @@
 
   --theme-glass-bg: rgba(255, 255, 255, 0.7);
   --theme-glass-border: rgba(255, 255, 255, 0.9);
+
   --glow-brand: rgba(184, 134, 11, 0.15);
   --glow-info: rgba(107, 91, 58, 0.12);
 }
@@ -138,6 +175,7 @@
 
   --theme-glass-bg: rgba(252, 248, 238, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.9);
+
   --glow-brand: rgba(139, 111, 71, 0.15);
   --glow-info: rgba(107, 91, 71, 0.12);
 }
@@ -181,6 +219,7 @@
 
   --theme-glass-bg: rgba(248, 248, 248, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.9);
+
   --glow-brand: rgba(51, 51, 51, 0.15);
   --glow-info: rgba(74, 74, 74, 0.12);
 }
@@ -224,6 +263,7 @@
 
   --theme-glass-bg: rgba(255, 255, 255, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.9);
+
   --glow-brand: rgba(75, 85, 99, 0.15);
   --glow-info: rgba(107, 114, 128, 0.12);
 }
@@ -267,13 +307,17 @@
 
   --theme-glass-bg: rgba(255, 255, 255, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.9);
+
   --glow-brand: rgba(184, 99, 122, 0.15);
   --glow-info: rgba(107, 74, 82, 0.12);
 }
 
 /* ============================================================
    DARK — 5 VARIANTS
-============================================================ */
+   ✅ Bawat isa ay may kanya-kanyang on-* tokens
+   ✅ HINDI na kailangan ng [data-theme-mode='dark'] override
+     kasi ang bawat theme ay may sariling on-* values
+   ============================================================ */
 
 /* ----- 6. MIDNIGHT NAVY ----- */
 [data-theme='midnight-navy'] {
@@ -314,8 +358,21 @@
 
   --theme-glass-bg: rgba(27, 39, 66, 0.75);
   --theme-glass-border: rgba(123, 167, 225, 0.15);
+
   --glow-brand: rgba(123, 167, 225, 0.25);
   --glow-info: rgba(176, 185, 204, 0.2);
+
+  /* ✅ On-* tokens — dark theme */
+  --theme-on-primary: #0E1626;
+  --theme-on-primary-rgb: 14, 22, 38;
+  --theme-on-accent: #0E1626;
+  --theme-on-accent-rgb: 14, 22, 38;
+  --theme-on-success: #0E1626;
+  --theme-on-success-rgb: 14, 22, 38;
+  --theme-on-danger: #FFFFFF;
+  --theme-on-danger-rgb: 255, 255, 255;
+  --theme-on-warning: #0E1626;
+  --theme-on-warning-rgb: 14, 22, 38;
 }
 
 /* ----- 7. MATTE BLACK ----- */
@@ -357,8 +414,21 @@
 
   --theme-glass-bg: rgba(26, 26, 26, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.1);
+
   --glow-brand: rgba(212, 165, 116, 0.25);
   --glow-info: rgba(184, 176, 160, 0.2);
+
+  /* ✅ On-* tokens — dark warm theme */
+  --theme-on-primary: #1A1209;
+  --theme-on-primary-rgb: 26, 18, 9;
+  --theme-on-accent: #1A1209;
+  --theme-on-accent-rgb: 26, 18, 9;
+  --theme-on-success: #1A1209;
+  --theme-on-success-rgb: 26, 18, 9;
+  --theme-on-danger: #FFFFFF;
+  --theme-on-danger-rgb: 255, 255, 255;
+  --theme-on-warning: #1A1209;
+  --theme-on-warning-rgb: 26, 18, 9;
 }
 
 /* ----- 8. CHARCOAL GRAY ----- */
@@ -400,8 +470,21 @@
 
   --theme-glass-bg: rgba(42, 42, 42, 0.75);
   --theme-glass-border: rgba(255, 255, 255, 0.1);
+
   --glow-brand: rgba(168, 184, 200, 0.25);
   --glow-info: rgba(168, 176, 184, 0.2);
+
+  /* ✅ On-* tokens — dark cool theme */
+  --theme-on-primary: #1A1A1A;
+  --theme-on-primary-rgb: 26, 26, 26;
+  --theme-on-accent: #1A1A1A;
+  --theme-on-accent-rgb: 26, 26, 26;
+  --theme-on-success: #1A1A1A;
+  --theme-on-success-rgb: 26, 26, 26;
+  --theme-on-danger: #FFFFFF;
+  --theme-on-danger-rgb: 255, 255, 255;
+  --theme-on-warning: #1A1A1A;
+  --theme-on-warning-rgb: 26, 26, 26;
 }
 
 /* ----- 9. DEEP FOREST ----- */
@@ -443,8 +526,21 @@
 
   --theme-glass-bg: rgba(21, 48, 41, 0.75);
   --theme-glass-border: rgba(127, 200, 162, 0.15);
+
   --glow-brand: rgba(127, 200, 162, 0.25);
   --glow-info: rgba(168, 188, 179, 0.2);
+
+  /* ✅ On-* tokens — dark green theme */
+  --theme-on-primary: #0A1F1A;
+  --theme-on-primary-rgb: 10, 31, 26;
+  --theme-on-accent: #0A1F1A;
+  --theme-on-accent-rgb: 10, 31, 26;
+  --theme-on-success: #0A1F1A;
+  --theme-on-success-rgb: 10, 31, 26;
+  --theme-on-danger: #FFFFFF;
+  --theme-on-danger-rgb: 255, 255, 255;
+  --theme-on-warning: #0A1F1A;
+  --theme-on-warning-rgb: 10, 31, 26;
 }
 
 /* ----- 10. DARK PLUM ----- */
@@ -486,35 +582,29 @@
 
   --theme-glass-bg: rgba(42, 26, 48, 0.75);
   --theme-glass-border: rgba(200, 160, 212, 0.15);
+
   --glow-brand: rgba(200, 160, 212, 0.25);
   --glow-info: rgba(192, 176, 200, 0.2);
+
+  /* ✅ On-* tokens — dark purple theme */
+  --theme-on-primary: #1A0E1F;
+  --theme-on-primary-rgb: 26, 14, 31;
+  --theme-on-accent: #1A0E1F;
+  --theme-on-accent-rgb: 26, 14, 31;
+  --theme-on-success: #1A0E1F;
+  --theme-on-success-rgb: 26, 14, 31;
+  --theme-on-danger: #FFFFFF;
+  --theme-on-danger-rgb: 255, 255, 255;
+  --theme-on-warning: #1A0E1F;
+  --theme-on-warning-rgb: 26, 14, 31;
 }
 
 /* ============================================================
-   ✅ SEMANTIC CONTRAST TOKENS
-   ✅ Standalone — HINDI naka-group sa :root
-   ✅ Base sa data-theme-mode attribute (naka-set ng JS)
-============================================================ */
+   ✅ MODE-BASED OVERRIDES (LIGHT)
+   ✅ Ito ay para sa mga theme na walang explicit on-* tokens
+   ✅ Ang light themes ay gumagamit ng default :root values
+   ============================================================ */
 
-/* ✅ Default (walang data-theme-mode) = light — safe fallback */
-:root {
-  --theme-on-primary: #FFFFFF;
-  --theme-on-primary-rgb: 255, 255, 255;
-  --theme-on-accent: #1A1209;
-  --theme-on-accent-rgb: 26, 18, 9;
-  --theme-on-success: #FFFFFF;
-  --theme-on-success-rgb: 255, 255, 255;
-  --theme-on-danger: #FFFFFF;
-  --theme-on-danger-rgb: 255, 255, 255;
-  --theme-on-warning: #1A1209;
-  --theme-on-warning-rgb: 26, 18, 9;
-  --theme-scrim: rgba(0, 0, 0, 0.04);
-  --theme-scrim-strong: rgba(0, 0, 0, 0.08);
-  --theme-surface-hover: var(--theme-surface-2);
-  --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
-}
-
-/* ✅ Light mode override */
 [data-theme-mode='light'] {
   --theme-on-primary: #FFFFFF;
   --theme-on-primary-rgb: 255, 255, 255;
@@ -526,102 +616,19 @@
   --theme-on-danger-rgb: 255, 255, 255;
   --theme-on-warning: #1A1209;
   --theme-on-warning-rgb: 26, 18, 9;
+
   --theme-scrim: rgba(0, 0, 0, 0.04);
   --theme-scrim-strong: rgba(0, 0, 0, 0.08);
   --theme-surface-hover: var(--theme-surface-2);
-  --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
-}
-
-/* ✅ Dark mode override */
-[data-theme-mode='dark'] {
-  --theme-on-primary: #0E1626;
-  --theme-on-primary-rgb: 14, 22, 38;
-  --theme-on-accent: #0E1626;
-  --theme-on-accent-rgb: 14, 22, 38;
-  --theme-on-success: #0E1626;
-  --theme-on-success-rgb: 14, 22, 38;
-  --theme-on-danger: #0E1626;
-  --theme-on-danger-rgb: 14, 22, 38;
-  --theme-on-warning: #0E1626;
-  --theme-on-warning-rgb: 14, 22, 38;
-  --theme-scrim: rgba(255, 255, 255, 0.04);
-  --theme-scrim-strong: rgba(255, 255, 255, 0.08);
-  --theme-surface-hover: var(--theme-surface-2);
-  --theme-surface-active: var(--theme-surface-raised, var(--theme-surface-2));
+  --theme-surface-active: var(--theme-surface-raised);
 }
 
 /* ============================================================
-   ✅ PER-THEME on-* OVERRIDES
-   (mas specific kaysa [data-theme-mode] — para sa unique colors)
-============================================================ */
-
-[data-theme='matte-black'] {
-  --theme-on-primary: #1A1209;
-  --theme-on-primary-rgb: 26, 18, 9;
-  --theme-on-accent: #1A1209;
-  --theme-on-accent-rgb: 26, 18, 9;
-  --theme-on-success: #1A1209;
-  --theme-on-success-rgb: 26, 18, 9;
-}
-
-[data-theme='deep-forest'] {
-  --theme-on-primary: #0A1F1A;
-  --theme-on-primary-rgb: 10, 31, 26;
-  --theme-on-accent: #0A1F1A;
-  --theme-on-accent-rgb: 10, 31, 26;
-  --theme-on-success: #0A1F1A;
-  --theme-on-success-rgb: 10, 31, 26;
-}
-
-[data-theme='dark-plum'] {
-  --theme-on-primary: #1A0E1F;
-  --theme-on-primary-rgb: 26, 14, 31;
-  --theme-on-accent: #1A0E1F;
-  --theme-on-accent-rgb: 26, 14, 31;
-  --theme-on-success: #1A0E1F;
-  --theme-on-success-rgb: 26, 14, 31;
-}
-
-[data-theme='charcoal-gray'] {
-  --theme-on-primary: #1A1A1A;
-  --theme-on-primary-rgb: 26, 26, 26;
-  --theme-on-accent: #1A1A1A;
-  --theme-on-accent-rgb: 26, 26, 26;
-  --theme-on-success: #1A1A1A;
-  --theme-on-success-rgb: 26, 26, 26;
-}
-
-[data-theme='midnight-navy'] {
-  --theme-on-primary: #0E1626;
-  --theme-on-primary-rgb: 14, 22, 38;
-  --theme-on-accent: #0E1626;
-  --theme-on-accent-rgb: 14, 22, 38;
-  --theme-on-success: #0E1626;
-  --theme-on-success-rgb: 14, 22, 38;
-}
-
-[data-theme='pure-white'] {
-  --theme-on-primary: #FFFFFF;
-  --theme-on-primary-rgb: 255, 255, 255;
-  --theme-on-accent: #FFFFFF;
-  --theme-on-accent-rgb: 255, 255, 255;
-  --theme-on-success: #FFFFFF;
-  --theme-on-success-rgb: 255, 255, 255;
-} 
-/* ============================================================
-   🎯 FINAL FIX: Hero Ghost Buttons Visibility
+   🎯 HERO GHOST BUTTONS FIX
    ✅ Ang "My orders" button ay hindi visible sa light themes
-   ✅ Kasi puti ang text at puti ang background
    ✅ Fix: gumamit ng theme-aware contrast
    ============================================================ */
 
-/* ============================================================
-   1️⃣ HERO GHOST BUTTONS — Theme-aware contrast
-   ✅ Sa light themes: dark text + light bg
-   ✅ Sa dark themes: light text + subtle bg
-   ============================================================ */
-
-/* ✅ Base — gumamit ng theme variables */
 .hero-actions [class*="--ghost"],
 .hero-actions [class*="--secondary"],
 .hero-actions .button--secondary,
@@ -632,10 +639,10 @@
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
   border-radius: 1rem;
-  background: var(--theme-surface) !important;
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  border: 1px solid var(--theme-border) !important;
+  background: var(--theme-surface);
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  border: 1px solid var(--theme-border);
   font-family: inherit;
   font-size: 0.88rem;
   font-weight: 700;
@@ -653,10 +660,10 @@
 [data-theme-mode='dark'] .hero-actions [class*="--secondary"],
 [data-theme-mode='dark'] .hero-actions .button--secondary,
 [data-theme-mode='dark'] .hero-actions .btn-secondary {
-  background: var(--theme-surface-2) !important;
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  border: 1px solid var(--theme-border-strong) !important;
+  background: var(--theme-surface-2);
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  border: 1px solid var(--theme-border-strong);
   box-shadow:
     0 4px 10px rgba(0, 0, 0, 0.35),
     0 1px 2px rgba(0, 0, 0, 0.25),
@@ -664,15 +671,14 @@
     inset 0 2px 4px rgba(255, 255, 255, 0.06);
 }
 
-/* ✅ Hover state — theme-aware */
 .hero-actions [class*="--ghost"]:hover,
 .hero-actions [class*="--secondary"]:hover,
 .hero-actions .button--secondary:hover,
 .hero-actions .btn-secondary:hover {
-  background: rgba(var(--theme-primary-rgb), 0.1) !important;
-  color: var(--theme-primary-hover) !important;
-  -webkit-text-fill-color: var(--theme-primary-hover) !important;
-  border-color: var(--theme-primary) !important;
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  color: var(--theme-primary-hover);
+  -webkit-text-fill-color: var(--theme-primary-hover);
+  border-color: var(--theme-primary);
   transform: translateY(-2px) scale(1.02);
   box-shadow:
     0 8px 16px rgba(var(--theme-primary-rgb), 0.2),
@@ -681,10 +687,7 @@
     inset 0 2px 4px rgba(255, 255, 255, 0.6);
 }
 
-/* ============================================================
-   2️⃣ HERO PRIMARY BUTTON — Siguraduhing visible
-   ============================================================ */
-
+/* ✅ Hero primary button */
 .hero-actions [class*="--primary"],
 .hero-actions .button--primary,
 .hero-actions .btn-primary {
@@ -698,10 +701,10 @@
     135deg,
     var(--theme-primary) 0%,
     var(--theme-primary-hover) 100%
-  ) !important;
-  color: var(--theme-on-primary) !important;
-  -webkit-text-fill-color: var(--theme-on-primary) !important;
-  border: none !important;
+  );
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
+  border: none;
   font-family: inherit;
   font-size: 0.88rem;
   font-weight: 700;
@@ -726,106 +729,93 @@
     inset 0 3px 6px rgba(255, 255, 255, 0.3);
 }
 
-/* ============================================================
-   3️⃣ HERO BULLET ICONS — Theme-aware
-   ============================================================ */
-
+/* ✅ Hero bullet icons */
 .hero-bullet__icon {
-  background: rgba(var(--theme-primary-rgb), 0.1) !important;
-  border: 1px solid rgba(var(--theme-primary-rgb), 0.25) !important;
-  color: var(--theme-primary) !important;
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.25);
+  color: var(--theme-primary);
 }
 
 .hero-bullet__icon svg,
 .hero-bullet__icon .react-icon {
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  stroke: currentColor !important;
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  stroke: currentColor;
 }
 
 [data-theme-mode='dark'] .hero-bullet__icon {
-  background: rgba(var(--theme-primary-rgb), 0.15) !important;
-  border-color: rgba(var(--theme-primary-rgb), 0.35) !important;
+  background: rgba(var(--theme-primary-rgb), 0.15);
+  border-color: rgba(var(--theme-primary-rgb), 0.35);
 }
 
-/* ============================================================
-   4️⃣ HERO BULLETS — Text visibility
-   ============================================================ */
-
+/* ✅ Hero bullet text */
 .hero-bullet,
 .hero-bullet strong {
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
+  color: var(--theme-text);
+  -webkit-text-fill-color: var(--theme-text);
 }
 
 .hero-bullet small {
-  color: var(--theme-text-muted) !important;
-  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  color: var(--theme-text-muted);
+  -webkit-text-fill-color: var(--theme-text-muted);
 }
 
-/* ============================================================
-   5️⃣ HERO BULLETS — Divider lines
-   ============================================================ */
-
+/* ✅ Hero bullet divider */
 .hero-bullet:not(:last-child)::after {
-  background: var(--theme-border) !important;
+  background: var(--theme-border);
 }
 
 .hero-bullets {
-  border-top-color: var(--theme-border) !important;
+  border-top-color: var(--theme-border);
 }
 
 /* ============================================================
-   6️⃣ LAHAT NG GHOST BUTTONS — Lahat ng pages
+   🎯 GLOBAL GHOST BUTTONS — Lahat ng pages
    ✅ I-apply ang fix sa lahat ng ghost buttons
    ============================================================ */
 
-/* ✅ Settings, profile, cart, at iba pa */
 button[class*="--ghost"]:not([class*="hero"]),
 button[class*="--secondary"]:not([class*="hero"]),
 a[class*="--ghost"]:not([class*="hero"]),
 a[class*="--secondary"]:not([class*="hero"]) {
-  background: var(--theme-surface) !important;
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  border: 1px solid var(--theme-border) !important;
+  background: var(--theme-surface);
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  border: 1px solid var(--theme-border);
 }
 
 [data-theme-mode='dark'] button[class*="--ghost"]:not([class*="hero"]),
 [data-theme-mode='dark'] button[class*="--secondary"]:not([class*="hero"]),
 [data-theme-mode='dark'] a[class*="--ghost"]:not([class*="hero"]),
 [data-theme-mode='dark'] a[class*="--secondary"]:not([class*="hero"]) {
-  background: var(--theme-surface-2) !important;
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  border-color: var(--theme-border-strong) !important;
+  background: var(--theme-surface-2);
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  border-color: var(--theme-border-strong);
 }
 
 button[class*="--ghost"]:hover:not(:disabled):not([class*="hero"]),
 button[class*="--secondary"]:hover:not(:disabled):not([class*="hero"]),
 a[class*="--ghost"]:hover:not([class*="hero"]),
 a[class*="--secondary"]:hover:not([class*="hero"]) {
-  background: rgba(var(--theme-primary-rgb), 0.1) !important;
-  color: var(--theme-primary-hover) !important;
-  -webkit-text-fill-color: var(--theme-primary-hover) !important;
-  border-color: var(--theme-primary) !important;
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  color: var(--theme-primary-hover);
+  -webkit-text-fill-color: var(--theme-primary-hover);
+  border-color: var(--theme-primary);
   transform: translateY(-1px);
 }
 
-/* ============================================================
-   7️⃣ CART SUMMARY GHOST BUTTON — Fix
-   ============================================================ */
-
+/* ✅ Cart summary ghost button */
 .cart-summary__btn--ghost,
 .checkout-btn--secondary,
 .gcash-modal__btn--ghost,
 .od-modal__btn--ghost,
 .settings-btn--ghost,
 .dashboard-gate__btn--ghost {
-  background: var(--theme-surface) !important;
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
-  border: 1px solid var(--theme-border) !important;
+  background: var(--theme-surface);
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
+  border: 1px solid var(--theme-border);
 }
 
 [data-theme-mode='dark'] .cart-summary__btn--ghost,
@@ -834,61 +824,53 @@ a[class*="--secondary"]:hover:not([class*="hero"]) {
 [data-theme-mode='dark'] .od-modal__btn--ghost,
 [data-theme-mode='dark'] .settings-btn--ghost,
 [data-theme-mode='dark'] .dashboard-gate__btn--ghost {
-  background: var(--theme-surface-2) !important;
-  border-color: var(--theme-border-strong) !important;
+  background: var(--theme-surface-2);
+  border-color: var(--theme-border-strong);
 }
 
-/* ============================================================
-   8️⃣ PRODUCT RELATED CARD CTA — Fix
-   ============================================================ */
-
+/* ✅ Product related card CTA */
 .product-related__card button,
 .product-related__card a[class*="--primary"] {
-  color: var(--theme-on-primary) !important;
-  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
 }
 
 /* ============================================================
-   9️⃣ SIGURADUHING WALANG PUTI SA PUTI
+   🎯 SIGURADUHING WALANG PUTI SA PUTI
    ✅ Force text color sa lahat ng buttons
    ============================================================ */
 
-/* ✅ Lahat ng primary buttons — dark text sa light accent, light text sa dark accent */
 button[class*="--primary"]:not(:disabled),
 a[class*="--primary"]:not(.is-disabled) {
-  color: var(--theme-on-primary) !important;
-  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  color: var(--theme-on-primary);
+  -webkit-text-fill-color: var(--theme-on-primary);
 }
 
-/* ✅ Lahat ng ghost buttons — theme-aware text */
 button[class*="--ghost"]:not(:disabled),
 button[class*="--secondary"]:not(:disabled),
 a[class*="--ghost"]:not(.is-disabled),
 a[class*="--secondary"]:not(.is-disabled) {
-  color: var(--theme-text) !important;
-  -webkit-text-fill-color: var(--theme-text) !important;
+  color: var(--theme-text);
+  -webkit-text-fill-color: var(--theme-text);
 }
 
 button[class*="--ghost"]:hover:not(:disabled),
 button[class*="--secondary"]:hover:not(:disabled),
 a[class*="--ghost"]:hover:not(.is-disabled),
 a[class*="--secondary"]:hover:not(.is-disabled) {
-  color: var(--theme-primary) !important;
-  -webkit-text-fill-color: var(--theme-primary) !important;
+  color: var(--theme-primary);
+  -webkit-text-fill-color: var(--theme-primary);
 }
 
-/* ============================================================
-   🔟 SPAN INHERIT — Siguraduhing sumasama ang text color
-   ============================================================ */
-
+/* ✅ Span inherit */
 button > span,
 button > *,
 a[class*="btn"] > span,
 a[class*="btn"] > *,
 a[class*="cta"] > span,
 a[class*="cta"] > * {
-  color: inherit !important;
-  -webkit-text-fill-color: inherit !important;
-  fill: currentColor !important;
-  stroke: currentColor !important;
+  color: inherit;
+  -webkit-text-fill-color: inherit;
+  fill: currentColor;
+  stroke: currentColor;
 }

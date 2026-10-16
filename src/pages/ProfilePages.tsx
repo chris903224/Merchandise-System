@@ -25,6 +25,9 @@ import {
   Store,
   ShoppingCart,
   Shield,
+  Lock as LockIcon,
+  BookOpen,
+  Hash,
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
@@ -54,7 +57,6 @@ const activityIcon = {
   security: Lock,
 };
 
-/* ✅ SAME SA SETTINGS — simple sideNavItems */
 const sideNavItems = [
   { to: '/', label: 'Home', icon: Home, end: true },
   { to: '/catalog', label: 'Shop', icon: Store },
@@ -88,9 +90,6 @@ export default function ProfilePage() {
   const [adviser] = useState('');
   const [shippingAddress] = useState<string | null>(null);
 
-  /* ============================================
-     LOAD PROFILE
-     ============================================ */
   useEffect(() => {
     if (!session) {
       navigate('/dashboard');
@@ -137,10 +136,6 @@ export default function ProfilePage() {
   }, [session, navigate]);
 
   if (!session) return null;
-
-  /* ============================================
-     HANDLERS
-     ============================================ */
 
   const validateFile = (file: File): boolean => {
     if (file.size > 5 * 1024 * 1024) {
@@ -270,7 +265,6 @@ export default function ProfilePage() {
 
   return (
     <div className="profile-shell">
-      {/* ✅ SIDEBAR — SIMPLE LANG, SAME SA SETTINGS */}
       <aside className="profile-sidebar">
         <div className="profile-sidebar__top">
           <nav className="profile-sidebar__nav">
@@ -459,67 +453,140 @@ export default function ProfilePage() {
                         </div>
 
                         <div className="profile-form-grid">
+                          {/* 🔒 FULL NAME — LOCKED */}
                           <div className="profile-form-group">
                             <label className="profile-form-label">
-                              Full Name
+                              <span>Full Name</span>
+                              <span
+                                className="profile-form-lock"
+                                title="Managed by your registration record"
+                              >
+                                <LockIcon
+                                  className="react-icon"
+                                  aria-hidden="true"
+                                />
+                                <span>Locked</span>
+                              </span>
                             </label>
-                            <p className="profile-form-value">
-                              {displayName}
-                            </p>
+                            <div className="profile-form-field profile-form-field--locked">
+                              <User
+                                className="react-icon"
+                                aria-hidden="true"
+                              />
+                              <span>{displayName}</span>
+                            </div>
                           </div>
 
+                          {/* 🔒 STUDENT ID — LOCKED */}
                           <div className="profile-form-group">
                             <label className="profile-form-label">
-                              Student ID
+                              <span>Student ID</span>
+                              <span
+                                className="profile-form-lock"
+                                title="Managed by your registration record"
+                              >
+                                <LockIcon
+                                  className="react-icon"
+                                  aria-hidden="true"
+                                />
+                                <span>Locked</span>
+                              </span>
                             </label>
-                            <p className="profile-form-value">
-                              {idNumber || 'N/A'}
-                            </p>
+                            <div className="profile-form-field profile-form-field--locked">
+                              <Hash
+                                className="react-icon"
+                                aria-hidden="true"
+                              />
+                              <span>{idNumber || 'N/A'}</span>
+                            </div>
                           </div>
 
+                          {/* 🔓 COURSE / STRAND — UNLOCKED (pwedeng i-edit sa Settings) */}
                           <div className="profile-form-group">
                             <label className="profile-form-label">
-                              Course / Strand
-                            </label>
-                            <p className="profile-form-value">
-                              {courseStrand
-                                ? getCourseLabel(courseStrand)
-                                : 'N/A'}
-                            </p>
-                          </div>
-
-                          <div className="profile-form-group">
-                            <label className="profile-form-label">
-                              Year Level
-                            </label>
-                            <p className="profile-form-value">
-                              {yearLevel || 'N/A'}
-                            </p>
-                          </div>
-
-                          <div className="profile-form-group">
-                            <label className="profile-form-label">
-                              Date of Birth
-                            </label>
-                            <p className="profile-form-value">
-                              {dob || 'N/A'}
-                            </p>
-                          </div>
-
-                          <div className="profile-form-group">
-                            <label className="profile-form-label">
-                              School Year
-                            </label>
-                            <p className="profile-form-value">
-                              {schoolYear || 'N/A'}
-                            </p>
-                          </div>
-
-                          <div className="profile-form-group">
-                            <label className="profile-form-label">
-                              Email Address
+                              <span>Course / Strand</span>
                             </label>
                             <div className="profile-form-field">
+                              <BookOpen
+                                className="react-icon"
+                                aria-hidden="true"
+                              />
+                              <span>
+                                {courseStrand
+                                  ? getCourseLabel(courseStrand)
+                                  : 'N/A'}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* 🔓 YEAR LEVEL — UNLOCKED */}
+                          <div className="profile-form-group">
+                            <label className="profile-form-label">
+                              <span>Year Level</span>
+                            </label>
+                            <div className="profile-form-field">
+                              <GraduationCap
+                                className="react-icon"
+                                aria-hidden="true"
+                              />
+                              <span>{yearLevel || 'N/A'}</span>
+                            </div>
+                          </div>
+
+                          {/* 🔓 DATE OF BIRTH — UNLOCKED */}
+                          <div className="profile-form-group">
+                            <label className="profile-form-label">
+                              <span>Date of Birth</span>
+                            </label>
+                            <div className="profile-form-field">
+                              <Calendar
+                                className="react-icon"
+                                aria-hidden="true"
+                              />
+                              <span>{dob || 'N/A'}</span>
+                            </div>
+                          </div>
+
+                          {/* 🔒 SCHOOL YEAR — LOCKED */}
+                          <div className="profile-form-group">
+                            <label className="profile-form-label">
+                              <span>School Year</span>
+                              <span
+                                className="profile-form-lock"
+                                title="Managed by your registration record"
+                              >
+                                <LockIcon
+                                  className="react-icon"
+                                  aria-hidden="true"
+                                />
+                                <span>Locked</span>
+                              </span>
+                            </label>
+                            <div className="profile-form-field profile-form-field--locked">
+                              <CalendarRange
+                                className="react-icon"
+                                aria-hidden="true"
+                              />
+                              <span>{schoolYear || 'N/A'}</span>
+                            </div>
+                          </div>
+
+                          {/* 🔒 EMAIL — LOCKED */}
+                          <div className="profile-form-group">
+                            <label className="profile-form-label">
+                              <span>Email Address</span>
+                              <span
+                                className="profile-form-lock"
+                                title="Managed by your registration record"
+                              >
+                                <LockIcon
+                                  className="react-icon"
+                                  aria-hidden="true"
+                                />
+                                <span>Locked</span>
+                              </span>
+                            </label>
+                            <div className="profile-form-field profile-form-field--locked">
                               <Mail
                                 className="react-icon"
                                 aria-hidden="true"
@@ -528,9 +595,10 @@ export default function ProfilePage() {
                             </div>
                           </div>
 
+                          {/* 🔓 PHONE NUMBER — UNLOCKED (pwedeng i-edit sa Settings) */}
                           <div className="profile-form-group">
                             <label className="profile-form-label">
-                              Phone Number
+                              <span>Phone Number</span>
                             </label>
                             <div className="profile-form-field">
                               <Phone
@@ -637,9 +705,22 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="profile-form-grid">
+                      {/* 🔒 CAMPUS — LOCKED */}
                       <div className="profile-form-group">
-                        <label className="profile-form-label">Campus</label>
-                        <div className="profile-form-field">
+                        <label className="profile-form-label">
+                          <span>Campus</span>
+                          <span
+                            className="profile-form-lock"
+                            title="Managed by your registration record"
+                          >
+                            <LockIcon
+                              className="react-icon"
+                              aria-hidden="true"
+                            />
+                            <span>Locked</span>
+                          </span>
+                        </label>
+                        <div className="profile-form-field profile-form-field--locked">
                           <Building2
                             className="react-icon"
                             aria-hidden="true"
@@ -648,9 +729,22 @@ export default function ProfilePage() {
                         </div>
                       </div>
 
+                      {/* 🔒 PROGRAM — LOCKED */}
                       <div className="profile-form-group">
-                        <label className="profile-form-label">Program</label>
-                        <div className="profile-form-field">
+                        <label className="profile-form-label">
+                          <span>Program</span>
+                          <span
+                            className="profile-form-lock"
+                            title="Managed by your registration record"
+                          >
+                            <LockIcon
+                              className="react-icon"
+                              aria-hidden="true"
+                            />
+                            <span>Locked</span>
+                          </span>
+                        </label>
+                        <div className="profile-form-field profile-form-field--locked">
                           <GraduationCap
                             className="react-icon"
                             aria-hidden="true"
@@ -664,11 +758,22 @@ export default function ProfilePage() {
                         </div>
                       </div>
 
+                      {/* 🔒 YEAR LEVEL — LOCKED (school tab) */}
                       <div className="profile-form-group">
                         <label className="profile-form-label">
-                          Year Level
+                          <span>Year Level</span>
+                          <span
+                            className="profile-form-lock"
+                            title="Managed by your registration record"
+                          >
+                            <LockIcon
+                              className="react-icon"
+                              aria-hidden="true"
+                            />
+                            <span>Locked</span>
+                          </span>
                         </label>
-                        <div className="profile-form-field">
+                        <div className="profile-form-field profile-form-field--locked">
                           <Calendar
                             className="react-icon"
                             aria-hidden="true"
@@ -677,11 +782,22 @@ export default function ProfilePage() {
                         </div>
                       </div>
 
+                      {/* 🔒 SCHOOL YEAR — LOCKED */}
                       <div className="profile-form-group">
                         <label className="profile-form-label">
-                          School Year
+                          <span>School Year</span>
+                          <span
+                            className="profile-form-lock"
+                            title="Managed by your registration record"
+                          >
+                            <LockIcon
+                              className="react-icon"
+                              aria-hidden="true"
+                            />
+                            <span>Locked</span>
+                          </span>
                         </label>
-                        <div className="profile-form-field">
+                        <div className="profile-form-field profile-form-field--locked">
                           <CalendarRange
                             className="react-icon"
                             aria-hidden="true"
@@ -690,12 +806,26 @@ export default function ProfilePage() {
                         </div>
                       </div>
 
+                      {/* 🔒 ADVISER — LOCKED */}
                       <div className="profile-form-group">
                         <label className="profile-form-label">
-                          Academic Adviser
+                          <span>Academic Adviser</span>
+                          <span
+                            className="profile-form-lock"
+                            title="Managed by your registration record"
+                          >
+                            <LockIcon
+                              className="react-icon"
+                              aria-hidden="true"
+                            />
+                            <span>Locked</span>
+                          </span>
                         </label>
-                        <div className="profile-form-field">
-                          <User className="react-icon" aria-hidden="true" />
+                        <div className="profile-form-field profile-form-field--locked">
+                          <User
+                            className="react-icon"
+                            aria-hidden="true"
+                          />
                           <span>{adviser || 'N/A'}</span>
                         </div>
                       </div>

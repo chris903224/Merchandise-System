@@ -429,3 +429,327 @@
   -webkit-text-fill-color: inherit !important;
   stroke: currentColor !important;
 }
+/* ✅ Search bar wrapper — glassy */
+.nav-search {
+  background: rgba(var(--theme-primary-rgb), 0.08) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.2) !important;
+  border-radius: 9999px !important;
+}
+
+/* ✅ Input — transparent para mawala yung puting bg */
+.nav-search__input,
+input.nav-search__input {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  box-shadow: none !important;
+}
+
+.nav-search__input::placeholder {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+/* ==========================================================================
+   🔧 FIX: NAVBAR SEARCH — tanggal solid #FBF0F3
+   ✅ .nav-search + .nav-search__input
+   ✅ Transparent na — theme-aware
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ NAV SEARCH WRAPPER — glassy + theme-aware
+   ========================================================================== */
+
+html body #root .nav-search,
+html body .site-nav .nav-search,
+html body .nav-search {
+  /* ✅ Reset lahat ng dating styles */
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+
+  /* ✅ Transparent surface — hindi na solid */
+  background: rgba(var(--theme-primary-rgb), 0.06) !important;
+  background-color: rgba(var(--theme-primary-rgb), 0.06) !important;
+  background-image: none !important;
+
+  /* ✅ Subtle border */
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.18) !important;
+  border-radius: 999px !important;
+
+  padding: 0.5rem 0.85rem !important;
+  height: 2.5rem !important;
+  box-sizing: border-box !important;
+
+  /* ✅ Subtle glow */
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 2px 8px -4px rgba(var(--theme-primary-rgb), 0.15) !important;
+
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+html body #root .nav-search:hover {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  background-color: rgba(var(--theme-primary-rgb), 0.1) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.28) !important;
+}
+
+html body #root .nav-search:focus-within {
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  background-color: rgba(var(--theme-primary-rgb), 0.1) !important;
+  border-color: var(--theme-primary) !important;
+  box-shadow:
+    0 0 0 3px rgba(var(--theme-primary-rgb), 0.15),
+    0 4px 12px -4px rgba(var(--theme-primary-rgb), 0.25) !important;
+}
+
+/* ==========================================================================
+   2️⃣ NAV SEARCH INPUT — TANGGAL ANG #FBF0F3
+   ✅ Transparent na
+   ========================================================================== */
+
+html body #root .nav-search__input,
+html body .site-nav .nav-search__input,
+html body input.nav-search__input,
+html body .nav-search__input:hover,
+html body .nav-search__input:focus,
+html body .nav-search__input:focus-visible,
+html body .nav-search__input:active {
+  /* ✅ Reset lahat */
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+
+  border: none !important;
+  border-radius: 0 !important;
+
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+
+  /* ✅ Layout */
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: 100% !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+  height: auto !important;
+
+  font-family: inherit !important;
+  font-size: 0.82rem !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+
+  /* ✅ Tanggalin iOS native styling */
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}
+
+/* ✅ Placeholder */
+html body #root .nav-search__input::placeholder {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  opacity: 0.7 !important;
+}
+
+/* ==========================================================================
+   3️⃣ SEARCH ICON — theme-aware
+   ========================================================================== */
+
+html body #root .nav-search > svg,
+html body .site-nav .nav-search > svg,
+html body .nav-search__icon {
+  width: 1rem !important;
+  height: 1rem !important;
+  flex-shrink: 0 !important;
+
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  stroke: currentColor !important;
+  fill: none !important;
+
+  transition: color 0.2s ease !important;
+}
+
+html body #root .nav-search:focus-within > svg,
+html body #root .nav-search:focus-within .nav-search__icon {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ==========================================================================
+   4️⃣ Ctrl+M BADGE — theme-aware
+   ========================================================================== */
+
+html body #root .nav-search__kbd,
+html body .site-nav .nav-search__kbd {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  background: rgba(var(--theme-primary-rgb), 0.1) !important;
+  background-color: rgba(var(--theme-primary-rgb), 0.1) !important;
+
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.2) !important;
+  border-radius: 6px !important;
+
+  padding: 2px 6px !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  font-family: inherit !important;
+  line-height: 1 !important;
+
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+
+/* ==========================================================================
+   5️⃣ FORCE — tanggalin ang solid color sa lahat ng posibleng state
+   ✅ Catch-all para siguradong walang #FBF0F3
+   ========================================================================== */
+
+html body .nav-search__input,
+html body .site-nav .nav-search__input,
+html body #root .nav-search .nav-search__input {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+html body .nav-search__input:focus,
+html body .nav-search__input:focus-visible,
+html body .nav-search__input:hover {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+/* ==========================================================================
+   🎯 VIRTUAL QUEUE ACTIVE BADGE — Sakto lang
+   ✅ Balanced size — hindi OA, hindi maliit
+   ✅ Theme-aware sa lahat ng 10 themes
+   ========================================================================== */
+
+html body #root .dashboard-hero__kicker,
+html body #root [class*="hero__kicker"],
+html body #root [class*="queue-active"],
+html body #root [class*="virtual-queue"],
+html body #root [class*="hero"] [class*="badge"]:first-child {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+
+  /* ✅ SAKTO — moderate padding */
+  padding: 0.4rem 0.85rem !important;
+  border-radius: 999px !important;
+
+  /* ✅ SAKTO — readable pero hindi OA */
+  font-family: inherit !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  line-height: 1 !important;
+
+  /* ✅ Theme-aware tinted bg */
+  background: rgba(var(--theme-primary-rgb), 0.12) !important;
+  background-color: rgba(var(--theme-primary-rgb), 0.12) !important;
+
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.22) !important;
+
+  /* ✅ Subtle shadow */
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 2px 8px -3px rgba(var(--theme-primary-rgb), 0.2) !important;
+
+  width: fit-content !important;
+  margin-bottom: 0.7rem !important;
+  vertical-align: middle !important;
+}
+
+/* ==========================================================================
+   DOT — sakto lang, subtle pulse
+   ========================================================================== */
+
+html body #root .dashboard-hero__kicker::before,
+html body #root [class*="hero__kicker"]::before,
+html body #root [class*="queue-active"]::before,
+html body #root [class*="virtual-queue"]::before,
+html body #root .dashboard-hero__kicker-dot,
+html body #root [class*="hero__kicker"] [class*="dot"],
+html body #root [class*="queue-active"] [class*="dot"] {
+  content: '' !important;
+  display: inline-block !important;
+  width: 0.4rem !important;
+  height: 0.4rem !important;
+  min-width: 0.4rem !important;
+  min-height: 0.4rem !important;
+  border-radius: 50% !important;
+  background: var(--theme-primary) !important;
+  box-shadow:
+    0 0 0 2px rgba(var(--theme-primary-rgb), 0.18),
+    0 0 6px rgba(var(--theme-primary-rgb), 0.35) !important;
+  flex-shrink: 0 !important;
+  animation: queuePulse 2.4s ease-in-out infinite !important;
+}
+
+@keyframes queuePulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 2px rgba(var(--theme-primary-rgb), 0.18),
+      0 0 6px rgba(var(--theme-primary-rgb), 0.35);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow:
+      0 0 0 4px rgba(var(--theme-primary-rgb), 0.12),
+      0 0 10px rgba(var(--theme-primary-rgb), 0.5);
+    transform: scale(1.08);
+  }
+}
+
+/* ✅ Siguraduhing visible yung text */
+html body #root .dashboard-hero__kicker,
+html body #root .dashboard-hero__kicker span,
+html body #root .dashboard-hero__kicker > * {
+  color: var(--theme-primary) !important;
+  -webkit-text-fill-color: var(--theme-primary) !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE — mobile
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  html body #root .dashboard-hero__kicker {
+    font-size: 0.68rem !important;
+    padding: 0.35rem 0.75rem !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  html body #root .dashboard-hero__kicker::before {
+    width: 0.35rem !important;
+    height: 0.35rem !important;
+    min-width: 0.35rem !important;
+    min-height: 0.35rem !important;
+  }
+}

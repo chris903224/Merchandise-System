@@ -1,6 +1,6 @@
 // src/pages/HomePage.tsx
 
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowUpRight,
@@ -17,9 +17,13 @@ import {
   Package,
   ChevronLeft,
   ChevronRight,
+  Sparkles,
+  X,
+  Check,
 } from 'lucide-react';
 
 import { useApp, useProducts } from '../store';
+import type { UniformResponse } from '../services/onboarding';
 import ProductImage from '../components/ProductImage';
 import { formatPrice } from '../services';
 
@@ -44,12 +48,449 @@ function useIsMobile(breakpoint = 767) {
   return isMobile;
 }
 
+/* ============================================
+   ✅ HOOK: Scroll-reveal via IntersectionObserver
+============================================ */
+function useScrollReveal<T extends HTMLElement = HTMLElement>(
+  options?: IntersectionObserverInit
+) {
+  const ref = useRef<T | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      setIsVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -60px 0px',
+        ...options,
+      }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [options]);
+
+  return { ref, isVisible };
+}
+
+/* ============================================
+   ✅ COMPONENT: Welcome Uniform Modal
+   ✅ YES/NO lang ang nag-se-save sa DB
+   ✅ Kapag nag-skip (X, ESC, backdrop, refresh):
+      → WALANG i-save → lalabas ulit sa next login
+   ✅ Kapag nag-answer (Yes/No):
+      → Naka-save sa DB → hindi na lalabas ulit
+============================================ */
+function WelcomeUniformModal() {
+  const { session, onboarding, isLoadingOnboarding, saveOnboarding } = useApp();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  /* ✅ Show modal kapag bagong account (walang onboarding record) */
+  useEffect(() => {
+    if (!session?.id) return;
+    if (isLoadingOnboarding) return;
+
+    /* ✅ Kung may record na sa DB (yes/no) → hindi na lalabas */
+    if (onboarding) {
+      setIsOpen(false);
+      return;
+    }
+
+    /* ✅ Bagong account, walang record → lalabas pagkatapos ng delay */
+    const timer = setTimeout(() => setIsOpen(true), 700);
+    return () => clearTimeout(timer);
+  }, [session?.id, onboarding, isLoadingOnboarding]);
+
+  /* ============================================
+     ✅ SAVE HANDLER — YES or NO lang (nag-save sa DB)
+     ============================================ */
+  const handleAnswer = async (response: UniformResponse) => {
+    if (isSaving) return;
+
+    setIsClosing(true);
+    setIsSaving(true);
+
+    try {
+      await saveOnboarding(response);
+      // ✅ Naka-save na sa DB → next login, hindi na lalabas
+    } catch (error) {
+      console.error('[WelcomeModal] Failed to save:', error);
+    } finally {
+      setIsSaving(false);
+      setTimeout(() => {
+        setIsOpen(false);
+        setIsClosing(false);
+      }, 350);
+    }
+  };
+
+  /* ============================================
+     ✅ SKIP HANDLER — X button, ESC, backdrop
+     ✅ WALANG DB call → lalabas ulit sa next login
+     ============================================ */
+  const handleSkip = () => {
+    if (isSaving) return;
+
+    setIsClosing(true);
+    // ✅ WALANG saveOnboarding() — skip lang
+    setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+    }, 350);
+  };
+
+  /* ✅ ESC key + body scroll lock */
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleSkip();
+    };
+
+    document.addEventListener('keydown', handleEscape);
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isOpen]);
+
+  /* ✅ WALANG beforeunload — kapag nag-refresh, walang i-save */
+
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className={`welcome-uniform-modal ${isClosing ? 'is-closing' : ''}`}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="welcome-uniform-title"
+      aria-describedby="welcome-uniform-desc"
+      onClick={(e) => {
+        /* ✅ Click sa backdrop = SKIP (walang save) */
+        if (e.target === e.currentTarget) handleSkip();
+      }}
+    >
+      <div className="welcome-uniform-modal__content">
+        <button
+          type="button"
+          className="welcome-uniform-modal__close"
+          onClick={handleSkip}
+          aria-label="Close welcome dialog"
+          disabled={isSaving}
+        >
+          <X className="react-icon" aria-hidden="true" />
+        </button>
+
+        <div className="welcome-uniform-modal__icon" aria-hidden="true">
+          <Sparkles className="react-icon" />
+        </div>
+
+        <h3
+          id="welcome-uniform-title"
+          className="welcome-uniform-modal__title"
+        >
+          Do you already have your school uniform?
+        </h3>
+
+        <p
+          id="welcome-uniform-desc"
+          className="welcome-uniform-modal__desc"
+        >
+          Let us know so we can help you find the right items faster.
+        </p>
+
+        <div className="welcome-uniform-modal__actions">
+          <button
+            type="button"
+            className="welcome-uniform-modal__btn welcome-uniform-modal__btn--primary"
+            onClick={() => void handleAnswer('yes')}
+            disabled={isSaving}
+          >
+            <Check className="react-icon" aria-hidden="true" />
+            <span>{isSaving ? 'Saving…' : 'Yes, I have one'}</span>
+          </button>
+
+          <button
+            type="button"
+            className="welcome-uniform-modal__btn welcome-uniform-modal__btn--secondary"
+            onClick={() => void handleAnswer('no')}
+            disabled={isSaving}
+          >
+            <Shirt className="react-icon" aria-hidden="true" />
+            <span>No, I need one</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================
+   ✅ COMPONENT: Product Card with own reveal
+============================================ */
+function ProductCard({
+  product,
+  index,
+}: {
+  product: any;
+  index: number;
+}) {
+  const reveal = useScrollReveal<HTMLAnchorElement>();
+
+  return (
+    <Link
+      ref={reveal.ref}
+      to={`/products/${encodeURIComponent(product.id)}`}
+      className={`home-card scroll-reveal__item ${
+        reveal.isVisible ? 'is-visible' : ''
+      }`}
+      style={{ '--stagger-index': index } as React.CSSProperties}
+    >
+      <div className="home-card__media">
+        <ProductImage
+          product={product}
+          className="home-card__image"
+          width={260}
+          height={320}
+        />
+        {Number(product.stock) > 0 && Number(product.stock) <= 5 && (
+          <span className="home-card__badge">Low stock</span>
+        )}
+      </div>
+
+      <div className="home-card__body">
+        <h3 className="home-card__name">{product.name}</h3>
+
+        {product.category && (
+          <p className="home-card__category">{product.category}</p>
+        )}
+
+        <p className="home-card__price">{formatPrice(product.price)}</p>
+
+        <button type="button" className="home-card__cta" tabIndex={-1}>
+          View
+          <ArrowRight className="react-icon" aria-hidden="true" />
+        </button>
+      </div>
+    </Link>
+  );
+}
+
+/* ============================================
+   ✅ COMPONENT: Category Card with own reveal
+============================================ */
+function CategoryCard({
+  to,
+  icon: Icon,
+  name,
+  desc,
+  index,
+}: {
+  to: string;
+  icon: typeof Package;
+  name: string;
+  desc: string;
+  index: number;
+}) {
+  const reveal = useScrollReveal<HTMLAnchorElement>();
+
+  return (
+    <Link
+      ref={reveal.ref}
+      to={to}
+      className={`home-card home-card--category scroll-reveal__item ${
+        reveal.isVisible ? 'is-visible' : ''
+      }`}
+      style={{ '--stagger-index': index } as React.CSSProperties}
+    >
+      <div className="home-card__media home-card__media--icon">
+        <span className="home-card__icon-circle">
+          <Icon className="react-icon" aria-hidden="true" />
+        </span>
+      </div>
+
+      <div className="home-card__body">
+        <h3 className="home-card__name">{name}</h3>
+        <p className="home-card__category">{desc}</p>
+        <button type="button" className="home-card__cta" tabIndex={-1}>
+          Browse
+          <ArrowRight className="react-icon" aria-hidden="true" />
+        </button>
+      </div>
+    </Link>
+  );
+}
+
+/* ============================================
+   ✅ COMPONENT: Section Header with reveal
+============================================ */
+function SectionHeader({
+  kicker,
+  title,
+  description,
+  linkTo,
+  linkLabel,
+  titleId,
+}: {
+  kicker: string;
+  title: string;
+  description?: string;
+  linkTo: string;
+  linkLabel: string;
+  titleId?: string;
+}) {
+  const reveal = useScrollReveal<HTMLDivElement>();
+
+  return (
+    <div
+      ref={reveal.ref}
+      className={`home-section__header ${
+        reveal.isVisible ? 'is-visible' : ''
+      }`}
+    >
+      <div>
+        <p className="home-section__kicker">{kicker}</p>
+        <h2 id={titleId} className="home-section__title">
+          {title}
+        </h2>
+        {description && (
+          <p className="home-section__description">{description}</p>
+        )}
+      </div>
+
+      <Link to={linkTo} className="home-section__link">
+        {linkLabel}
+        <ArrowUpRight className="react-icon" aria-hidden="true" />
+      </Link>
+    </div>
+  );
+}
+
+/* ============================================
+   ✅ COMPONENT: Visit Panel with reveal
+============================================ */
+function VisitPanel() {
+  const reveal = useScrollReveal<HTMLDivElement>();
+
+  return (
+    <div
+      ref={reveal.ref}
+      className={`home-highlights__panel visit-panel ${
+        reveal.isVisible ? 'is-visible' : ''
+      }`}
+    >
+      <div className="home-section__header">
+        <div>
+          <p className="home-section__kicker">Visit us</p>
+          <h2 className="home-section__title">SJCM Supply Office</h2>
+        </div>
+      </div>
+
+      <ul className="visit-panel__list">
+        <li>
+          <span className="visit-panel__icon">
+            <MapPin className="react-icon" aria-hidden="true" />
+          </span>
+          <span>Ground Floor, Main Building, SJCM Campus</span>
+        </li>
+
+        <li>
+          <span className="visit-panel__icon">
+            <Clock className="react-icon" aria-hidden="true" />
+          </span>
+          <span>Mon–Fri, 8:00 AM – 5:00 PM</span>
+        </li>
+
+        <li>
+          <span className="visit-panel__icon">
+            <MessageCircle className="react-icon" aria-hidden="true" />
+          </span>
+          <span>Questions? Message the supply office page.</span>
+        </li>
+      </ul>
+
+      <Link to="/catalog" className="button button--secondary button--block">
+        <Store className="react-icon" aria-hidden="true" />
+        <span>Browse catalog</span>
+      </Link>
+    </div>
+  );
+}
+
+/* ============================================
+   ✅ COMPONENT: Best Finds Panel with reveal
+============================================ */
+function BestFindsPanel({ bestFinds }: { bestFinds: any[] }) {
+  const reveal = useScrollReveal<HTMLDivElement>();
+
+  return (
+    <div
+      ref={reveal.ref}
+      className={`home-highlights__panel ${
+        reveal.isVisible ? 'is-visible' : ''
+      }`}
+    >
+      <div className="home-section__header">
+        <div>
+          <p className="home-section__kicker">Popular right now</p>
+          <h2 className="home-section__title">Best finds right now</h2>
+        </div>
+
+        <Link to="/catalog" className="home-section__link">
+          See more
+          <ArrowUpRight className="react-icon" aria-hidden="true" />
+        </Link>
+      </div>
+
+      {bestFinds.length > 0 ? (
+        <div className="home-cards home-cards--best">
+          {bestFinds.map((product, index) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              index={index}
+            />
+          ))}
+        </div>
+      ) : (
+        <p className="home-section__description">
+          No items to highlight yet.
+        </p>
+      )}
+    </div>
+  );
+}
+
 export default function HomePage() {
   const { session } = useApp();
   const products = useProducts();
-  const isMobile = useIsMobile(767);   // ✅ detect mobile
+  const isMobile = useIsMobile(767);
 
-  /* HERO CAROUSEL — dynamic from products */
+  /* HERO CAROUSEL */
   const carouselProducts = useMemo(() => {
     return products
       .filter((p) => {
@@ -75,7 +516,8 @@ export default function HomePage() {
     setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
   };
 
-  const newArrivals = useMemo(() => products.slice(0, 6), [products]);
+  /* NEW ARRIVALS — 5 items */
+  const newArrivals = useMemo(() => products.slice(0, 5), [products]);
 
   const bestFinds = useMemo(() => {
     return [...products]
@@ -85,14 +527,15 @@ export default function HomePage() {
   }, [products]);
 
   /* =========================================================
-     ✅ MOBILE VIEW — TikTok Shop style
+     ✅ MOBILE VIEW
   ========================================================== */
   if (isMobile) {
     return (
       <main className="mobile-home">
-        {/* ============================================
-            MOBILE HERO
-        ============================================ */}
+        {/* ✅ WELCOME MODAL */}
+        <WelcomeUniformModal />
+
+        {/* MOBILE HERO */}
         <section className="mobile-hero">
           <div className="mobile-hero__bg" aria-hidden="true" />
 
@@ -135,9 +578,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ============================================
-            CATEGORY CHIPS — horizontal scroll
-        ============================================ */}
+        {/* CATEGORY CHIPS */}
         <div className="mobile-category-chips" role="list">
           <Link to="/catalog" className="mobile-category-chip">
             <Package className="react-icon" />
@@ -161,9 +602,7 @@ export default function HomePage() {
           </Link>
         </div>
 
-        {/* ============================================
-            NEW ARRIVALS — 2-column grid
-        ============================================ */}
+        {/* NEW ARRIVALS */}
         {newArrivals.length > 0 && (
           <section className="mobile-home-section">
             <div className="mobile-home-section__head">
@@ -239,9 +678,7 @@ export default function HomePage() {
           </section>
         )}
 
-        {/* ============================================
-            CATEGORIES — Shop by need
-        ============================================ */}
+        {/* CATEGORIES */}
         <section className="mobile-home-section">
           <div className="mobile-home-section__head">
             <div>
@@ -313,9 +750,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ============================================
-            BEST FINDS
-        ============================================ */}
+        {/* BEST FINDS */}
         {bestFinds.length > 0 && (
           <section className="mobile-home-section">
             <div className="mobile-home-section__head">
@@ -367,9 +802,7 @@ export default function HomePage() {
           </section>
         )}
 
-        {/* ============================================
-            VISIT US — store info card
-        ============================================ */}
+        {/* VISIT US */}
         <section className="mobile-home-section mobile-visit-card">
           <div className="mobile-visit-card__head">
             <p className="mobile-home-section__kicker">Visit us</p>
@@ -415,12 +848,14 @@ export default function HomePage() {
   }
 
   /* =========================================================
-     ✅ DESKTOP VIEW — 100% RETAINED (original code)
+     ✅ DESKTOP VIEW
   ========================================================== */
   return (
     <>
+      {/* ✅ WELCOME MODAL — desktop */}
+      <WelcomeUniformModal />
+
       <main className="page-shell hero-shell">
-        {/* LEFT — HERO CONTENT */}
         <div className="hero-copy">
           <p className="queue-badge">
             <span aria-hidden="true">●</span>
@@ -591,300 +1026,82 @@ export default function HomePage() {
         </aside>
       </main>
 
+      {/* NEWEST ARRIVALS */}
       {newArrivals.length > 0 && (
         <section
           className="page-shell home-section"
           aria-labelledby="arrivals-title"
         >
-          <div className="home-section__header">
-            <div>
-              <p className="home-section__kicker">Fresh stock</p>
-              <h2 id="arrivals-title" className="home-section__title">
-                Newest arrivals this week
-              </h2>
-              <p className="home-section__description">
-                Recently restocked uniforms, apparel, and laces —
-                ready to reserve today.
-              </p>
-            </div>
-
-            <Link to="/catalog" className="home-section__link">
-              View all
-              <ArrowUpRight className="react-icon" aria-hidden="true" />
-            </Link>
-          </div>
+          <SectionHeader
+            kicker="Fresh stock"
+            title="Newest arrivals this week"
+            description="Recently restocked uniforms, apparel, and laces — ready to reserve today."
+            linkTo="/catalog"
+            linkLabel="View all"
+            titleId="arrivals-title"
+          />
 
           <div className="home-cards">
-            {newArrivals.map((product) => (
-              <Link
+            {newArrivals.map((product, index) => (
+              <ProductCard
                 key={product.id}
-                to={`/products/${encodeURIComponent(product.id)}`}
-                className="home-card"
-              >
-                <div className="home-card__media">
-                  <ProductImage
-                    product={product}
-                    className="home-card__image"
-                    width={260}
-                    height={320}
-                  />
-                  {Number(product.stock) > 0 && Number(product.stock) <= 5 && (
-                    <span className="home-card__badge">Low stock</span>
-                  )}
-                </div>
-
-                <div className="home-card__body">
-                  <h3 className="home-card__name">{product.name}</h3>
-
-                  {product.category && (
-                    <p className="home-card__category">
-                      {product.category}
-                    </p>
-                  )}
-
-                  <p className="home-card__price">
-                    {formatPrice(product.price)}
-                  </p>
-
-                  <button
-                    type="button"
-                    className="home-card__cta"
-                    tabIndex={-1}
-                  >
-                    View
-                    <ArrowRight
-                      className="react-icon"
-                      aria-hidden="true"
-                    />
-                  </button>
-                </div>
-              </Link>
+                product={product}
+                index={index}
+              />
             ))}
           </div>
         </section>
       )}
 
+      {/* OFFICIAL ITEMS */}
       <section
         className="page-shell home-section"
         aria-labelledby="category-title"
       >
-        <div className="home-section__header">
-          <div>
-            <p className="home-section__kicker">Shop by need</p>
-            <h2 id="category-title" className="home-section__title">
-              Official items, ready for pickup
-            </h2>
-            <p className="home-section__description">
-              Find the right school or organization item without the
-              campus queue.
-            </p>
-          </div>
-
-          <Link to="/catalog" className="home-section__link">
-            All merchandise
-            <ArrowUpRight className="react-icon" aria-hidden="true" />
-          </Link>
-        </div>
+        <SectionHeader
+          kicker="Shop by need"
+          title="Official items, ready for pickup"
+          description="Find the right school or organization item without the campus queue."
+          linkTo="/catalog"
+          linkLabel="All merchandise"
+          titleId="category-title"
+        />
 
         <div className="home-cards">
-          <Link
+          <CategoryCard
             to="/catalog?search=ID%20Lace"
-            className="home-card home-card--category"
-          >
-            <div className="home-card__media home-card__media--icon">
-              <span className="home-card__icon-circle">
-                <Package className="react-icon" aria-hidden="true" />
-              </span>
-            </div>
+            icon={Package}
+            name="ID laces & accessories"
+            desc="Official lanyards, card holders, and clips."
+            index={0}
+          />
 
-            <div className="home-card__body">
-              <h3 className="home-card__name">
-                ID laces &amp; accessories
-              </h3>
-              <p className="home-card__category">
-                Official lanyards, card holders, and clips.
-              </p>
-              <button
-                type="button"
-                className="home-card__cta"
-                tabIndex={-1}
-              >
-                Browse
-                <ArrowRight
-                  className="react-icon"
-                  aria-hidden="true"
-                />
-              </button>
-            </div>
-          </Link>
-
-          <Link
+          <CategoryCard
             to="/catalog?search=Organization"
-            className="home-card home-card--category"
-          >
-            <div className="home-card__media home-card__media--icon">
-              <span className="home-card__icon-circle">
-                <Shirt className="react-icon" aria-hidden="true" />
-              </span>
-            </div>
+            icon={Shirt}
+            name="Organization uniforms"
+            desc="Department polos and council apparel."
+            index={1}
+          />
 
-            <div className="home-card__body">
-              <h3 className="home-card__name">
-                Organization uniforms
-              </h3>
-              <p className="home-card__category">
-                Department polos and council apparel.
-              </p>
-              <button
-                type="button"
-                className="home-card__cta"
-                tabIndex={-1}
-              >
-                Browse
-                <ArrowRight
-                  className="react-icon"
-                  aria-hidden="true"
-                />
-              </button>
-            </div>
-          </Link>
-
-          <Link
+          <CategoryCard
             to="/catalog?search=Uniform"
-            className="home-card home-card--category"
-          >
-            <div className="home-card__media home-card__media--icon">
-              <span className="home-card__icon-circle">
-                <Shirt className="react-icon" aria-hidden="true" />
-              </span>
-            </div>
-
-            <div className="home-card__body">
-              <h3 className="home-card__name">
-                School &amp; PE uniforms
-              </h3>
-              <p className="home-card__category">
-                Campus uniforms, PE shirts, and joggers.
-              </p>
-              <button
-                type="button"
-                className="home-card__cta"
-                tabIndex={-1}
-              >
-                Browse
-                <ArrowRight
-                  className="react-icon"
-                  aria-hidden="true"
-                />
-              </button>
-            </div>
-          </Link>
+            icon={Shirt}
+            name="School & PE uniforms"
+            desc="Campus uniforms, PE shirts, and joggers."
+            index={2}
+          />
         </div>
       </section>
 
+      {/* BEST FINDS + VISIT */}
       <section
         className="page-shell home-section"
         aria-label="Best finds and store information"
       >
         <div className="home-highlights__grid">
-          <div className="home-highlights__panel">
-            <div className="home-section__header">
-              <div>
-                <p className="home-section__kicker">Popular right now</p>
-                <h2 className="home-section__title">
-                  Best finds right now
-                </h2>
-              </div>
-
-              <Link to="/catalog" className="home-section__link">
-                See more
-                <ArrowUpRight className="react-icon" aria-hidden="true" />
-              </Link>
-            </div>
-
-            {bestFinds.length > 0 ? (
-              <div className="home-cards home-cards--best">
-                {bestFinds.map((product) => (
-                  <Link
-                    key={product.id}
-                    to={`/products/${encodeURIComponent(product.id)}`}
-                    className="home-card"
-                  >
-                    <div className="home-card__media">
-                      <ProductImage
-                        product={product}
-                        className="home-card__image"
-                        width={240}
-                        height={300}
-                      />
-                    </div>
-
-                    <div className="home-card__body">
-                      {product.category && (
-                        <p className="home-card__category">
-                          {product.category}
-                        </p>
-                      )}
-                      <h3 className="home-card__name">
-                        {product.name}
-                      </h3>
-                      <p className="home-card__price">
-                        From {formatPrice(product.price)}
-                      </p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <p className="home-section__description">
-                No items to highlight yet.
-              </p>
-            )}
-          </div>
-
-          <div className="home-highlights__panel visit-panel">
-            <div className="home-section__header">
-              <div>
-                <p className="home-section__kicker">Visit us</p>
-                <h2 className="home-section__title">SJCM Supply Office</h2>
-              </div>
-            </div>
-
-            <ul className="visit-panel__list">
-              <li>
-                <span className="visit-panel__icon">
-                  <MapPin className="react-icon" aria-hidden="true" />
-                </span>
-                <span>
-                  Ground Floor, Main Building, SJCM Campus
-                </span>
-              </li>
-
-              <li>
-                <span className="visit-panel__icon">
-                  <Clock className="react-icon" aria-hidden="true" />
-                </span>
-                <span>Mon–Fri, 8:00 AM – 5:00 PM</span>
-              </li>
-
-              <li>
-                <span className="visit-panel__icon">
-                  <MessageCircle className="react-icon" aria-hidden="true" />
-                </span>
-                <span>
-                  Questions? Message the supply office page.
-                </span>
-              </li>
-            </ul>
-
-            <Link
-              to="/catalog"
-              className="button button--secondary button--block"
-            >
-              <Store className="react-icon" aria-hidden="true" />
-              <span>Browse catalog</span>
-            </Link>
-          </div>
+          <BestFindsPanel bestFinds={bestFinds} />
+          <VisitPanel />
         </div>
       </section>
     </>

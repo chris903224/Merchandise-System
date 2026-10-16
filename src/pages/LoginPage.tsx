@@ -9,7 +9,7 @@ import {
   Eye,
   EyeOff,
   LockKeyhole,
-  UserRound,
+  Mail,
   X,
 } from 'lucide-react';
 import AuthCard from '../components/auth/AuthCard';
@@ -29,8 +29,6 @@ import '../styles/auth.css';
 
 /* ✅ Password Strength Component — LAGING NAKALABAS */
 function PasswordStrength({ value }: { value: string }) {
-  /* ✅ Walang early return — para laging visible ang rules */
-
   return (
     <ul className="auth-password-rules">
       {PASSWORD_RULES.map((rule) => {
@@ -58,7 +56,7 @@ function PasswordStrength({ value }: { value: string }) {
 export default function LoginPage() {
   const navigate = useNavigate();
   const toast = useToast();
-  const { signIn } = useApp();
+  const { signIn, refreshOnboarding } = useApp();
 
   /* ============================================
      ✅ TOP HEADER FORM — INDEPENDENT STATE
@@ -77,7 +75,6 @@ export default function LoginPage() {
 
   /* ============================================
      ✅ SHARED RATE LIMIT
-     Parehong key para mag-share ng lock status
      ============================================ */
   const sharedRateLimitKey = headerIdentifier || loginIdentifier;
 
@@ -94,6 +91,9 @@ export default function LoginPage() {
 
   /* ============================================
      ✅ SHARED LOGIN HANDLER
+     ✅ Palaging → HomePage (/)
+     ✅ Ang WelcomeUniformModal na ang bahala mag-decide
+        kung lalabas ba (base sa DB record)
      ============================================ */
   const performLogin = async (
     identifier: string,
@@ -110,7 +110,6 @@ export default function LoginPage() {
       return;
     }
 
-    /* ✅ STRONG PASSWORD CHECK */
     if (!isStrongPassword(password)) {
       toast(
         'Password must start with uppercase letter, contain number and special character, and be at least 8 characters.',
@@ -126,6 +125,8 @@ export default function LoginPage() {
       const appRole = user.role === 'Staff' ? 'School Staff' : user.role;
 
       clear();
+
+      /* ✅ Sign in to app store */
       signIn({
         id: user.id,
         name: user.name,
@@ -134,7 +135,17 @@ export default function LoginPage() {
         idNumber: user.studentId ?? '',
         organization: 'SJCM General',
       });
+
+      /* ✅ Refresh onboarding status from Supabase */
+      await refreshOnboarding();
+
       toast(`Welcome back, ${user.name}.`, 'success');
+
+      /* ✅ Palaging redirect sa HOMEPAGE (/) */
+      /* ✅ WelcomeUniformModal ang mag-decide kung lalabas:
+         - Walang DB record → modal lalabas
+         - May DB record na (yes/no) → hindi lalabas
+      */
       navigate('/', { replace: true });
     } catch (error) {
       const newStatus = recordFailure();
@@ -189,7 +200,6 @@ export default function LoginPage() {
     <main className="auth-experience">
       <AuthBackground />
 
-      {/* ✅ INDEPENDENT HEADER STATE */}
       <AuthHeader
         identifier={headerIdentifier}
         password={headerPassword}
@@ -231,11 +241,11 @@ export default function LoginPage() {
             className="auth-form auth-form--login"
             onSubmit={(event) => void handleLoginSubmit(event)}
           >
-            {/* USERNAME */}
+            {/* EMAIL ADDRESS — ✅ Mail icon */}
             <div className="auth-field">
               <label htmlFor="login-username">Email Address</label>
               <div className="auth-input-wrap">
-                <UserRound className="react-icon" aria-hidden="true" />
+                <Mail className="react-icon" aria-hidden="true" />
                 <input
                   id="login-username"
                   className="auth-input"
@@ -250,10 +260,10 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* PASSWORD */}
+            {/* PASSWORD — ✅ Naka-wrap ang toggle sa loob */}
             <div className="auth-field">
               <label htmlFor="login-password">Password</label>
-              <div className="auth-input-wrap">
+              <div className="auth-input-wrap auth-input-wrap--has-toggle">
                 <LockKeyhole className="react-icon" aria-hidden="true" />
                 <input
                   id="login-password"
@@ -267,11 +277,13 @@ export default function LoginPage() {
                   onChange={(event) => setLoginPassword(event.target.value)}
                   disabled={isLocked}
                 />
+                {/* ✅ Toggle button — nasa loob ng wrap */}
                 <button
                   className="auth-password-toggle"
                   type="button"
                   onClick={() => setShowLoginPassword((v) => !v)}
                   aria-label={showLoginPassword ? 'Hide password' : 'Show password'}
+                  tabIndex={0}
                 >
                   {showLoginPassword ? (
                     <EyeOff className="react-icon" aria-hidden="true" />
@@ -281,7 +293,6 @@ export default function LoginPage() {
                 </button>
               </div>
 
-              {/* ✅ LAGING NAKALABAS — hindi na conditional */}
               <PasswordStrength value={loginPassword} />
             </div>
 
