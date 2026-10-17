@@ -1,0 +1,87 @@
+/* ============================================================
+   SAND — warm paper tones, gentle on the eyes
+   File: src/styles/admin/palettes/sand.css
+   ============================================================ */
+
+html[data-admin-palette="sand"] {
+  --pal-bg: #f5f0e6;
+  --pal-surface: #fffcf5;
+  --pal-surface-2: #f8f2e6;
+  --pal-hover: #f3ecdb;
+  --pal-hero-end: #3f5a36;
+
+  --admin-pine-900: #1f2a1b;
+  --admin-pine-800: #2a3825;
+  --admin-pine-700: #34452f;
+
+  --admin-brand-500: #4b8b5e;
+  --admin-brand-400: #5fa474;
+  --admin-brand-text: #2f6a45;
+  --admin-brand-100: #e5eedc;
+
+  --admin-cream-50: #f8f3e8;
+  --admin-cream-100: #f0e9d9;
+
+  --admin-ink-900: #2b2619;
+  --admin-ink-700: #4a4232;
+  --admin-ink-500: #6e644f;
+  --admin-ink-400: #7a705a;
+  --admin-ink-300: #b0a68f;
+
+  --admin-line: #e6dcc7;
+  --admin-line-soft: #efe7d5;
+}
+
+/* ---------- Sand + Claymorphism ---------- */
+html[data-admin-palette="sand"][data-admin-theme="clay"] {
+  --admin-line: transparent;
+  --admin-line-soft: rgba(120, 95, 50, 0.12);
+
+  --pal-bg: #ece3d2;
+  --pal-surface: #f6efe0;
+  --pal-surface-2: #e4d9c3;
+  --pal-hover: #f1e8d4;
+
+  --clay-bg: #ece3d2;
+  --clay-surface: #f6efe0;
+  --clay-surface-2: #e4d9c3;
+
+  --clay-shadow:
+    10px 12px 24px rgba(120, 95, 50, 0.3),
+    -8px -8px 18px rgba(255, 255, 255, 0.85),
+    inset -6px -6px 12px rgba(120, 95, 50, 0.13),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.75);
+  --clay-shadow-sm:
+    6px 8px 14px rgba(120, 95, 50, 0.26),
+    -5px -5px 12px rgba(255, 255, 255, 0.8),
+    inset -4px -4px 8px rgba(120, 95, 50, 0.15),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.7);
+  --clay-pressed:
+    inset 6px 6px 12px rgba(120, 95, 50, 0.28),
+    inset -5px -5px 10px rgba(255, 255, 255, 0.8);
+  --clay-dark:
+    10px 12px 26px rgba(31, 42, 27, 0.4),
+    inset -6px -6px 14px rgba(0, 0, 0, 0.26),
+    inset 6px 6px 14px rgba(255, 255, 255, 0.12);
+}
+
+/* ---------- Sand + Glassmorphism ---------- */
+html[data-admin-palette="sand"][data-admin-theme="glass"] {
+  --glass-bg: rgba(255, 251, 240, 0.45);
+  --glass-bg-strong: rgba(255, 251, 240, 0.7);
+  --glass-shadow:
+    0 8px 32px rgba(120, 95, 50, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+
+  --pal-surface: var(--glass-bg);
+  --pal-surface-2: rgba(255, 255, 255, 0.5);
+  --pal-hover: rgba(255, 255, 255, 0.7);
+}
+html[data-admin-palette="sand"] .admin-shell::before {
+  background:
+    radial-gradient(circle at 12% 18%, #ecd29a 0, transparent 42%),
+    radial-gradient(circle at 88% 12%, #bcd9ae 0, transparent 40%),
+    radial-gradient(circle at 75% 88%, #f0bfa6 0, transparent 42%),
+    radial-gradient(circle at 20% 90%, #d6e0a8 0, transparent 38%),
+    linear-gradient(135deg, #f6efde, #efe6d2);
+}

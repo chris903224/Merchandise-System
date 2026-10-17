@@ -7,6 +7,7 @@ import { AppProvider } from './store';
 import { ToastProvider } from './toast';
 import { ensureSeeded } from './data/seed';
 import { applyTheme, getStoredTheme } from './theme';
+<<<<<<< HEAD
 import ScrollToTop from './components/ScrollToTop';
 import { STORAGE_KEYS, readStorage } from './data/storage';
 import type { SessionUser } from './types';
@@ -32,6 +33,15 @@ function Root() {
   return <App />;
 }
 
+=======
+import { restoreAdminAppearance } from './lib/adminTheme';
+
+restoreAdminAppearance();
+/**
+ * Seeding is async because passwords are hashed with the Web Crypto API, so the
+ * app mounts only once localStorage holds a consistent data set.
+ */
+>>>>>>> a7179a9 ( admin side themes)
 async function bootstrap(): Promise<void> {
   await ensureSeeded();
   applyTheme(getStoredTheme());

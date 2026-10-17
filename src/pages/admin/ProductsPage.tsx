@@ -146,6 +146,93 @@ export default function ProductsPage() {
       </div>
 
       {/* Products grid */}
+      {/* ✅ Search Bar */}
+      <div className="admin-search-bar" style={{
+        position: 'relative',
+        marginTop: '12px',
+        marginBottom: '4px',
+        maxWidth: '400px',
+      }}>
+        <Search
+          className="react-icon"
+          style={{
+            position: 'absolute',
+            left: '12px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: '16px',
+            height: '16px',
+            color: 'var(--admin-ink-400)',
+            pointerEvents: 'none',
+          }}
+        />
+        <input
+          type="search"
+          placeholder="Search products..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '10px 36px 10px 38px',
+            border: '1px solid var(--admin-line)',
+            borderRadius: 'var(--admin-radius-sm)',
+            fontSize: '13px',
+            fontFamily: 'inherit',
+            background: '#292828',
+            color: 'var(--admin-ink-900)',
+            outline: 'none',
+            transition: 'border-color 0.15s ease',
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = 'var(--admin-brand-400)';
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = 'var(--admin-line)';
+          }}
+        />
+        {searchQuery && (
+          <button
+            type="button"
+            onClick={() => setSearchQuery('')}
+            style={{
+              position: 'absolute',
+              right: '8px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '4px',
+              color: 'var(--admin-ink-400)',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            aria-label="Clear search"
+          >
+            <X className="react-icon" style={{ width: '14px', height: '14px' }} />
+          </button>
+        )}
+      </div>
+
+      {/* ✅ Results summary */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '16px',
+        fontSize: '13px',
+        color: 'var(--admin-ink-500)',
+      }}>
+        <span>
+          {isLoading
+            ? 'Loading products…'
+            : filteredProducts.length === 0
+              ? 'No products found'
+              : `Showing ${rangeStart}–${rangeEnd} of ${filteredProducts.length} product${filteredProducts.length === 1 ? '' : 's'}`}
+        </span>
+      </div>
+
+      {/* ✅ Products grid */}
       <div className="admin-shop-grid">
         {isLoading ? (
           <p className="admin-empty">Loading products…</p>
