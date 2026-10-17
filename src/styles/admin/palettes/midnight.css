@@ -1,0 +1,109 @@
+/* ============================================================
+   MIDNIGHT — soft dark (deep green-charcoal, never pure black)
+   File: src/styles/admin/palettes/midnight.css
+   ============================================================ */
+
+html[data-admin-palette="midnight"] {
+  color-scheme: dark;
+
+  --pal-bg: #0e1512;
+  --pal-surface: #16201b;
+  --pal-surface-2: #1b2722;
+  --pal-hover: #1f2c26;
+  --pal-hero-end: #1b4a36;
+
+  --admin-pine-900: #070f0b;
+  --admin-pine-800: #0b1511;
+  --admin-pine-700: #12261c;
+
+  --admin-brand-500: #3bb27d;
+  --admin-brand-400: #4cc88f;
+  --admin-brand-text: #6fdcaa;
+  --admin-brand-100: #1c3a2d;
+
+  --admin-cream-50: #131c17;
+  --admin-cream-100: #1d2923;
+
+  --admin-ink-900: #e6eee9;
+  --admin-ink-700: #c5d2ca;
+  --admin-ink-500: #9fb0a5;
+  --admin-ink-400: #92a398;
+  --admin-ink-300: #62736a;
+
+  --admin-line: #26332c;
+  --admin-line-soft: #1f2a24;
+
+  --admin-danger: #f08a8a;   --admin-danger-bg: #3a1f1f;
+  --admin-success: #6fdcaa;  --admin-success-bg: #1c3a2d;
+  --admin-warning: #e8bd6a;  --admin-warning-bg: #3a2f17;
+  --admin-info: #8dbcf0;     --admin-info-bg: #1b2d44;
+}
+
+/* ---------- Midnight + Claymorphism ---------- */
+html[data-admin-palette="midnight"][data-admin-theme="clay"] {
+  --admin-line: transparent;
+  --admin-line-soft: rgba(255, 255, 255, 0.06);
+
+  --pal-bg: #121a16;
+  --pal-surface: #1a2520;
+  --pal-surface-2: #141d19;
+  --pal-hover: #202d27;
+
+  --clay-bg: #121a16;
+  --clay-surface: #1a2520;
+  --clay-surface-2: #141d19;
+
+  --clay-shadow:
+    10px 12px 24px rgba(0, 0, 0, 0.5),
+    -6px -6px 16px rgba(255, 255, 255, 0.04),
+    inset -6px -6px 12px rgba(0, 0, 0, 0.28),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.05);
+  --clay-shadow-sm:
+    6px 8px 14px rgba(0, 0, 0, 0.45),
+    -4px -4px 10px rgba(255, 255, 255, 0.04),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.26),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.05);
+  --clay-pressed:
+    inset 6px 6px 12px rgba(0, 0, 0, 0.5),
+    inset -5px -5px 10px rgba(255, 255, 255, 0.05);
+  --clay-dark:
+    10px 12px 26px rgba(0, 0, 0, 0.55),
+    inset -6px -6px 14px rgba(0, 0, 0, 0.35),
+    inset 6px 6px 14px rgba(255, 255, 255, 0.06);
+}
+
+/* ---------- Midnight + Glassmorphism ---------- */
+html[data-admin-palette="midnight"][data-admin-theme="glass"] {
+  --admin-line: rgba(255, 255, 255, 0.12);
+  --admin-line-soft: rgba(255, 255, 255, 0.08);
+
+  --glass-bg: rgba(28, 42, 36, 0.55);
+  --glass-bg-strong: rgba(24, 36, 31, 0.82);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.12);
+  --glass-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  --pal-surface: var(--glass-bg);
+  --pal-surface-2: rgba(255, 255, 255, 0.07);
+  --pal-hover: rgba(255, 255, 255, 0.1);
+}
+html[data-admin-palette="midnight"] .admin-shell::before {
+  background:
+    radial-gradient(circle at 12% 18%, #1f5a43 0, transparent 42%),
+    radial-gradient(circle at 88% 12%, #1c3f5c 0, transparent 40%),
+    radial-gradient(circle at 75% 88%, #3d3520 0, transparent 42%),
+    radial-gradient(circle at 20% 90%, #174a3a 0, transparent 38%),
+    linear-gradient(135deg, #0c1311, #101a1f);
+}
+html[data-admin-palette="midnight"][data-admin-theme="glass"] :is(
+  .admin-topbar, .admin-topbar__search input, .admin-topbar__user, .admin-topbar__kbd,
+  .admin-btn--ghost, .admin-chip, .admin-panel__select, .admin-status-menu__trigger,
+  .admin-field input, .admin-modal__field textarea
+) {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+html[data-admin-palette="midnight"][data-admin-theme="glass"] .admin-topbar__search input,
+html[data-admin-palette="midnight"][data-admin-theme="glass"] .admin-topbar__user {
+  background: rgba(255, 255, 255, 0.07);
+}

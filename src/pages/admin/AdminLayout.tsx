@@ -6,6 +6,10 @@ import { AdminSidebar, AdminTopbar, AdminToastStack } from '../../components/adm
 import { useAdminStore } from '../../store/adminStore';
 import { readAdminSession } from '../../services/admin';
 import '../../styles/admin/admin.css';
+import '../../styles/admin/palettes/base.css';
+import '../../styles/admin/palettes/midnight.css';
+import '../../styles/admin/palettes/sand.css';
+import '../../styles/admin/palettes/ocean.css';
 import '../../styles/admin/clay-theme.css';
 import '../../styles/admin/glass-theme.css';
 import { applyAdminTheme, getAdminTheme } from '../../lib/adminTheme';

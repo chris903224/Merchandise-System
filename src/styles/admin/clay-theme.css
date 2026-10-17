@@ -128,13 +128,14 @@
   box-shadow: var(--clay-shadow);
 }
 
-/* backgrounds (payment summary cards keep their own colour variants) */
+/* backgrounds */
 [data-admin-theme="clay"] .admin-stat,
 [data-admin-theme="clay"] .admin-panel,
 [data-admin-theme="clay"] .admin-product-card,
 [data-admin-theme="clay"] .admin-shop-card,
 [data-admin-theme="clay"] .admin-cart-summary__card,
 [data-admin-theme="clay"] .admin-cart-item,
+[data-admin-theme="clay"] .admin-payment-summary__card,
 [data-admin-theme="clay"] .admin-org-card,
 [data-admin-theme="clay"] .admin-console-card,
 [data-admin-theme="clay"] .admin-profile-card,

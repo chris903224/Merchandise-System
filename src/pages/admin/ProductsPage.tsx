@@ -307,7 +307,7 @@ export default function ProductsPage() {
             borderRadius: 'var(--admin-radius-sm)',
             fontSize: '13px',
             fontFamily: 'inherit',
-            background: '#fff',
+            background: '#292828',
             color: 'var(--admin-ink-900)',
             outline: 'none',
             transition: 'border-color 0.15s ease',
