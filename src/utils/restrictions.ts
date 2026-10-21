@@ -3,7 +3,7 @@
 export function canUserOrderProduct(
   userCourse: string | undefined | null,
   productOrganization: string | undefined | null,
-  productCategory?: string | undefined | null
+  _productCategory?: string | undefined | null // Added underscore to fix TS6133 error
 ): boolean {
   // Kung walang course (e.g., Admin), payagan muna.
   if (!userCourse || !productOrganization) return true;
