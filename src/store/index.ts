@@ -11,7 +11,6 @@ export interface Product {
   stock: number;
   sizes: string[];
   image: string;
-  /** Alt text including photographer attribution for the stock image. */
   imageAlt: string;
   description: string;
 }
@@ -59,7 +58,12 @@ export interface SessionUser {
   role: UserRole;
   organization: string;
   idNumber: string;
-  profilePicture?: string | null; // 👈 IDAGDAG ITO
+  profilePicture?: string | null;
+  
+  // ✅ IDAGDAG ITO PARA SA RESTRICTION
+  course?: string;
+  yearLevel?: string;
+  dateOfBirth?: string;
 }
 
 export interface UserRecord extends SessionUser {
@@ -67,10 +71,6 @@ export interface UserRecord extends SessionUser {
   userCode: string;
   passwordSalt: string;
   passwordHash: string;
-  /**
-   * @deprecated Legacy plaintext password from earlier builds. Records that
-   * still carry it are upgraded to salt + hash by `ensureSeeded()`.
-   */
   password?: string;
 }
 

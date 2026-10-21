@@ -27,7 +27,6 @@ import {
 } from '../components/auth/passwordRules';
 import '../styles/auth.css';
 
-/* ✅ Password Strength Component — LAGING NAKALABAS */
 function PasswordStrength({ value }: { value: string }) {
   return (
     <ul className="auth-password-rules">
@@ -58,24 +57,15 @@ export default function LoginPage() {
   const toast = useToast();
   const { signIn, refreshOnboarding } = useApp();
 
-  /* ============================================
-     ✅ TOP HEADER FORM — INDEPENDENT STATE
-     ============================================ */
   const [headerIdentifier, setHeaderIdentifier] = useState('');
   const [headerPassword, setHeaderPassword] = useState('');
   const [isHeaderSubmitting, setIsHeaderSubmitting] = useState(false);
 
-  /* ============================================
-     ✅ BOTTOM CARD FORM — INDEPENDENT STATE
-     ============================================ */
   const [loginIdentifier, setLoginIdentifier] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [isLoginSubmitting, setIsLoginSubmitting] = useState(false);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
 
-  /* ============================================
-     ✅ SHARED RATE LIMIT
-     ============================================ */
   const sharedRateLimitKey = headerIdentifier || loginIdentifier;
 
   const {
@@ -89,12 +79,6 @@ export default function LoginPage() {
     clear,
   } = useRateLimit(sharedRateLimitKey);
 
-  /* ============================================
-     ✅ SHARED LOGIN HANDLER
-     ✅ Palaging → HomePage (/)
-     ✅ Ang WelcomeUniformModal na ang bahala mag-decide
-        kung lalabas ba (base sa DB record)
-     ============================================ */
   const performLogin = async (
     identifier: string,
     password: string,
@@ -126,7 +110,7 @@ export default function LoginPage() {
 
       clear();
 
-      /* ✅ Sign in to app store */
+      /* ✅ IPASA LAHAT NG DATA SA SIGNIN */
       signIn({
         id: user.id,
         name: user.name,
@@ -134,18 +118,15 @@ export default function LoginPage() {
         role: appRole,
         idNumber: user.studentId ?? '',
         organization: 'SJCM General',
-      });
+        
+        // 👇 ITO YUNG KULANG KANINA 👇
+        course: user.course ?? '', 
+        yearLevel: user.yearLevel ?? '',
+        dateOfBirth: user.dateOfBirth ?? '',
+      } as any);
 
-      /* ✅ Refresh onboarding status from Supabase */
       await refreshOnboarding();
-
       toast(`Welcome back, ${user.name}.`, 'success');
-
-      /* ✅ Palaging redirect sa HOMEPAGE (/) */
-      /* ✅ WelcomeUniformModal ang mag-decide kung lalabas:
-         - Walang DB record → modal lalabas
-         - May DB record na (yes/no) → hindi lalabas
-      */
       navigate('/', { replace: true });
     } catch (error) {
       const newStatus = recordFailure();
@@ -169,7 +150,6 @@ export default function LoginPage() {
     }
   };
 
-  /* ✅ TOP HEADER SUBMIT */
   const handleHeaderSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await performLogin(
@@ -180,7 +160,6 @@ export default function LoginPage() {
     );
   };
 
-  /* ✅ BOTTOM CARD SUBMIT */
   const handleLoginSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await performLogin(
@@ -191,7 +170,6 @@ export default function LoginPage() {
     );
   };
 
-  /* ✅ Live validation */
   const loginPasswordValid = loginPassword
     ? isStrongPassword(loginPassword)
     : true;
@@ -241,7 +219,6 @@ export default function LoginPage() {
             className="auth-form auth-form--login"
             onSubmit={(event) => void handleLoginSubmit(event)}
           >
-            {/* EMAIL ADDRESS — ✅ Mail icon */}
             <div className="auth-field">
               <label htmlFor="login-username">Email Address</label>
               <div className="auth-input-wrap">
@@ -260,7 +237,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* PASSWORD — ✅ Naka-wrap ang toggle sa loob */}
             <div className="auth-field">
               <label htmlFor="login-password">Password</label>
               <div className="auth-input-wrap auth-input-wrap--has-toggle">
@@ -277,12 +253,13 @@ export default function LoginPage() {
                   onChange={(event) => setLoginPassword(event.target.value)}
                   disabled={isLocked}
                 />
-                {/* ✅ Toggle button — nasa loob ng wrap */}
                 <button
                   className="auth-password-toggle"
                   type="button"
                   onClick={() => setShowLoginPassword((v) => !v)}
-                  aria-label={showLoginPassword ? 'Hide password' : 'Show password'}
+                  aria-label={
+                    showLoginPassword ? 'Hide password' : 'Show password'
+                  }
                   tabIndex={0}
                 >
                   {showLoginPassword ? (
@@ -296,14 +273,12 @@ export default function LoginPage() {
               <PasswordStrength value={loginPassword} />
             </div>
 
-            {/* FORGOT PASSWORD */}
             <div className="auth-forgot-row">
               <Link to="/forgot-password" className="auth-forgot-link">
                 Forgot password?
               </Link>
             </div>
 
-            {/* SUBMIT */}
             <button
               className="auth-submit"
               type="submit"
