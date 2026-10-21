@@ -22,7 +22,7 @@ import { useFavoritesStore } from '../store/favoritesStore';
 import ProductImage from '../components/ProductImage';
 import { formatPrice, getStockBadge } from '../services';
 import { createNotification } from '../services/notifications';
-
+import { canUserOrderProduct } from '../utils/restrictions'; // ✅ IDAGDAG
 
 const DEFAULT_SIZES = ['S', 'M', 'L', 'XL', '2XL'];
 
@@ -105,6 +105,23 @@ export default function ProductPage() {
   const availableForUser = Math.max(0, selectedSizeStock - qtyInCartForSize);
   const isSizeOutOfStock = selectedSizeStock <= 0;
   const isAllInCart = selectedSizeStock > 0 && availableForUser === 0;
+
+  // ✅ COURSE RESTRICTION CHECK (Pinalakas base sa seed.ts)
+  const userCourse = (session as any)?.course || (session as any)?.course_strand || '';
+  const isAllowed = canUserOrderProduct(
+    userCourse,
+    product?.organization,
+    product?.category
+  );
+
+  /* ✅ DEBUG LOG (Tanggalin mo nalang pag okay na sa prod) */
+  useEffect(() => {
+    if (product) {
+      console.log('[Restriction Debug] User Course:', userCourse);
+      console.log('[Restriction Debug] Product Org:', product.organization);
+      console.log('[Restriction Debug] Is Allowed?:', isAllowed);
+    }
+  }, [userCourse, product, isAllowed]);
 
   useEffect(() => {
     if (qty > availableForUser && availableForUser > 0) {
@@ -203,6 +220,15 @@ export default function ProductPage() {
 
   /* ✅ Add to cart */
   const handleAddToCart = () => {
+    // ✅ I-BLOCK KUNG RESTRICTED
+    if (!isAllowed) {
+      toast(
+        `Restricted: As a ${userCourse || 'student'}, you cannot order ${product.organization} merchandise.`,
+        'danger'
+      );
+      return;
+    }
+
     if (isSizeOutOfStock) {
       toast(`Size ${selectedSize} is out of stock.`, 'warning');
       return;
@@ -282,6 +308,22 @@ export default function ProductPage() {
           <ChevronRight className="react-icon" aria-hidden="true" />
           <span className="product-breadcrumb__current">{product.name}</span>
         </nav>
+
+        {/* ✅ RESTRICTION BANNER (kung bawal) */}
+        {!isAllowed && (
+          <div className="product-restriction-banner">
+            <Lock className="react-icon" aria-hidden="true" />
+            <div>
+              <strong>Restricted Item</strong>
+              <p>
+                As a <strong>{userCourse || 'student'}</strong>, you can only
+                order merchandise from your own course organization. This item
+                belongs to <strong>{product.organization}</strong>, which is
+                not available for your course.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* MAIN LAYOUT — gallery (left) + info panel (right) */}
         <div className="product-layout">
@@ -434,7 +476,7 @@ export default function ProductPage() {
                             isSelected ? 'is-selected' : ''
                           } ${isOut ? 'is-out' : ''}`}
                           onClick={() => !isOut && setSelectedSize(size)}
-                          disabled={isOut}
+                          disabled={isOut || !isAllowed}
                           title={
                             isOut
                               ? `${size} — Out of stock`
@@ -458,7 +500,7 @@ export default function ProductPage() {
                       type="button"
                       className="product-qty__btn"
                       onClick={() => setQty(Math.max(1, qty - 1))}
-                      disabled={qty <= 1}
+                      disabled={qty <= 1 || !isAllowed}
                       aria-label="Decrease quantity"
                     >
                       <Minus className="react-icon" aria-hidden="true" />
@@ -470,7 +512,7 @@ export default function ProductPage() {
                       onClick={() =>
                         setQty(Math.min(availableForUser, qty + 1))
                       }
-                      disabled={qty >= availableForUser || isSizeOutOfStock}
+                      disabled={qty >= availableForUser || isSizeOutOfStock || !isAllowed}
                       aria-label="Increase quantity"
                     >
                       <Plus className="react-icon" aria-hidden="true" />
@@ -510,19 +552,27 @@ export default function ProductPage() {
               {/* CTA */}
               <button
                 type="button"
-                className="product-panel__cta"
+                className={`product-panel__cta ${!isAllowed ? 'product-panel__cta--restricted' : ''}`}
                 onClick={handleAddToCart}
-                disabled={isSizeOutOfStock || availableForUser <= 0}
+                disabled={isSizeOutOfStock || availableForUser <= 0 || !isAllowed}
               >
-                <ShoppingCart className="react-icon" aria-hidden="true" />
+                {!isAllowed ? (
+                  <Lock className="react-icon" aria-hidden="true" />
+                ) : (
+                  <ShoppingCart className="react-icon" aria-hidden="true" />
+                )}
                 <span>
-                  {isSizeOutOfStock
+                  {!isAllowed
+                    ? 'Restricted for Your Course'
+                    : isSizeOutOfStock
                     ? 'Out of Stock'
                     : isAllInCart
                     ? 'Max Quantity in Cart'
                     : 'Add to cart'}
                 </span>
-                <ArrowRight className="react-icon" aria-hidden="true" />
+                {isAllowed && (
+                  <ArrowRight className="react-icon" aria-hidden="true" />
+                )}
               </button>
             </div>
           </div>

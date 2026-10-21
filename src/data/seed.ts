@@ -636,7 +636,7 @@ async function migrateLegacyPasswords(): Promise<void> {
         passwordHash: await hashPassword(password, passwordSalt),
       } satisfies UserRecord;
     })
-  );
+  );  
 
   if (migratedAny) {
     writeStorage(STORAGE_KEYS.users, upgraded);

@@ -136,7 +136,8 @@ function isValidPhone(phone: string): boolean {
 }
 
 export default function SettingsPage() {
-  const { session, updateProfilePicture } = useApp();
+  // ✅ IDINAGDAG ANG signIn PARA MA-UPDATE ANG SESSION
+  const { session, updateProfilePicture, signIn } = useApp();
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -322,6 +323,7 @@ export default function SettingsPage() {
     setPhone(formatPhoneNumber(value));
   };
 
+  // ✅ INUPDATE PARA MAG-REFRESH ANG SESSION KAPAG MAY BAGONG COURSE
   const handleSaveAccount = async () => {
     if (phone && !isValidPhone(phone)) {
       toast(
@@ -333,12 +335,23 @@ export default function SettingsPage() {
 
     setIsSavingAccount(true);
     try {
+      // 1. Update Database
       await updateUserProfile(session.id, {
         course_strand: courseStrand || null,
         year_level: yearLevel || null,
         date_of_birth: dob || null,
         phone: phone ? phone.replace(/\D/g, '') : null,
       });
+
+      // 2. Update Local Session (Para mag-render agad sa Catalog/Product Pages)
+      signIn({
+        ...session,
+        course: courseStrand,
+        yearLevel: yearLevel,
+        dateOfBirth: dob,
+        phone: phone ? phone.replace(/\D/g, '') : null, // Optional: i-save din sa session
+      } as any);
+
       toast('Account details saved!', 'success');
     } catch (error) {
       console.error('[Settings] Failed to save account:', error);
@@ -602,7 +615,7 @@ export default function SettingsPage() {
 </div>
 
                       <div className="settings-fields">
-                        {/* ✅ FULL NAME — with User icon */}
+                        {/* ✅ FULL NAME */}
                         <div className="settings-field">
                           <label className="settings-field__label">
                             <span>Full Name</span>
@@ -628,7 +641,7 @@ export default function SettingsPage() {
                           </div>
                         </div>
 
-                        {/* ✅ STUDENT ID — with Hash icon */}
+                        {/* ✅ STUDENT ID */}
                         <div className="settings-field">
                           <label className="settings-field__label">
                             <span>Student ID</span>
@@ -654,7 +667,7 @@ export default function SettingsPage() {
                           </div>
                         </div>
 
-                        {/* ✅ COURSE / STRAND — with BookOpen icon */}
+                        {/* ✅ COURSE / STRAND */}
                         <div className="settings-field">
                           <label className="settings-field__label">
                             <span>Course / Strand</span>
@@ -680,7 +693,7 @@ export default function SettingsPage() {
                           </div>
                         </div>
 
-                        {/* ✅ YEAR LEVEL — with GraduationCap icon */}
+                        {/* ✅ YEAR LEVEL */}
                         <div className="settings-field">
                           <label className="settings-field__label">
                             <span>Year Level</span>
@@ -706,7 +719,7 @@ export default function SettingsPage() {
                           </div>
                         </div>
 
-                        {/* ✅ DATE OF BIRTH — with Calendar icon */}
+                        {/* ✅ DATE OF BIRTH */}
                         <div className="settings-field">
                           <label className="settings-field__label">
                             <span>Date of Birth</span>
@@ -726,7 +739,7 @@ export default function SettingsPage() {
                           </div>
                         </div>
 
-                        {/* ✅ CONTACT NUMBER — with Phone icon */}
+                        {/* ✅ CONTACT NUMBER */}
                         <div className="settings-field">
                           <label className="settings-field__label">
                             <span>Contact Number</span>
@@ -771,7 +784,7 @@ export default function SettingsPage() {
                           )}
                         </div>
 
-                        {/* ✅ EMAIL — with Mail icon */}
+                        {/* ✅ EMAIL */}
                         <div className="settings-field">
                           <label className="settings-field__label">
                             <span>Email Address</span>
