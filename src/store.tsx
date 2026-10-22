@@ -17,9 +17,17 @@ import {
   placeOrder as placeOrderService,
   fetchAllOrders,
   updateOrderStatus as updateOrderStatusService,
+  updatePaymentStatus as updatePaymentStatusService,
+  refreshOrders as refreshOrdersService, // ✅ Imported
 } from './services/orders';
-import { createUserNotification } from './services/userNotifications';   // ✅ PALITAN
+import { createUserNotification } from './services/userNotifications';
 import { invalidateCache } from './utils/cache';
+import {
+  getOnboardingStatus,
+  saveOnboardingResponse,
+  type UniformResponse,
+  type OnboardingRecord,
+} from './services/onboarding';
 
 /* ============================================
    TYPES
@@ -30,6 +38,7 @@ interface AppState {
   cart: CartItem[];
   products: Product[];
   orders: Order[];
+  onboarding: OnboardingRecord | null;
 }
 
 interface AppContextValue extends AppState {
@@ -38,12 +47,17 @@ interface AppContextValue extends AppState {
   setCart: (items: CartItem[]) => void;
   setProductStock: (productId: string, stock: number) => Promise<void>;
   setOrderStatus: (orderId: string, orderStatus: string) => Promise<void>;
+  setOrderPaymentStatus: (orderId: string, paymentStatus: string) => Promise<void>;
   placeOrder: (order: Order) => Promise<void>;
   addProduct: (product: Product) => Promise<void>;
   updateProduct: (product: Product) => Promise<void>;
   deleteProduct: (productId: string) => Promise<void>;
   updateProfilePicture: (imageUrl: string | null) => void;
   refreshProducts: () => Promise<void>;
+  
+  // ✅ IDINAGDAG: refreshOrders
+  refreshOrders: () => Promise<void>;
+
   isLoading: boolean;
 
   /* ✅ GLOBAL LOGIN LOCK (rate-limit) */
@@ -51,6 +65,12 @@ interface AppContextValue extends AppState {
   isLoginLocked: boolean;
   lockLogin: (seconds: number) => void;
   unlockLogin: () => void;
+
+  /* ✅ ONBOARDING */
+  onboarding: OnboardingRecord | null;
+  isLoadingOnboarding: boolean;
+  refreshOnboarding: () => Promise<void>;
+  saveOnboarding: (response: UniformResponse) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -65,10 +85,15 @@ function readLoginLock(): number | null {
   return null;
 }
 
+/* ============================================
+   ✅ CART INITIAL LOAD — session-aware
+============================================ */
 function readClientState(): Pick<AppState, 'session' | 'cart'> {
+  const session = readStorage<SessionUser | null>(STORAGE_KEYS.session, null);
+
   return {
-    session: readStorage<SessionUser | null>(STORAGE_KEYS.session, null),
-    cart: readStorage<CartItem[]>(STORAGE_KEYS.cart, []),
+    session,
+    cart: session ? readStorage<CartItem[]>(STORAGE_KEYS.cart, []) : [],
   };
 }
 
@@ -86,6 +111,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  /* ✅ ONBOARDING STATE */
+  const [onboarding, setOnboarding] = useState<OnboardingRecord | null>(null);
+  const [isLoadingOnboarding, setIsLoadingOnboarding] = useState(false);
 
   /* ✅ GLOBAL LOGIN LOCK state — persistent via localStorage */
   const [loginLockUntil, setLoginLockUntil] = useState<number | null>(
@@ -131,6 +160,61 @@ export function AppProvider({ children }: { children: ReactNode }) {
     loginLockUntil !== null && Date.now() < loginLockUntil;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   void lockTick;
+
+  /* ============================================
+     ✅ ONBOARDING — load status when session changes
+     ============================================ */
+  useEffect(() => {
+    const loadOnboardingStatus = async () => {
+      if (!session?.id) {
+        setOnboarding(null);
+        return;
+      }
+
+      setIsLoadingOnboarding(true);
+      try {
+        const status = await getOnboardingStatus(session.id);
+        setOnboarding(status);
+      } catch (error) {
+        console.warn('[Store] Failed to load onboarding:', error);
+      } finally {
+        setIsLoadingOnboarding(false);
+      }
+    };
+
+    void loadOnboardingStatus();
+  }, [session?.id]);
+
+  /* ✅ Manual refresh */
+  const refreshOnboarding = useCallback(async () => {
+    if (!session?.id) {
+      setOnboarding(null);
+      return;
+    }
+
+    setIsLoadingOnboarding(true);
+    try {
+      const status = await getOnboardingStatus(session.id);
+      setOnboarding(status);
+    } catch (error) {
+      console.warn('[Store] Failed to refresh onboarding:', error);
+    } finally {
+      setIsLoadingOnboarding(false);
+    }
+  }, [session?.id]);
+
+  /* ✅ Save onboarding response to Supabase */
+  const saveOnboarding = useCallback(
+    async (response: UniformResponse) => {
+      if (!session?.id) {
+        throw new Error('No session — cannot save onboarding');
+      }
+
+      const saved = await saveOnboardingResponse(session.id, response);
+      setOnboarding(saved);
+    },
+    [session?.id]
+  );
 
   /* ============================================
      INITIAL LOAD
@@ -214,7 +298,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       )
       .subscribe();
 
-    /* ---------- USER NOTIFICATIONS (bagong channel) ---------- */
+    /* ---------- USER NOTIFICATIONS ---------- */
     const userNotificationsChannel = supabase
       .channel('user-notifications-realtime')
       .on(
@@ -281,16 +365,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   /* ============================================
-     SESSION
+     ✅ SESSION — with cart restore
      ============================================ */
   const signIn = useCallback((user: SessionUser) => {
     writeStorage(STORAGE_KEYS.session, user);
     setSession(user);
+
+    const savedCart = readStorage<CartItem[]>(STORAGE_KEYS.cart, []);
+    if (savedCart.length > 0) {
+      setCartState(savedCart);
+    }
   }, []);
 
   const signOut = useCallback(() => {
     localStorage.removeItem(STORAGE_KEYS.session);
+    localStorage.removeItem(STORAGE_KEYS.cart);
+
     setSession(null);
+    setCartState([]);
+    setOnboarding(null);
   }, []);
 
   const updateProfilePicture = useCallback((imageUrl: string | null) => {
@@ -303,12 +396,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   /* ============================================
-     CART
+     ✅ CART — save only if logged in
      ============================================ */
-  const setCart = useCallback((items: CartItem[]) => {
-    writeStorage(STORAGE_KEYS.cart, items);
-    setCartState(items);
-  }, []);
+  const setCart = useCallback(
+    (items: CartItem[]) => {
+      if (session) {
+        writeStorage(STORAGE_KEYS.cart, items);
+      }
+      setCartState(items);
+    },
+    [session]
+  );
 
   /* ============================================
      PRODUCTS CRUD
@@ -343,6 +441,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         price: product.price,
         stock: product.stock,
         sizes: product.sizes,
+        size_stocks: product.sizeStocks ?? {},
         image: product.image,
         image_alt: product.imageAlt,
         description: product.description,
@@ -366,6 +465,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         price: product.price,
         stock: product.stock,
         sizes: product.sizes,
+        size_stocks: product.sizeStocks ?? {}, // ✅ IDINAGDAG ITO
         image: product.image,
         image_alt: product.imageAlt,
         description: product.description,
@@ -382,7 +482,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   /* ============================================
-     ORDERS
+     ORDERS — status updates fire student notifs
      ============================================ */
   const setOrderStatus = useCallback(
     async (orderId: string, orderStatus: string) => {
@@ -436,7 +536,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
         const statusInfo = statusMessages[orderStatus];
         if (statusInfo) {
-          // ✅ GAMITIN ang createUserNotification para sa user_notifications
           try {
             await createUserNotification(order.userId, {
               type: statusInfo.type,
@@ -460,45 +559,84 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [orders]
   );
 
-  const placeOrder = useCallback(async (order: Order) => {
-    setOrders((prev) => [order, ...prev]);
-    setProducts((prev) =>
-      prev.map((product) => {
-        const reserved = order.items
-          .filter((item) => item.id === product.id)
-          .reduce((total, item) => total + (Number(item.qty) || 0), 0);
-        return reserved > 0
-          ? { ...product, stock: Math.max(0, product.stock - reserved) }
-          : product;
-      })
-    );
-    setCartState([]);
-    writeStorage(STORAGE_KEYS.cart, []);
+  const setOrderPaymentStatus = useCallback(
+    async (orderId: string, paymentStatus: string) => {
+      setOrders((prev) =>
+        prev.map((o) => (o.id === orderId ? { ...o, paymentStatus } : o))
+      );
 
-    await placeOrderService(order);
+      await updatePaymentStatusService(orderId, paymentStatus);
 
-    // ✅ GAMITIN ang createUserNotification para sa user_notifications
-    try {
-      await createUserNotification(order.userId, {
-        type: 'order',
-        title: 'Order Confirmed ✅',
-        message: `Your order #${order.id} has been successfully placed! Total: ₱${order.totalAmount.toFixed(2)}.`,
-        link: `/orders/${order.id}`,
-        actionLabel: 'View Order',
-        metadata: { orderId: order.id, totalAmount: order.totalAmount },
-      });
-      console.log('[Store] ✅ Order notification created:', order.id);
-    } catch (err) {
-      console.error('[Store] ❌ Notification failed:', err);
-    }
-  }, []);
+      const order = orders.find((o) => o.id === orderId);
+      if (order && paymentStatus === 'Paid') {
+        try {
+          await createUserNotification(order.userId, {
+            type: 'order',
+            title: 'Payment Received ✅',
+            message: `Payment for order #${orderId} has been confirmed. Total: ₱${order.totalAmount.toFixed(2)}.`,
+            link: `/orders/${orderId}`,
+            actionLabel: 'View Order',
+            metadata: { orderId, paymentStatus },
+          });
+          console.log('[Store] ✅ Payment notification created:', orderId);
+        } catch (err) {
+          console.error('[Store] ❌ Payment notification failed:', err);
+        }
+      }
+    },
+    [orders]
+  );
+
+  const placeOrder = useCallback(
+    async (order: Order) => {
+      setOrders((prev) => [order, ...prev]);
+      setProducts((prev) =>
+        prev.map((product) => {
+          const reserved = order.items
+            .filter((item) => item.id === product.id)
+            .reduce((total, item) => total + (Number(item.qty) || 0), 0);
+          return reserved > 0
+            ? { ...product, stock: Math.max(0, product.stock - reserved) }
+            : product;
+        })
+      );
+
+      if (session) {
+        writeStorage(STORAGE_KEYS.cart, []);
+      }
+      setCartState([]);
+
+      await placeOrderService(order);
+
+      try {
+        await createUserNotification(order.userId, {
+          type: 'order',
+          title: 'Order Confirmed ✅',
+          message: `Your order #${order.id} has been successfully placed! Total: ₱${order.totalAmount.toFixed(2)}.`,
+          link: `/orders/${order.id}`,
+          actionLabel: 'View Order',
+          metadata: { orderId: order.id, totalAmount: order.totalAmount },
+        });
+        console.log('[Store] ✅ Order notification created:', order.id);
+      } catch (err) {
+        console.error('[Store] ❌ Notification failed:', err);
+      }
+    },
+    [session]
+  );
 
   /* ============================================
-     REFRESH PRODUCTS
+     REFRESH DATA
      ============================================ */
   const refreshProductsData = useCallback(async () => {
     const data = await refreshProductsService();
     setProducts(data);
+  }, []);
+
+  // ✅ IDINAGDAG: refreshOrders function
+  const refreshOrdersData = useCallback(async () => {
+    const data = await refreshOrdersService();
+    setOrders(data);
   }, []);
 
   /* ============================================
@@ -516,17 +654,24 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setCart,
       setProductStock,
       setOrderStatus,
+      setOrderPaymentStatus,
       placeOrder,
       addProduct,
       updateProduct,
       deleteProduct,
       updateProfilePicture,
       refreshProducts: refreshProductsData,
+      refreshOrders: refreshOrdersData, // ✅ Exposed sa context
 
       loginLockUntil,
       isLoginLocked,
       lockLogin,
       unlockLogin,
+
+      onboarding,
+      isLoadingOnboarding,
+      refreshOnboarding,
+      saveOnboarding,
     }),
     [
       session,
@@ -539,17 +684,24 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setCart,
       setProductStock,
       setOrderStatus,
+      setOrderPaymentStatus,
       placeOrder,
       addProduct,
       updateProduct,
       deleteProduct,
       updateProfilePicture,
       refreshProductsData,
+      refreshOrdersData,
 
       loginLockUntil,
       isLoginLocked,
       lockLogin,
       unlockLogin,
+
+      onboarding,
+      isLoadingOnboarding,
+      refreshOnboarding,
+      saveOnboarding,
     ]
   );
 
@@ -558,7 +710,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
 /* ============================================
    HOOKS
-============================================ */
+   ============================================ */
 
 export function useApp(): AppContextValue {
   const context = useContext(AppContext);
@@ -578,7 +730,7 @@ export function useOrders(): Order[] {
 
 /* ============================================
    MAPPERS
-============================================ */
+   ============================================ */
 
 function mapProductRow(row: any): Product {
   return {

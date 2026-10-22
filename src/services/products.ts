@@ -21,19 +21,7 @@ export async function fetchProducts(): Promise<Product[]> {
         return [];
       }
 
-      return (data ?? []).map((row) => ({
-        id: row.id,
-        name: row.name,
-        category: row.category,
-        organization: row.organization,
-        price: Number(row.price),
-        stock: row.stock,
-        sizes: row.sizes ?? [],
-        sizeStocks: row.size_stocks ?? {},
-        image: row.image,
-        imageAlt: row.image_alt ?? '',
-        description: row.description ?? '',
-      }));
+      return (data ?? []).map(mapProductRow);
     },
     5 * 60 * 1000 // 5 minutes
   );
@@ -55,26 +43,64 @@ export async function refreshProducts(): Promise<Product[]> {
     return [];
   }
 
-  const products = (data ?? []).map((row) => ({
-    id: row.id,
-    name: row.name,
-    category: row.category,
-    organization: row.organization,
-    price: Number(row.price),
-    stock: row.stock,
-    sizes: row.sizes ?? [],
-    sizeStocks: row.size_stocks ?? {},
-    image: row.image,
-    imageAlt: row.image_alt ?? '',
-    description: row.description ?? '',
-  }));
+  const products = (data ?? []).map(mapProductRow);
 
   setCache('products', products, 5 * 60 * 1000);
   return products;
 }
 
 /**
+ * ✅ Fetch single product by ID
+ * (Para sa ProductDetailsPage)
+ */
+export async function fetchProductById(productId: string): Promise<Product | null> {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('id', productId)
+    .maybeSingle();
+
+  if (error) {
+    console.error('[Products] Failed to fetch single:', error);
+    return null;
+  }
+
+  return data ? mapProductRow(data) : null;
+}
+
+/**
+ * ✅ Create a new product
+ * (Para sa AddProductForm)
+ */
+export async function createProductInDb(product: Product): Promise<void> {
+  const { error } = await supabase.from('products').insert([
+    {
+      id: product.id,
+      name: product.name,
+      category: product.category,
+      organization: product.organization,
+      price: product.price,
+      stock: product.stock,
+      sizes: product.sizes,
+      size_stocks: product.sizeStocks ?? {},
+      image: product.image,
+      image_alt: product.imageAlt,
+      description: product.description,
+    },
+  ]);
+
+  if (error) {
+    console.error('[Products] Failed to create:', error);
+    throw new Error(error.message);
+  }
+
+  // ✅ Invalidate cache
+  invalidateCache('products');
+}
+
+/**
  * Update product — invalidate cache
+ * ✅ KASAMA NA ANG size_stocks
  */
 export async function updateProductInDb(product: Product): Promise<void> {
   const { error } = await supabase
@@ -86,6 +112,7 @@ export async function updateProductInDb(product: Product): Promise<void> {
       price: product.price,
       stock: product.stock,
       sizes: product.sizes,
+      size_stocks: product.sizeStocks ?? {}, // 👈 IDINAGDAG ITO
       image: product.image,
       image_alt: product.imageAlt,
       description: product.description,
@@ -116,4 +143,23 @@ export async function deleteProductFromDb(productId: string): Promise<void> {
   }
 
   invalidateCache('products');
+}
+
+/* ============================================
+   ✅ MAPPER — reusable
+============================================ */
+function mapProductRow(row: any): Product {
+  return {
+    id: row.id,
+    name: row.name,
+    category: row.category,
+    organization: row.organization,
+    price: Number(row.price),
+    stock: Number(row.stock) ?? 0,
+    sizes: row.sizes ?? [],
+    sizeStocks: row.size_stocks ?? {},
+    image: row.image ?? '',
+    imageAlt: row.image_alt ?? '',
+    description: row.description ?? '',
+  };
 }

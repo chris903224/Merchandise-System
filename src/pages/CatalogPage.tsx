@@ -16,16 +16,18 @@ import {
   ChevronRight,
   SlidersHorizontal,
   X,
+  Lock,
 } from 'lucide-react';
 import { useProducts, useApp } from '../store';
 import { useToast } from '../toast';
 import { useNotificationStore } from '../store/notificationStore';
-import { useFavoritesStore } from '../store/favoritesStore'; // ✅ BAGO
+import { useFavoritesStore } from '../store/favoritesStore';
 import ProductImage from '../components/ProductImage';
 import MobileFilterDrawer from '../components/catalog/MobileFilterDrawer';
 import MobileProductCard from '../components/catalog/MobileProductCard';
 import { formatPrice, getStockBadge } from '../services';
 import { createNotification } from '../services/notifications';
+import { canUserOrderProduct } from '../utils/restrictions';
 import type { Product } from '../types';
 
 type StockFilter = 'ALL' | 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK';
@@ -70,14 +72,12 @@ export default function CatalogPage() {
   const loadFavorites = useFavoritesStore((s) => s.loadFavorites);
   const toggleFavorite = useFavoritesStore((s) => s.toggleFavorite);
 
-  // ✅ I-load ang favorites pagka-mount
   useEffect(() => {
     if (session?.id) {
       void loadFavorites(session.id);
     }
   }, [session?.id, loadFavorites]);
 
-  // ✅ I-clear ang favorites kapag nag-logout
   useEffect(() => {
     if (!session?.id) {
       useFavoritesStore.getState().clearFavorites();
@@ -676,6 +676,25 @@ function ProductCard({
   const badge = getStockBadge(product.stock);
   const isOutOfStock = (Number(product.stock) || 0) <= 0;
 
+  // ✅ COURSE RESTRICTION CHECK (Base sa course, org, at category)
+  const userCourse = (session as any)?.course || '';
+  const isAllowed = canUserOrderProduct(
+    userCourse,
+    product.organization,
+    product.category
+  );
+
+  const handleCardClick = () => {
+    if (!isAllowed) {
+      toast(
+        `Restricted: As a ${userCourse || 'student'}, you can't order ${product.organization} items.`,
+        'warning'
+      );
+      return;
+    }
+    onSelectProduct(product);
+  };
+
   const handleToggleFavorite = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -738,16 +757,20 @@ function ProductCard({
   };
 
   return (
-    <article className="catalog-card">
+    <article
+      className={`catalog-card ${
+        !isAllowed ? 'catalog-card--restricted' : ''
+      }`}
+    >
       <div
         className="catalog-card__media"
         role="button"
         tabIndex={0}
-        onClick={() => onSelectProduct(product)}
+        onClick={handleCardClick}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            onSelectProduct(product);
+            handleCardClick();
           }
         }}
         aria-label={`View ${product.name}`}
@@ -765,9 +788,7 @@ function ProductCard({
         <button
           type="button"
           className={`catalog-card__wish ${isFav ? 'is-active' : ''}`}
-          aria-label={
-            isFav ? 'Remove from favorites' : 'Add to favorites'
-          }
+          aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
           onClick={handleToggleFavorite}
           disabled={isToggling}
         >
@@ -777,6 +798,13 @@ function ProductCard({
             aria-hidden="true"
           />
         </button>
+
+        {/* ✅ RESTRICTED BADGE OVERLAY */}
+        {!isAllowed && (
+          <div className="catalog-card__restricted-overlay">
+            <span>🔒 Restricted for your course</span>
+          </div>
+        )}
       </div>
 
       <div className="catalog-card__body">
@@ -784,18 +812,28 @@ function ProductCard({
           {product.name}
         </p>
         <p className="catalog-card__category">{product.category}</p>
-        <p className="catalog-card__price">
-          {formatPrice(product.price)}
-        </p>
+        <p className="catalog-card__price">{formatPrice(product.price)}</p>
 
         <button
           type="button"
-          className="catalog-card__cta"
-          onClick={() => onSelectProduct(product)}
-          disabled={isOutOfStock}
+          className={`catalog-card__cta ${
+            !isAllowed ? 'catalog-card__cta--restricted' : ''
+          }`}
+          onClick={handleCardClick}
+          disabled={isOutOfStock || !isAllowed}
         >
-          <ShoppingCart className="react-icon" aria-hidden="true" />
-          <span>{isOutOfStock ? 'Out of Stock' : 'Select Options'}</span>
+          {!isAllowed ? (
+            <Lock className="react-icon" aria-hidden="true" />
+          ) : (
+            <ShoppingCart className="react-icon" aria-hidden="true" />
+          )}
+          <span>
+            {isOutOfStock
+              ? 'Out of Stock'
+              : !isAllowed
+              ? 'Not Allowed for Your Course'
+              : 'Select Options'}
+          </span>
         </button>
       </div>
     </article>

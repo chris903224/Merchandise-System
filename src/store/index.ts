@@ -11,9 +11,11 @@ export interface Product {
   stock: number;
   sizes: string[];
   image: string;
-  /** Alt text including photographer attribution for the stock image. */
   imageAlt: string;
   description: string;
+  
+  // ✅ IDINAGDAG: Per-size stock tracking
+  sizeStocks?: Record<string, number>;
 }
 
 export interface CartItem {
@@ -32,6 +34,10 @@ export interface OrderItem {
   price: number;
   qty: number;
   size: string;
+  
+  // ✅ Optional fields para sa compatibility
+  image?: string;
+  category?: string;
 }
 
 export interface Order {
@@ -50,6 +56,10 @@ export interface Order {
   claimLocation: string;
   claimDate: string;
   createdAt: string;
+  
+  // ✅ Optional fields na ginagamit ng organization dashboard
+  cancellationReason?: string;
+  cancelledAt?: string;
 }
 
 export interface SessionUser {
@@ -59,7 +69,12 @@ export interface SessionUser {
   role: UserRole;
   organization: string;
   idNumber: string;
-  profilePicture?: string | null; // 👈 IDAGDAG ITO
+  profilePicture?: string | null;
+  
+  // ✅ IDAGDAG ITO PARA SA RESTRICTION
+  course?: string;
+  yearLevel?: string;
+  dateOfBirth?: string;
 }
 
 export interface UserRecord extends SessionUser {
@@ -67,10 +82,6 @@ export interface UserRecord extends SessionUser {
   userCode: string;
   passwordSalt: string;
   passwordHash: string;
-  /**
-   * @deprecated Legacy plaintext password from earlier builds. Records that
-   * still carry it are upgraded to salt + hash by `ensureSeeded()`.
-   */
   password?: string;
 }
 

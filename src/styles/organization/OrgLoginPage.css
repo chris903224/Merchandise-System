@@ -1,0 +1,273 @@
+/* src/styles/organization/OrgLoginPage.css */
+
+/* ✅ WRAPPER PARA HINDI MAKAGULO SA GLOBAL CSS */
+.org-login-wrapper {
+  --s1: 8px; --s2: 16px; --s3: 24px; --s4: 32px; --s5: 40px; --s6: 48px; --s8: 64px; --s10: 80px;
+  --fs-display: 40px; --lh-display: 48px; --fs-title: 32px; --lh-title: 40px;
+  --fs-body: 16px; --lh-body: 24px; --fs-small: 14px; --lh-small: 24px; --fs-micro: 12px; --lh-micro: 16px;
+  --r-sm: 8px; --r-md: 16px; --r-lg: 24px;
+
+  --bg: #f4f6f5;
+  --bg-rgb: 244, 246, 245;
+  --glow-1: #d9efe3;
+  --glow-2: #e4e9f2;
+  --surface: rgba(255, 255, 255, 0.82);
+  --surface-2: rgba(20, 40, 30, 0.035);
+  --line: rgba(20, 40, 30, 0.12);
+  --text: #1d2823;
+  --heading: #0f1a15;
+  --text-dim: #4a5a53;
+  --text-mute: #6d7d76;
+  --accent: #16794f;
+  --accent-hi: #1b9163;
+  --accent-rgb: 22, 121, 79;
+  --accent-tx: #16794f;
+  --on-accent: #ffffff;
+  --input-bg: #ffffff;
+  --input-text: #0f1f18;
+  --input-ph: #8a98a8;
+  --input-icon: #6b7a74;
+  --input-icon-hover: #2f3f38;
+  --input-bd: #cdd6d1;
+  --shadow: rgba(20, 40, 30, 0.14);
+  --inset: rgba(255, 255, 255, 0.9);
+  --ok-bg: rgba(209, 250, 229, .9); --ok-bd: rgba(16, 185, 129, .5); --ok-tx: #065f46;
+  --err-bg: rgba(255, 228, 230, .9); --err-bd: rgba(244, 63, 94, .5); --err-tx: #9f1239;
+
+  --font-head: 'Libre Baskerville', Georgia, serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --bg-image: url('/assets/campus-bg.jpg');
+  --students-image: url('/assets/students.jpg');
+
+  /* Full screen setup */
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 50;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s3);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text) !important;
+  background-color: var(--bg) !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+.org-login-wrapper *, .org-login-wrapper *::before, .org-login-wrapper *::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.org-login-wrapper .page-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    var(--bg-image) center / cover no-repeat,
+    radial-gradient(circle at 15% 10%, var(--glow-1) 0%, transparent 55%),
+    radial-gradient(circle at 90% 95%, var(--glow-2) 0%, transparent 60%),
+    var(--bg);
+}
+.org-login-wrapper .page-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(var(--bg-rgb), 0.88) 0%, rgba(var(--bg-rgb), 0.72) 100%);
+}
+
+.org-login-wrapper .shell {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1120px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s4);
+}
+
+@media (min-width: 1024px) {
+  .org-login-wrapper .shell { grid-template-columns: 1fr 1fr; align-items: stretch; }
+}
+
+.org-login-wrapper .panel {
+  background: var(--surface);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: 0 24px 48px var(--shadow), inset 0 1px 0 var(--inset);
+  --pad: var(--s4);
+  padding: var(--pad);
+}
+
+@media (min-width: 640px) {
+  .org-login-wrapper .panel { --pad: var(--s6); }
+}
+
+/* ✅ FORCE COLORS PARA HINDI MAGING PUTI */
+.org-login-wrapper .eyebrow {
+  font-size: var(--fs-micro) !important;
+  line-height: var(--lh-micro) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--accent-tx) !important;
+  margin-bottom: var(--s1) !important;
+}
+
+.org-login-wrapper h1, 
+.org-login-wrapper h2 {
+  font-family: var(--font-head) !important;
+  font-weight: 700 !important;
+  color: var(--heading) !important;
+  letter-spacing: -0.01em !important;
+}
+
+.org-login-wrapper h1 { font-size: var(--fs-display) !important; line-height: var(--lh-display) !important; margin-bottom: var(--s2) !important; }
+.org-login-wrapper h2 { font-size: var(--fs-title) !important; line-height: var(--lh-title) !important; margin-bottom: var(--s1) !important; }
+
+.org-login-wrapper .lead {
+  font-size: var(--fs-body) !important;
+  line-height: var(--lh-body) !important;
+  color: var(--text-dim) !important;
+  max-width: 56ch !important;
+}
+
+/* Guidelines */
+.org-login-wrapper .guidelines { display: flex; flex-direction: column; justify-content: center; }
+.org-login-wrapper .guidelines__head { margin-bottom: var(--s4); }
+.org-login-wrapper .acc-list { display: flex; flex-direction: column; gap: var(--s2); }
+.org-login-wrapper .acc {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  transition: border-color .25s ease, background-color .25s ease;
+}
+.org-login-wrapper .acc:hover { border-color: rgba(var(--accent-rgb), 0.45); }
+.org-login-wrapper .acc.is-open { background: rgba(var(--accent-rgb), 0.07); border-color: rgba(var(--accent-rgb), 0.4); }
+
+.org-login-wrapper .acc__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s3);
+  min-height: var(--s10);
+  background: none;
+  border: 0;
+  color: var(--text) !important;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--r-md);
+}
+
+.org-login-wrapper .acc__icon {
+  flex: none; width: var(--s5); height: var(--s5);
+  display: grid; place-items: center;
+  border-radius: var(--r-sm);
+  background: rgba(var(--accent-rgb), 0.14);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
+  color: var(--accent-tx) !important;
+  font-size: var(--fs-body);
+}
+
+.org-login-wrapper .acc__title {
+  flex: 1; font-size: var(--fs-body); line-height: var(--lh-body); font-weight: 600; color: var(--text) !important;
+}
+
+.org-login-wrapper .acc__chevron {
+  color: var(--accent-tx) !important; font-size: var(--fs-micro); transition: transform .3s ease;
+}
+.org-login-wrapper .acc.is-open .acc__chevron { transform: rotate(180deg); }
+
+.org-login-wrapper .acc__body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+.org-login-wrapper .acc.is-open .acc__body { grid-template-rows: 1fr; }
+.org-login-wrapper .acc__inner { overflow: hidden; }
+.org-login-wrapper .acc__inner p {
+  padding: 0 var(--s3) var(--s3) calc(var(--s3) + var(--s5) + var(--s2));
+  font-size: var(--fs-small); line-height: var(--lh-small); color: var(--text-dim) !important;
+}
+
+/* Login Panel */
+.org-login-wrapper .login {
+  position: relative; overflow: hidden;
+  display: grid;
+  grid-template-rows: minmax(192px, 1fr) auto minmax(192px, 1fr);
+  padding-top: 0; padding-bottom: 0;
+}
+.org-login-wrapper .login__content { grid-row: 2; display: flex; flex-direction: column; }
+.org-login-wrapper .login__top { display: flex; flex-direction: column; gap: var(--s2); margin-bottom: var(--s4); }
+.org-login-wrapper .login__brand { display: flex; align-items: center; gap: var(--s3); }
+.org-login-wrapper .login__brand h2 { margin-bottom: 0 !important; }
+.org-login-wrapper .login__logo { flex: none; width: 96px; height: 96px; object-fit: contain; }
+.org-login-wrapper .login__logo-fallback {
+  display: none; flex: none; width: 96px; height: 96px; border-radius: 50%;
+  align-items: center; justify-content: center;
+  background: rgba(var(--accent-rgb), 0.14); border: 1px solid rgba(var(--accent-rgb), 0.4);
+  font-family: var(--font-head); font-weight: 700; font-size: var(--s3); color: var(--accent-tx) !important;
+}
+.org-login-wrapper .login__top .lead { font-size: var(--fs-small) !important; line-height: var(--lh-small) !important; }
+
+.org-login-wrapper .login__art {
+  grid-row: 3; position: relative; margin: 0 calc(-1 * var(--pad));
+  background: var(--students-image) center top / cover no-repeat,
+              linear-gradient(180deg, rgba(var(--accent-rgb), 0.10), rgba(var(--accent-rgb), 0.22));
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 64px);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 64px);
+}
+.org-login-wrapper .login__art::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(var(--bg-rgb), 0) 55%, rgba(var(--bg-rgb), 0.55) 100%);
+}
+
+/* Forms */
+.org-login-wrapper .form { display: flex; flex-direction: column; gap: var(--s3); }
+.org-login-wrapper .field label {
+  display: block; margin-bottom: var(--s1); font-size: var(--fs-small); line-height: var(--lh-small); font-weight: 500; color: var(--text) !important;
+}
+.org-login-wrapper .input-wrap { position: relative; }
+.org-login-wrapper .input-wrap > .icon-left {
+  position: absolute; top: 0; left: 0; width: var(--s6); height: var(--s6);
+  display: grid; place-items: center; line-height: 1; color: var(--text-mute) !important; font-size: var(--fs-small); pointer-events: none;
+}
+.org-login-wrapper .input {
+  width: 100%; height: var(--s6); padding: 0 var(--s6);
+  font: inherit; font-size: var(--fs-body); color: var(--input-text) !important;
+  background: var(--input-bg) !important; border: 1px solid var(--input-bd) !important;
+  border-radius: var(--r-sm) !important; outline: none; transition: box-shadow .2s ease, border-color .2s ease;
+}
+.org-login-wrapper .input::placeholder { color: var(--input-ph) !important; }
+.org-login-wrapper .input:focus { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.35) !important; }
+
+.org-login-wrapper .toggle-pw {
+  position: absolute; top: 0; right: 0; width: var(--s6); height: var(--s6);
+  display: grid; place-items: center; padding: 0; line-height: 1;
+  background: none; border: 0; border-radius: var(--r-sm); color: var(--input-icon) !important; cursor: pointer;
+}
+.org-login-wrapper .toggle-pw:hover { color: var(--input-icon-hover) !important; }
+
+.org-login-wrapper .btn {
+  margin-top: var(--s1); width: 100%; height: var(--s6);
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s1);
+  font: inherit; font-size: var(--fs-body); font-weight: 600; line-height: 1;
+  color: var(--on-accent) !important; background: var(--accent) !important;
+  border: 0; border-radius: var(--r-sm) !important; box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.3);
+  cursor: pointer; transition: background-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.org-login-wrapper .btn:hover { background: var(--accent-hi) !important; box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.45); }
+.org-login-wrapper .btn:active { transform: translateY(1px); }
+.org-login-wrapper .btn:disabled { opacity: .8; cursor: not-allowed; }
+
+.org-login-wrapper .toast {
+  display: none; align-items: flex-start; gap: var(--s2);
+  margin-top: var(--s3); padding: var(--s2); border-radius: var(--r-sm);
+  font-size: var(--fs-small); line-height: var(--lh-small); font-weight: 500;
+}
+.org-login-wrapper .toast.show { display: flex; }
+.org-login-wrapper .toast--success { background: var(--ok-bg); border: 1px solid var(--ok-bd); color: var(--ok-tx) !important; }
+.org-login-wrapper .toast--error   { background: var(--err-bg); border: 1px solid var(--err-bd); color: var(--err-tx) !important; }
+.org-login-wrapper .toast i { margin-top: 4px; }

@@ -1,7 +1,7 @@
 // src/App.tsx
 
 import { useEffect } from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, Outlet } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import SiteLayout from './layout/SiteLayout';
 import HomePage from './pages/HomePage';
@@ -44,50 +44,106 @@ import {
   SettingsPage as AdminSettingsPage,
 } from './pages/admin';
 
+// ✅ ORGANIZATION PAGES
+import {
+  OrganizationLayout,
+  OrgLoginPage,
+  DashboardPage as OrgDashboardPage,
+  ProductsPage as OrgProductsPage,
+  ProductDetailsPage as OrgProductDetailsPage,
+  OrdersPage as OrgOrdersPage,
+  OrderDetailsPage as OrgOrderDetailsPage,
+  NotificationsPage as OrgNotificationsPage,
+  ProfilePage as OrgProfilePage,
+  SettingsPage as OrgSettingsPage,
+} from './pages/organization';
+
+// ✅ IMPORT THEME UTILS
+import { getStoredTheme, applyTheme, getThemeDefinition } from './theme';
+
 /* ============================================
-   ✅ GLOBAL NOTIFICATION LOADER
-   - Nag-l-load ng notifications sa buong app
-   - FORCE REFRESH — bypass empty cache
-   - Naka-subscribe sa real-time updates
-   - Auto-cleanup kapag nag-logout
+  ✅ INITIALIZE THEME & UI STYLE
+  ✅ Naka-set ang data-theme at data-ui sa <html> tag
+  ✅ Ito ang mag-a-apply ng CSS variables sa buong app
+============================================ */
+function ThemeInitializer() {
+  useEffect(() => {
+    // 1. I-apply ang Theme
+    const theme = getStoredTheme();
+    applyTheme(theme);
+
+    // 2. I-apply ang UI Style (Morphism)
+    const uiStyle = localStorage.getItem('sjc-ui') ?? 'glass';
+    document.documentElement.dataset.ui = uiStyle;
+
+    // 3. I-apply ang theme mode (light/dark)
+    const themeDef = getThemeDefinition(theme);
+    document.documentElement.setAttribute('data-theme-mode', themeDef.mode);
+  }, []);
+
+  return null;
+}
+
+/* ============================================
+  ✅ GLOBAL NOTIFICATION LOADER
 ============================================ */
 function GlobalNotificationLoader() {
   const { session, isLoading } = useApp();
 
   useEffect(() => {
-    if (isLoading) {
-      console.log('[GlobalNotif] ⏳ Waiting for app to finish loading...');
-      return;
-    }
+    if (isLoading) return;
 
     if (!session?.id) {
-      console.log('[GlobalNotif] ⚠️ No session — resetting notifications');
       useNotificationStore.getState().reset();
       return;
     }
 
-    console.log('[GlobalNotif] 🔔 Loading notifications for user:', session.id);
-
-    // ✅ FORCE REFRESH — bypass empty cache
-    void useNotificationStore
-      .getState()
-      .loadNotifications(session.id, true);   // ← true = force refresh
-
-    // ✅ Subscribe sa real-time updates
+    void useNotificationStore.getState().loadNotifications(session.id, true);
     useNotificationStore.getState().subscribeToRealtime(session.id);
 
     return () => {
-      console.log('[GlobalNotif] 🧹 Cleaning up subscription');
       useNotificationStore.getState().unsubscribeFromRealtime();
     };
   }, [session?.id, isLoading]);
 
-  return null;   // Logic lang — walang UI
+  return null;
 }
 
 /* ============================================
-   ✅ ANIMATED AUTH ROUTES
-   Hiwalay na wrapper para sa auth pages lang
+  ✅ ORG ROUTE GUARD
+============================================ */
+function OrgGuard() {
+  const { session, isLoading } = useApp();
+  
+  if (isLoading) {
+    return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>Loading...</div>;
+  }
+
+  if (!session || session.role !== 'Organization') {
+    console.warn('[OrgGuard] ⚠️ Unauthorized. Redirecting to /org/login');
+    return <Navigate to="/org/login" replace />;
+  }
+
+  return <Outlet />;
+}
+
+/* ============================================
+  ✅ ORG LOGIN GUARD
+============================================ */
+function OrgLoginGuard() {
+  const { session, isLoading } = useApp();
+
+  if (isLoading) return null;
+
+  if (session && session.role === 'Organization') {
+    return <Navigate to="/org/dashboard" replace />;
+  }
+
+  return <Outlet />;
+}
+
+/* ============================================
+  ✅ ANIMATED AUTH ROUTES
 ============================================ */
 function AnimatedAuthRoutes() {
   const location = useLocation();
@@ -119,32 +175,47 @@ function AnimatedAuthRoutes() {
             </AuthPageTransition>
           }
         />
+        
+        {/* ✅ ORGANIZATION LOGIN ROUTE (may guard) */}
+        <Route element={<OrgLoginGuard />}>
+          <Route
+            path="/org/login"
+            element={
+              <AuthPageTransition>
+                <OrgLoginPage />
+              </AuthPageTransition>
+            }
+          />
+        </Route>
       </Routes>
     </AnimatePresence>
   );
 }
 
 /* ============================================
-   ✅ DETECT KUNG AUTH PAGE ANG CURRENT ROUTE
+  ✅ DETECT KUNG AUTH PAGE ANG CURRENT ROUTE
 ============================================ */
 function useIsAuthRoute() {
   const location = useLocation();
-  const authPaths = ['/login', '/register', '/forgot-password'];
+  const authPaths = ['/login', '/register', '/forgot-password', '/org/login'];
   return authPaths.some((path) => location.pathname === path);
 }
 
 export default function App() {
   const isAuthRoute = useIsAuthRoute();
 
-  /* ✅ Kung nasa auth page, i-render LANG ang animated auth routes */
   if (isAuthRoute) {
-    return <AnimatedAuthRoutes />;
+    return (
+      <>
+        <ThemeInitializer />
+        <AnimatedAuthRoutes />
+      </>
+    );
   }
 
-  /* ✅ Kung HINDI auth page, normal routes */
   return (
     <>
-      {/* ✅ GLOBAL NOTIFICATION LOADER */}
+      <ThemeInitializer />
       <GlobalNotificationLoader />
 
       <Routes>
@@ -152,6 +223,24 @@ export default function App() {
             ADMIN LOGIN (standalone)
             ============================================ */}
         <Route path="/admin/login" element={<AdminLoginPage />} />
+
+        {/* ============================================
+            ORGANIZATION DASHBOARD (protected + guard)
+            ============================================ */}
+        <Route element={<OrgGuard />}>
+          <Route path="/org" element={<OrganizationLayout />}>
+            <Route index element={<Navigate to="/org/dashboard" replace />} />
+            <Route path="dashboard" element={<OrgDashboardPage />} />
+            <Route path="products" element={<OrgProductsPage />} />
+            <Route path="products/:id" element={<OrgProductDetailsPage />} />
+            <Route path="orders" element={<OrgOrdersPage />} />
+            <Route path="orders/:id" element={<OrgOrderDetailsPage />} />
+            <Route path="notifications" element={<OrgNotificationsPage />} />
+            <Route path="profile" element={<OrgProfilePage />} />
+            <Route path="settings" element={<OrgSettingsPage />} />
+            <Route path="*" element={<Navigate to="/org/dashboard" replace />} />
+          </Route>
+        </Route>
 
         {/* ============================================
             MAIN APP ROUTES — may SiteLayout

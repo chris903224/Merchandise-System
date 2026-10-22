@@ -64,7 +64,9 @@ export default function NotificationsPage() {
       return;
     }
 
-    void loadNotifications(session.id);
+    // ✅ FIXED: Added 'true' to force refresh from database
+    void loadNotifications(session.id, true);
+    
     subscribeToRealtime(session.id);
 
     return () => {

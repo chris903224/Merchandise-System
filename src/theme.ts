@@ -23,7 +23,59 @@ export type ThemeDefinition = {
   preview: string;
 };
 
+/* ============================================
+   🎯 DEFAULT THEME — MIDNIGHT NAVY
+   ✅ Bagong user → Midnight Navy agad
+   ✅ Naka-list muna ang Midnight Navy
+   ============================================ */
+
+export const DEFAULT_THEME: ThemeId = 'midnight-navy';
+
 export const themeOptions: ThemeDefinition[] = [
+  /* ============================================
+     DARK (5) — Naka-una para default
+  ============================================ */
+  {
+    id: 'midnight-navy',
+    label: 'Midnight Navy',
+    emoji: '🌙',
+    mode: 'dark',
+    gradient: 'linear-gradient(135deg, #0E1626 0%, #1B2742 100%)',
+    preview: 'linear-gradient(135deg, #0E1626, #1B2742)',
+  },
+  {
+    id: 'matte-black',
+    label: 'Matte Black',
+    emoji: '🖤',
+    mode: 'dark',
+    gradient: 'linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 100%)',
+    preview: 'linear-gradient(135deg, #0F0F0F, #1A1A1A)',
+  },
+  {
+    id: 'charcoal-gray',
+    label: 'Charcoal Gray',
+    emoji: '🪨',
+    mode: 'dark',
+    gradient: 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%)',
+    preview: 'linear-gradient(135deg, #1A1A1A, #2A2A2A)',
+  },
+  {
+    id: 'deep-forest',
+    label: 'Deep Forest',
+    emoji: '🌲',
+    mode: 'dark',
+    gradient: 'linear-gradient(135deg, #0A1F1A 0%, #153029 100%)',
+    preview: 'linear-gradient(135deg, #0A1F1A, #153029)',
+  },
+  {
+    id: 'dark-plum',
+    label: 'Dark Plum',
+    emoji: '🍇',
+    mode: 'dark',
+    gradient: 'linear-gradient(135deg, #1A0E1F 0%, #2A1A30 100%)',
+    preview: 'linear-gradient(135deg, #1A0E1F, #2A1A30)',
+  },
+
   /* ============================================
      LIGHT (5)
   ============================================ */
@@ -67,74 +119,52 @@ export const themeOptions: ThemeDefinition[] = [
     gradient: 'linear-gradient(135deg, #FDF2F4 0%, #F0D5DB 100%)',
     preview: 'linear-gradient(135deg, #FDF2F4, #F0D5DB)',
   },
-
-  /* ============================================
-     DARK (5)
-  ============================================ */
-  {
-    id: 'midnight-navy',
-    label: 'Midnight Navy',
-    emoji: '🌙',
-    mode: 'dark',
-    gradient: 'linear-gradient(135deg, #0E1626 0%, #1B2742 100%)',
-    preview: 'linear-gradient(135deg, #0E1626, #1B2742)',
-  },
-  {
-    id: 'matte-black',
-    label: 'Matte Black',
-    emoji: '🖤',
-    mode: 'dark',
-    gradient: 'linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 100%)',
-    preview: 'linear-gradient(135deg, #0F0F0F, #1A1A1A)',
-  },
-  {
-    id: 'charcoal-gray',
-    label: 'Charcoal Gray',
-    emoji: '🪨',
-    mode: 'dark',
-    gradient: 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%)',
-    preview: 'linear-gradient(135deg, #1A1A1A, #2A2A2A)',
-  },
-  {
-    id: 'deep-forest',
-    label: 'Deep Forest',
-    emoji: '🌲',
-    mode: 'dark',
-    gradient: 'linear-gradient(135deg, #0A1F1A 0%, #153029 100%)',
-    preview: 'linear-gradient(135deg, #0A1F1A, #153029)',
-  },
-  {
-    id: 'dark-plum',
-    label: 'Dark Plum',
-    emoji: '🍇',
-    mode: 'dark',
-    gradient: 'linear-gradient(135deg, #1A0E1F 0%, #2A1A30 100%)',
-    preview: 'linear-gradient(135deg, #1A0E1F, #2A1A30)',
-  },
-];  
+];
 
 const STORAGE_KEY = 'sjcm_theme';
 
+/* ============================================
+   ✅ GET STORED THEME
+   ✅ Default = Midnight Navy (hindi Cream Yellow)
+   ============================================ */
 export function getStoredTheme(): ThemeId {
-  if (typeof window === 'undefined') return 'cream-yellow';
+  if (typeof window === 'undefined') return DEFAULT_THEME;
+
   const stored = window.localStorage.getItem(STORAGE_KEY);
+
+  // ✅ Valid theme? Return it
   if (stored && themeOptions.some((t) => t.id === stored)) {
     return stored as ThemeId;
   }
-  return 'cream-yellow';
+
+  // ✅ Walang valid stored theme → default Midnight Navy
+  return DEFAULT_THEME;
 }
 
+/* ============================================
+   ✅ APPLY THEME
+   ✅ Walang change — retain
+   ============================================ */
 export function applyTheme(themeId: ThemeId) {
   if (typeof document === 'undefined') return;
+
   const theme = themeOptions.find((t) => t.id === themeId);
   document.documentElement.setAttribute('data-theme', themeId);
   document.documentElement.setAttribute(
     'data-theme-mode',
-    theme?.mode ?? 'light'
+    theme?.mode ?? 'dark'  // ✅ Fallback = dark
   );
   window.localStorage.setItem(STORAGE_KEY, themeId);
 }
 
+/* ============================================
+   ✅ GET THEME DEFINITION
+   ✅ Fallback = Midnight Navy (hindi Cream Yellow)
+   ============================================ */
 export function getThemeDefinition(id: string): ThemeDefinition {
-  return themeOptions.find((t) => t.id === id) ?? themeOptions[0];
+  return (
+    themeOptions.find((t) => t.id === id) ??
+    themeOptions.find((t) => t.id === DEFAULT_THEME) ??
+    themeOptions[0]
+  );
 }

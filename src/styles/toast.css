@@ -304,3 +304,198 @@
     transform: none !important;
   }
 }
+
+/* ==========================================================================
+   🔒 COURSE RESTRICTION — Visual States
+   ✅ Catalog card restricted overlay
+   ✅ Product page restriction banner
+   ✅ Disabled CTA buttons
+   ========================================================================== */
+
+/* ==========================================================================
+   1️⃣ CATALOG CARD — Restricted overlay
+   ========================================================================== */
+
+.catalog-card--restricted {
+  position: relative;
+  opacity: 0.72;
+  transition: opacity 0.2s ease;
+}
+
+.catalog-card--restricted:hover {
+  opacity: 0.85;
+}
+
+.catalog-card--restricted .catalog-card__media {
+  cursor: not-allowed !important;
+}
+
+.catalog-card__restricted-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 5;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.catalog-card__restricted-overlay span {
+  padding: 0.5rem 1rem;
+  background: var(--theme-danger);
+  color: var(--theme-on-danger);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ✅ Disabled CTA sa restricted card */
+.catalog-card__cta--restricted {
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  border: 1px dashed rgba(var(--theme-danger-rgb), 0.4) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* ==========================================================================
+   2️⃣ PRODUCT PAGE — Restriction banner
+   ✅ Sa taas ng layout, maliwanag na warning
+   ========================================================================== */
+
+.product-restriction-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1rem 1.25rem;
+  margin: 0 0 1.5rem 0;
+  background: rgba(var(--theme-danger-rgb), 0.08);
+  background-color: rgba(var(--theme-danger-rgb), 0.08);
+  border: 1px solid rgba(var(--theme-danger-rgb), 0.35);
+  border-radius: 0.85rem;
+  color: var(--theme-danger);
+  box-shadow:
+    0 4px 12px rgba(var(--theme-danger-rgb), 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.product-restriction-banner .react-icon,
+.product-restriction-banner > svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  color: var(--theme-danger);
+  stroke: currentColor;
+  margin-top: 0.15rem;
+}
+
+.product-restriction-banner > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.product-restriction-banner strong {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--theme-danger);
+  -webkit-text-fill-color: var(--theme-danger);
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.02em;
+}
+
+.product-restriction-banner p {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--theme-text);
+  -webkit-text-fill-color: var(--theme-text);
+}
+
+.product-restriction-banner p strong {
+  display: inline;
+  color: var(--theme-danger);
+  -webkit-text-fill-color: var(--theme-danger);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   3️⃣ PRODUCT CTA — Restricted state
+   ========================================================================== */
+
+.product-panel__cta--restricted {
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+  border: 1px dashed rgba(var(--theme-danger-rgb), 0.4) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.product-panel__cta--restricted .react-icon,
+.product-panel__cta--restricted svg {
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+  stroke: currentColor !important;
+}
+
+.product-panel__cta--restricted:hover {
+  transform: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+}
+
+/* ==========================================================================
+   4️⃣ DISABLED VARIANTS — Kapag restricted
+   ========================================================================== */
+
+.product-variant:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.product-qty__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   5️⃣ RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .product-restriction-banner {
+    padding: 0.85rem 1rem;
+    gap: 0.65rem;
+  }
+
+  .product-restriction-banner .react-icon,
+  .product-restriction-banner > svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .product-restriction-banner strong {
+    font-size: 0.8rem;
+  }
+
+  .product-restriction-banner p {
+    font-size: 0.72rem;
+  }
+
+  .catalog-card__restricted-overlay span {
+    font-size: 0.68rem;
+    padding: 0.4rem 0.85rem;
+  }
+}

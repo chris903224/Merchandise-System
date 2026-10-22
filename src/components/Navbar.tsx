@@ -14,15 +14,15 @@ import {
   ChevronDown,
   X,
   Heart,
-  Globe,          // ✅ Para sa Language
-  Palette,        // ✅ BAGONG IDAGDAG para sa Themes
+  Globe,
+  Palette,
 } from 'lucide-react';
 import { useApp } from '../store';
 import { countCartItems, getConsolePath, isStaffRole } from '../services';
 import { fetchProfileImages } from '../data/storage';
 import NotificationBell from './NotificationBell';
-import LanguageSwitcher from './LanguageSwitcher';  // ✅ RETAINED
-import ThemeModal from './ThemeModal';              // ✅ BAGONG IDAGDAG
+import LanguageSwitcher from './LanguageSwitcher';
+import ThemeModal from './ThemeModal';
 
 const NAV_AVATAR_SIZE = 36;
 const DROPDOWN_AVATAR_SIZE = 48;
@@ -46,7 +46,7 @@ export default function Navbar() {
   const location = useLocation();
   const cartCount = useMemo(() => countCartItems(cart), [cart]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);  // ✅ BAGONG STATE
+  const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
   const [avatarFailed, setAvatarFailed] = useState(false);
   const [remoteAvatarUrl, setRemoteAvatarUrl] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -124,17 +124,54 @@ export default function Navbar() {
   };
 
   // ============================================
-  // KEYBOARD SHORTCUT: Ctrl+K
+  // ✅ KEYBOARD SHORTCUT — Ctrl+M / Cmd+M / Alt+M
+  // ✅ Dalawang shortcut para siguradong gumana
+  // ✅ May debug logging
   // ============================================
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      const isM = e.key === 'm' || e.key === 'M' || e.code === 'KeyM';
+      const isMod = e.ctrlKey || e.metaKey;
+      const isAlt = e.altKey;
+
+      // ✅ Debug log — tingnan sa Console
+      if (isM) {
+        console.log('[Navbar Shortcut] Key detected:', {
+          key: e.key,
+          code: e.code,
+          ctrl: e.ctrlKey,
+          meta: e.metaKey,
+          alt: e.altKey,
+          shift: e.shiftKey,
+          isM,
+          isMod,
+          isAlt,
+        });
+      }
+
+      // ✅ Trigger: (Ctrl+M) OR (Cmd+M) OR (Alt+M)
+      // ✅ Bawal ang Shift para walang clash
+      if (isM && !e.shiftKey && (isMod || isAlt)) {
         e.preventDefault();
-        searchInputRef.current?.focus();
+        e.stopPropagation();
+
+        const input = searchInputRef.current;
+        console.log('[Navbar Shortcut] Input ref:', input);
+
+        if (input) {
+          input.focus();
+          input.select();
+          input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          console.log('[Navbar Shortcut] ✅ Focused input');
+        } else {
+          console.warn('[Navbar Shortcut] ❌ Input ref is null');
+        }
       }
     };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+
+    // ✅ Capture phase (true) para ma-intercept bago ang ibang handler
+    document.addEventListener('keydown', handleKeyDown, true);
+    return () => document.removeEventListener('keydown', handleKeyDown, true);
   }, []);
 
   // ============================================
@@ -249,7 +286,7 @@ export default function Navbar() {
                 <X className="react-icon" aria-hidden="true" />
               </button>
             ) : (
-              <kbd className="nav-search__kbd" aria-hidden="true">⌘K</kbd>
+              <kbd className="nav-search__kbd" aria-hidden="true">Ctrl+M</kbd>
             )}
           </form>
 
@@ -377,9 +414,6 @@ export default function Navbar() {
                         <span>Settings</span>
                       </Link>
 
-                      {/* ============================================
-                          ✅ THEMES — New entry (opens modal)
-                      ============================================ */}
                       <button
                         type="button"
                         className="nav-dropdown-item nav-dropdown-item--themes"
@@ -392,9 +426,6 @@ export default function Navbar() {
 
                       <hr className="nav-dropdown-divider" />
 
-                      {/* ============================================
-                          ✅ LANGUAGE SWITCHER — RETAINED
-                      ============================================ */}
                       <div className="nav-dropdown-language">
                         <div className="nav-dropdown-language__header">
                           <Globe className="react-icon" aria-hidden="true" />
@@ -428,9 +459,6 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* ============================================
-          ✅ THEME MODAL — Renders centered with blur
-      ============================================ */}
       <ThemeModal
         isOpen={isThemeModalOpen}
         onClose={() => setIsThemeModalOpen(false)}

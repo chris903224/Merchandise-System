@@ -1,5 +1,13 @@
-export type UserRole = 'Student' | 'Faculty' | 'School Staff' | 'Admin';
+// src/types.ts
 
+/* ============================================
+   ROLES — 3 actors only
+============================================ */
+export type UserRole = 'Student' | 'Admin' | 'Organization';
+
+/* ============================================
+   PRODUCT
+============================================ */
 export interface Product {
   id: string;
   name: string;
@@ -8,13 +16,16 @@ export interface Product {
   price: number;
   stock: number;
   sizes: string[];
-  sizeStocks?: Record<string, number>; // 👈 IDAGDAG: { S: 100, M: 100, L: 100, ... }
+  sizeStocks?: Record<string, number>; // { S: 100, M: 100, L: 100, ... }
   image: string;
   /** Alt text including photographer attribution for the stock image. */
   imageAlt: string;
   description: string;
 }
 
+/* ============================================
+   CART
+============================================ */
 export interface CartItem {
   id: string;
   name: string;
@@ -24,6 +35,9 @@ export interface CartItem {
   qty: number;
 }
 
+/* ============================================
+   ORDER
+============================================ */
 export interface OrderItem {
   id: string;
   name: string;
@@ -51,6 +65,9 @@ export interface Order {
   createdAt: string;
 }
 
+/* ============================================
+   SESSION
+============================================ */
 export interface SessionUser {
   id: string;
   name: string;
@@ -73,6 +90,9 @@ export interface UserRecord extends SessionUser {
   password?: string;
 }
 
+/* ============================================
+   MISC
+============================================ */
 export interface BadgeInfo {
   text: string;
   className: string;

@@ -30,7 +30,10 @@ import {
   X,
   Building2,
   DoorOpen,
-  Loader2,     // ✅ IDAGDAG
+  Loader2,
+  BookOpen,
+  GraduationCap,
+  Hash,
 } from 'lucide-react';
 import { useApp } from '../store';
 import { useToast } from '../toast';
@@ -54,7 +57,7 @@ import {
 import {
   useNotificationPrefs,
   type NotificationPrefs,
-} from '../services/useNotificationPrefs'; // ✅ IDAGDAG
+} from '../services/useNotificationPrefs';
 import './SettingsPage.css';
 
 type SettingsTab =
@@ -83,7 +86,6 @@ const sideNavItems = [
 
 const DEFAULT_THEME_ID: ThemeId = 'cream-yellow';
 
-/* ✅ Available languages for Google Translate */
 const LANGUAGES = [
   { code: 'en', label: 'English (US)', flag: '🇺🇸' },
   { code: 'tl', label: 'Tagalog', flag: '🇵🇭' },
@@ -118,10 +120,6 @@ function applyLanguage(langCode: string) {
   }
 }
 
-/* ============================================
-   ✅ PHONE NUMBER HELPERS
-   ============================================ */
-
 function formatPhoneNumber(input: string): string {
   const digits = input.replace(/\D/g, '').slice(0, 11);
 
@@ -138,7 +136,8 @@ function isValidPhone(phone: string): boolean {
 }
 
 export default function SettingsPage() {
-  const { session, updateProfilePicture } = useApp();
+  // ✅ IDINAGDAG ANG signIn PARA MA-UPDATE ANG SESSION
+  const { session, updateProfilePicture, signIn } = useApp();
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -166,10 +165,6 @@ export default function SettingsPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
-  /* ============================================
-     ✅ DYNAMIC NOTIFICATION PREFERENCES
-     Naka-load at naka-save sa Supabase
-     ============================================ */
   const {
     prefs: notificationPrefs,
     loading: isLoadingPrefs,
@@ -178,17 +173,11 @@ export default function SettingsPage() {
   } = useNotificationPrefs(session?.id);
 
   const [draftPrefs, setDraftPrefs] = useState<NotificationPrefs | null>(null);
-
   const [theme, setTheme] = useState<ThemeId>(getStoredTheme());
-
   const [showActivityToOthers, setShowActivityToOthers] = useState(true);
   const [showProfileInDirectory, setShowProfileInDirectory] = useState(true);
-
   const [language, setLanguage] = useState<string>(getCurrentLanguage());
 
-  /* ============================================
-     ✅ SHIPPING ADDRESS — Building + Room
-     ============================================ */
   const [shippingBuilding, setShippingBuilding] = useState<string>(
     BUILDING_NAMES[0] || ''
   );
@@ -203,9 +192,6 @@ export default function SettingsPage() {
   const [draftNotes, setDraftNotes] = useState(shippingNotes);
   const [isSavingAddress, setIsSavingAddress] = useState(false);
 
-  /* ============================================
-     LOAD PROFILE
-     ============================================ */
   useEffect(() => {
     if (!session) {
       navigate('/dashboard');
@@ -227,9 +213,7 @@ export default function SettingsPage() {
       setIsLoadingProfile(true);
       try {
         const { avatar_url } = await fetchProfileImages(session.id);
-        if (avatar_url) {
-          setProfilePicture(avatar_url);
-        }
+        if (avatar_url) setProfilePicture(avatar_url);
 
         const profile = await fetchUserProfile(session.id);
         if (profile) {
@@ -264,17 +248,13 @@ export default function SettingsPage() {
     void loadProfile();
   }, [session, navigate]);
 
- // ✅ I-sync tuwing nag-load ang prefs
-useEffect(() => {
-  if (!isLoadingPrefs) {
-    setDraftPrefs(notificationPrefs);
-  }
-}, [isLoadingPrefs, notificationPrefs]);
+  useEffect(() => {
+    if (!isLoadingPrefs) setDraftPrefs(notificationPrefs);
+  }, [isLoadingPrefs, notificationPrefs]);
 
-// ✅ I-reset kapag nagpalit ng user
-useEffect(() => {
-  setDraftPrefs(null);
-}, [session?.id]);
+  useEffect(() => {
+    setDraftPrefs(null);
+  }, [session?.id]);
 
   useEffect(() => {
     const syncLanguage = () => setLanguage(getCurrentLanguage());
@@ -340,10 +320,10 @@ useEffect(() => {
   };
 
   const handlePhoneChange = (value: string) => {
-    const formatted = formatPhoneNumber(value);
-    setPhone(formatted);
+    setPhone(formatPhoneNumber(value));
   };
 
+  // ✅ INUPDATE PARA MAG-REFRESH ANG SESSION KAPAG MAY BAGONG COURSE
   const handleSaveAccount = async () => {
     if (phone && !isValidPhone(phone)) {
       toast(
@@ -355,12 +335,22 @@ useEffect(() => {
 
     setIsSavingAccount(true);
     try {
+      // 1. Update Database
       await updateUserProfile(session.id, {
         course_strand: courseStrand || null,
         year_level: yearLevel || null,
         date_of_birth: dob || null,
         phone: phone ? phone.replace(/\D/g, '') : null,
       });
+
+      // 2. Update Local Session (Para mag-render agad sa Catalog/Product Pages)
+      signIn({
+        ...session,
+        course: courseStrand,
+        yearLevel: yearLevel,
+        dateOfBirth: dob,
+        phone: phone ? phone.replace(/\D/g, '') : null, // Optional: i-save din sa session
+      } as any);
 
       toast('Account details saved!', 'success');
     } catch (error) {
@@ -393,10 +383,6 @@ useEffect(() => {
       setIsSaving(false);
     }
   };
-
-  /* ============================================
-     ✅ NOTIFICATION HANDLERS
-     ============================================ */
 
   const handleTogglePref = (key: keyof NotificationPrefs) => {
     if (!draftPrefs) return;
@@ -441,9 +427,6 @@ useEffect(() => {
     );
   };
 
-  /* ============================================
-     ✅ ADDRESS MODAL HANDLERS
-     ============================================ */
   const openAddressModal = () => {
     setDraftBuilding(shippingBuilding);
     setDraftRoom(shippingRoom);
@@ -496,7 +479,6 @@ useEffect(() => {
 
   return (
     <div className="settings-shell">
-      {/* SIDEBAR */}
       <aside className="settings-sidebar">
         <div className="settings-sidebar__top">
           <nav className="settings-sidebar__nav">
@@ -521,12 +503,17 @@ useEffect(() => {
         </div>
       </aside>
 
-      {/* MAIN */}
       <div className="settings-main">
         <div className="settings-scroll">
           <section className="settings-hero">
             <div className="settings-hero__copy">
-              <h1 className="settings-hero__title">Settings</h1>
+              <h1 className="settings-hero__title">
+                <Shield
+                  className="react-icon settings-hero__title-icon"
+                  aria-hidden="true"
+                />
+                <span>Settings</span>
+              </h1>
               <p className="settings-hero__description">
                 Manage your account preferences, security, and more.
               </p>
@@ -567,9 +554,6 @@ useEffect(() => {
 
           <div className="settings-layout">
             <div className="settings-content">
-              {/* ============================================
-                  ACCOUNT TAB
-              ============================================ */}
               {activeTab === 'account' && (
                 <>
                   <section className="settings-panel">
@@ -605,123 +589,140 @@ useEffect(() => {
                     </header>
 
                     <div className="settings-panel__body settings-panel__body--split">
-                      <div className="settings-photo">
-                        <div className="settings-photo__frame">
-                          {profilePicture ? (
-                            <img src={profilePicture} alt={fullName} />
-                          ) : (
-                            <span className="settings-photo__fallback">
-                              {getInitials()}
+                     <div className="settings-photo">
+  <div className="settings-photo__avatar">
+    <div className="settings-photo__frame">
+      {profilePicture ? (
+        <img src={profilePicture} alt={fullName} />
+      ) : (
+        <span className="settings-photo__fallback">{getInitials()}</span>
+      )}
+    </div>
+    <button
+      type="button"
+      className="settings-photo__badge"
+      onClick={handleProfilePictureUpload}
+      aria-label="Upload profile picture"
+    >
+      <Camera className="react-icon" aria-hidden="true" />
+    </button>
+  </div>
+
+  <button type="button" className="settings-photo__btn" onClick={handleProfilePictureUpload}>
+    <Camera className="react-icon" aria-hidden="true" />
+    <span>Change Photo</span>
+  </button>
+</div>
+
+                      <div className="settings-fields">
+                        {/* ✅ FULL NAME */}
+                        <div className="settings-field">
+                          <label className="settings-field__label">
+                            <span>Full Name</span>
+                            <span
+                              className="settings-field__lock"
+                              title="Managed by your registration record"
+                            >
+                              <LockIcon
+                                className="react-icon"
+                                aria-hidden="true"
+                              />
+                              <span>Locked</span>
                             </span>
-                          )}
-                          <button
-                            type="button"
-                            className="settings-photo__badge"
-                            onClick={handleProfilePictureUpload}
-                            aria-label="Upload profile picture"
-                          >
-                            <Camera
+                          </label>
+                          <div className="settings-field__icon-wrap">
+                            <User className="react-icon" aria-hidden="true" />
+                            <input
+                              className="settings-field__input settings-field__input--icon settings-field__input--locked"
+                              value={fullName}
+                              readOnly
+                              disabled
+                            />
+                          </div>
+                        </div>
+
+                        {/* ✅ STUDENT ID */}
+                        <div className="settings-field">
+                          <label className="settings-field__label">
+                            <span>Student ID</span>
+                            <span
+                              className="settings-field__lock"
+                              title="Managed by your registration record"
+                            >
+                              <LockIcon
+                                className="react-icon"
+                                aria-hidden="true"
+                              />
+                              <span>Locked</span>
+                            </span>
+                          </label>
+                          <div className="settings-field__icon-wrap">
+                            <Hash className="react-icon" aria-hidden="true" />
+                            <input
+                              className="settings-field__input settings-field__input--icon settings-field__input--locked"
+                              value={studentId}
+                              readOnly
+                              disabled
+                            />
+                          </div>
+                        </div>
+
+                        {/* ✅ COURSE / STRAND */}
+                        <div className="settings-field">
+                          <label className="settings-field__label">
+                            <span>Course / Strand</span>
+                          </label>
+                          <div className="settings-field__icon-wrap">
+                            <BookOpen
                               className="react-icon"
                               aria-hidden="true"
                             />
-                          </button>
-                        </div>
-                        <button
-                          type="button"
-                          className="settings-photo__btn"
-                          onClick={handleProfilePictureUpload}
-                        >
-                          <Camera className="react-icon" aria-hidden="true" />
-                          <span>Change Photo</span>
-                        </button>
-                      </div>
-
-                      <div className="settings-fields">
-                        <div className="settings-field">
-                          <label className="settings-field__label">
-                            Full Name
-                            <span
-                              className="settings-field__lock"
-                              title="Managed by your registration record"
+                            <select
+                              className="settings-field__select settings-field__select--icon"
+                              value={courseStrand}
+                              onChange={(e) => setCourseStrand(e.target.value)}
+                              disabled={isLoadingProfile}
                             >
-                              <LockIcon
-                                className="react-icon"
-                                aria-hidden="true"
-                              />
-                              <span>Locked</span>
-                            </span>
-                          </label>
-                          <input
-                            className="settings-field__input settings-field__input--locked"
-                            value={fullName}
-                            readOnly
-                            disabled
-                          />
+                              <option value="">Select course / strand</option>
+                              {COURSE_OPTIONS.map((course) => (
+                                <option key={course.value} value={course.value}>
+                                  {course.label}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
                         </div>
 
+                        {/* ✅ YEAR LEVEL */}
                         <div className="settings-field">
                           <label className="settings-field__label">
-                            Student ID
-                            <span
-                              className="settings-field__lock"
-                              title="Managed by your registration record"
+                            <span>Year Level</span>
+                          </label>
+                          <div className="settings-field__icon-wrap">
+                            <GraduationCap
+                              className="react-icon"
+                              aria-hidden="true"
+                            />
+                            <select
+                              className="settings-field__select settings-field__select--icon"
+                              value={yearLevel}
+                              onChange={(e) => setYearLevel(e.target.value)}
+                              disabled={isLoadingProfile}
                             >
-                              <LockIcon
-                                className="react-icon"
-                                aria-hidden="true"
-                              />
-                              <span>Locked</span>
-                            </span>
-                          </label>
-                          <input
-                            className="settings-field__input settings-field__input--locked"
-                            value={studentId}
-                            readOnly
-                            disabled
-                          />
+                              <option value="">Select year level</option>
+                              {YEAR_LEVELS.map((year) => (
+                                <option key={year} value={year}>
+                                  {year}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
                         </div>
 
+                        {/* ✅ DATE OF BIRTH */}
                         <div className="settings-field">
                           <label className="settings-field__label">
-                            Course / Strand
-                          </label>
-                          <select
-                            className="settings-field__select"
-                            value={courseStrand}
-                            onChange={(e) => setCourseStrand(e.target.value)}
-                            disabled={isLoadingProfile}
-                          >
-                            <option value="">Select course / strand</option>
-                            {COURSE_OPTIONS.map((course) => (
-                              <option key={course.value} value={course.value}>
-                                {course.label}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div className="settings-field">
-                          <label className="settings-field__label">
-                            Year Level
-                          </label>
-                          <select
-                            className="settings-field__select"
-                            value={yearLevel}
-                            onChange={(e) => setYearLevel(e.target.value)}
-                            disabled={isLoadingProfile}
-                          >
-                            <option value="">Select year level</option>
-                            {YEAR_LEVELS.map((year) => (
-                              <option key={year} value={year}>
-                                {year}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div className="settings-field">
-                          <label className="settings-field__label">
-                            Date of Birth
+                            <span>Date of Birth</span>
                           </label>
                           <div className="settings-field__icon-wrap">
                             <Calendar
@@ -738,9 +739,10 @@ useEffect(() => {
                           </div>
                         </div>
 
+                        {/* ✅ CONTACT NUMBER */}
                         <div className="settings-field">
                           <label className="settings-field__label">
-                            Contact Number
+                            <span>Contact Number</span>
                           </label>
                           <div className="settings-field__icon-wrap">
                             <Phone
@@ -762,19 +764,30 @@ useEffect(() => {
                           </div>
                           {phone && !isValidPhone(phone) && (
                             <p className="settings-field__hint settings-field__hint--error">
-                              ⚠️ Phone must be 11 digits starting with 09.
+                              <AlertTriangle
+                                className="settings-field__hint-icon"
+                                aria-hidden="true"
+                              />
+                              <span>
+                                Phone must be 11 digits starting with 09.
+                              </span>
                             </p>
                           )}
                           {phone && isValidPhone(phone) && (
                             <p className="settings-field__hint settings-field__hint--success">
-                              ✓ Valid phone number
+                              <Check
+                                className="settings-field__hint-icon"
+                                aria-hidden="true"
+                              />
+                              <span>Valid phone number</span>
                             </p>
                           )}
                         </div>
 
+                        {/* ✅ EMAIL */}
                         <div className="settings-field">
                           <label className="settings-field__label">
-                            Email Address
+                            <span>Email Address</span>
                             <span
                               className="settings-field__lock"
                               title="Managed by your registration record"
@@ -843,7 +856,11 @@ useEffect(() => {
                             : 'No shipping address on file yet.'}
                         </span>
                         <span className="settings-address__badge">
-                          Default
+                          <Check
+                            className="react-icon settings-address__badge-icon"
+                            aria-hidden="true"
+                          />
+                          <span>Default</span>
                         </span>
                       </div>
                       {shippingNotes && (
@@ -887,9 +904,6 @@ useEffect(() => {
                 </>
               )}
 
-              {/* ============================================
-                  SECURITY TAB
-              ============================================ */}
               {activeTab === 'security' && (
                 <section className="settings-panel">
                   <header className="settings-panel__header">
@@ -982,7 +996,13 @@ useEffect(() => {
                           </button>
                         </div>
                         <p className="settings-field__hint">
-                          Password must be at least 6 characters long.
+                          <Shield
+                            className="settings-field__hint-icon"
+                            aria-hidden="true"
+                          />
+                          <span>
+                            Password must be at least 6 characters long.
+                          </span>
                         </p>
                       </div>
 
@@ -1038,9 +1058,6 @@ useEffect(() => {
                 </section>
               )}
 
-              {/* ============================================
-                  NOTIFICATIONS TAB — ✅ DYNAMIC
-              ============================================ */}
               {activeTab === 'notifications' && (
                 <section className="settings-panel">
                   <header className="settings-panel__header">
@@ -1071,7 +1088,6 @@ useEffect(() => {
                     ) : (
                       <div className="settings-form">
                         <div className="settings-toggle-group">
-                          {/* 1️⃣ Email Notifications */}
                           <div className="settings-toggle-item">
                             <div className="settings-toggle-info">
                               <Mail
@@ -1101,7 +1117,6 @@ useEffect(() => {
 
                           <div className="settings-divider" />
 
-                          {/* 2️⃣ Order Updates */}
                           <div className="settings-toggle-item">
                             <div className="settings-toggle-info">
                               <Package
@@ -1113,9 +1128,7 @@ useEffect(() => {
                                   Order Updates
                                 </h4>
                                 <p className="settings-toggle-desc">
-                                  Get real-time updates on your order status
-                                  (pending, processing, ready, delivered,
-                                  completed).
+                                  Get real-time updates on your order status.
                                 </p>
                               </div>
                             </div>
@@ -1133,7 +1146,6 @@ useEffect(() => {
 
                           <div className="settings-divider" />
 
-                          {/* 3️⃣ Ready for Delivery */}
                           <div className="settings-toggle-item">
                             <div className="settings-toggle-info">
                               <Store
@@ -1164,7 +1176,6 @@ useEffect(() => {
 
                           <div className="settings-divider" />
 
-                          {/* 4️⃣ Pickup Reminders */}
                           <div className="settings-toggle-item">
                             <div className="settings-toggle-info">
                               <MapPin
@@ -1177,7 +1188,7 @@ useEffect(() => {
                                 </h4>
                                 <p className="settings-toggle-desc">
                                   Get reminders when your items are ready for
-                                  pickup at the supply office.
+                                  pickup.
                                 </p>
                               </div>
                             </div>
@@ -1224,9 +1235,6 @@ useEffect(() => {
                 </section>
               )}
 
-              {/* ============================================
-                  APPEARANCE TAB
-              ============================================ */}
               {activeTab === 'appearance' && (
                 <>
                   <section className="settings-panel">
@@ -1253,10 +1261,11 @@ useEffect(() => {
                     <div className="settings-panel__body">
                       <div className="appearance-section">
                         <h3 className="appearance-section__title">
-                          ☀️ Light Themes
+                          <span className="appearance-section__emoji">☀️</span>
+                          <span>Light Themes</span>
                         </h3>
                         <p className="appearance-section__subtitle">
-                          Bright & clean — perfect for daytime use.
+                          Bright &amp; clean — perfect for daytime use.
                         </p>
 
                         <div className="theme-grid">
@@ -1318,7 +1327,8 @@ useEffect(() => {
 
                       <div className="appearance-section">
                         <h3 className="appearance-section__title">
-                          🌙 Dark Themes
+                          <span className="appearance-section__emoji">🌙</span>
+                          <span>Dark Themes</span>
                         </h3>
                         <p className="appearance-section__subtitle">
                           Easy on the eyes — perfect for nighttime use.
@@ -1411,9 +1421,6 @@ useEffect(() => {
                 </>
               )}
 
-              {/* ============================================
-                  PRIVACY TAB
-              ============================================ */}
               {activeTab === 'privacy' && (
                 <section className="settings-panel">
                   <header className="settings-panel__header">
@@ -1502,7 +1509,6 @@ useEffect(() => {
               )}
             </div>
 
-            {/* RIGHT SIDE PANEL */}
             <aside className="settings-side">
               <div className="settings-brand-card">
                 <span className="settings-brand-card__logo">
@@ -1524,7 +1530,12 @@ useEffect(() => {
               </div>
 
               <div className="settings-side-card">
-                <p className="settings-side-card__title">Quick Links</p>
+                <p className="settings-side-card__title">
+                  <span className="settings-side-card__title-icon">
+                    <Globe className="react-icon" aria-hidden="true" />
+                  </span>
+                  <span>Quick Links</span>
+                </p>
                 <div className="settings-quicklinks">
                   <button
                     type="button"
@@ -1624,7 +1635,6 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* ADDRESS MODAL */}
       {isAddressModalOpen && (
         <div
           className="settings-modal-overlay"
@@ -1666,7 +1676,9 @@ useEffect(() => {
 
             <div className="settings-modal__body">
               <div className="settings-field">
-                <label className="settings-field__label">Building</label>
+                <label className="settings-field__label">
+                  <span>Building</span>
+                </label>
                 <div className="settings-field__icon-wrap">
                   <Building2 className="react-icon" aria-hidden="true" />
                   <select
@@ -1687,7 +1699,7 @@ useEffect(() => {
 
               <div className="settings-field">
                 <label className="settings-field__label">
-                  Room / Office
+                  <span>Room / Office</span>
                 </label>
                 <div className="settings-field__icon-wrap">
                   <DoorOpen className="react-icon" aria-hidden="true" />
@@ -1707,7 +1719,7 @@ useEffect(() => {
 
               <div className="settings-field">
                 <label className="settings-field__label">
-                  Additional Notes (Optional)
+                  <span>Additional Notes (Optional)</span>
                 </label>
                 <textarea
                   className="settings-field__input settings-field__input--textarea"
@@ -1742,7 +1754,8 @@ useEffect(() => {
                 onClick={closeAddressModal}
                 disabled={isSavingAddress}
               >
-                Cancel
+                <X className="react-icon" aria-hidden="true" />
+                <span>Cancel</span>
               </button>
               <button
                 type="button"
@@ -1750,11 +1763,18 @@ useEffect(() => {
                 onClick={handleSaveAddress}
                 disabled={isSavingAddress}
               >
-                <Save className="react-icon" aria-hidden="true" />
+                {isSavingAddress ? (
+                  <Loader2
+                    className="react-icon animate-spin"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <Save className="react-icon" aria-hidden="true" />
+                )}
                 <span>
                   {isSavingAddress ? 'Saving...' : 'Save Address'}
                 </span>
-              </button>a
+              </button>
             </footer>
           </div>
         </div>
