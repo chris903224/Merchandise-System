@@ -13,6 +13,9 @@ export interface Product {
   image: string;
   imageAlt: string;
   description: string;
+  
+  // ✅ IDINAGDAG: Per-size stock tracking
+  sizeStocks?: Record<string, number>;
 }
 
 export interface CartItem {
@@ -31,6 +34,10 @@ export interface OrderItem {
   price: number;
   qty: number;
   size: string;
+  
+  // ✅ Optional fields para sa compatibility
+  image?: string;
+  category?: string;
 }
 
 export interface Order {
@@ -49,6 +56,10 @@ export interface Order {
   claimLocation: string;
   claimDate: string;
   createdAt: string;
+  
+  // ✅ Optional fields na ginagamit ng organization dashboard
+  cancellationReason?: string;
+  cancelledAt?: string;
 }
 
 export interface SessionUser {

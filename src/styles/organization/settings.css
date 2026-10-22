@@ -1,0 +1,162 @@
+/* src/styles/organization/settings.css */
+
+.page-settings {
+  display: grid;
+  gap: 20px;
+}
+
+.page-settings .ph {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.page-settings .ph h2 {
+  font-size: 26px;
+  margin-bottom: 4px;
+  color: var(--tx);
+}
+
+.page-settings .ph p {
+  color: var(--mu);
+  font-size: 14px;
+}
+
+.page-settings .set {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.page-settings .set > .card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 22px;
+  border-radius: 22px;
+}
+
+.page-settings .set h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  margin-bottom: 16px;
+  color: var(--tx);
+}
+
+.page-settings .fill {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.page-settings .fld {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+  color: var(--mu);
+  font-size: 13px;
+}
+
+.page-settings .in {
+  width: 100%;
+  background: rgba(var(--w), 0.06);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  padding: 11px 14px;
+  outline: 0;
+  color: var(--tx);
+  font: inherit;
+}
+
+.page-settings .in:focus {
+  border-color: var(--a);
+}
+
+.page-settings .in:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.page-settings .row2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid var(--bd);
+  flex-wrap: wrap;
+}
+
+.page-settings .row2 span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  color: var(--tx);
+}
+
+.page-settings .row2 small {
+  color: var(--mu);
+  font-size: 12px;
+}
+
+.page-settings .tg input {
+  display: none;
+}
+
+.page-settings .tg s {
+  display: block;
+  position: relative;
+  width: 42px;
+  height: 24px;
+  border-radius: 99px;
+  background: rgba(var(--w), 0.15);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.page-settings .tg s::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: left 0.2s;
+}
+
+.page-settings .tg input:checked + s {
+  background: var(--a);
+}
+
+.page-settings .tg input:checked + s::after {
+  left: 21px;
+}
+
+.page-settings .note2 {
+  display: block;
+  margin-top: auto;
+  padding-top: 10px;
+  font-size: 12px;
+  color: var(--mu);
+}
+
+.page-settings .prev {
+  margin-top: auto;
+  padding-top: 10px;
+  color: var(--sub);
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .page-settings .set {
+    grid-template-columns: 1fr;
+  }
+}

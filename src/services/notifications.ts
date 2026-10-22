@@ -10,7 +10,7 @@ import { getCachedData, invalidateCache } from '../utils/cache';
 
 export async function fetchNotifications(userId: string): Promise<Notification[]> {
   return getCachedData(
-    `notifications_${userId}`,
+    `user_notifications_${userId}`, // ✅ Sinync sa store
     async () => {
       const { data, error } = await supabase
         .from('notifications')
@@ -60,7 +60,7 @@ export async function createNotification(
     throw new Error(error.message);
   }
 
-  invalidateCache(`notifications_${userId}`);
+  invalidateCache(`user_notifications_${userId}`); // ✅ Sinync sa store
 }
 
 /* ============================================
@@ -68,7 +68,6 @@ export async function createNotification(
    ============================================ */
 
 export async function markNotificationAsRead(notificationId: string): Promise<void> {
-  // ✅ Kunin muna yung user_id
   const { data: existing } = await supabase
     .from('notifications')
     .select('user_id')
@@ -85,9 +84,8 @@ export async function markNotificationAsRead(notificationId: string): Promise<vo
     throw new Error(error.message);
   }
 
-  // ✅ Invalidate user cache
   if (existing?.user_id) {
-    invalidateCache(`notifications_${existing.user_id}`);
+    invalidateCache(`user_notifications_${existing.user_id}`); // ✅ Sinync
   }
 }
 
@@ -107,7 +105,7 @@ export async function markAllNotificationsAsRead(userId: string): Promise<void> 
     throw new Error(error.message);
   }
 
-  invalidateCache(`notifications_${userId}`);
+  invalidateCache(`user_notifications_${userId}`); // ✅ Sinync
 }
 
 /* ============================================
@@ -115,7 +113,6 @@ export async function markAllNotificationsAsRead(userId: string): Promise<void> 
    ============================================ */
 
 export async function deleteNotification(notificationId: string): Promise<void> {
-  // ✅ Kunin muna yung user_id
   const { data: existing } = await supabase
     .from('notifications')
     .select('user_id')
@@ -132,9 +129,8 @@ export async function deleteNotification(notificationId: string): Promise<void> 
     throw new Error(error.message);
   }
 
-  // ✅ Invalidate user cache
   if (existing?.user_id) {
-    invalidateCache(`notifications_${existing.user_id}`);
+    invalidateCache(`user_notifications_${existing.user_id}`); // ✅ Sinync
   }
 }
 
@@ -153,7 +149,7 @@ export async function clearAllNotifications(userId: string): Promise<void> {
     throw new Error(error.message);
   }
 
-  invalidateCache(`notifications_${userId}`);
+  invalidateCache(`user_notifications_${userId}`); // ✅ Sinync
 }
 
 /* ============================================

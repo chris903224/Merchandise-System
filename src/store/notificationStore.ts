@@ -4,12 +4,12 @@ import { create } from 'zustand';
 import type { Notification } from '../types/notification';
 import { supabase } from '../lib/supabaseClient';
 import {
-  fetchUserNotifications,
-  markUserNotificationAsRead,
-  markAllUserNotificationsAsRead,
-  deleteUserNotification,
-  clearAllUserNotifications,
-} from '../services/userNotifications';
+  fetchNotifications as fetchUserNotifications,
+  markNotificationAsRead as markUserNotificationAsRead,
+  markAllNotificationsAsRead as markAllUserNotificationsAsRead,
+  deleteNotification as deleteUserNotification,
+  clearAllNotifications as clearAllUserNotifications,
+} from '../services/notifications'; // ✅ ITINAMA ANG IMPORT
 import { invalidateCache, setCache } from '../utils/cache';
 
 interface NotificationStore {
@@ -17,7 +17,7 @@ interface NotificationStore {
   unreadCount: number;
   isLoading: boolean;
   realtimeChannel: ReturnType<typeof supabase.channel> | null;
-  loadNotifications: (userId: string, forceRefresh?: boolean) => Promise<void>;   // ✅ IDAGDAG ang forceRefresh
+  loadNotifications: (userId: string, forceRefresh?: boolean) => Promise<void>;
   subscribeToRealtime: (userId: string) => void;
   unsubscribeFromRealtime: () => void;
   markAsRead: (id: string) => Promise<void>;
@@ -34,14 +34,10 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
   isLoading: false,
   realtimeChannel: null,
 
-  /* ============================================
-     ✅ LOAD — with optional force refresh
-  ============================================ */
   loadNotifications: async (userId: string, forceRefresh = false) => {
     set({ isLoading: true });
 
     try {
-      // ✅ Kung forceRefresh — i-invalidate ang cache BAGO mag-fetch
       if (forceRefresh) {
         invalidateCache(`user_notifications_${userId}`);
         console.log('[Notifications] 🔄 Force refresh — cache cleared');
@@ -63,10 +59,6 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
 
-  /* ============================================
-     ✅ REAL-TIME SUBSCRIPTION — user_notifications
-     May logging para ma-verify kung tumatakbo
-  ============================================ */
   subscribeToRealtime: (userId: string) => {
     const existing = get().realtimeChannel;
     if (existing) {
@@ -88,7 +80,6 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
         },
         (payload) => {
           console.log('[Notifications] 🔔 REALTIME INSERT:', payload.new);
-
           invalidateCache(`user_notifications_${userId}`);
 
           const newNotification: Notification = {
@@ -104,11 +95,6 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
             createdAt: payload.new.created_at,
           };
           get().addNotification(newNotification);
-
-          console.log(
-            '[Notifications] ✅ Added to store. Total:',
-            get().notifications.length
-          );
         }
       )
       .on(
@@ -121,7 +107,6 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
         },
         (payload) => {
           console.log('[Notifications] 🔔 REALTIME UPDATE:', payload.new);
-
           invalidateCache(`user_notifications_${userId}`);
 
           set((state) => {
@@ -150,7 +135,6 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
         },
         (payload) => {
           console.log('[Notifications] 🔔 REALTIME DELETE:', payload.old);
-
           invalidateCache(`user_notifications_${userId}`);
 
           set((state) => {

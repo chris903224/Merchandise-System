@@ -17,6 +17,8 @@ import {
   placeOrder as placeOrderService,
   fetchAllOrders,
   updateOrderStatus as updateOrderStatusService,
+  updatePaymentStatus as updatePaymentStatusService,
+  refreshOrders as refreshOrdersService, // ✅ Imported
 } from './services/orders';
 import { createUserNotification } from './services/userNotifications';
 import { invalidateCache } from './utils/cache';
@@ -45,12 +47,17 @@ interface AppContextValue extends AppState {
   setCart: (items: CartItem[]) => void;
   setProductStock: (productId: string, stock: number) => Promise<void>;
   setOrderStatus: (orderId: string, orderStatus: string) => Promise<void>;
+  setOrderPaymentStatus: (orderId: string, paymentStatus: string) => Promise<void>;
   placeOrder: (order: Order) => Promise<void>;
   addProduct: (product: Product) => Promise<void>;
   updateProduct: (product: Product) => Promise<void>;
   deleteProduct: (productId: string) => Promise<void>;
   updateProfilePicture: (imageUrl: string | null) => void;
   refreshProducts: () => Promise<void>;
+  
+  // ✅ IDINAGDAG: refreshOrders
+  refreshOrders: () => Promise<void>;
+
   isLoading: boolean;
 
   /* ✅ GLOBAL LOGIN LOCK (rate-limit) */
@@ -80,17 +87,13 @@ function readLoginLock(): number | null {
 
 /* ============================================
    ✅ CART INITIAL LOAD — session-aware
-   ✅ May session → read cart from localStorage
-   ✅ Walang session → empty cart (walang save)
 ============================================ */
 function readClientState(): Pick<AppState, 'session' | 'cart'> {
   const session = readStorage<SessionUser | null>(STORAGE_KEYS.session, null);
 
   return {
     session,
-    cart: session
-      ? readStorage<CartItem[]>(STORAGE_KEYS.cart, [])
-      : [],
+    cart: session ? readStorage<CartItem[]>(STORAGE_KEYS.cart, []) : [],
   };
 }
 
@@ -368,7 +371,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     writeStorage(STORAGE_KEYS.session, user);
     setSession(user);
 
-    /* ✅ I-restore cart from localStorage kung meron */
     const savedCart = readStorage<CartItem[]>(STORAGE_KEYS.cart, []);
     if (savedCart.length > 0) {
       setCartState(savedCart);
@@ -376,7 +378,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signOut = useCallback(() => {
-    /* ✅ I-clear session + cart + onboarding */
     localStorage.removeItem(STORAGE_KEYS.session);
     localStorage.removeItem(STORAGE_KEYS.cart);
 
@@ -395,18 +396,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   /* ============================================
-     ✅ CART — save to localStorage ONLY if logged in
-     ✅ Guest users: cart lives in memory (React state) only
-     ✅ Logged-in users: cart persists to localStorage
+     ✅ CART — save only if logged in
      ============================================ */
   const setCart = useCallback(
     (items: CartItem[]) => {
-      /* ✅ Kung may session lang → i-save sa localStorage */
       if (session) {
         writeStorage(STORAGE_KEYS.cart, items);
       }
-
-      /* ✅ Palaging i-update yung state (para visible sa UI) */
       setCartState(items);
     },
     [session]
@@ -445,6 +441,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         price: product.price,
         stock: product.stock,
         sizes: product.sizes,
+        size_stocks: product.sizeStocks ?? {},
         image: product.image,
         image_alt: product.imageAlt,
         description: product.description,
@@ -468,6 +465,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         price: product.price,
         stock: product.stock,
         sizes: product.sizes,
+        size_stocks: product.sizeStocks ?? {}, // ✅ IDINAGDAG ITO
         image: product.image,
         image_alt: product.imageAlt,
         description: product.description,
@@ -484,7 +482,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   /* ============================================
-     ORDERS
+     ORDERS — status updates fire student notifs
      ============================================ */
   const setOrderStatus = useCallback(
     async (orderId: string, orderStatus: string) => {
@@ -561,6 +559,34 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [orders]
   );
 
+  const setOrderPaymentStatus = useCallback(
+    async (orderId: string, paymentStatus: string) => {
+      setOrders((prev) =>
+        prev.map((o) => (o.id === orderId ? { ...o, paymentStatus } : o))
+      );
+
+      await updatePaymentStatusService(orderId, paymentStatus);
+
+      const order = orders.find((o) => o.id === orderId);
+      if (order && paymentStatus === 'Paid') {
+        try {
+          await createUserNotification(order.userId, {
+            type: 'order',
+            title: 'Payment Received ✅',
+            message: `Payment for order #${orderId} has been confirmed. Total: ₱${order.totalAmount.toFixed(2)}.`,
+            link: `/orders/${orderId}`,
+            actionLabel: 'View Order',
+            metadata: { orderId, paymentStatus },
+          });
+          console.log('[Store] ✅ Payment notification created:', orderId);
+        } catch (err) {
+          console.error('[Store] ❌ Payment notification failed:', err);
+        }
+      }
+    },
+    [orders]
+  );
+
   const placeOrder = useCallback(
     async (order: Order) => {
       setOrders((prev) => [order, ...prev]);
@@ -575,7 +601,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         })
       );
 
-      /* ✅ I-clear cart (session-aware) */
       if (session) {
         writeStorage(STORAGE_KEYS.cart, []);
       }
@@ -601,11 +626,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
 
   /* ============================================
-     REFRESH PRODUCTS
+     REFRESH DATA
      ============================================ */
   const refreshProductsData = useCallback(async () => {
     const data = await refreshProductsService();
     setProducts(data);
+  }, []);
+
+  // ✅ IDINAGDAG: refreshOrders function
+  const refreshOrdersData = useCallback(async () => {
+    const data = await refreshOrdersService();
+    setOrders(data);
   }, []);
 
   /* ============================================
@@ -623,19 +654,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setCart,
       setProductStock,
       setOrderStatus,
+      setOrderPaymentStatus,
       placeOrder,
       addProduct,
       updateProduct,
       deleteProduct,
       updateProfilePicture,
       refreshProducts: refreshProductsData,
+      refreshOrders: refreshOrdersData, // ✅ Exposed sa context
 
       loginLockUntil,
       isLoginLocked,
       lockLogin,
       unlockLogin,
 
-      /* ✅ ONBOARDING */
       onboarding,
       isLoadingOnboarding,
       refreshOnboarding,
@@ -652,12 +684,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setCart,
       setProductStock,
       setOrderStatus,
+      setOrderPaymentStatus,
       placeOrder,
       addProduct,
       updateProduct,
       deleteProduct,
       updateProfilePicture,
       refreshProductsData,
+      refreshOrdersData,
 
       loginLockUntil,
       isLoginLocked,
@@ -676,7 +710,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
 /* ============================================
    HOOKS
-============================================ */
+   ============================================ */
 
 export function useApp(): AppContextValue {
   const context = useContext(AppContext);
@@ -696,7 +730,7 @@ export function useOrders(): Order[] {
 
 /* ============================================
    MAPPERS
-============================================ */
+   ============================================ */
 
 function mapProductRow(row: any): Product {
   return {
