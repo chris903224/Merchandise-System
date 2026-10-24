@@ -1,268 +1,970 @@
-/* src/styles/organization/layout.css */
+/* ============================================================
+   SJCM ORGANIZATION — LAYOUT, TOKENS, SIDEBAR, TOPBAR
+   ============================================================ */
 
-.org-shell {
+/* ✅ 1. TOKENS */
+.org-shell, .org-login-wrapper {
+  --bg: #050a16;
+  --s: #0e1730;
+  --tx: #eaf0ff;
+  --mu: #8e9bb8;
+  --sub: #b0bed6;
+  --w: 255, 255, 255;
+  --bd: rgba(var(--w), .1);
+  --a: #3b7bff;
+  --a2: #2a56d6;
+  --al: #6aa1ff;
+  --on: #fff;
+  --hl: rgba(255, 255, 255, .07);
+  --ds: rgba(0, 0, 0, .55);
+
+  /* Shared design tokens (new, additive) */
+  --ease: cubic-bezier(.4, 0, .2, 1);
+  --spring: cubic-bezier(.34, 1.56, .64, 1);
+  --r-card: 22px;
+  --glass-bg: linear-gradient(145deg, rgba(var(--w), .075), rgba(var(--w), .02));
+  --glass-bd: rgba(var(--w), .12);
+  --glass-shadow: 0 12px 40px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(var(--w), .1);
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--a) 35%, transparent);
+
+  color-scheme: dark;
+  font: 14px/1.45 'Plus Jakarta Sans', system-ui, sans-serif;
+  color: var(--tx);
   min-height: 100vh;
-  display: flex;
-  background: var(--bg);
-  color: var(--tx);
+  background:
+    radial-gradient(900px 520px at 72% -8%, color-mix(in srgb, var(--a) 28%, transparent), transparent),
+    radial-gradient(700px 500px at 0% 100%, color-mix(in srgb, var(--a2) 28%, transparent), transparent),
+    var(--bg);
+  transition: background .3s ease, color .3s ease;
+  -webkit-font-smoothing: antialiased;
 }
 
-.org-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  margin-left: 104px;
-  transition: margin-left .35s cubic-bezier(.4,0,.2,1);
+/* ✅ 2. 10 COLOR THEMES */
+.org-shell[data-theme="midnight"] { --bg: #050a16; --s: #0e1730; --tx: #eaf0ff; --mu: #8e9bb8; --w: 255, 255, 255; --a: #3b7bff; --a2: #2a56d6; --al: #6aa1ff; color-scheme: dark; }
+.org-shell[data-theme="plum"]     { --bg: #150c1c; --s: #26142f; --tx: #f5ecfa; --mu: #a58bb5; --w: 255, 255, 255; --a: #b05cd6; --a2: #6b2a8f; --al: #d49bf0; color-scheme: dark; }
+.org-shell[data-theme="forest"]   { --bg: #06130e; --s: #0f2a1f; --tx: #e8f5ee; --mu: #84a898; --w: 255, 255, 255; --a: #2fb57a; --a2: #176a47; --al: #5fe0a4; color-scheme: dark; }
+.org-shell[data-theme="matte"]    { --bg: #0b0b0c; --s: #1a1a1c; --tx: #f5f5f5; --mu: #8a8a90; --w: 255, 255, 255; --a: #e6e6e6; --a2: #8d8d93; --al: #fff; --on: #0b0b0c; color-scheme: dark; }
+.org-shell[data-theme="charcoal"] { --bg: #1b1b1d; --s: #29292c; --tx: #efeff1; --mu: #9a9aa2; --w: 255, 255, 255; --a: #8b9bb8; --a2: #5a6a88; --al: #b6c3dc; --on: #111; color-scheme: dark; }
+
+.org-shell[data-theme="cream"]    { --bg: #f6edd6; --s: #f6edd6; --tx: #2b2113; --mu: #7a6a4f; --w: 90, 60, 10; --a: #a67510; --a2: #7a540a; --al: #8a5f0a; --on: #fff; --hl: rgba(255,255,255,.95); --ds: rgba(90,60,10,.22); color-scheme: light; }
+.org-shell[data-theme="white"]    { --bg: #eef0f4; --s: #eef0f4; --tx: #14161c; --mu: #6b7280; --w: 30, 36, 60; --a: #2b2f3a; --a2: #0f1117; --al: #1d2230; --on: #fff; --hl: rgba(255,255,255,.95); --ds: rgba(30,36,60,.22); color-scheme: light; }
+.org-shell[data-theme="beige"]    { --bg: #f1e7d3; --s: #f1e7d3; --tx: #3a2b1a; --mu: #86745a; --w: 100, 70, 30; --a: #b4783a; --a2: #8a5524; --al: #8f5a22; --on: #fff; --hl: rgba(255,255,255,.95); --ds: rgba(100,70,30,.22); color-scheme: light; }
+.org-shell[data-theme="gray"]     { --bg: #e9ebf0; --s: #e9ebf0; --tx: #1c2230; --mu: #6b7280; --w: 40, 50, 80; --a: #5b6b8c; --a2: #3d4a68; --al: #3d4a68; --on: #fff; --hl: rgba(255,255,255,.95); --ds: rgba(40,50,80,.22); color-scheme: light; }
+.org-shell[data-theme="blush"]    { --bg: #fbe9ee; --s: #fbe9ee; --tx: #3a1e29; --mu: #8a6572; --w: 120, 40, 70; --a: #d6567e; --a2: #a63559; --al: #b23a62; --on: #fff; --hl: rgba(255,255,255,.95); --ds: rgba(120,40,70,.22); color-scheme: light; }
+
+.org-shell[data-mode="light"] {
+  background: radial-gradient(900px 520px at 72% -8%, color-mix(in srgb, var(--a) 14%, transparent), transparent), var(--bg) !important;
 }
 
-.sidebar:hover ~ .org-main {
-  margin-left: 296px;
+/* ✅ 3. GLOBAL RESET */
+.org-shell *, .org-login-wrapper * { box-sizing: border-box; margin: 0; padding: 0; }
+.org-shell a, .org-login-wrapper a { color: inherit; text-decoration: none; cursor: pointer; }
+.org-shell button, .org-login-wrapper button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+.org-shell small, .org-login-wrapper small { display: block; color: var(--mu); font-size: 12px; }
+.org-shell i, .org-login-wrapper i { display: inline-grid !important; place-items: center !important; width: 20px !important; height: 20px !important; flex: none !important; }
+.org-shell i svg, .org-login-wrapper i svg { width: 100% !important; height: 100% !important; max-width: 100% !important; max-height: 100% !important; }
+
+.org-shell :focus-visible { outline: 2px solid var(--al); outline-offset: 2px; }
+.org-shell ::selection { background: color-mix(in srgb, var(--a) 40%, transparent); color: var(--tx); }
+
+/* Slim, themed scrollbars */
+.org-shell * { scrollbar-width: thin; scrollbar-color: rgba(var(--w), .2) transparent; }
+.org-shell *::-webkit-scrollbar { width: 8px; height: 8px; }
+.org-shell *::-webkit-scrollbar-thumb { background: rgba(var(--w), .18); border-radius: 99px; }
+.org-shell *::-webkit-scrollbar-thumb:hover { background: rgba(var(--w), .3); }
+
+/* ✅ 4. GLASS EFFECT */
+.org-shell .glass, .org-login-wrapper .panel {
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--bd) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(140%) !important;
+  backdrop-filter: blur(22px) saturate(140%) !important;
+  border-radius: var(--r-card) !important;
+  box-shadow: var(--glass-shadow) !important;
+  color: var(--tx) !important;
+}
+.org-shell[data-mode="light"] .glass {
+  background: linear-gradient(145deg, rgba(255, 255, 255, .82), rgba(255, 255, 255, .48)) !important;
+  box-shadow: 0 10px 30px rgba(var(--w), .14), inset 0 1px 0 #fff !important;
 }
 
-.org-content {
-  flex: 1;
-  padding: 24px 28px;
-  display: grid;
-  gap: 20px;
-  align-content: start;
+/* ✅ 5. MAIN LAYOUT */
+.org-shell { display: flex !important; width: 100% !important; }
+
+.org-shell .org-main {
+  position: relative !important;
+  z-index: 10 !important;
+  margin-left: 124px !important;
+  padding: 16px 20px 28px 0 !important;
+  transition: margin-left .4s var(--spring) !important;
+  min-width: 0 !important;
+  width: 100% !important;
+}
+.org-shell .sidebar:hover ~ .org-main { margin-left: 296px !important; }
+.org-shell .floating-sidebar:hover ~ .org-main { margin-left: 300px !important; }
+
+/* ✅ 6. SIDEBAR (classic) */
+.org-shell .sidebar {
+  position: fixed !important; inset: 16px auto 16px 16px !important;
+  width: 72px !important; padding: 12px !important;
+  display: flex !important; flex-direction: column !important; gap: 6px !important;
+  overflow: hidden !important; z-index: 20 !important;
+  transition: width .35s var(--ease), box-shadow .35s, background .35s !important;
+}
+.org-shell .sidebar:hover {
+  width: 264px !important;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--bg) 72%, var(--a)), var(--bg)) !important;
+  box-shadow: 0 24px 70px rgba(0,0,0,.65), inset 0 1px 0 rgba(var(--w),.1) !important;
 }
 
-/* Topbar */
-.top {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 20px 28px 0;
-}
+.org-shell .sidebar .t { opacity: 0 !important; white-space: nowrap !important; transition: opacity .15s !important; }
+.org-shell .sidebar:hover .t, .org-shell .sidebar:hover .brand b, .org-shell .sidebar:hover .nav span { opacity: 1 !important; transition: opacity .25s .12s !important; }
 
-.search {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 50px;
-  padding: 0 16px;
-  border-radius: 999px;
-  color: var(--mu);
-}
+.org-shell .sidebar .brand { display: flex !important; align-items: center !important; gap: 12px !important; padding: 6px 7px 20px !important; font-size: 19px !important; font-weight: 800 !important; letter-spacing: -.01em !important; border-bottom: 1px solid var(--bd) !important; margin-bottom: 12px !important; }
+.org-shell .sidebar .logo { width: 34px !important; height: 34px !important; flex: none !important; clip-path: polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%) !important; background: linear-gradient(135deg,var(--al),var(--a) 55%,var(--a2)) !important; object-fit: cover !important; }
 
-.search input {
-  flex: 1;
-  min-width: 0;
-  background: none;
-  border: 0;
-  outline: 0;
-  color: var(--tx);
-}
+.org-shell .sidebar .nav { display: flex !important; align-items: center !important; gap: 14px !important; height: 46px !important; padding: 0 13px !important; border-radius: 14px !important; color: var(--sub) !important; white-space: nowrap !important; transition: background .2s, color .2s !important; background: transparent !important; }
+.org-shell .sidebar .nav:hover { background: rgba(var(--w),.07) !important; color: var(--tx) !important; }
+.org-shell .sidebar .nav.on { background: linear-gradient(90deg,var(--a2),var(--a) 60%,var(--a2)) !important; color: var(--on) !important; box-shadow: 0 6px 22px color-mix(in srgb,var(--a2) 33%,transparent) !important; }
+.org-shell .sidebar .nav.on svg { stroke: var(--on) !important; }
+.org-shell .sidebar .nav i, .org-shell .sidebar .nav span.icon { width: 22px !important; height: 22px !important; display: flex !important; align-items: center !important; justify-content: center !important; margin: 0 !important; }
+.org-shell .sidebar .nav svg, .org-shell .sidebar .brand svg, .org-shell .sidebar .foot svg, .org-shell .top svg { width: 22px !important; height: 22px !important; min-width: 22px !important; min-height: 22px !important; stroke: currentColor !important; stroke-width: 1.8 !important; fill: none !important; display: block !important; }
 
-.search kbd {
-  font: 600 12px inherit;
-  padding: 3px 9px;
-  border-radius: 8px;
-  background: rgba(var(--w), .08);
-}
+.org-shell .sidebar .foot { margin-top: auto !important; display: flex !important; flex-direction: column !important; gap: 10px !important; opacity: 0 !important; transition: opacity .15s !important; width: 100% !important; padding-top: 10px !important; }
+.org-shell .sidebar:hover .foot { opacity: 1 !important; transition: opacity .25s .12s !important; }
 
-.bell {
-  position: relative;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  border: 1px solid var(--bd);
-  background: rgba(var(--w), .06);
-  color: var(--tx);
-}
+.org-shell .sidebar .tag, .org-shell .sidebar .me { display: flex !important; align-items: center !important; gap: 12px !important; padding: 8px !important; border-radius: 16px !important; background: rgba(var(--w),.05) !important; border: 1px solid var(--bd) !important; width: 100% !important; white-space: nowrap !important; overflow: hidden !important; }
+.org-shell .sidebar .tag b, .org-shell .sidebar .me b { display: block !important; font-size: 13px !important; font-weight: 700 !important; color: var(--tx) !important; margin: 0 !important; line-height: 1.2 !important; }
+.org-shell .sidebar .tag small, .org-shell .sidebar .me small { font-size: 11px !important; color: var(--mu) !important; margin: 0 !important; line-height: 1.2 !important; }
+.org-shell .sidebar .av { width: 32px !important; height: 32px !important; flex: none !important; border-radius: 50% !important; display: grid !important; place-items: center !important; font-size: 12px !important; font-weight: 700 !important; background: linear-gradient(135deg,var(--a),var(--a2)) !important; color: #fff !important; }
+.org-shell .sidebar .tag .ic, .org-shell .sidebar .me .av { width: 32px !important; height: 32px !important; min-width: 32px !important; min-height: 32px !important; border-radius: 10px !important; display: grid !important; place-items: center !important; flex-shrink: 0 !important; }
+.org-shell .sidebar .me .av { border-radius: 50% !important; }
 
-.bell em {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: 99px;
-  background: #ff5d73;
-  color: #fff;
-  font: 700 10px/18px inherit;
-  font-style: normal;
-  text-align: center;
-}
-.bell em:empty { display: none; }
+.org-shell .sidebar .tag .t, .org-shell .sidebar .me .t { display: flex !important; flex-direction: column !important; opacity: 0 !important; visibility: hidden !important; transition: opacity .15s !important; }
+.org-shell .sidebar:hover .tag .t, .org-shell .sidebar:hover .me .t { opacity: 1 !important; visibility: visible !important; transition: opacity .25s .12s !important; }
 
-.langbtn .cc {
-  position: absolute;
-  bottom: 2px;
-  right: 2px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--a);
-  color: var(--on);
-  font: 700 9px inherit;
-  display: grid;
-  place-items: center;
-}
+/* ✅ 7. TOPBAR (base) */
+.org-shell .top { display: flex !important; align-items: center !important; gap: 16px !important; margin-bottom: 20px !important; position: relative !important; z-index: 10 !important; }
+.org-shell .search { flex: 1 !important; display: flex !important; align-items: center !important; gap: 10px !important; height: 50px !important; padding: 0 16px !important; border-radius: 999px !important; color: var(--mu) !important; }
+.org-shell .search input { flex: 1 !important; min-width: 0 !important; background: none !important; border: 0 !important; outline: 0 !important; color: var(--tx) !important; }
+.org-shell .search input::placeholder { color: var(--mu) !important; }
+.org-shell kbd { font: 600 12px inherit !important; padding: 3px 9px !important; border-radius: 8px !important; background: rgba(var(--w),.08) !important; border: 1px solid rgba(var(--w), .08) !important; }
+.org-shell .bell { position: relative !important; width: 50px !important; height: 50px !important; border-radius: 50% !important; display: grid !important; place-items: center !important; cursor: pointer !important; }
+.org-shell .bell em { position: absolute !important; top: 5px !important; right: 5px !important; min-width: 18px !important; height: 18px !important; padding: 0 5px !important; border-radius: 99px !important; background: #ff5d73 !important; color: #fff !important; font: 700 10px/18px inherit !important; font-style: normal !important; text-align: center !important; }
+.org-shell .user { display: flex !important; align-items: center !important; gap: 10px !important; padding: 8px 14px 8px 8px !important; border-radius: 999px !important; }
+.org-shell .user b { display: block !important; font-size: 13px !important; line-height: 1.2 !important; }
+.org-shell .user small { color: var(--mu) !important; font-size: 11px !important; }
 
-.user {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 14px 8px 8px;
-  border-radius: 999px;
-  cursor: pointer;
-  border: 1px solid var(--bd);
-  background: rgba(var(--w), .06);
-  color: var(--tx);
-  text-decoration: none;
-}
+/* ✅ 8. PAGE CONTAINERS */
+.org-shell .page-dashboard, .org-shell .page-products, .org-shell .page-orders, .org-shell .page-order-details, .org-shell .page-notifications, .org-shell .page-profile, .org-shell .page-settings { display: grid !important; gap: 20px !important; align-content: start !important; }
+.org-shell .ph { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 16px !important; margin-bottom: 20px !important; }
+.org-shell .ph h2 { font-size: 26px !important; font-weight: 800 !important; letter-spacing: -.02em !important; color: var(--tx) !important; }
+.org-shell .ph p { color: var(--mu) !important; }
 
-.user b { display: block; font-size: 13px; line-height: 1.2; }
-.user small { color: var(--mu); font-size: 11px; }
+/* ✅ 9. BUTTONS & FORMS */
+.org-shell .btn { padding: 11px 20px !important; border: 0 !important; border-radius: 12px !important; cursor: pointer !important; background: linear-gradient(135deg,var(--a),var(--a2)) !important; box-shadow: 0 6px 20px color-mix(in srgb,var(--a2) 33%,transparent) !important; color: var(--on) !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; transition: transform .2s var(--ease), filter .2s, box-shadow .2s, background .2s !important; font-size: 14px !important; font-weight: 700 !important; letter-spacing: .01em !important; }
+.org-shell .btn:hover { filter: brightness(1.1) !important; transform: translateY(-1px) !important; }
+.org-shell .btn:active { transform: translateY(0) scale(.98) !important; }
+.org-shell .btn:disabled { opacity: .55 !important; cursor: not-allowed !important; filter: none !important; transform: none !important; }
+.org-shell .btn.gh { background: rgba(var(--w),.08) !important; color: var(--tx) !important; box-shadow: none !important; border: 1px solid var(--bd) !important; }
+.org-shell .btn.gh:hover { background: rgba(var(--w),.12) !important; }
+.org-shell .btn.sm { padding: 6px 12px !important; font-size: 12px !important; box-shadow: none !important; }
 
-.av {
-  width: 32px;
-  height: 32px;
-  flex: none;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 12px;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--a), var(--a2));
-  color: #fff;
-}
+.org-shell .in { width: 100% !important; background: rgba(var(--w),.06) !important; border: 1px solid var(--bd) !important; border-radius: 12px !important; padding: 11px 14px !important; outline: 0 !important; color: var(--tx) !important; transition: border-color .2s, box-shadow .2s, background .2s !important; }
+.org-shell .in::placeholder { color: var(--mu) !important; }
+.org-shell .in:focus { border-color: var(--a) !important; background: rgba(var(--w), .08) !important; box-shadow: 0 0 0 3px color-mix(in srgb, var(--a) 20%, transparent) !important; }
 
-/* Footer */
-.ftr {
-  padding: 32px 28px;
-  background: color-mix(in srgb, var(--bg) 90%, var(--s));
-  border-top: 1px solid var(--bd);
-  margin-top: auto;
-}
-.ft-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1.5fr;
-  gap: 32px;
-  margin-bottom: 32px;
-}
-.ft-brand p, .ft-col a {
-  font-size: 13px;
-  color: var(--mu);
-  margin-bottom: 8px;
-  display: block;
-  text-decoration: none;
-}
-.ft-brand p { margin-top: 12px; line-height: 1.6; }
-.ft-col h4 { font-size: 14px; margin-bottom: 16px; color: var(--tx); }
-.ft-col a:hover { color: var(--al); }
+.org-shell .sel { margin-left: auto !important; background: rgba(var(--w), .08) !important; border: 1px solid var(--bd) !important; border-radius: 12px !important; padding: 7px 12px !important; font-size: 13px !important; color: var(--tx) !important; font-weight: 600 !important; outline: none !important; cursor: pointer !important; }
+.org-shell select option { background: var(--bg) !important; color: var(--tx) !important; }
 
-.ft-id { display: flex; align-items: center; gap: 12px; }
-.ft-logo {
-  width: 40px; height: 40px;
-  border-radius: 12px;
-  background: var(--a);
-  color: #fff;
-  display: grid; place-items: center;
-}
-.ft-pills { display: flex; gap: 12px; margin-top: 16px; }
-.ft-pills span {
-  font-size: 11px;
-  padding: 4px 10px;
-  border-radius: 99px;
-  background: rgba(var(--w), .06);
-  border: 1px solid var(--bd);
-  display: flex; align-items: center; gap: 6px;
-  color: var(--tx);
-}
-.ft-row { display: flex; gap: 12px; margin-bottom: 12px; font-size: 13px; color: var(--mu); }
-.ft-row i { color: var(--al); }
-.ft-row a { color: inherit; text-decoration: none; margin: 0; padding: 0; }
-.ft-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 24px;
-  border-top: 1px solid var(--bd);
-  font-size: 12px;
-  color: var(--mu);
-}
-.ft-links { display: flex; gap: 16px; }
-.ft-links a { color: var(--mu); text-decoration: none; }
-.ft-links a:hover { color: var(--tx); }
-.ft-top {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: var(--s);
-  border: 1px solid var(--bd);
-  color: var(--tx);
-  display: grid; place-items: center;
-  cursor: pointer;
-}
+.org-shell .chips { display: flex !important; gap: 8px !important; flex-wrap: wrap !important; }
+.org-shell .chip { display: inline-flex !important; align-items: center !important; gap: 8px !important; cursor: pointer !important; font-size: 13px !important; padding: 8px 14px !important; font-weight: 600 !important; border-radius: 999px !important; border: 1px solid var(--bd) !important; background: rgba(var(--w),.04) !important; color: var(--tx) !important; }
+.org-shell .chip.on { background: var(--a) !important; color: var(--on) !important; border-color: transparent !important; }
 
-/* Modals */
-.ov {
-  position: fixed; inset: 0;
-  z-index: 60;
-  display: none; place-items: center;
-  padding: 16px;
-  background: rgba(0,0,0,.55);
-  backdrop-filter: blur(6px);
-}
-.ov.open { display: grid; }
-.dlg {
-  width: min(900px, 100%);
-  max-height: 92vh;
-  overflow: auto;
-  border-radius: 26px;
-  border: 1px solid var(--bd);
-  background: color-mix(in srgb, var(--bg) 94%, var(--a));
-  box-shadow: 0 30px 80px rgba(0,0,0,.5);
-}
-.dh { display: flex; align-items: center; gap: 16px; padding: 22px 26px; border-bottom: 1px solid var(--bd); }
-.dh > div { flex: 1; }
-.dh h2 { font-size: 22px; letter-spacing: -.02em; color: var(--tx); }
-.dh small { color: var(--mu); }
-.x {
-  width: 42px; height: 42px;
-  border-radius: 50%;
-  border: 1px solid var(--bd);
-  background: rgba(var(--w), .06);
-  cursor: pointer;
-  display: grid; place-items: center;
-  color: var(--tx);
-}
-.db { padding: 22px 26px; display: grid; gap: 16px; }
-.df {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 16px; padding: 16px 26px; border-top: 1px solid var(--bd);
-  color: var(--mu);
-}
+/* ✅ 10. TABLES */
+.org-shell .wrap { overflow-x: auto !important; border-radius: var(--r-card) !important; }
+.org-shell .tbl { width: 100% !important; border-collapse: collapse !important; min-width: 560px !important; }
+.org-shell .tbl th { text-align: left !important; color: var(--mu) !important; font-weight: 600 !important; font-size: 12px !important; text-transform: uppercase !important; letter-spacing: .06em !important; padding: 8px 12px !important; }
+.org-shell .tbl td { padding: 13px 12px !important; border-top: 1px solid var(--bd) !important; color: var(--tx) !important; }
+.org-shell .tbl tbody tr { transition: background .2s !important; }
+.org-shell .tbl tbody tr:hover { background: rgba(var(--w), .03) !important; }
+.org-shell .tbl td:last-child { text-align: right !important; }
+.org-shell .tbl td b { display: block !important; font-weight: 600 !important; }
+.org-shell .tbl td small { color: var(--mu) !important; font-size: 11px !important; }
 
-/* Theme Picker Specifics */
-.gh { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
-.chip { padding: 7px 16px; border-radius: 999px; border: 1px solid var(--bd); background: rgba(var(--w),.06); font-weight: 700; color: var(--tx); font-size: 12px;}
-.tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
-.tc { position: relative; padding: 10px; border: 2px solid var(--bd); border-radius: 20px; background: rgba(var(--w), .04); cursor: pointer; text-align: center; color: var(--tx); }
-.tc:hover { border-color: color-mix(in srgb, var(--a) 50%, transparent); }
-.tc.sel { border-color: var(--a); box-shadow: 0 0 0 4px color-mix(in srgb, var(--a) 22%, transparent); }
-.tc b { display: block; font-size: 13px; margin-top: 4px; }
-.tc small { margin-top: 2px; font-size: 11px; }
-.sw { display: grid; place-items: center; height: 104px; border-radius: 14px; margin-bottom: 10px; font-size: 34px; border: 1px solid var(--bd); }
-.sw.lw { font-size: 24px; font-weight: bold; color: #fff; background: rgba(0,0,0,0.2); }
-.ck { position: absolute; top: 16px; right: 16px; width: 26px; height: 26px; border-radius: 50%; background: var(--a); color: var(--on); padding: 5px; }
-.sty em { font-style: normal; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 14px; background: var(--a); color: var(--on); }
+.org-shell .pill { display: inline-block !important; padding: 4px 11px !important; border-radius: 999px !important; font-size: 12px !important; font-weight: 600 !important; }
+.org-shell .ok { background: #2fb59426 !important; color: #4fe0b8 !important; }
+.org-shell .wa { background: #f0933a26 !important; color: #ffb066 !important; }
+.org-shell .no { background: #ff5d7326 !important; color: #ff8b9c !important; }
 
-@media (max-width: 900px) {
-  .ft-grid { grid-template-columns: 1fr 1fr; }
-  .ft-bar { flex-direction: column; gap: 16px; text-align: center; }
+/* ✅ 11. MODALS */
+.org-shell .ov { position: fixed !important; inset: 0 !important; z-index: 60 !important; display: grid !important; place-items: center !important; padding: 16px !important; background: rgba(0, 0, 0, .55) !important; -webkit-backdrop-filter: blur(6px) !important; backdrop-filter: blur(6px) !important; animation: orgFade .2s ease both; }
+.org-shell .dlg { width: min(900px, 100%) !important; max-height: 92vh !important; overflow: auto !important; border-radius: 26px !important; border: 1px solid var(--bd) !important; background: color-mix(in srgb, var(--bg) 94%, var(--a)) !important; box-shadow: 0 30px 80px rgba(0, 0, 0, .5) !important; animation: orgPop .28s var(--spring) both; }
+.org-shell .dh { display: flex !important; align-items: center !important; gap: 16px !important; padding: 22px 26px !important; border-bottom: 1px solid var(--bd) !important; }
+.org-shell .dh > div { flex: 1 !important; }
+.org-shell .dh h2 { font-size: 22px !important; letter-spacing: -.02em !important; color: var(--tx) !important; }
+.org-shell .x { width: 42px !important; height: 42px !important; border-radius: 50% !important; border: 1px solid var(--bd) !important; background: rgba(var(--w), .06) !important; display: grid !important; place-items: center !important; cursor: pointer !important; color: var(--tx) !important; transition: background .2s, transform .2s !important; }
+.org-shell .x:hover { background: rgba(var(--w), .12) !important; transform: rotate(90deg) !important; }
+.org-shell .db { padding: 22px 26px !important; display: grid !important; gap: 16px !important; }
+.org-shell .df { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 16px !important; padding: 16px 26px !important; border-top: 1px solid var(--bd) !important; }
+
+@keyframes orgFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes orgPop { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: none; } }
+
+/* ✅ 12. LOGIN PAGE */
+.org-login-wrapper { position: fixed !important; inset: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 24px !important; z-index: 100 !important; }
+.org-login-wrapper .shell { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 32px !important; width: 100% !important; max-width: 1120px !important; }
+.org-login-wrapper .panel { padding: 40px !important; display: flex !important; flex-direction: column !important; }
+.org-login-wrapper .guidelines { justify-content: center !important; }
+.org-login-wrapper .eyebrow { font-size: 11px !important; font-weight: 700 !important; letter-spacing: .1em !important; text-transform: uppercase !important; color: var(--al) !important; margin-bottom: 8px !important; }
+.org-login-wrapper h1 { font-size: 36px !important; color: var(--tx) !important; margin-bottom: 16px !important; }
+.org-login-wrapper .lead { color: var(--mu) !important; font-size: 15px !important; margin-bottom: 24px !important; }
+.org-login-wrapper .acc-list { display: flex !important; flex-direction: column !important; gap: 12px !important; }
+.org-login-wrapper .acc { border: 1px solid var(--bd) !important; border-radius: 12px !important; background: rgba(var(--w), .02) !important; }
+.org-login-wrapper .acc__trigger { display: flex !important; align-items: center !important; gap: 16px !important; width: 100% !important; padding: 16px !important; text-align: left !important; }
+.org-login-wrapper .acc__icon { width: 32px !important; height: 32px !important; border-radius: 8px !important; background: rgba(var(--w), .1) !important; color: var(--al) !important; display: grid !important; place-items: center !important; }
+.org-login-wrapper .acc__title { flex: 1 !important; font-weight: 600 !important; font-size: 14px !important; color: var(--tx) !important; }
+.org-login-wrapper .acc__body { display: grid !important; grid-template-rows: 0fr !important; transition: grid-template-rows .3s !important; }
+.org-login-wrapper .acc.is-open .acc__body { grid-template-rows: 1fr !important; }
+.org-login-wrapper .acc__inner { overflow: hidden !important; }
+.org-login-wrapper .acc__inner p { padding: 0 16px 16px 64px !important; color: var(--mu) !important; font-size: 13px !important; }
+.org-login-wrapper .login__brand { display: flex !important; align-items: center !important; gap: 16px !important; margin-bottom: 32px !important; }
+.org-login-wrapper .login__logo { width: 64px !important; height: 64px !important; object-fit: contain !important; }
+.org-login-wrapper .form { display: flex !important; flex-direction: column !important; gap: 20px !important; }
+.org-login-wrapper .field label { display: block !important; font-size: 13px !important; font-weight: 600 !important; color: var(--sub) !important; margin-bottom: 8px !important; }
+.org-login-wrapper .input-wrap { position: relative !important; }
+.org-login-wrapper .input-wrap > i { position: absolute !important; left: 16px !important; top: 50% !important; transform: translateY(-50%) !important; color: var(--mu) !important; }
+.org-login-wrapper .input { width: 100% !important; padding: 14px 14px 14px 44px !important; border: 1px solid var(--bd) !important; border-radius: 12px !important; font-size: 14px !important; background: rgba(var(--w), .05) !important; color: var(--tx) !important; outline: none !important; }
+.org-login-wrapper .toggle-pw { position: absolute !important; right: 14px !important; top: 50% !important; transform: translateY(-50%) !important; color: var(--mu) !important; }
+.org-login-wrapper .btn { width: 100% !important; padding: 14px !important; border-radius: 12px !important; font-size: 14px !important; margin-top: 8px !important; }
+.org-login-wrapper .toast { margin-top: 20px !important; padding: 14px !important; border-radius: 12px !important; font-size: 13px !important; font-weight: 600 !important; display: flex !important; gap: 10px !important; }
+.org-login-wrapper .toast--error { background: rgba(224, 82, 82, .1) !important; color: #ff8b9c !important; border: 1px solid rgba(224, 82, 82, .3) !important; }
+.org-login-wrapper .toast--success { background: rgba(34, 145, 92, .1) !important; color: #4fe0b8 !important; border: 1px solid rgba(34, 145, 92, .3) !important; }
+
+/* ✅ 13. RESPONSIVE */
+@media (max-width: 1100px) {
+  .org-shell .cols, .org-shell .stats, .org-shell .set { grid-template-columns: 1fr !important; }
+  .org-shell .hero .quote { display: none !important; }
+  .org-shell .ft-grid { grid-template-columns: 1fr 1fr !important; }
 }
 @media (max-width: 700px) {
-  .org-main { margin-left: 92px; }
-  .sidebar:hover ~ .org-main { margin-left: 92px; }
-  .org-content { padding: 16px; }
-  .user div { display: none; }
-  .search kbd { display: none; }
+  .org-shell .org-main, .org-shell .sidebar:hover ~ .org-main, .org-shell .floating-sidebar:hover ~ .org-main { margin-left: 92px !important; }
+  .org-shell .stats, .org-shell .stats.s3 { grid-template-columns: 1fr !important; }
+  .org-shell .user div, .org-shell .search kbd { display: none !important; }
+  .org-shell .user { padding: 8px !important; }
+  .org-shell .ft-grid { grid-template-columns: 1fr !important; }
+  .org-login-wrapper .shell { grid-template-columns: 1fr !important; }
+  .org-login-wrapper .guidelines { display: none !important; }
+}
+
+/* ============================================================
+   BACKGROUND LOGO (hero-logo) — fixed, behind content
+   ============================================================ */
+.org-shell .hero-logo {
+  position: fixed !important;
+  top: 50% !important;
+  left: 25% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 80vh !important;
+  height: 80vh !important;
+  object-fit: contain !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  opacity: .2 !important;
+}
+.org-shell .top,
+.org-shell .page-dashboard,
+.org-shell .org-content { position: relative !important; z-index: 10 !important; }
+
+/* ============================================================
+   FLOATING SIDEBAR
+   ============================================================ */
+.org-shell .floating-sidebar {
+  position: fixed !important;
+  left: 24px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 76px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  padding: 16px 14px !important;
+  border-radius: 32px !important;
+  z-index: 100 !important;
+  overflow: hidden !important;
+  transition: width .4s var(--spring), background .4s ease, box-shadow .4s ease !important;
+  background: linear-gradient(145deg, rgba(var(--w), .1), rgba(var(--w), .03)) !important;
+  border: 1px solid rgba(var(--w), .15) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .25), inset 0 1px 0 rgba(var(--w), .2) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+}
+.org-shell .floating-sidebar:hover {
+  width: 250px !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .4), 0 0 40px color-mix(in srgb, var(--a) 18%, transparent), inset 0 1px 0 rgba(var(--w), .25) !important;
+}
+
+.org-shell .floating-sidebar .brand { display: flex !important; align-items: center !important; width: 48px !important; padding: 0 7px 16px !important; margin-bottom: 8px !important; border-bottom: 1px solid rgba(var(--w), .1) !important; overflow: hidden !important; transition: width .3s ease !important; }
+.org-shell .floating-sidebar:hover .brand { width: 100% !important; }
+.org-shell .floating-sidebar .logo { width: 34px !important; height: 34px !important; flex-shrink: 0 !important; border-radius: 8px !important; object-fit: cover !important; }
+
+.org-shell .floating-sidebar .nav-icon { display: flex !important; align-items: center !important; width: 48px !important; height: 48px !important; border-radius: 16px !important; padding: 0 13px !important; text-decoration: none !important; transition: background .2s ease, color .2s ease, width .3s ease, box-shadow .2s !important; white-space: nowrap !important; color: var(--mu) !important; }
+.org-shell .floating-sidebar:hover .nav-icon { width: 100% !important; }
+.org-shell .floating-sidebar .nav-icon svg { width: 22px !important; height: 22px !important; flex-shrink: 0 !important; stroke: currentColor !important; stroke-width: 2 !important; fill: none !important; }
+.org-shell .floating-sidebar .nav-icon:hover { background: rgba(var(--w), .1) !important; color: var(--tx) !important; }
+.org-shell .floating-sidebar .nav-icon.active { background: linear-gradient(135deg, var(--a), var(--a2)) !important; color: #fff !important; box-shadow: 0 6px 20px color-mix(in srgb, var(--a) 45%, transparent) !important; }
+
+.org-shell .floating-sidebar .t { opacity: 0 !important; visibility: hidden !important; margin-left: 16px !important; font-size: 14px !important; font-weight: 600 !important; transform: translateX(-10px) !important; transition: all .3s var(--spring) !important; color: inherit !important; }
+.org-shell .floating-sidebar:hover .t { opacity: 1 !important; visibility: visible !important; transform: translateX(0) !important; transition-delay: .1s !important; }
+
+.org-shell .floating-sidebar .foot { margin-top: auto !important; width: 48px !important; padding-top: 16px !important; border-top: 1px solid rgba(var(--w), .1) !important; overflow: hidden !important; transition: width .3s ease !important; }
+.org-shell .floating-sidebar:hover .foot { width: 100% !important; }
+.org-shell .floating-sidebar .me { display: flex !important; align-items: center !important; text-decoration: none !important; color: inherit !important; }
+.org-shell .floating-sidebar .av { width: 34px !important; height: 34px !important; flex-shrink: 0 !important; border-radius: 50% !important; display: grid !important; place-items: center !important; background: var(--a) !important; color: #fff !important; font-size: 12px !important; font-weight: 700 !important; }
+
+/* ============================================================
+   GLASSMORPHISM TOPBAR
+   ============================================================ */
+.org-shell .top.org-topbar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 20px !important;
+  margin-bottom: 24px !important;
+  width: 100% !important;
+  padding: 12px 24px !important;
+  border-radius: 99px !important;
+  background: color-mix(in srgb, var(--s) 62%, transparent) !important;
+  border: 1px solid rgba(var(--w), .12) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(var(--w), .08) !important;
+  position: sticky !important;
+  top: 16px !important;
+  z-index: 50 !important;
+}
+html[data-mode="light"] body .org-shell .top.org-topbar {
+  background: rgba(255, 255, 255, .85) !important;
+  border: 1px solid rgba(0, 0, 0, .1) !important;
+}
+
+.org-shell .org-brand { display: flex !important; align-items: center !important; text-decoration: none !important; }
+.org-shell .org-brand-logo { width: 42px !important; height: 42px !important; border-radius: 50% !important; object-fit: cover !important; border: 2px solid rgba(var(--w), .12) !important; box-shadow: 0 0 18px color-mix(in srgb, var(--a) 30%, transparent) !important; }
+
+.org-shell .top.org-topbar .search { flex: 1 !important; display: flex !important; align-items: center !important; gap: 10px !important; height: 44px !important; padding: 0 16px !important; border-radius: 999px !important; background: rgba(var(--w), .05) !important; border: 1px solid rgba(var(--w), .1) !important; color: var(--tx) !important; transition: border-color .2s, box-shadow .2s !important; }
+.org-shell .top.org-topbar .search:focus-within { border-color: var(--a) !important; box-shadow: 0 0 0 3px color-mix(in srgb, var(--a) 18%, transparent) !important; }
+.org-shell .top.org-topbar .search input { flex: 1 !important; background: transparent !important; border: none !important; outline: none !important; color: var(--tx) !important; font-size: 14px !important; }
+
+.org-shell .org-nav-actions { display: flex !important; align-items: center !important; gap: 10px !important; margin-left: auto !important; }
+
+.org-shell .org-action-btn { display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; height: 44px !important; padding: 0 16px !important; border-radius: 999px !important; background: rgba(var(--w), .05) !important; border: 1px solid rgba(var(--w), .1) !important; color: var(--tx) !important; font-size: 13px !important; font-weight: 600 !important; cursor: pointer !important; text-decoration: none !important; transition: all .2s ease !important; }
+.org-shell .org-action-btn:hover { background: rgba(var(--w), .1) !important; transform: translateY(-1px) !important; }
+.org-shell .org-lang-code { font-size: 13px !important; font-weight: 700 !important; color: var(--tx) !important; }
+.org-shell .org-action-btn.org-icon-btn { width: 44px !important; padding: 0 !important; position: relative !important; }
+
+.org-shell .org-badge { position: absolute !important; top: -2px !important; right: -2px !important; min-width: 18px !important; height: 18px !important; border-radius: 99px !important; background: #ff5d73 !important; color: #fff !important; font-size: 10px !important; font-weight: 800 !important; display: grid !important; place-items: center !important; border: 2px solid var(--bg) !important; }
+
+.org-shell .org-user-btn { display: flex !important; align-items: center !important; gap: 8px !important; padding: 4px 12px 4px 4px !important; border-radius: 999px !important; background: rgba(var(--w), .05) !important; border: 1px solid rgba(var(--w), .1) !important; cursor: pointer !important; color: var(--tx) !important; height: 44px !important; transition: background .2s !important; }
+.org-shell .org-user-btn:hover { background: rgba(var(--w), .1) !important; }
+.org-shell .org-avatar { width: 34px !important; height: 34px !important; border-radius: 50% !important; background: var(--a) !important; color: #fff !important; display: grid !important; place-items: center !important; font-size: 13px !important; font-weight: 800 !important; }
+.org-shell .org-chevron { color: var(--mu) !important; transition: transform .2s !important; }
+.org-shell .user-wrap.is-open .org-chevron { transform: rotate(180deg) !important; }
+
+.org-shell .org-dropdown { position: absolute !important; top: calc(100% + 12px) !important; right: 0 !important; width: 220px !important; display: flex !important; flex-direction: column !important; padding: 8px !important; border-radius: 16px !important; background: color-mix(in srgb, var(--s) 95%, transparent) !important; border: 1px solid rgba(var(--w), .1) !important; box-shadow: 0 10px 40px rgba(0, 0, 0, .5) !important; backdrop-filter: blur(24px) !important; -webkit-backdrop-filter: blur(24px) !important; opacity: 0; visibility: hidden; transform: translateY(-10px) scale(.98); transition: all .2s ease !important; transform-origin: top right; }
+html[data-mode="light"] body .org-shell .org-dropdown { background: rgba(255, 255, 255, .95) !important; border: 1px solid rgba(0, 0, 0, .1) !important; }
+.org-shell .user-wrap.is-open .org-dropdown { opacity: 1 !important; visibility: visible !important; transform: translateY(0) scale(1) !important; }
+
+.org-shell .org-dropdown .dropdown-header { padding: 12px 14px !important; display: flex !important; flex-direction: column !important; gap: 2px; }
+.org-shell .org-dropdown .dropdown-header b { font-size: 14px !important; color: var(--tx) !important; }
+.org-shell .org-dropdown .dropdown-header small { font-size: 11px !important; color: var(--mu) !important; }
+
+.org-shell .org-dropdown a, .org-shell .org-dropdown button { display: flex !important; align-items: center !important; gap: 12px !important; width: 100% !important; padding: 10px 14px !important; border-radius: 10px !important; font-size: 13.5px !important; font-weight: 600 !important; color: var(--tx) !important; text-decoration: none !important; background: transparent !important; border: none !important; cursor: pointer !important; text-align: left !important; transition: background .15s !important; }
+.org-shell .org-dropdown a:hover, .org-shell .org-dropdown button:hover { background: rgba(var(--w), .1) !important; }
+.org-shell .org-dropdown hr { border: none !important; border-top: 1px solid rgba(var(--w), .1) !important; margin: 6px 8px !important; }
+.org-shell .org-dropdown .danger { color: #ff5d73 !important; }
+.org-shell .org-dropdown .danger:hover { background: rgba(255, 93, 115, .1) !important; }
+
+/* ============================================================
+   ORGANIZATION BACKGROUND LAYER
+   ============================================================ */
+html, body { background-color: transparent !important; margin: 0; padding: 0; min-height: 100vh; }
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url('/campus.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  transition: opacity .5s ease;
+}
+html[data-theme-mode="light"] body::before { opacity: .18; mix-blend-mode: multiply; }
+html[data-theme-mode="light"] .org-shell { background-color: transparent !important; background-image: none !important; }
+html[data-theme-mode="dark"] body::before { opacity: .22; mix-blend-mode: screen; }
+html[data-theme-mode="dark"] .org-shell { background-color: rgba(14, 22, 38, .85) !important; }
+
+/* ============================================================
+   CHIPS — STATIC (no hover animation, active keeps glow)
+   ============================================================ */
+.org-shell .flt button,
+.org-shell .flt .chip,
+.org-shell .chips > .chip,
+.org-shell div.chips > button,
+html body .org-shell .chips [class*="chip"] {
+  transition: none !important;
+  cursor: default !important;
+}
+.org-shell .flt button:not(.on):not(.active):hover,
+.org-shell .chips > .chip:not(.on):hover,
+.org-shell .chips > .chip:not(.on):focus,
+.org-shell .chips > .chip:not(.on):active,
+.org-shell div.chips > button:not(.on):not(.active):hover,
+.org-shell div.chips > button:not(.on):not(.active):focus,
+.org-shell div.chips > button:not(.on):not(.active):active,
+html body .org-shell .chips [class*="chip"]:not(.on):not(.is-active):hover {
+  background: rgba(var(--w), .04) !important;
+  background-color: rgba(var(--w), .04) !important;
+  color: var(--tx) !important;
+  -webkit-text-fill-color: var(--tx) !important;
+  border-color: var(--bd) !important;
+  transform: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+.org-shell .flt button.on,
+.org-shell .flt .chip.on,
+.org-shell .chips > .chip.on,
+.org-shell .chips > .chip.on:hover,
+.org-shell .chips > .chip.on:focus,
+.org-shell .chips > .chip.on:active,
+.org-shell div.chips > button.on,
+.org-shell div.chips > button.on:hover,
+.org-shell div.chips > button.active,
+.org-shell div.chips > button.active:hover {
+  background: var(--a) !important;
+  background-color: var(--a) !important;
+  color: var(--on) !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--a) 40%, transparent) !important;
+  transform: none !important;
+  filter: none !important;
+  cursor: pointer !important;
+}
+.org-shell .flt button *,
+.org-shell .chips > .chip > *,
+.org-shell div.chips > button > *,
+html body .org-shell .chips [class*="chip"] * { pointer-events: none !important; transition: none !important; }
+
+/* ============================================================
+   FIXED MAX-WIDTH DASHBOARD
+   ============================================================ */
+.org-shell .page-dashboard { width: 100% !important; max-width: 1200px !important; margin: 0 auto !important; }
+.org-shell .page-dashboard .cols { grid-template-columns: minmax(0, 1fr) 360px !important; gap: 24px !important; }
+.org-shell .page-dashboard .hero { padding: 24px 32px !important; }
+.org-shell .page-dashboard .stats { grid-template-columns: repeat(4, 1fr) !important; gap: 20px !important; }
+.org-shell .page-dashboard .card:has(.chart),
+.org-shell .page-dashboard .chart-container { height: 380px !important; display: flex !important; flex-direction: column !important; }
+
+@media (max-width: 1100px) {
+  .org-shell .page-dashboard .cols, .org-shell .page-dashboard .stats { grid-template-columns: 1fr !important; }
+  .org-shell .page-dashboard .card:has(.chart), .org-shell .page-dashboard .chart-container { height: auto !important; }
+}
+@media (max-width: 700px) {
+  .org-shell .top.org-topbar { padding: 10px 14px !important; gap: 10px !important; }
+  .org-shell .org-action-btn:not(.org-icon-btn) .org-lang-code { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .org-shell *, .org-shell *::before, .org-shell *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+/* ============================================================
+   TOPBAR STICKY FIX (WALANG BINAGO SA HUGIS AT SIZE)
+   ============================================================ */
+
+/* 1. Alisin ang scroll sa body para ang org-main ang mag-scroll */
+html, body {
+  height: 100vh !important;
+  overflow: hidden !important;
+}
+
+.org-shell {
+  height: 100vh !important;
+  overflow: hidden !important;
+}
+
+/* 2. Gawing scrollable ang main container, tanggalin ang top padding para 
+      walang gap kapag dumikit sa taas */
+.org-shell .org-main {
+  height: 100vh !important;
+  overflow-y: auto !important;
+  padding-top: 0 !important;
+}
+
+/* 3. I-stick ang topbar (walang binago sa size at border-radius) */
+.org-shell .top.org-topbar {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 16px !important; /* Dudulo dito kapag nag-scroll pababa */
+  z-index: 99999 !important; /* Para hindi matakpan ng cards */
+  
+  /* Panatilihin ang original glass at bilog na hugis (walang binago) */
+  background: color-mix(in srgb, var(--s) 62%, transparent) !important; 
+  border: 1px solid rgba(var(--w), .12) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  
+  /* Konting transition para swabe */
+  transition: background 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+/* 4. Kapag nasa tuktok na (nag-scroll), lagyan ng shadow para hindi magulo yung likod */
+.org-shell .top.org-topbar.is-scrolled {
+  background: color-mix(in srgb, var(--s) 85%, transparent) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(var(--w), .1) !important;
+}
+/* ============================================================
+   FINAL FIX: FIXED TOPBAR (PERMANENTENG NAKA-DIKIT SA TAAS)
+   ============================================================ */
+
+/* Ibalik ang normal scrolling */
+html, body {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+.org-shell {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow: visible !important;
+}
+
+.org-shell .org-main {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow: visible !important;
+  padding-top: 90px !important; /* Espasyo para hindi mag-overlap ang content sa fixed topbar */
+}
+
+/* ------------------------------------------------------------
+   ANG TOPBAR: GAGAWING FIXED PERO KAPAREHONG-KAPAREHO ANG HUGIS
+   ------------------------------------------------------------ */
+.org-shell .top.org-topbar {
+  position: fixed !important;
+  top: 16px !important; /* Kaparehong gap sa taas */
+  left: 124px !important; /* Kaparehas ng margin-left ng org-main */
+  right: 20px !important; /* Kaparehas ng right padding */
+  width: auto !important;
+  margin: 0 !important;
+  
+  /* Original glass design */
+  background: color-mix(in srgb, var(--s) 62%, transparent) !important; 
+  border: 1px solid rgba(var(--w), .12) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(var(--w), .08) !important;
+  z-index: 99999 !important;
+  
+  transition: left 0.4s var(--spring), background 0.3s ease !important;
+}
+
+/* Kapag nag-hover ang sidebar, sasabay ang topbar pakanan */
+.org-shell .sidebar:hover ~ .org-main .top.org-topbar {
+  left: 296px !important;
+}
+.org-shell .floating-sidebar:hover ~ .org-main .top.org-topbar {
+  left: 300px !important;
+}
+
+/* Kapag nag-scroll, dagdag shadow */
+.org-shell .top.org-topbar.is-scrolled {
+  background: color-mix(in srgb, var(--s) 85%, transparent) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(var(--w), .1) !important;
+}
+
+/*
+
+
+
+/* Responsive adjustments */
+@media (max-width: 700px) {
+  .org-shell .top.org-topbar {
+    left: 92px !important;
+    right: 16px !important;
+  }
+  .org-shell .org-main {
+    padding-top: 80px !important;
+  }
+}
+/* ============================================================
+   TRANSPARENT GLASS CARDS (MATCH ALL 10 THEMES)
+   ============================================================ */
+
+/* 1. Gawing transparent glass ang Product Card */
+.org-shell .pc {
+  background: var(--glass-bg) !important; /* Gagamitin ang 10 theme colors */
+  border: 1px solid var(--glass-bd) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  box-shadow: var(--glass-shadow) !important;
+  border-radius: 16px !important;
+  transition: all 0.3s var(--ease) !important;
+}
+
+.org-shell .pc:hover {
+  border-color: rgba(var(--w), 0.25) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(var(--w), 0.2) !important;
+  transform: translateY(-4px) !important;
+}
+
+/* 2. Gawing transparent din ang Size Boxes */
+.org-shell .size-box {
+  background: rgba(var(--w), 0.05) !important;
+  border: 1px solid rgba(var(--w), 0.1) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  transition: background 0.2s ease !important;
+}
+
+.org-shell .pc:hover .size-box {
+  background: rgba(var(--w), 0.08) !important;
+}
+
+/* 3. I-match ang "Manage Stock" button sa glass theme */
+.org-shell .manage-btn {
+  background: rgba(var(--w), 0.06) !important;
+  border: 1px solid rgba(var(--w), 0.12) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  color: #fff !important;
+}
+
+.org-shell .manage-btn:hover {
+  background: var(--a) !important; /* Mag-highlight gamit ang theme accent color */
+  border-color: transparent !important;
+  color: var(--on) !important;
+}
+
+/* 4. Siguraduhing transparent din ang inner elements */
+.org-shell .pd-metrics,
+.org-shell .pd-stock-section,
+.org-shell .pd-image-box,
+.org-shell .pd-btn.ghost {
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-bd) !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+}
+
+/* 5. Ayusin ang hover state ng category chips */
+.org-shell .chip {
+  background: rgba(var(--w), 0.04) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+.org-shell .chip.on {
+  background: var(--a) !important;
+  color: var(--on) !important;
+}
+/* ============================================================
+   PRODUCTS PAGE: BIG GLASS PANEL WRAPPER
+   ============================================================ */
+
+/* 1. Gawing relative container ang page at bigyan ng espasyo sa loob */
+.org-shell .page-products {
+  position: relative !important;
+  padding: 32px !important; 
+  border-radius: 28px !important;
+  z-index: 1 !important;
+  max-width: 1400px !important; /* Saktong lapad ng panel */
+  margin: 0 auto !important; /* Nakagitna sa screen */
+  margin-top: 16px !important; 
+  margin-bottom: 32px !important;
+}
+
+/* 2. Gumawa ng glass background gamit ang ::before */
+.org-shell .page-products::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important; /* Puno ang buong page-products */
+  border-radius: 28px !important; /* Malambot ang edges */
+  
+  /* Glassmorphism formula (konektado sa 10 theme colors mo) */
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-bd) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(140%) !important;
+  backdrop-filter: blur(24px) saturate(140%) !important;
+  box-shadow: var(--glass-shadow) !important;
+  
+  z-index: -1 !important; /* Nasa likod ng content pero nasa harap ng campus bg */
+  pointer-events: none !important;
+}
+
+/* 3. Ayusin ang Header (Products title + Add button) para maging maaliwalas */
+.org-shell .page-products .ph {
+  margin-bottom: 24px !important;
+  padding-bottom: 16px !important;
+  border-bottom: 1px solid rgba(var(--w), 0.08) !important; /* Manipis na divider */
+}
+
+/* 4. Ayusin ang Stats Cards (Units, Low, Out) para maging transparent glass din */
+.org-shell .page-products .stats .card {
+  background: rgba(var(--w), 0.03) !important; 
+  border: 1px solid rgba(var(--w), 0.08) !important;
+  box-shadow: none !important;
+}
+
+/* 5. Ayusin ang Filter Box (Categories container) */
+.org-shell .page-products .flt {
+  background: rgba(var(--w), 0.02) !important;
+  border: 1px solid rgba(var(--w), 0.06) !important;
+  box-shadow: none !important;
+  margin-bottom: 32px !important;
+}
+
+/* 6. Siguraduhing may tamang espasyo ang Cards Grid sa ilalim */
+.org-shell .page-products .pgrid {
+  padding-top: 8px !important;
+}
+
+/* 7. Responsive adjustment para sa mobile */
+@media (max-width: 700px) {
+  .org-shell .page-products {
+    padding: 16px !important;
+    border-radius: 20px !important;
+  }
+  .org-shell .page-products::before {
+    border-radius: 20px !important;
+  }
+}
+/* ============================================================
+   GLOBAL SCROLL FIX (IBALIK ANG SCROLL SA LAHAT)
+   ============================================================ */
+
+/* 1. Ibalik ang scroll sa buong browser (Tanggalin ang dating lock) */
+html, body {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow-y: auto !important; /* 👈 IBINALIK ANG SCROLL */
+  overflow-x: hidden !important;
+  margin: 0 !important;
+}
+
+/* 2. I-override ang org-shell at org-main para maging normal */
+.org-shell {
+  display: flex !important;
+  min-height: 100vh !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.org-shell .org-main {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow: visible !important; /* 👈 HAYAANG MAG-SCROLL */
+  padding-top: 90px !important; /* Space para sa topbar */
+  padding-bottom: 32px !important;
+}
+
+/* 3. TOPBAR FIX: Gawing sticky para sumabay sa scroll nang walang lag */
+.org-shell .top.org-topbar {
+  position: sticky !important;
+  top: 16px !important;
+  z-index: 9999 !important;
+  margin-bottom: 24px !important;
+}
+
+/* 4. Para sa PRODUCT DETAILS PAGE lang: dito lang natin i-lock ang scroll */
+.org-shell .pd-page {
+  height: calc(100vh - 120px) !important;
+  overflow: hidden !important;
+}
+
+/* 5. Custom Scrollbar (Para premium tignan) */
+.org-shell ::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.org-shell ::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.org-shell ::-webkit-scrollbar-thumb {
+  background: rgba(var(--w), 0.15) !important;
+  border-radius: 99px !important;
+}
+
+.org-shell ::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--w), 0.3) !important;
+}
+/* ============================================================
+   FINAL POLISH: PREMIUM FLOATING SIDEBAR (PUSH EFFECT)
+   ============================================================ */
+
+/* 1. Sidebar (Glassmorphism, Sticky, at nag-pupush) */
+.org-shell .org-rail {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 16px !important;
+  height: calc(100vh - 32px) !important;
+  margin: 16px 0 16px 16px !important;
+  width: 80px !important;
+  flex-shrink: 0 !important; /* Para umurong ang main content */
+  border-radius: 24px !important;
+  z-index: 10000 !important;
+  padding: 16px 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  
+  /* Premium Glass Effect */
+  background: linear-gradient(145deg, rgba(var(--w), 0.08), rgba(var(--w), 0.02)) !important;
+  border: 1px solid rgba(var(--w), 0.12) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(140%) !important;
+  backdrop-filter: blur(24px) saturate(140%) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(var(--w), 0.15) !important;
+  
+  transform: translateZ(0) !important;
+  will-change: width !important;
+  transition: width 0.3s var(--spring), background 0.3s ease !important;
+}
+
+/* 2. Pag-hover, lalaki at mag-o-open */
+.org-shell .org-rail:hover {
+  width: 250px !important;
+  background: color-mix(in srgb, var(--s) 85%, transparent) !important;
+}
+
+/* 3. Sidebar Elements (Icons, Brand, Avatar) */
+.org-shell .org-rail .brand { display: flex !important; align-items: center !important; gap: 12px !important; padding-bottom: 16px !important; margin-bottom: 8px !important; border-bottom: 1px solid rgba(var(--w), 0.08) !important; white-space: nowrap !important; }
+.org-shell .org-rail .logo { width: 36px !important; height: 36px !important; flex-shrink: 0 !important; border-radius: 50% !important; object-fit: cover !important; border: 1px solid rgba(var(--w), 0.15) !important; }
+.org-shell .org-rail .nav-list { display: flex !important; flex-direction: column !important; gap: 6px !important; flex: 1 !important; margin-top: 12px !important; }
+.org-shell .org-rail .nav-icon { display: flex !important; align-items: center !important; height: 46px !important; border-radius: 12px !important; padding: 0 14px !important; color: var(--mu) !important; text-decoration: none !important; white-space: nowrap !important; transition: background 0.2s, color 0.2s !important; }
+.org-shell .org-rail .nav-icon svg { width: 22px !important; height: 22px !important; flex-shrink: 0 !important; }
+.org-shell .org-rail .nav-icon:hover { background: rgba(var(--w), 0.08) !important; color: var(--tx) !important; }
+.org-shell .org-rail .nav-icon.active { background: var(--a) !important; color: #fff !important; box-shadow: 0 4px 12px color-mix(in srgb, var(--a) 30%, transparent) !important; }
+.org-shell .org-rail .t { opacity: 0 !important; visibility: hidden !important; margin-left: 16px !important; font-size: 14px !important; font-weight: 600 !important; transition: opacity 0.2s ease !important; }
+.org-shell .org-rail:hover .t { opacity: 1 !important; visibility: visible !important; transition-delay: 0.1s !important; }
+.org-shell .org-rail .foot { margin-top: auto !important; padding-top: 16px !important; border-top: 1px solid rgba(var(--w), 0.08) !important; }
+.org-shell .org-rail .me { display: flex !important; align-items: center !important; text-decoration: none !important; color: inherit !important; }
+.org-shell .org-rail .av { width: 36px !important; height: 36px !important; flex-shrink: 0 !important; border-radius: 50% !important; display: grid !important; place-items: center !important; background: linear-gradient(135deg, var(--a), var(--a2)) !important; color: #fff !important; font-size: 13px !important; font-weight: 700 !important; }
+
+/* 4. PUSH EFFECT: Inaayos ang Main Content para umurong */
+.org-shell {
+  display: flex !important;
+  min-height: 100vh !important;
+  overflow: visible !important;
+}
+
+.org-shell .org-main {
+  flex: 1 !important;
+  min-width: 0 !important;
+  padding: 16px 24px 32px 24px !important;
+  margin-left: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: auto !important;
+  overflow: visible !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* 5. TOPBAR: Naka-sticky at Malinis */
+.org-shell .top.org-topbar {
+  position: sticky !important;
+  top: 16px !important;
+  z-index: 999 !important;
+  width: 100% !important;
+  margin: 0 0 24px 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 12px 24px !important;
+  border-radius: 99px !important;
+  
+  background: color-mix(in srgb, var(--s) 62%, transparent) !important;
+  border: 1px solid rgba(var(--w), .12) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(var(--w), .08) !important;
+}
+
+/* 6. TOPBAR OPTIMIZATION (Para hindi mag-lag kapag bumukas sidebar) */
+.org-shell .top.org-topbar .search {
+  background: rgba(var(--w), 0.06) !important;
+  border: 1px solid rgba(var(--w), 0.1) !important;
+  border-radius: 99px !important;
+  height: 44px !important;
+  flex: 1 !important;
+}
+
+/* 7. Global Scroll Fix para hindi mawala */
+html, body {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* 8. Responsive */
+@media (max-width: 700px) {
+  .org-shell .org-rail {
+    margin-left: 8px !important;
+    width: 68px !important;
+  }
+  .org-shell .org-main {
+    padding: 16px 12px 24px 16px !important;
+  }
+}
+/* ============================================================
+   EMERGENCY SCROLL FIX (PUNITIN ANG LAHAT NG LUMANG OVERFLOW)
+   ============================================================ */
+
+/* 1. I-unlock ang buong window */
+html, body {
+  height: 100% !important;
+  min-height: 100% !important;
+  overflow-y: auto !important; 
+  overflow-x: hidden !important;
+}
+
+/* 2. Ayusin ang org-shell (Flex layout) */
+.org-shell {
+  display: flex !important;
+  height: 100vh !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+/* 3. Ang sidebar (Naka-fixed width) */
+.org-shell .org-rail {
+  height: 100vh !important; /* Abot sa dulo */
+  flex-shrink: 0 !important;
+  position: relative !important;
+  margin: 0 !important;
+  border-radius: 0 !important; /* Gawing sagad sa gilid */
+}
+
+/* 4. ANG MAIN CONTENT - Dito natin pilitin ang scroll */
+.org-shell .org-main {
+  flex: 1 !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  overflow-y: auto !important; /* Pilitin ang scroll dito */
+  overflow-x: hidden !important;
+  padding: 16px 24px 48px 24px !important;
+  display: block !important; /* Wag gawing flex */
+}
+
+/* 5. Topbar (Sticky sa loob ng main) */
+.org-shell .top.org-topbar {
+  position: sticky !important;
+  top: 16px !important;
+  z-index: 999 !important;
+  width: 100% !important;
+  margin: 0 0 24px 0 !important;
 }

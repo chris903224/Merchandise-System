@@ -1,51 +1,41 @@
-/* src/styles/organization/orders.css */
+/* ============================================================
+   SJCM ORGANIZATION — ORDERS PAGE STYLES
+   ============================================================ */
 
-.page-orders, .page-order-details {
-  display: grid;
-  gap: 20px;
-}
+.org-shell .order-list-card { padding: 0 !important; overflow: hidden !important; }
+.org-shell .order-list-header { display: flex !important; justify-content: space-between !important; align-items: center !important; flex-wrap: wrap !important; gap: 16px !important; padding: 20px 24px !important; border-bottom: 1px solid var(--bd) !important; }
+.org-shell .order-list-header h3 { font-size: 18px !important; font-weight: 700 !important; margin: 0 !important; color: var(--tx) !important; }
+.org-shell .order-items-list { display: flex !important; flex-direction: column !important; }
+.org-shell .order-item { display: flex !important; align-items: center !important; gap: 20px !important; padding: 20px 24px !important; border-bottom: 1px solid var(--bd) !important; transition: background .2s ease !important; }
+.org-shell .order-item:last-child { border-bottom: none !important; }
+.org-shell .order-item:hover { background: rgba(var(--w), .035) !important; }
+.org-shell .order-item__image { width: 80px !important; height: 80px !important; border-radius: 12px !important; overflow: hidden !important; background: rgba(0, 0, 0, .2) !important; flex-shrink: 0 !important; border: 1px solid var(--bd) !important; display: grid !important; place-items: center !important; }
+.org-shell .order-item__image img { width: 100% !important; height: 100% !important; object-fit: cover !important; transition: transform .35s var(--ease) !important; }
+.org-shell .order-item:hover .order-item__image img { transform: scale(1.06) !important; }
+.org-shell .order-item__placeholder { color: var(--mu) !important; }
+.org-shell .order-item__details { flex: 1 !important; display: flex !important; flex-direction: column !important; gap: 4px !important; min-width: 0 !important; }
+.org-shell .order-item__header { display: flex !important; align-items: center !important; gap: 10px !important; }
+.org-shell .order-item__header h4 { font-size: 16px !important; font-weight: 700 !important; color: var(--tx) !important; margin: 0 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+.org-shell .order-item__id { font-size: 12px !important; font-weight: 600 !important; color: var(--mu) !important; background: rgba(var(--w), .08) !important; padding: 2px 8px !important; border-radius: 6px !important; }
+.org-shell .order-item__meta { font-size: 13px !important; color: var(--sub) !important; }
+.org-shell .order-item__badges { margin-top: 4px !important; }
+.org-shell .order-item__price { font-size: 18px !important; font-weight: 700 !important; color: var(--tx) !important; min-width: 100px !important; text-align: right !important; font-variant-numeric: tabular-nums !important; }
+.org-shell .order-item__actions { display: flex !important; align-items: center !important; gap: 8px !important; }
 
-.wrap { overflow-x: auto; padding: 10px; border-radius: 22px;}
-.tbl { width: 100%; border-collapse: collapse; min-width: 560px; }
-.tbl th { text-align: left; color: var(--mu); font-weight: 500; font-size: 12px; padding: 12px; }
-.tbl td { padding: 16px 12px; border-top: 1px solid var(--bd); font-size: 14px; color: var(--tx); }
-.tbl td:last-child { text-align: right; }
-.tbl td b { display: block; font-weight: 600; }
-.tbl td small { color: var(--mu); font-size: 11px; display: block;}
-.tbl a { color: var(--al); text-decoration: none; font-weight: 600; }
-.tbl a:hover { text-decoration: underline; }
+.org-shell .admin-status-menu { position: relative !important; }
+.org-shell .admin-status-menu__trigger { width: 36px !important; height: 36px !important; border-radius: 8px !important; display: grid !important; place-items: center !important; color: var(--mu) !important; background: transparent !important; transition: all .2s !important; }
+.org-shell .admin-status-menu__trigger:hover { background: rgba(var(--w), .08) !important; color: var(--tx) !important; }
+.org-shell .admin-status-menu__dropdown { position: absolute !important; top: 100% !important; right: 0 !important; margin-top: 8px !important; width: 180px !important; background: var(--s) !important; border: 1px solid var(--bd) !important; border-radius: 12px !important; box-shadow: 0 10px 30px rgba(0, 0, 0, .5) !important; z-index: 50 !important; overflow: hidden !important; padding: 6px !important; animation: orgPop .2s var(--spring) both; transform-origin: top right; }
+.org-shell .admin-status-menu__header { font-size: 11px !important; font-weight: 700 !important; color: var(--mu) !important; text-transform: uppercase !important; letter-spacing: .06em !important; padding: 8px 12px !important; }
+.org-shell .admin-status-menu__item { display: flex !important; align-items: center !important; gap: 10px !important; width: 100% !important; padding: 8px 12px !important; border-radius: 8px !important; font-size: 13px !important; color: var(--tx) !important; text-align: left !important; transition: background .2s !important; }
+.org-shell .admin-status-menu__item:hover { background: rgba(var(--w), .08) !important; }
+.org-shell .admin-status-menu__item.is-current { background: rgba(var(--w), .04) !important; font-weight: 600 !important; }
+.org-shell .admin-status-menu__check { margin-left: auto !important; color: var(--a) !important; }
+.org-shell .empty-text { padding: 48px 24px !important; text-align: center !important; color: var(--mu) !important; font-size: 15px !important; }
 
-/* Status Pills */
-.pill { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: 12px; font-weight: 600; }
-.ok { background: #2fb59426; color: #4fe0b8; }
-.wa { background: #f0933a26; color: #ffb066; }
-.no { background: #ff5d7326; color: #ff8b9c; }
-
-/* Order Items List */
-.order-items {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 12px;
-  padding: 0;
+@media (max-width: 900px) {
+  .org-shell .order-item { flex-wrap: wrap !important; }
+  .org-shell .order-item__image { width: 60px !important; height: 60px !important; }
+  .org-shell .order-item__price { text-align: left !important; width: 100% !important; margin-top: 8px !important; }
+  .org-shell .order-item__actions { width: 100% !important; justify-content: flex-end !important; margin-top: 12px !important; }
 }
-.order-items li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  border: 1px solid var(--bd);
-  border-radius: 12px;
-  background: rgba(var(--w), .03);
-  gap: 16px;
-}
-.order-items li > div {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.order-items li small { font-size: 12px; color: var(--mu); }
-.order-items li > span { color: var(--mu); font-size: 14px; }
-.order-items li > b { color: var(--tx); }

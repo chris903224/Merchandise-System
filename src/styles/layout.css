@@ -545,6 +545,58 @@ body,
   flex: 1 0 auto;
   min-height: 0;
 }
+/* ============================================================
+   FIX: STUDENT SIDE SCROLL (WALANG EPEKTO SA ORG SIDE)
+   ============================================================ */
+
+/* I-unlock ang scroll ng body at html para sa buong app */
+html, body {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow-y: auto !important; /* Ibalik ang scroll */
+  overflow-x: hidden !important;
+}
+
+/* 
+  Org Shell: Ibabalik natin ang scrollable na org-main (para sa sticky topbar)
+  PERO titiyakin nating hindi ito makakaapekto sa student side.
+*/
+.org-shell {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow: visible !important;
+}
+
+.org-shell .org-main {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow: visible !important;
+}
+
+/* 
+  Kung ang student side mo ay gumagamit ng class na `.org-shell` 
+  (para magamit ang parehong theme), kailangan nating i-override ito 
+  para hindi mag-lock ang scroll.
+*/
+.org-shell:not(:has(.sidebar)):not(:has(.floating-sidebar)) {
+  display: block !important;
+  overflow: visible !important;
+}
+
+.org-shell:not(:has(.sidebar)):not(:has(.floating-sidebar)) .org-main {
+  margin-left: 0 !important;
+  height: auto !important;
+  overflow: visible !important;
+  padding: 0 !important;
+}
+
+/* Siguraduhing ang topbar sa student side ay sticky at hindi fixed */
+.org-shell:not(:has(.sidebar)):not(:has(.floating-sidebar)) .top.org-topbar {
+  position: sticky !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+}
 
 /* ✅ Alisin ang luma — wala nang sidebar push rules */
 /* (Yung `body:has(.profile-sidebar.is-open) ...` etc. — tinanggal) */

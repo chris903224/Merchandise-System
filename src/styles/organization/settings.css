@@ -1,162 +1,57 @@
-/* src/styles/organization/settings.css */
+/* ============================================================
+   SJCM ORGANIZATION — SETTINGS PAGE STYLES
+   ============================================================ */
 
-.page-settings {
-  display: grid;
-  gap: 20px;
-}
+.org-shell .set { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 20px !important; align-items: start !important; }
+.org-shell .fld { display: grid !important; gap: 6px !important; margin-bottom: 14px !important; color: var(--mu) !important; font-size: 13px !important; }
+.org-shell .row2 { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 16px !important; padding: 14px 0 !important; border-top: 1px solid var(--bd) !important; }
+.org-shell .tg input { display: none !important; }
+.org-shell .tg s { display: block !important; position: relative !important; width: 42px !important; height: 24px !important; border-radius: 99px !important; background: rgba(var(--w),.15) !important; cursor: pointer !important; transition: background .2s !important; }
+.org-shell .tg s::after { content: "" !important; position: absolute !important; top: 3px !important; left: 3px !important; width: 18px !important; height: 18px !important; border-radius: 50% !important; background: #fff !important; transition: left .2s !important; }
+.org-shell .tg input:checked+s { background: var(--a) !important; }
+.org-shell .tg input:checked+s::after { left: 21px !important; }
 
-.page-settings .ph {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-}
+.org-shell .tgrid { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important; gap: 14px !important; }
+.org-shell .tc { position: relative !important; padding: 10px !important; border: 2px solid var(--bd) !important; border-radius: 20px !important; background: rgba(var(--w), .04) !important; cursor: pointer !important; text-align: center !important; color: var(--tx) !important; }
+.org-shell .tc.sel { border-color: var(--a) !important; box-shadow: 0 0 0 4px color-mix(in srgb, var(--a) 22%, transparent) !important; }
+.org-shell .tc b { display: block !important; font-size: 13px !important; margin-top: 4px !important; }
+.org-shell .sw { display: grid !important; place-items: center !important; height: 104px !important; border-radius: 14px !important; margin-bottom: 10px !important; font-size: 34px !important; border: 1px solid var(--bd) !important; }
 
-.page-settings .ph h2 {
-  font-size: 26px;
-  margin-bottom: 4px;
-  color: var(--tx);
-}
+.org-shell .ui-styles { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important; gap: 16px !important; margin-top: 12px !important; margin-bottom: 24px !important; }
+.org-shell .ui-style { position: relative !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; padding: 24px 16px !important; background: rgba(var(--w), 0.03) !important; border: 2px solid rgba(var(--w), 0.1) !important; border-radius: 20px !important; cursor: pointer !important; transition: all 0.25s ease !important; text-align: center !important; color: var(--tx) !important; min-height: 160px !important; }
+.org-shell .ui-style:hover { border-color: rgba(var(--w), 0.3) !important; background: rgba(var(--w), 0.06) !important; transform: translateY(-4px) !important; }
+.org-shell .ui-style.on { border-color: var(--a) !important; background: color-mix(in srgb, var(--a) 10%, rgba(var(--w), 0.03)) !important; box-shadow: 0 0 0 4px rgba(var(--a), 0.2) !important; }
+.org-shell .ui-style.on .ui-style__check { opacity: 1 !important; transform: scale(1) !important; }
+.org-shell .ui-style__check { position: absolute !important; top: 12px !important; right: 12px !important; width: 24px !important; height: 24px !important; background: var(--a) !important; color: #fff !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; opacity: 0 !important; transform: scale(0.5) !important; transition: all 0.25s ease !important; }
+.org-shell .ui-style__check i, .org-shell .ui-style__check svg { width: 14px !important; height: 14px !important; }
+.org-shell .ui-style b { font-size: 15px !important; font-weight: 700 !important; margin-bottom: 4px !important; color: var(--tx) !important; }
+.org-shell .ui-style small { font-size: 12.5px !important; color: var(--mu) !important; line-height: 1.4 !important; }
+.org-shell .ui-style__preview { width: 100% !important; height: 56px !important; border-radius: 12px !important; display: flex !important; align-items: center !important; justify-content: center !important; margin-bottom: 16px !important; background: var(--s) !important; }
+.org-shell .ui-style__preview em { font-style: normal !important; font-size: 13px !important; font-weight: 600 !important; padding: 10px 24px !important; border-radius: 10px !important; background: var(--a) !important; color: var(--on) !important; }
 
-.page-settings .ph p {
-  color: var(--mu);
-  font-size: 14px;
-}
+.org-shell .ui-style__preview.s-glass { background: radial-gradient(circle at top left, rgba(255,255,255,0.2), transparent), rgba(0, 0, 0, 0.4) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; backdrop-filter: blur(10px) !important; }
+.org-shell .ui-style__preview.s-glass em { background: rgba(255, 255, 255, 0.2) !important; border: 1px solid rgba(255, 255, 255, 0.3) !important; backdrop-filter: blur(5px) !important; color: #fff !important; }
+.org-shell .ui-style__preview.s-clay { background: var(--s) !important; }
+.org-shell .ui-style__preview.s-clay em { background: var(--a) !important; border-radius: 16px !important; box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.3), inset 3px 3px 6px rgba(255,255,255,0.3) !important; }
+.org-shell .ui-style__preview.s-neu { background: var(--bg) !important; }
+.org-shell .ui-style__preview.s-neu em { background: var(--bg) !important; color: var(--al) !important; box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4), -4px -4px 10px rgba(255,255,255,0.05) !important; }
+.org-shell .ui-style__preview.s-skeu { background: var(--s) !important; }
+.org-shell .ui-style__preview.s-skeu em { background: linear-gradient(180deg, #7eb5ff, #3b7bff 50%, #2a56d6) !important; border: 1px solid #1e4bb5 !important; box-shadow: 0 3px 0 #1a3d99, 0 6px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.6) !important; color: #fff !important; text-shadow: 0 -1px 0 rgba(0,0,0,0.4) !important; }
 
-.page-settings .set {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  align-items: stretch;
-}
+.org-shell .page-settings .set { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 24px !important; align-items: start !important; }
+.org-shell .page-settings .set > .card { height: 100% !important; }
+@media (max-width: 900px) { .org-shell .page-settings .set { grid-template-columns: 1fr !important; } }
 
-.page-settings .set > .card {
-  display: flex;
-  flex-direction: column;
-  padding: 20px 22px;
-  border-radius: 22px;
-}
-
-.page-settings .set h3 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 17px;
-  margin-bottom: 16px;
-  color: var(--tx);
-}
-
-.page-settings .fill {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.page-settings .fld {
-  display: grid;
-  gap: 6px;
-  margin-bottom: 14px;
-  color: var(--mu);
-  font-size: 13px;
-}
-
-.page-settings .in {
-  width: 100%;
-  background: rgba(var(--w), 0.06);
-  border: 1px solid var(--bd);
-  border-radius: 12px;
-  padding: 11px 14px;
-  outline: 0;
-  color: var(--tx);
-  font: inherit;
-}
-
-.page-settings .in:focus {
-  border-color: var(--a);
-}
-
-.page-settings .in:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.page-settings .row2 {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 14px 0;
-  border-top: 1px solid var(--bd);
-  flex-wrap: wrap;
-}
-
-.page-settings .row2 span {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 14px;
-  color: var(--tx);
-}
-
-.page-settings .row2 small {
-  color: var(--mu);
-  font-size: 12px;
-}
-
-.page-settings .tg input {
-  display: none;
-}
-
-.page-settings .tg s {
-  display: block;
-  position: relative;
-  width: 42px;
-  height: 24px;
-  border-radius: 99px;
-  background: rgba(var(--w), 0.15);
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.page-settings .tg s::after {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #fff;
-  transition: left 0.2s;
-}
-
-.page-settings .tg input:checked + s {
-  background: var(--a);
-}
-
-.page-settings .tg input:checked + s::after {
-  left: 21px;
-}
-
-.page-settings .note2 {
-  display: block;
-  margin-top: auto;
-  padding-top: 10px;
-  font-size: 12px;
-  color: var(--mu);
-}
-
-.page-settings .prev {
-  margin-top: auto;
-  padding-top: 10px;
-  color: var(--sub);
-  font-size: 13px;
-}
-
-@media (max-width: 900px) {
-  .page-settings .set {
-    grid-template-columns: 1fr;
-  }
-}
+/* Morphism Overrides */
+html[data-ui="glass"] .org-shell .glass, html[data-ui="glass"] .org-shell .card, html[data-ui="glass"] .org-shell .stat, html[data-ui="glass"] .org-shell .sidebar { background: linear-gradient(145deg, rgba(var(--w), 0.075), rgba(var(--w), 0.02)) !important; border: 1px solid var(--bd) !important; -webkit-backdrop-filter: blur(22px) !important; backdrop-filter: blur(22px) !important; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(var(--w), 0.08) !important; border-radius: 22px !important; }
+html[data-ui="clay"] .org-shell .glass, html[data-ui="clay"] .org-shell .card, html[data-ui="clay"] .org-shell .stat, html[data-ui="clay"] .org-shell .sidebar { border: 0 !important; border-radius: 30px !important; box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.4), inset 4px 4px 8px rgba(255, 255, 255, 0.15), inset -4px -4px 8px rgba(0, 0, 0, 0.3) !important; backdrop-filter: none !important; }
+html[data-ui="neu"] .org-shell .glass, html[data-ui="neu"] .org-shell .card, html[data-ui="neu"] .org-shell .stat, html[data-ui="neu"] .org-shell .sidebar { border: 0 !important; border-radius: 22px !important; box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.05) !important; backdrop-filter: none !important; }
+html[data-ui="skeu"] .org-shell .glass, html[data-ui="skeu"] .org-shell .card, html[data-ui="skeu"] .org-shell .stat, html[data-ui="skeu"] .org-shell .sidebar { border: 1px solid rgba(0, 0, 0, 0.3) !important; border-radius: 16px !important; box-shadow: 0 10px 22px rgba(0, 0, 0, 0.5), 0 2px 0 rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -2px 5px rgba(0, 0, 0, 0.3) !important; backdrop-filter: none !important; position: relative; }
+html[data-ui="skeu"] .org-shell .glass::before, html[data-ui="skeu"] .org-shell .card::before { content: "" !important; position: absolute !important; inset: 1px 1px 50% 1px !important; border-radius: inherit !important; background: linear-gradient(180deg, rgba(255, 255, 255, 0.15), transparent) !important; pointer-events: none !important; z-index: 0; }
+html[data-ui="clay"] .org-shell .btn { border-radius: 16px !important; box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4), inset 2px 2px 4px rgba(255, 255, 255, 0.2), inset -2px -2px 4px rgba(0, 0, 0, 0.2) !important; }
+html[data-ui="clay"] .org-shell .in { border: 0 !important; border-radius: 16px !important; box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.3), inset -4px -4px 8px rgba(255, 255, 255, 0.05) !important; }
+html[data-ui="neu"] .org-shell .btn { border-radius: 12px !important; box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4), -4px -4px 8px rgba(255, 255, 255, 0.05) !important; }
+html[data-ui="neu"] .org-shell .in { border: 0 !important; border-radius: 12px !important; box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.4), inset -4px -4px 8px rgba(255, 255, 255, 0.05) !important; }
+html[data-ui="skeu"] .org-shell .btn { border-radius: 10px !important; text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4) !important; box-shadow: 0 3px 0 rgba(0, 0, 0, 0.4), 0 6px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important; }
+html[data-ui="skeu"] .org-shell .btn:active { transform: translateY(3px) !important; box-shadow: 0 0 0 rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.4) !important; }
+html[data-ui="skeu"] .org-shell .in { border: 1px solid rgba(0, 0, 0, 0.3) !important; border-radius: 8px !important; box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.4) !important; }

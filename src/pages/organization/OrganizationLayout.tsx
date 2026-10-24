@@ -1,5 +1,3 @@
-// src/pages/organization/OrganizationLayout.tsx
-
 import { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useApp } from '../../store';
@@ -17,8 +15,11 @@ export default function OrganizationLayout() {
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('sjc-theme') ?? 'midnight';
+    const savedMode = localStorage.getItem('sjc-mode') ?? 'dark';
     const savedUi = localStorage.getItem('sjc-ui') ?? 'glass';
+
     document.documentElement.dataset.theme = savedTheme;
+    document.documentElement.dataset.mode = savedMode;
     document.documentElement.dataset.ui = savedUi;
   }, []);
 
@@ -33,10 +34,9 @@ export default function OrganizationLayout() {
 
   return (
     <div className="org-shell">
-      {/* ✅ Sidebar nasa loob ng grid */}
       <OrgSidebar session={session} />
       
-      {/* ✅ Main content kasama ang Topbar */}
+      {/* ✅ Dito nakalagay ang scroll */}
       <main className="org-main">
         <OrgTopbar session={session} />
         <div className="org-content">

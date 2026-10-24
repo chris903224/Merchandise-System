@@ -43,6 +43,14 @@ function kpiIcon(k: KPI['key']): string {
   return { products: 'box', revenue: 'card', orders: 'cart', members: 'users' }[k];
 }
 
+/** YYYY-MM-DD gamit ang LOCAL date (hindi UTC) para hindi lumipat ng araw ang mga order sa PH time. */
+function localDayKey(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
 export default function DashboardPage() {
   const { session, products, orders } = useApp();
   const [range, setRange] = useState<7 | 30>(7);
@@ -82,21 +90,32 @@ export default function DashboardPage() {
     <section className="page-dashboard">
       {/* HERO SECTION */}
       <div className="glass hero">
-        <small>{getGreeting()}</small>
-        <h1>Welcome back, {firstName}!</h1>
-        <p>Here's what's happening with your organization today.</p>
-        <p className="dt">
-          <Icon name="calendar" />
-          <span>
-            {new Date().toLocaleDateString('en-US', {
-              weekday: 'long',
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric',
-            })}
-          </span>
-        </p>
-        <blockquote className="quote">Small steps every day lead to big results.</blockquote>
+        <div className="hero-art" aria-hidden="true" />
+
+        <div className="hero-body">
+          <small>{getGreeting()}</small>
+          <h1>
+            Welcome back, <span className="hl">{firstName}</span>!
+          </h1>
+
+          <p className="hero-line">
+            <Icon name="calendar" />
+            <span>Here's what's happening with your organization today.</span>
+          </p>
+          <p className="hero-line dt">
+            <Icon name="calendar" />
+            <span>
+              {new Date().toLocaleDateString('en-US', {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+              })}
+            </span>
+          </p>
+
+          <blockquote className="quote">Small steps every day lead to big results.</blockquote>
+        </div>
       </div>
 
       {/* KPI STATS CARDS */}
@@ -118,44 +137,61 @@ export default function DashboardPage() {
         <div className="stack">
           <div className="glass card">
             <h3>
-              <Icon name="chart" /> Sales Overview
-              <select
-                className="sel"
-                value={range}
-                onChange={(e) => setRange(Number(e.target.value) as 7 | 30)}
-              >
-                <option value={7}>Last 7 days</option>
-                <option value={30}>Last 30 days</option>
-              </select>
+              <Icon name="chart" />
+              <span className="ttl">Sales Overview</span>
+              <label className="sel-wrap">
+                <Icon name="calendar" />
+                <select
+                  className="sel"
+                  value={range}
+                  aria-label="Sales range"
+                  onChange={(e) => setRange(Number(e.target.value) as 7 | 30)}
+                >
+                  <option value={7}>Last 7 days</option>
+                  <option value={30}>Last 30 days</option>
+                </select>
+              </label>
             </h3>
             <SalesChart data={sales} />
           </div>
 
           <div className="glass card">
             <h3>
-              <Icon name="clock" /> Recent Activity
+              <Icon name="clock" />
+              <span className="ttl">Recent Activity</span>
               <Link to="/org/notifications" className="link">View all</Link>
             </h3>
-            <ActivityFeed items={activity} />
+            {activity.length > 0 ? (
+              <ActivityFeed items={activity} />
+            ) : (
+              <p className="dash-empty">No recent activity yet. New orders and stock alerts will show up here.</p>
+            )}
           </div>
         </div>
 
         {/* RIGHT COLUMN: Quick Actions & Upcoming */}
         <div className="stack">
           <div className="glass card">
-            <h3><Icon name="bolt" /> Quick Actions</h3>
+            <h3>
+              <Icon name="bolt" />
+              <span className="ttl">Quick Actions</span>
+            </h3>
             <QuickAction to="/org/products" color="#7c5cff" icon="plus" label="Add Product" />
             <QuickAction to="/org/orders"   color="#3b7bff" icon="cart" label="View Orders" />
             <QuickAction to="/org/orders"   color="#2fb594" icon="card" label="Manage Payments" />
-            <QuickAction to="/org/settings" color="#f0933a" icon="gear" label="Adjust Settings" />
           </div>
 
           <div className="glass card">
             <h3>
-              <Icon name="calendar" /> Upcoming
+              <Icon name="calendar" />
+              <span className="ttl">Upcoming</span>
               <Link to="/org/orders" className="link">View all</Link>
             </h3>
-            <UpcomingList items={activity.slice(0, 3)} />
+            {activity.length > 0 ? (
+              <UpcomingList items={activity.slice(0, 3)} />
+            ) : (
+              <p className="dash-empty">Nothing upcoming right now.</p>
+            )}
           </div>
         </div>
       </div>
@@ -171,26 +207,28 @@ function buildSalesPoints(orders: Order[], days: 7 | 30): SalesPoint[] {
   const buckets: Record<string, number> = {};
   const now = new Date();
 
-  // Initialize buckets for each day
+  // Initialize buckets for each day (local date)
   for (let i = days - 1; i >= 0; i--) {
     const d = new Date(now);
     d.setDate(d.getDate() - i);
-    const key = d.toISOString().slice(0, 10);
-    buckets[key] = 0;
+    buckets[localDayKey(d)] = 0;
   }
 
   // Add order amounts to buckets
   orders
     .filter((o) => o.paymentStatus === 'Paid')
     .forEach((o) => {
-      const key = new Date(o.createdAt).toISOString().slice(0, 10);
+      const key = localDayKey(new Date(o.createdAt));
       if (key in buckets) buckets[key] += o.totalAmount / 1000;
     });
 
-  return Object.entries(buckets).map(([k, v]) => ({
-    label: new Date(k).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-    value: v,
-  }));
+  return Object.entries(buckets).map(([k, v]) => {
+    const [y, m, d] = k.split('-').map(Number);
+    return {
+      label: new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      value: v,
+    };
+  });
 }
 
 function buildActivity(orders: Order[], products: Product[]): ActivityItem[] {

@@ -26,20 +26,26 @@ export default function ProductFilters({
     <div className="glass card flt">
       <span className="lbl2">Categories</span>
       <div className="chips">
-        <button
+        {/* 👇 Pinalitan natin ang <button> ng <div> para mawala ang default button hover */}
+        <div
           className={`chip${filters.category === 'ALL' ? ' on' : ''}`}
           onClick={() => onChange({ category: 'ALL' })}
+          role="button"
+          tabIndex={0}
         >
           All Items <b>{catCount('ALL')}</b>
-        </button>
+        </div>
+        
         {categories.map((c) => (
-          <button
+          <div
             key={c}
             className={`chip${filters.category === c ? ' on' : ''}`}
             onClick={() => onChange({ category: c })}
+            role="button"
+            tabIndex={0}
           >
             {c} <b>{catCount(c)}</b>
-          </button>
+          </div>
         ))}
       </div>
 

@@ -8,14 +8,11 @@ import ProductImage from '../../components/organization/ProductImage';
 import { Icon } from '../../components/Icon';
 import { peso } from '../../utils/format';
 import { 
-  fetchOrgProductById, 
-  updateOrgProduct, 
-  deleteOrgProduct 
-} from '../../services/organization/productService';
+  fetchProductById, 
+  updateProductInDb, 
+  deleteProductFromDb 
+} from '../../services/products'; 
 import type { Product } from '../../types';
-
-// ✅ TANGGALIN ANG CSS IMPORT DITO para hindi mag-conflict (nasa OrganizationLayout na)
-// import '../../styles/organization/products.css';
 
 function totalStock(p: Product): number {
   if (p.sizeStocks && Object.keys(p.sizeStocks).length > 0) {
@@ -35,44 +32,34 @@ export default function ProductDetailsPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  // ✅ Fetch Product
   useEffect(() => {
     let isMounted = true;
 
     async function loadProduct() {
-      if (!id || !org) return;
+      if (!id) { setLoading(false); return; }
       setLoading(true);
       
-      // 1. Hanapin muna sa store (para mabilis)
-      const fromStore = products.find((p) => p.id === id && p.organization === org);
-      
+      const fromStore = products.find((p) => p.id === id);
       if (fromStore) {
-        if (isMounted) {
-          setProduct(fromStore);
-          setLoading(false);
-        }
+        if (isMounted) { setProduct(fromStore); setLoading(false); }
         return;
       }
 
-      // 2. Kung wala, fetch sa DB
-      const fromDb = await fetchOrgProductById(id, org);
-      
+      const fromDb = await fetchProductById(id);
       if (isMounted) {
-        if (fromDb) setProduct(fromDb);
+        setProduct(fromDb || null);
         setLoading(false);
       }
     }
 
     loadProduct();
     return () => { isMounted = false; };
-  }, [id, org, products]);
+  }, [id, products]);
 
-  // ✅ Update Stock
   async function handleStock(size: string, next: number) {
     if (!product) return;
     setBusy(true);
     
-    // Optimistic UI
     const safeNext = Math.max(0, Math.floor(Number(next) || 0));
     const newSizeStocks = { ...(product.sizeStocks ?? {}), [size]: safeNext };
     const newStock = Object.values(newSizeStocks).reduce((a, b) => a + (Number(b) || 0), 0);
@@ -81,18 +68,17 @@ export default function ProductDetailsPage() {
     setProduct(updatedProduct);
 
     try {
-      await updateOrgProduct(updatedProduct, org);
-      await refreshProducts();
+      await updateProductInDb(updatedProduct); 
+      await refreshProducts(); 
     } catch (err) {
       console.error('Failed to update stock:', err);
       alert('Failed to update stock. Please try again.');
-      setProduct(product);
+      setProduct(product); 
     } finally {
       setBusy(false);
     }
   }
 
-  // ✅ Delete Product
   async function handleDelete() {
     if (!product) return;
     if (!confirmDelete) {
@@ -103,8 +89,8 @@ export default function ProductDetailsPage() {
     
     setBusy(true);
     try {
-      await deleteOrgProduct(product.id, org);
-      await refreshProducts();
+      await deleteProductFromDb(product.id); 
+      await refreshProducts(); 
       navigate('/org/products');
     } catch (err) {
       console.error('Failed to delete product:', err);
@@ -113,40 +99,27 @@ export default function ProductDetailsPage() {
     }
   }
 
-  // ✅ Loading State
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-        <div className="glass card" style={{ padding: '40px', textAlign: 'center' }}>
+        <div style={{ padding: '40px', textAlign: 'center' }}>
           <div style={{ width: 40, height: 40, border: '3px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--a)', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 16px' }} />
-          <p style={{ color: 'var(--mu)' }}>Loading product...</p>
+          <p style={{ color: 'var(--mu)' }}>Loading product details...</p>
         </div>
       </div>
     );
   }
 
-  // ✅ Not Found State (Naka-center)
   if (!product) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        minHeight: '60vh', 
-        textAlign: 'center' 
-      }}>
-        <div className="glass card" style={{ padding: '40px', maxWidth: '400px', width: '100%' }}>
-          <span className="ic g5" style={{ margin: '0 auto 16px', width: '64px', height: '64px', borderRadius: '50%' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', textAlign: 'center' }}>
+        <div style={{ padding: '40px', maxWidth: '400px', width: '100%', background: '#0a1226', borderRadius: '12px', border: '1px solid rgba(var(--w), .08)' }}>
+          <span style={{ margin: '0 auto 16px', width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="box" style={{ width: '32px', height: '32px' }} />
           </span>
-          <h2 style={{ fontSize: '24px', marginBottom: '8px', color: 'var(--tx)' }}>
-            Product not found
-          </h2>
-          <p style={{ color: 'var(--mu)', marginBottom: '24px', fontSize: '14px' }}>
-            This item does not exist or belongs to another organization.
-          </p>
-          <Link to="/org/products" className="btn" style={{ width: '100%' }}>
+          <h2 style={{ fontSize: '24px', marginBottom: '8px', color: '#fff' }}>Product not found</h2>
+          <p style={{ color: 'var(--mu)', marginBottom: '24px', fontSize: '14px' }}>This item does not exist in the database.</p>
+          <Link to="/org/products" className="manage-btn" style={{ textDecoration: 'none' }}>
             <Icon name="back" /> Back to Products
           </Link>
         </div>
@@ -154,20 +127,18 @@ export default function ProductDetailsPage() {
     );
   }
 
-  // ✅ Main Render
   const total = totalStock(product);
   const max = Math.max(1, ...Object.values(product.sizeStocks ?? {}), product.stock);
 
-  const rows = product.sizes.length
+  const rows = product.sizes && product.sizes.length
     ? product.sizes.map((s) => ({ size: s, qty: product.sizeStocks?.[s] ?? 0 }))
     : [{ size: 'N/A', qty: product.stock }];
 
   const isNa = rows.length === 1 && rows[0].size === 'N/A';
 
   return (
-    <section className="page-product-details">
-      {/* Breadcrumbs */}
-      <nav className="crumb">
+    <section className="pd-page">
+      <nav className="pd-crumb">
         <Link to="/org/products">Products</Link>
         <Icon name="right" />
         <span>{product.category}</span>
@@ -175,55 +146,67 @@ export default function ProductDetailsPage() {
         <span>{product.name}</span>
       </nav>
 
-      <div className="pl">
-        {/* Product Image */}
-        <div className="glass pg">
-          <div className="pm big" style={{ '--pc': 'transparent' } as any}>
+      <div className="pd-layout">
+        {/* Left: Image */}
+        <div className="pd-image-box">
+          <div className="pd-image">
             <ProductImage product={product} />
+            <span className={`stock-badge ${total > 10 ? 'ok' : total > 0 ? 'wa' : 'no'}`}>
+              {total > 0 ? 'In Stock' : 'Out of Stock'}
+            </span>
           </div>
         </div>
 
-        {/* Product Info */}
-        <div className="glass card pp">
-          <p className="eyebrow">{product.category}</p>
-          <h1>{product.name}</h1>
-          <p className="price">{peso(product.price)}</p>
+        {/* Right: Info */}
+        <div className="pd-info-box">
+          <div className="pd-header">
+            <p className="pd-category">{product.category}</p>
+            <h1 className="pd-title">{product.name}</h1>
+            <p className="pd-price">{peso(product.price)}</p>
+          </div>
 
-          <div className="kv">
-            <div>
+          <div className="pd-metrics">
+            <div className="pd-metric">
               <small>Live stock</small>
-              <b>{total} unit{total === 1 ? '' : 's'}</b>
+              <b>{total} <span>units</span></b>
             </div>
-            <div>
+            <div className="pd-metric">
               <small>Stock value</small>
               <b>{peso(total * product.price)}</b>
             </div>
-            <div>
+            <div className="pd-metric">
               <small>Organization</small>
               <b>{product.organization}</b>
             </div>
           </div>
 
-          <span className="lbl">{isNa ? 'Stock' : 'Stock by size'}</span>
-          
-          <div className="srows">
-            {rows.map(({ size, qty }) => (
-              <StockRow
-                key={size}
-                size={size}
-                qty={qty}
-                max={max}
-                isNa={isNa}
-                onCommit={(v) => handleStock(size, v)}
-              />
-            ))}
+          <div className="pd-stock-section">
+            <div className="pd-stock-header">
+              <h3 className="pd-stock-title">{isNa ? 'Stock' : 'Stock by Size'}</h3>
+            </div>
+            <div className="pd-stock-list">
+              {rows.map(({ size, qty }) => (
+                <StockRow
+                  key={size}
+                  size={size}
+                  qty={qty}
+                  max={max}
+                  isNa={isNa}
+                  onCommit={(v) => handleStock(size, v)}
+                />
+              ))}
+            </div>
           </div>
 
-          <div className="seg" style={{ marginTop: 24 }}>
-            <Link to="/org/products" className="btn sm gh">
+          <div className="pd-actions">
+            <Link to="/org/products" className="pd-btn ghost">
               <Icon name="back" /> Back to Products
             </Link>
-            <button className="btn sm gh" onClick={handleDelete} disabled={busy} style={{ color: confirmDelete ? '#ff5d73' : 'var(--tx)' }}>
+            <button 
+              className={`pd-btn danger ${confirmDelete ? 'active' : ''}`}
+              onClick={handleDelete} 
+              disabled={busy} 
+            >
               <Icon name="trash" />
               {busy ? 'Saving…' : confirmDelete ? 'Click again to remove' : 'Remove product'}
             </button>

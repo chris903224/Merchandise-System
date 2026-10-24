@@ -1,37 +1,27 @@
 /* src/styles/organization/profile.css */
 
-.page-profile {
-  display: grid;
-  gap: 20px;
-}
+.page-profile { display: grid; gap: 20px; }
 
-.idc {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  padding: 22px;
-  border-radius: 22px;
-}
+.idc { display: flex; align-items: center; gap: 18px; padding: 22px; border-radius: 22px; }
 .idc > div { flex: 1; }
-.idc h1 { font-size: 24px; letter-spacing: -.02em; color: var(--tx); }
+.idc h1 { font-size: 24px; font-weight: 800; letter-spacing: -.02em; color: var(--tx); }
 .idc p { color: var(--sub); font-size: 14px; }
 
-.av.big { width: 64px; height: 64px; font-size: 22px; }
+.av.big { width: 64px; height: 64px; font-size: 22px; box-shadow: 0 0 0 3px color-mix(in srgb, var(--a) 30%, transparent), 0 8px 24px rgba(0, 0, 0, .3); }
 
 .row2 { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; border-top: 1px solid var(--bd); font-size: 14px; }
 .row2 span { color: var(--mu); }
-.row2 > b { text-align: right; display: flex; align-items: center; gap: 6px; color: var(--tx); font-weight: 600;}
+.row2 > b { text-align: right; display: flex; align-items: center; gap: 6px; color: var(--tx); font-weight: 600; }
 
 .note2 { display: block; margin-top: auto; padding-top: 10px; font-size: 12px; color: var(--mu); }
 
 .faq { border-top: 1px solid var(--bd); padding: 10px 0; }
-.faq summary { cursor: pointer; font-weight: 600; font-size: 13.5px; color: var(--tx); }
-.faq p { color: var(--sub); font-size: 13px; margin-top: 6px; }
+.faq summary { cursor: pointer; font-weight: 600; font-size: 13.5px; color: var(--tx); transition: color .2s; }
+.faq summary:hover { color: var(--al); }
+.faq p { color: var(--sub); font-size: 13px; margin-top: 6px; line-height: 1.55; }
 
 .hs { color: var(--sub); margin-bottom: 6px; font-size: 13px; }
 .hf { display: grid; gap: 10px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--bd); }
 textarea.in { resize: vertical; min-height: 84px; }
 
-@media (max-width: 700px) {
-  .idc { flex-wrap: wrap; }
-}
+@media (max-width: 700px) { .idc { flex-wrap: wrap; } }

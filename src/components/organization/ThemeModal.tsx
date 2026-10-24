@@ -1,5 +1,3 @@
-// src/components/organization/ThemeModal.tsx
-
 import { useEffect, useState } from 'react';
 import { Icon } from '../Icon';
 import { useUIStore } from '../../store/uiStore';
@@ -15,24 +13,38 @@ const UI_STYLES = [
 export default function ThemeModal() {
   const close = useUIStore((s) => s.closeTheme);
   
-  // Theme State
   const [theme, setTheme] = useState<ThemeId>(() => getStoredTheme());
   const [uiStyle, setUiStyle] = useState(() => localStorage.getItem('sjc-ui') ?? 'glass');
 
-  // ✅ Kapag pumili ng theme, i-apply agad sa HTML gamit ang applyTheme function
   function handleThemeSelect(id: ThemeId) {
     setTheme(id);
     applyTheme(id); 
+
+    const selectedOption = themeOptions.find((t) => t.id === id);
+    if (selectedOption) {
+      const mode = selectedOption.mode;
+      
+      localStorage.setItem('sjc-theme', id);
+      localStorage.setItem('sjc-mode', mode);
+      
+      document.documentElement.setAttribute('data-mode', mode);
+      
+      if (mode === 'light') {
+        document.documentElement.style.backgroundColor = '#eef0f4';
+        document.documentElement.style.colorScheme = 'light';
+      } else {
+        document.documentElement.style.backgroundColor = '#050a16';
+        document.documentElement.style.colorScheme = 'dark';
+      }
+    }
   }
 
-  // ✅ Kapag pumili ng UI Style, i-apply agad sa HTML at i-save sa localStorage
   function handleUiSelect(id: string) {
     setUiStyle(id);
     document.documentElement.dataset.ui = id;
     localStorage.setItem('sjc-ui', id);
   }
 
-  // Handle Escape key
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') close();
@@ -56,7 +68,6 @@ export default function ThemeModal() {
         </div>
 
         <div className="db">
-          {/* LIGHT THEMES */}
           <div className="gh">
             <span className="chip">Light</span>
             <small>5 themes</small>
@@ -77,7 +88,6 @@ export default function ThemeModal() {
             ))}
           </div>
 
-          {/* DARK THEMES */}
           <div className="gh">
             <span className="chip">Dark</span>
             <small>5 themes</small>
@@ -98,7 +108,6 @@ export default function ThemeModal() {
             ))}
           </div>
 
-          {/* UI STYLES */}
           <div className="gh">
             <span className="chip">Style</span>
             <small>4 styles</small>

@@ -1,6 +1,6 @@
 // src/pages/organization/ProductsPage.tsx
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../store';
 import StatCard from '../../components/organization/StatCard';
@@ -15,6 +15,14 @@ import '../../styles/organization/index.css';
 const PER_PAGE = 12;
 const LOW = 10;
 
+const DEFAULT_FILTERS: ProductFiltersState = {
+  category: 'ALL',
+  stock: 'ALL',
+  sort: 'featured',
+  page: 1,
+  search: '',
+};
+
 function totalStock(p: Product): number {
   if (p.sizeStocks && Object.keys(p.sizeStocks).length > 0) {
     return Object.values(p.sizeStocks).reduce((a, b) => a + (Number(b) || 0), 0);
@@ -22,46 +30,50 @@ function totalStock(p: Product): number {
   return p.stock ?? 0;
 }
 
+// 1 … 4 5 [6] 7 8 … 20  (never renders a wall of page buttons)
+function pageList(page: number, total: number): (number | '…')[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const out: (number | '…')[] = [1];
+  const start = Math.max(2, page - 1);
+  const end = Math.min(total - 1, page + 1);
+  if (start > 2) out.push('…');
+  for (let i = start; i <= end; i++) out.push(i);
+  if (end < total - 1) out.push('…');
+  out.push(total);
+  return out;
+}
+
 export default function ProductsPage() {
   const { session, products, addProduct } = useApp();
   const org = session?.organization ?? '';
   const navigate = useNavigate();
+  const gridRef = useRef<HTMLDivElement>(null);
 
-  const [filters, setFilters] = useState<ProductFiltersState>({ 
-    category: 'ALL', 
-    stock: 'ALL', 
-    sort: 'featured', 
-    page: 1, 
-    search: '' 
-  });
+  const [filters, setFilters] = useState<ProductFiltersState>(DEFAULT_FILTERS);
   const [showAdd, setShowAdd] = useState(false);
 
-  // ✅ TINANGGAL ANG FILTER PARA MAKITA LAHAT NG 45 PRODUCTS
-  const mine = useMemo(() => {
-    return products; // Ipapakita lahat
-  }, [products]);
+  const mine = useMemo(() => products, [products]);
 
-  // Kunin lahat ng unique categories
-  const categories = useMemo(() => 
-    [...new Set(mine.map((p) => p.category))].sort(), 
+  const categories = useMemo(
+    () => [...new Set(mine.map((p) => p.category))].sort(),
     [mine]
   );
 
-  // I-apply ang search, category, stock filters, at sorting
   const filtered = useMemo(() => {
     const term = filters.search.trim().toLowerCase();
-    
+
     let r = mine.filter((p) => {
-      const matchesSearch = !term || p.name.toLowerCase().includes(term) || p.category.toLowerCase().includes(term);
+      const matchesSearch =
+        !term || p.name.toLowerCase().includes(term) || p.category.toLowerCase().includes(term);
       const matchesCategory = filters.category === 'ALL' || p.category === filters.category;
-      
+
       const total = totalStock(p);
-      const matchesStock = 
-        filters.stock === 'ALL' || 
-        (filters.stock === 'IN' && total > 0) || 
-        (filters.stock === 'LOW' && total > 0 && total <= LOW) || 
+      const matchesStock =
+        filters.stock === 'ALL' ||
+        (filters.stock === 'IN' && total > 0) ||
+        (filters.stock === 'LOW' && total > 0 && total <= LOW) ||
         (filters.stock === 'OUT' && total <= 0);
-        
+
       return matchesSearch && matchesCategory && matchesStock;
     });
 
@@ -79,18 +91,23 @@ export default function ProductsPage() {
     return r;
   }, [mine, filters]);
 
-  // Pagination logic
   const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
   const page = Math.min(filters.page, totalPages);
   const visible = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
-  // Stats calculations
   const units = filtered.reduce((t: number, p: Product) => t + totalStock(p), 0);
-  const lowCount = filtered.filter((p) => { 
-    const t = totalStock(p); 
-    return t > 0 && t <= LOW; 
+  const lowCount = filtered.filter((p) => {
+    const t = totalStock(p);
+    return t > 0 && t <= LOW;
   }).length;
   const outCount = filtered.filter((p) => totalStock(p) <= 0).length;
+
+  const clearFilters = () => setFilters(DEFAULT_FILTERS);
+
+  const goTo = (n: number) => {
+    setFilters((f) => ({ ...f, page: n }));
+    gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
     <section className="page-products">
@@ -107,23 +124,23 @@ export default function ProductsPage() {
       {showAdd && (
         <AddProductForm
           organization={org}
-          onCreate={async (input) => { 
-            const newProduct = { 
-              ...input, 
+          onCreate={async (input) => {
+            const newProduct = {
+              ...input,
               id: crypto.randomUUID(),
               stock: Number(input.stock) || 0,
               sizes: input.sizes || [],
               sizeStocks: input.sizeStocks || {},
             };
-            await addProduct(newProduct); 
-            setShowAdd(false); 
+            await addProduct(newProduct);
+            setShowAdd(false);
           }}
           onCancel={() => setShowAdd(false)}
         />
       )}
 
       <div className="stats s3">
-        <StatCard color="g2" icon="box" label="Units in stock" value={units} />
+        <StatCard color="g2" icon="box" label="Units in stock" value={units.toLocaleString()} />
         <StatCard color="g4" icon="info" label="Low stock" value={lowCount} />
         <StatCard color="g5" icon="x" label="Out of stock" value={outCount} />
       </div>
@@ -133,42 +150,73 @@ export default function ProductsPage() {
         categories={categories}
         products={mine}
         onChange={(patch) => setFilters((f) => ({ ...f, ...patch, page: 1 }))}
-        onClear={() => setFilters({ category: 'ALL', stock: 'ALL', sort: 'featured', page: 1, search: '' })}
-        meta={{ from: (page - 1) * PER_PAGE + 1, to: (page - 1) * PER_PAGE + visible.length, total: filtered.length }}
+        onClear={clearFilters}
+        meta={{
+          from: filtered.length === 0 ? 0 : (page - 1) * PER_PAGE + 1,
+          to: (page - 1) * PER_PAGE + visible.length,
+          total: filtered.length,
+        }}
       />
 
-      <div className="pgrid">
+      <div className="pgrid" ref={gridRef}>
         {visible.length === 0 ? (
-          <div className="glass card empty">
-            <Icon name="box" />
-            <h2>No products found</h2>
-            <p>Try another category or stock level.</p>
+          <div className="empty-state">
+            <span className="empty-icon">
+              <Icon name="box" />
+            </span>
+            <h3>No products match these filters</h3>
+            <p>Try a different category or stock level, or clear the filters to see everything.</p>
+            <button type="button" className="btn" onClick={clearFilters}>
+              Clear filters
+            </button>
           </div>
         ) : (
           visible.map((p) => (
-            <ProductCard 
-              key={p.id} 
-              product={p} 
-              onOpen={() => navigate(`/org/products/${p.id}`)} 
-            />
+            <ProductCard key={p.id} product={p} onOpen={() => navigate(`/org/products/${p.id}`)} />
           ))
         )}
       </div>
 
       {totalPages > 1 && (
-        <div className="pgn">
-          <button className="btn sm gh" disabled={page <= 1} onClick={() => setFilters((f) => ({ ...f, page: page - 1 }))}>
+        <nav className="pgn" aria-label="Pagination">
+          <button
+            type="button"
+            className="btn sm gh"
+            disabled={page <= 1}
+            onClick={() => goTo(page - 1)}
+            aria-label="Previous page"
+          >
             <Icon name="back" />
           </button>
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button key={i} className={`btn sm gh${i + 1 === page ? ' on' : ''}`} onClick={() => setFilters((f) => ({ ...f, page: i + 1 }))}>
-              {i + 1}
-            </button>
-          ))}
-          <button className="btn sm gh" disabled={page >= totalPages} onClick={() => setFilters((f) => ({ ...f, page: page + 1 }))}>
+
+          {pageList(page, totalPages).map((n, i) =>
+            n === '…' ? (
+              <span key={`gap-${i}`} className="pgn-gap" aria-hidden="true">
+                …
+              </span>
+            ) : (
+              <button
+                type="button"
+                key={n}
+                className={`btn sm gh ${n === page ? 'on' : ''}`}
+                aria-current={n === page ? 'page' : undefined}
+                onClick={() => goTo(n)}
+              >
+                {n}
+              </button>
+            )
+          )}
+
+          <button
+            type="button"
+            className="btn sm gh"
+            disabled={page >= totalPages}
+            onClick={() => goTo(page + 1)}
+            aria-label="Next page"
+          >
             <Icon name="right" />
           </button>
-        </div>
+        </nav>
       )}
     </section>
   );

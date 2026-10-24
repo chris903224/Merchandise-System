@@ -1,30 +1,28 @@
-// src/components/admin/AdminPageHeader.tsx
+// src/components/organization/QuickAction.tsx
 
-import type { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
+import { Icon } from '../Icon';
 
-interface Props {
-  eyebrow: string;
-  title: string;
-  description?: string;
-  actions?: ReactNode;
+interface QuickActionProps {
+  to: string;
+  color: string;
+  icon: string;
+  label: string;
 }
 
-export default function AdminPageHeader({
-  eyebrow,
-  title,
-  description,
-  actions,
-}: Props) {
+export default function QuickAction({ to, color, icon, label }: QuickActionProps) {
   return (
-    <header className="admin-page-header">
-      <div>
-        <span className="admin-page-header__eyebrow">{eyebrow}</span>
-        <h1 className="admin-page-header__title">{title}</h1>
-        {description && (
-          <p className="admin-page-header__desc">{description}</p>
-        )}
+    <Link 
+      to={to} 
+      className="qa" 
+      // Kinukuha nito ang --c variable para sa background gradient sa CSS
+      style={{ '--c': color } as React.CSSProperties}
+    >
+      <div className="ic" style={{ backgroundColor: color }}>
+        <Icon name={icon} />
       </div>
-      {actions && <div className="admin-page-header__actions">{actions}</div>}
-    </header>
+      <span className="qa-label">{label}</span>
+      <Icon name="arrow-right" className="qa-arrow" />
+    </Link>
   );
 }
