@@ -64,7 +64,7 @@ export default function SalesChart({ data }: SalesChartProps) {
   const baseY = height - padding.bottom;
 
   // 2. Calculate Scale
-  const maxVal = Math.max(...data.map((d) => d.value), 10); // Default to 10 if all zero
+  const maxVal = Math.max(...data.map((d) => d.value), 10);
 
   // 3. Generate Coordinates
   const points = data.map((d, i) => {
@@ -82,11 +82,9 @@ export default function SalesChart({ data }: SalesChartProps) {
 
   if (points.length === 0) return null;
 
-  // Active point = hovered, otherwise the latest day
   const activeIdx = hover ?? points.length - 1;
   const ap = points[activeIdx];
 
-  // Tooltip (clamped inside the chart)
   const tipW = 128;
   const tipH = 46;
   const tipX = Math.min(Math.max(ap.x - tipW / 2, padding.left), width - padding.right - tipW);
@@ -100,12 +98,12 @@ export default function SalesChart({ data }: SalesChartProps) {
   }
 
   return (
-    // Responsive container
-    <div style={{ width: '100%', overflowX: 'auto', overflowY: 'hidden' }}>
+    /* 👈 ITO ANG BINAGO: Tinanggal ang minWidth at pinalitan ng responsive rules */
+    <div style={{ width: '100%', overflow: 'hidden' }}>
       <svg
         className="sales-chart"
         viewBox={`0 0 ${width} ${height}`}
-        style={{ width: '100%', minWidth: '600px', display: 'block' }}
+        style={{ width: '100%', height: 'auto', display: 'block' }}
         role="img"
         aria-label="Sales overview chart"
       >
@@ -147,7 +145,6 @@ export default function SalesChart({ data }: SalesChartProps) {
 
         {/* X-AXIS DATES (Auto-skip kapag masyadong marami para hindi mag-overlap) */}
         {points.map((p, i) => {
-          // Kung 30 days, magpakita lang ng date tuwing 4 na araw (at yung huli)
           const is30Days = data.length > 15;
           const shouldShow = !is30Days || i % 4 === 0 || i === data.length - 1;
 
@@ -166,7 +163,7 @@ export default function SalesChart({ data }: SalesChartProps) {
           );
         })}
 
-        {/* ACTIVE POINT (huling araw by default, sinusundan ang mouse) */}
+        {/* ACTIVE POINT */}
         {hover !== null && <line className="sc-guide" x1={ap.x} y1={padding.top} x2={ap.x} y2={baseY} />}
         <circle className="sc-halo" cx={ap.x} cy={ap.y} r={9} />
         <circle className="sc-dot" cx={ap.x} cy={ap.y} r={5.5} />

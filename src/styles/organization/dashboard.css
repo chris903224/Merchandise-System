@@ -217,4 +217,33 @@ html body .org-shell .sel-wrap .sel {
    QUICK ACTIONS — one cohesive tint (follows theme accent)
    ============================================================ */
 .org-shell .page-dashboard .qa { --c: var(--a) !important; }
-.org-shell .page-dashboard .qa .ic { color: var(--tx) !important; }
+.org-shell .page-dashboard .qa .ic { color: var(--tx) !important; } 
+/* ============================================================
+   🎯 FINAL CHART FIX: URONG PATAAS (WALANG SAYANG NA ESPASYO)
+   ============================================================ */
+
+/* 1. I-override ang lumang fixed height sa .card.b-chart at .b-chart */
+html body .org-shell.org-compact .page-dashboard .card.b-chart,
+html body .org-shell.org-compact .page-dashboard .b-chart {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding-bottom: 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* 2. Paliitin ang SVG chart height */
+html body .org-shell.org-compact .page-dashboard .b-chart .sales-chart {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: 220px !important; /* 👈 Saktong height lang para compact */
+  display: block !important;
+  margin-top: 8px !important;
+}
+
+/* 3. Siguraduhing walang lumang scrollbar na nagtutulak pababa */
+html body .org-shell.org-compact .page-dashboard .b-chart > div {
+  overflow: hidden !important;
+}

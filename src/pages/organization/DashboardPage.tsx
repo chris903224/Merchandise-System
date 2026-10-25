@@ -1,6 +1,6 @@
 // src/pages/organization/DashboardPage.tsx
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../../store';
 import StatCard from '../../components/organization/StatCard';
@@ -11,10 +11,50 @@ import UpcomingList from '../../components/organization/UpcomingList';
 import { Icon } from '../../components/Icon';
 import { peso } from '../../utils/format';
 import type { Product, Order } from '../../types';
-import type { KPI, SalesPoint, ActivityItem } from '../../types/organization';
+import type { SalesPoint, ActivityItem } from '../../types/organization';
 
 const LOW_STOCK = 10;
 
+/* ============================================================
+   ANIMATED NUMBER HOOK (Zero to Real Data)
+   ============================================================ */
+function useAnimatedNumber(target: number, isCurrency = false) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const end = target;
+    if (start === end) return;
+
+    const duration = 1000; 
+    const startTime = performance.now();
+
+    const updateNumber = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      const easeOut = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      
+      setCount(Math.floor(easeOut * end));
+
+      if (progress < 1) {
+        requestAnimationFrame(updateNumber);
+      }
+    };
+
+    requestAnimationFrame(updateNumber);
+  }, [target]);
+
+  if (isCurrency) {
+    return peso(count);
+  }
+
+  return count.toLocaleString();
+}
+
+/* ============================================================
+   HELPER FUNCTIONS
+   ============================================================ */
 function totalStock(p: Product): number {
   if (p.sizeStocks && Object.keys(p.sizeStocks).length > 0) {
     return Object.values(p.sizeStocks).reduce((a, b) => a + (Number(b) || 0), 0);
@@ -24,26 +64,11 @@ function totalStock(p: Product): number {
 
 function getGreeting(): string {
   const h = new Date().getHours();
-  if (h < 12) return 'Good morning,';
-  if (h < 18) return 'Good afternoon,';
-  return 'Good evening,';
+  if (h < 12) return 'Good morning';
+  if (h < 18) return 'Good afternoon';
+  return 'Good evening';
 }
 
-function kpiColor(k: KPI['key']): 'g1' | 'g2' | 'g3' | 'g4' {
-  const map: Record<KPI['key'], 'g1' | 'g2' | 'g3' | 'g4'> = { 
-    products: 'g1', 
-    revenue: 'g2', 
-    orders: 'g3', 
-    members: 'g4' 
-  };
-  return map[k];
-}
-
-function kpiIcon(k: KPI['key']): string {
-  return { products: 'box', revenue: 'card', orders: 'cart', members: 'users' }[k];
-}
-
-/** YYYY-MM-DD gamit ang LOCAL date (hindi UTC) para hindi lumipat ng araw ang mga order sa PH time. */
 function localDayKey(d: Date): string {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, '0');
@@ -51,28 +76,27 @@ function localDayKey(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
+/* ============================================================
+   MAIN COMPONENT
+   ============================================================ */
 export default function DashboardPage() {
   const { session, products, orders } = useApp();
   const [range, setRange] = useState<7 | 30>(7);
 
-  // ✅ Kinukuha lahat ng products at orders (walang filter)
   const myProducts = useMemo(() => products, [products]);
   const myOrders = useMemo(() => orders, [orders]);
 
-  const kpis: KPI[] = useMemo(() => {
-    const revenue = myOrders
-      .filter((o) => o.paymentStatus === 'Paid')
-      .reduce((t, o) => t + o.totalAmount, 0);
+  const revenue = useMemo(
+    () => myOrders.filter((o) => o.paymentStatus === 'Paid').reduce((t, o) => t + o.totalAmount, 0),
+    [myOrders]
+  );
+  const members = useMemo(() => new Set(myOrders.map((o) => o.userId)).size, [myOrders]);
 
-    const members = new Set(myOrders.map((o) => o.userId)).size;
-
-    return [
-      { key: 'products', label: 'Total Products', value: myProducts.length },
-      { key: 'revenue',  label: 'Total Revenue',  value: peso(revenue) },
-      { key: 'orders',   label: 'Total Orders',   value: myOrders.length },
-      { key: 'members',  label: 'Active Members', value: members },
-    ];
-  }, [myProducts, myOrders]);
+  // Gamitin ang custom hook
+  const animatedProducts = useAnimatedNumber(myProducts.length);
+  const animatedRevenue = useAnimatedNumber(revenue, true);
+  const animatedOrders = useAnimatedNumber(myOrders.length);
+  const animatedMembers = useAnimatedNumber(members);
 
   const sales: SalesPoint[] = useMemo(
     () => buildSalesPoints(myOrders, range),
@@ -88,111 +112,110 @@ export default function DashboardPage() {
 
   return (
     <section className="page-dashboard">
-      {/* HERO SECTION */}
+      {/* ROW 1 — WELCOME CARD */}
       <div className="glass hero">
-        <div className="hero-art" aria-hidden="true" />
-
         <div className="hero-body">
-          <small>{getGreeting()}</small>
-          <h1>
-            Welcome back, <span className="hl">{firstName}</span>!
-          </h1>
+          
+          <div className="hero-main">
+            <div className="greeting-row">
+              <span className="greeting-badge">
+                <span className="dot"></span> {getGreeting()}
+              </span>
+              <span className="hero-date">
+                {new Date().toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric',
+                })}
+              </span>
+            </div>
+            
+            <h1>
+              Welcome back, <span className="hl">{firstName}</span>.
+            </h1>
+            <p className="hero-desc">
+              Here's your organization's performance overview for today.
+            </p>
+          </div>
 
-          <p className="hero-line">
-            <Icon name="calendar" />
-            <span>Here's what's happening with your organization today.</span>
-          </p>
-          <p className="hero-line dt">
-            <Icon name="calendar" />
-            <span>
-              {new Date().toLocaleDateString('en-US', {
-                weekday: 'long',
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-              })}
-            </span>
-          </p>
+          <div className="hero-side">
+            <div className="status-indicator">
+              <span className="status-dot"></span>
+              System Online
+            </div>
+            <p className="hero-quote">
+              "Small steps every day lead to big results."
+            </p>
+          </div>
 
-          <blockquote className="quote">Small steps every day lead to big results.</blockquote>
         </div>
       </div>
 
-      {/* KPI STATS CARDS */}
+      {/* ROW 2 — KPI STATS */}
       <div className="stats">
-        {kpis.map((k) => (
-          <StatCard
-            key={k.key}
-            color={kpiColor(k.key)}
-            icon={kpiIcon(k.key)}
-            label={k.label}
-            value={k.value}
-          />
-        ))}
+        <StatCard color="g1" icon="box" label="Total Products" value={animatedProducts} />
+        <StatCard color="g2" icon="card" label="Total Revenue" value={animatedRevenue} />
+        <StatCard color="g3" icon="cart" label="Total Orders" value={animatedOrders} />
+        <StatCard color="g4" icon="users" label="Active Members" value={animatedMembers} />
       </div>
 
-      {/* MAIN CONTENT COLUMNS */}
-      <div className="cols">
-        {/* LEFT COLUMN: Sales Chart & Activity */}
-        <div className="stack">
-          <div className="glass card">
-            <h3>
-              <Icon name="chart" />
-              <span className="ttl">Sales Overview</span>
-              <label className="sel-wrap">
-                <Icon name="calendar" />
-                <select
-                  className="sel"
-                  value={range}
-                  aria-label="Sales range"
-                  onChange={(e) => setRange(Number(e.target.value) as 7 | 30)}
-                >
-                  <option value={7}>Last 7 days</option>
-                  <option value={30}>Last 30 days</option>
-                </select>
-              </label>
-            </h3>
-            <SalesChart data={sales} />
-          </div>
+      {/* ROW 3 — BENTO GRID */}
+      <div className="glass card b-chart">
+        <h3>
+          <Icon name="chart" />
+          <span className="ttl">Sales Overview</span>
+          <label className="sel-wrap">
+            <Icon name="calendar" />
+            <select
+              className="sel"
+              value={range}
+              aria-label="Sales range"
+              onChange={(e) => setRange(Number(e.target.value) as 7 | 30)}
+            >
+              <option value={7}>Last 7 days</option>
+              <option value={30}>Last 30 days</option>
+            </select>
+          </label>
+        </h3>
+        <SalesChart data={sales} />
+      </div>
 
-          <div className="glass card">
-            <h3>
-              <Icon name="clock" />
-              <span className="ttl">Recent Activity</span>
-              <Link to="/org/notifications" className="link">View all</Link>
-            </h3>
-            {activity.length > 0 ? (
-              <ActivityFeed items={activity} />
-            ) : (
-              <p className="dash-empty">No recent activity yet. New orders and stock alerts will show up here.</p>
-            )}
-          </div>
+      <div className="glass card b-activity">
+        <h3>
+          <Icon name="clock" />
+          <span className="ttl">Recent Activity</span>
+          <Link to="/org/notifications" className="link">View all</Link>
+        </h3>
+        {activity.length > 0 ? (
+          <ActivityFeed items={activity} />
+        ) : (
+          <p className="dash-empty">No recent activity yet. New orders and stock alerts will show up here.</p>
+        )}
+      </div>
+
+      <div className="b-side">
+        <div className="glass card b-actions">
+          <h3>
+            <Icon name="bolt" />
+            <span className="ttl">Quick Actions</span>
+          </h3>
+          <QuickAction to="/org/products" color="#7c5cff" icon="plus" label="Add Product" />
+          <QuickAction to="/org/orders"   color="#3b7bff" icon="cart" label="View Orders" />
+          <QuickAction to="/org/orders"   color="#2fb594" icon="card" label="Manage Payments" />
         </div>
 
-        {/* RIGHT COLUMN: Quick Actions & Upcoming */}
-        <div className="stack">
-          <div className="glass card">
-            <h3>
-              <Icon name="bolt" />
-              <span className="ttl">Quick Actions</span>
-            </h3>
-            <QuickAction to="/org/products" color="#7c5cff" icon="plus" label="Add Product" />
-            <QuickAction to="/org/orders"   color="#3b7bff" icon="cart" label="View Orders" />
-            <QuickAction to="/org/orders"   color="#2fb594" icon="card" label="Manage Payments" />
-          </div>
-
-          <div className="glass card">
-            <h3>
-              <Icon name="calendar" />
-              <span className="ttl">Upcoming</span>
-              <Link to="/org/orders" className="link">View all</Link>
-            </h3>
-            {activity.length > 0 ? (
-              <UpcomingList items={activity.slice(0, 3)} />
-            ) : (
-              <p className="dash-empty">Nothing upcoming right now.</p>
-            )}
-          </div>
+        <div className="glass card b-upcoming">
+          <h3>
+            <Icon name="calendar" />
+            <span className="ttl">Upcoming</span>
+            <Link to="/org/orders" className="link">View all</Link>
+          </h3>
+          {activity.length > 0 ? (
+            <UpcomingList items={activity.slice(0, 3)} />
+          ) : (
+            <p className="dash-empty">Nothing upcoming right now.</p>
+          )}
         </div>
       </div>
     </section>
@@ -200,21 +223,18 @@ export default function DashboardPage() {
 }
 
 /* ============================================================
-   HELPER FUNCTIONS
+   HELPERS
    ============================================================ */
-
 function buildSalesPoints(orders: Order[], days: 7 | 30): SalesPoint[] {
   const buckets: Record<string, number> = {};
   const now = new Date();
 
-  // Initialize buckets for each day (local date)
   for (let i = days - 1; i >= 0; i--) {
     const d = new Date(now);
     d.setDate(d.getDate() - i);
     buckets[localDayKey(d)] = 0;
   }
 
-  // Add order amounts to buckets
   orders
     .filter((o) => o.paymentStatus === 'Paid')
     .forEach((o) => {
@@ -234,7 +254,6 @@ function buildSalesPoints(orders: Order[], days: 7 | 30): SalesPoint[] {
 function buildActivity(orders: Order[], products: Product[]): ActivityItem[] {
   const items: ActivityItem[] = [];
 
-  // Recent Orders (Top 3)
   [...orders]
     .sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
     .slice(0, 3)
@@ -251,7 +270,6 @@ function buildActivity(orders: Order[], products: Product[]): ActivityItem[] {
       });
     });
 
-  // Low Stock Alerts (Top 2)
   products
     .filter((p) => totalStock(p) <= LOW_STOCK)
     .slice(0, 2)

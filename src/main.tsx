@@ -1,5 +1,5 @@
 // src/main.tsx
-import { StrictMode } from 'react';
+import { StrictMode, useEffect } from 'react'; // ✅ Idinagdag ang useEffect
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
@@ -11,6 +11,26 @@ import ScrollToTop from './components/ScrollToTop';
 import { STORAGE_KEYS, readStorage } from './data/storage';
 import type { SessionUser } from './types';
 import './styles/index.css';
+
+// ✅ DAGDAG: Root component para i-unlock ang scroll ng buong app
+function Root() {
+  useEffect(() => {
+    // I-force ang scroll sa html at body
+    document.documentElement.style.setProperty('overflow', 'auto', 'important');
+    document.documentElement.style.setProperty('height', 'auto', 'important');
+    document.body.style.setProperty('overflow', 'auto', 'important');
+    document.body.style.setProperty('height', 'auto', 'important');
+    
+    // I-unlock ang React root container
+    const root = document.getElementById('root');
+    if (root) {
+      root.style.setProperty('overflow', 'visible', 'important');
+      root.style.setProperty('height', 'auto', 'important');
+    }
+  }, []);
+
+  return <App />;
+}
 
 async function bootstrap(): Promise<void> {
   await ensureSeeded();
@@ -43,7 +63,8 @@ async function bootstrap(): Promise<void> {
         <ScrollToTop />
         <ToastProvider>
           <AppProvider>
-            <App />
+            {/* ✅ Pinalitan ang <App /> ng <Root /> */}
+            <Root />
           </AppProvider>
         </ToastProvider>
       </BrowserRouter>

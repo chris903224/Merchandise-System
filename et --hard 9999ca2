@@ -1,0 +1,86 @@
+[33m7346b10[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mBranch-Beta[m[33m, [m[1;31morigin/feature-scroll-fix[m[33m, [m[1;31morigin/Branch-Beta[m[33m, [m[1;32mfeature-scroll-fix[m[33m, [m[1;32mBranch-Alpha[m[33m)[m HEAD@{0}: reset: moving to origin/Branch-Beta
+[33m7346b10[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mBranch-Beta[m[33m, [m[1;31morigin/feature-scroll-fix[m[33m, [m[1;31morigin/Branch-Beta[m[33m, [m[1;32mfeature-scroll-fix[m[33m, [m[1;32mBranch-Alpha[m[33m)[m HEAD@{1}: reset: moving to feature-scroll-fix
+[33m5b06e03[m HEAD@{2}: reset: moving to HEAD
+[33m5b06e03[m HEAD@{3}: checkout: moving from feature-scroll-fix to Branch-Beta
+[33m7346b10[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mBranch-Beta[m[33m, [m[1;31morigin/feature-scroll-fix[m[33m, [m[1;31morigin/Branch-Beta[m[33m, [m[1;32mfeature-scroll-fix[m[33m, [m[1;32mBranch-Alpha[m[33m)[m HEAD@{4}: checkout: moving from Branch-Beta to feature-scroll-fix
+[33m5b06e03[m HEAD@{5}: checkout: moving from feature-scroll-fix to Branch-Beta
+[33m7346b10[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mBranch-Beta[m[33m, [m[1;31morigin/feature-scroll-fix[m[33m, [m[1;31morigin/Branch-Beta[m[33m, [m[1;32mfeature-scroll-fix[m[33m, [m[1;32mBranch-Alpha[m[33m)[m HEAD@{6}: checkout: moving from Branch-Alpha to feature-scroll-fix
+[33m7346b10[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mBranch-Beta[m[33m, [m[1;31morigin/feature-scroll-fix[m[33m, [m[1;31morigin/Branch-Beta[m[33m, [m[1;32mfeature-scroll-fix[m[33m, [m[1;32mBranch-Alpha[m[33m)[m HEAD@{7}: pull origin Branch-Alpha: Merge made by the 'ort' strategy.
+[33m9999ca2[m HEAD@{8}: commit: organization polished ....
+[33m697895b[m HEAD@{9}: reset: moving to 697895b
+[33mae1f282[m HEAD@{10}: reset: moving to ae1f282
+[33m697895b[m HEAD@{11}: reset: moving to 697895b
+[33m697895b[m HEAD@{12}: checkout: moving from Branch-Beta to Branch-Alpha
+[33m5b06e03[m HEAD@{13}: checkout: moving from Branch-Alpha to Branch-Beta
+[33m697895b[m HEAD@{14}: reset: moving to 697895b
+[33mbe50da0[m HEAD@{15}: reset: moving to HEAD~1
+[33m16ab8f1[m[33m ([m[1;31morigin/Branch-Alpha[m[33m)[m HEAD@{16}: reset: moving to HEAD~1
+[33mc8ca9dc[m HEAD@{17}: commit (merge): Merge Branch-Beta into Branch-Alpha (keep Alpha version)
+[33m16ab8f1[m[33m ([m[1;31morigin/Branch-Alpha[m[33m)[m HEAD@{18}: pull origin Branch-Alpha: Fast-forward
+[33m6dea2d2[m HEAD@{19}: checkout: moving from Branch-Alpha to Branch-Alpha
+[33m6dea2d2[m HEAD@{20}: pull origin Branch-Beta: updating HEAD
+[33m6dea2d2[m HEAD@{21}: reset: moving to HEAD~1
+[33m697895b[m HEAD@{22}: commit: Add the organization page
+[33m6dea2d2[m HEAD@{23}: reset: moving to origin/Branch-Alpha
+[33m34529d3[m HEAD@{24}: rebase (abort): returning to refs/heads/Branch-Alpha
+[33m5b3e269[m HEAD@{25}: pull --rebase origin Branch-Alpha (pick): remove the uncessary code for restriction.ts
+[33m370d71b[m HEAD@{26}: pull --rebase origin Branch-Alpha (pick): Update README.md
+[33m63a259b[m HEAD@{27}: pull --rebase origin Branch-Alpha (pick): package.json
+[33m6dea2d2[m HEAD@{28}: pull --rebase origin Branch-Alpha (start): checkout 6dea2d24292d3fa608fb68d2158bdf48b0f9def9
+[33m34529d3[m HEAD@{29}: rebase (abort): returning to refs/heads/Branch-Alpha
+[33m22f10fc[m HEAD@{30}: pull --rebase origin Branch-Alpha (pick): remove the uncessary code for restriction.ts
+[33m675388c[m HEAD@{31}: pull --rebase origin Branch-Alpha (pick): Update README.md
+[33mcc42c00[m HEAD@{32}: pull --rebase origin Branch-Alpha (pick): package.json
+[33m6dea2d2[m HEAD@{33}: pull --rebase origin Branch-Alpha (start): checkout 6dea2d24292d3fa608fb68d2158bdf48b0f9def9
+[33m34529d3[m HEAD@{34}: rebase (abort): returning to refs/heads/Branch-Alpha
+[33meef5e82[m HEAD@{35}: pull --rebase origin Branch-Alpha (pick): remove the uncessary code for restriction.ts
+[33me78ae81[m HEAD@{36}: pull --rebase origin Branch-Alpha (pick): Update README.md
+[33m0dbe73d[m HEAD@{37}: pull --rebase origin Branch-Alpha (pick): package.json
+[33m6dea2d2[m HEAD@{38}: pull --rebase origin Branch-Alpha (start): checkout 6dea2d24292d3fa608fb68d2158bdf48b0f9def9
+[33m34529d3[m HEAD@{39}: commit (merge): Merge Branch-Beta into Branch-Alpha
+[33m71ad9fc[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{40}: checkout: moving from Branch-Beta to Branch-Alpha
+[33m5b06e03[m HEAD@{41}: commit (merge): Resolve merge conflicts from origin/Branch-Beta
+[33mc172961[m HEAD@{42}: checkout: moving from Branch-Alpha to Branch-Beta
+[33m71ad9fc[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{43}: checkout: moving from Branch-Beta to Branch-Alpha
+[33mc172961[m HEAD@{44}: checkout: moving from Branch-Alpha to Branch-Beta
+[33m71ad9fc[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{45}: checkout: moving from Branch-Beta to Branch-Alpha
+[33mc172961[m HEAD@{46}: reset: moving to HEAD
+[33mc172961[m HEAD@{47}: checkout: moving from Branch-Alpha to Branch-Beta
+[33m71ad9fc[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{48}: checkout: moving from Branch-Alpha to Branch-Alpha
+[33m71ad9fc[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{49}: checkout: moving from Branch-Beta to Branch-Alpha
+[33mc172961[m HEAD@{50}: checkout: moving from Branch-Alpha to Branch-Beta
+[33m71ad9fc[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{51}: commit: remove the uncessary code for restriction.ts
+[33mce32e07[m HEAD@{52}: pull --rebase origin main (finish): returning to refs/heads/Branch-Alpha
+[33mce32e07[m HEAD@{53}: pull --rebase origin main (pick): Cleaning the exsiting UI
+[33m9e96a6b[m HEAD@{54}: pull --rebase origin main (start): checkout 9e96a6b09af9f43f08159c3aba065889f6391ab1
+[33m6dea2d2[m HEAD@{55}: commit: Cleaning the exsiting UI
+[33m1ba97e0[m HEAD@{56}: commit: Improve the overall uncessary UI I will make it precise and applied ux for the profile settingsa nad auth also I add the onboarding ts when those user are new account, the onboarding will appear at the system and ask if you have already uniform
+[33me522392[m HEAD@{57}: commit: notification panel
+[33maaf9961[m HEAD@{58}: commit: Adjusting the color pallete and contrasting
+[33mccf775f[m HEAD@{59}: commit: adjusting the hover
+[33md20f9c5[m HEAD@{60}: commit: Adding the nerumoorphism x claymorphism approach
+[33m0f8b1a3[m HEAD@{61}: commit: Adding neurmphism ui for adminlogin
+[33mbcda827[m HEAD@{62}: commit: Adjusting the sidebar
+[33mae1f282[m HEAD@{63}: commit: m
+[33mfe56ddb[m HEAD@{64}: commit: Adding the security features
+[33m957da83[m HEAD@{65}: commit: Changing the product page Ui and animation improvement
+[33m84ed615[m HEAD@{66}: commit: Error in mobiletopnavbar
+[33m81dd494[m HEAD@{67}: commit: Mobile optimization
+[33m820faf1[m HEAD@{68}: commit: Added mobile features
+[33me5b0669[m HEAD@{69}: commit: Midnight navy blue default
+[33m133dc1c[m HEAD@{70}: commit: Color pallette bug
+[33m6caf1d9[m HEAD@{71}: rebase (finish): returning to refs/heads/Branch-Alpha
+[33m6caf1d9[m HEAD@{72}: rebase (pick): changing the root color default
+[33ma383c0e[m HEAD@{73}: rebase (start): checkout origin/main
+[33mdece519[m HEAD@{74}: commit: changing the root color default
+[33mff9eb8c[m HEAD@{75}: commit: change the root from cream yellow to midnight navy
+[33md9945e7[m HEAD@{76}: commit: Bug in ratelimiting
+[33me485960[m HEAD@{77}: commit: Improvement the login system
+[33mcfee386[m HEAD@{78}: commit: Contrasting the text in cart and order details
+[33ma07cea4[m HEAD@{79}: rebase (finish): returning to refs/heads/Branch-Alpha
+[33ma07cea4[m HEAD@{80}: rebase (pick): Contrasting the all UI
+[33m148287a[m HEAD@{81}: rebase (start): checkout origin/main
+[33mb0bffcd[m HEAD@{82}: commit: Contrasting the all UI
+[33m037ccd9[m HEAD@{83}: commit: Settings save preference adjustment
+[33mc172961[m HEAD@{84}: checkout: moving from Branch-Beta to Branch-Alpha
+[33mc172961[m HEAD@{85}: pull o

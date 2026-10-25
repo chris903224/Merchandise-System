@@ -5,9 +5,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Icon } from '../Icon';
 import { useNotificationStore } from '../../store/notificationStore';
 import { useUIStore } from '../../store/uiStore';
-import { useApp } from '../../store'; 
+import { useApp } from '../../store';
 import { LANGUAGE_CODE } from '../../data/constants';
-import { BRAND } from '../../data/constants'; // ✅ Idinagdag para sa Logo
 import type { Session } from '../../types/organization';
 
 function initialsOf(name: string): string {
@@ -18,7 +17,7 @@ export default function OrgTopbar({ session }: { session: Session | null }) {
   const [q, setQ] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  
+
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -27,10 +26,10 @@ export default function OrgTopbar({ session }: { session: Session | null }) {
   const openLang = useUIStore((s) => s.openLang);
   const openTheme = useUIStore((s) => s.openTheme);
   const lang = (localStorage.getItem('sjc-lang') ?? 'en') as keyof typeof LANGUAGE_CODE;
-  
+
   const { signOut } = useApp();
 
-  // ✅ Add subtle elevation when the page is scrolled
+  // ✅ Lalabas ang glass background ng header pag nag-scroll (.is-scrolled)
   useEffect(() => {
     function onScroll() {
       setScrolled(window.scrollY > 4);
@@ -51,6 +50,7 @@ export default function OrgTopbar({ session }: { session: Session | null }) {
     return () => document.removeEventListener('mousedown', onClickOutside);
   }, []);
 
+  // Ctrl/Cmd + K → focus search
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
@@ -75,26 +75,21 @@ export default function OrgTopbar({ session }: { session: Session | null }) {
 
   return (
     <header className={`top org-topbar${scrolled ? ' is-scrolled' : ''}`}>
-      {/* ✅ 1. BRAND LOGO */}
-      <Link to="/org/dashboard" className="org-brand">
-        <img src={BRAND.logo} alt="Logo" className="org-brand-logo" />
-      </Link>
-
-      {/* ✅ 2. SEARCH BAR */}
-      <form className="search" onSubmit={onSubmit}>
-        <Icon name="search" className="search-icon" />
+      {/* 1. SEARCH PILL — bilog na search button sa dulo */}
+      <form className="search" onSubmit={onSubmit} role="search">
         <input
           ref={inputRef}
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search anything…"
         />
-        <kbd>Ctrl K</kbd>
+        <button type="submit" className="search-go" aria-label="Search">
+          <Icon name="search" />
+        </button>
       </form>
 
-      {/* ✅ 3. NAV ACTIONS */}
+      {/* 2. NAV ACTIONS (bilog) */}
       <div className="org-nav-actions">
-        {/* Language Button */}
         <button
           className="org-action-btn"
           onClick={openLang}
@@ -105,7 +100,6 @@ export default function OrgTopbar({ session }: { session: Session | null }) {
           <span className="org-lang-code">{LANGUAGE_CODE[lang] ?? 'US'}</span>
         </button>
 
-        {/* Notification Bell */}
         <Link
           to="/org/notifications"
           className="org-action-btn org-icon-btn"

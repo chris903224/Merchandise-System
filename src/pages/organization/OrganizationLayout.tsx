@@ -13,6 +13,7 @@ export default function OrganizationLayout() {
   const navigate = useNavigate();
   const { themeOpen, langOpen } = useUIStore();
 
+  // 1. Theme & UI Initialization
   useEffect(() => {
     const savedTheme = localStorage.getItem('sjc-theme') ?? 'midnight';
     const savedMode = localStorage.getItem('sjc-mode') ?? 'dark';
@@ -23,6 +24,7 @@ export default function OrganizationLayout() {
     document.documentElement.dataset.ui = savedUi;
   }, []);
 
+  // 2. Auth Guard
   useEffect(() => {
     if (isLoading) return;
     if (!session || session.role !== 'Organization') {
@@ -30,10 +32,13 @@ export default function OrganizationLayout() {
     }
   }, [session, isLoading, navigate]);
 
+  // ✅ Binalik sa normal. Wala nang JS scroll hack.
+  // Ang CSS na ang bahala sa scroll.
+
   if (isLoading || !session || session.role !== 'Organization') return null;
 
   return (
-    <div className="org-shell">
+    <div className="org-shell org-compact">
       <OrgSidebar session={session} />
       
       {/* ✅ Dito nakalagay ang scroll */}

@@ -204,3 +204,812 @@ html body .org-shell .chips:focus-within {
   }
   .org-shell aside.org-rail { padding: 14px 10px; }
 }
+/* ============================================================
+   🎯 UNIVERSAL CLAYMORPHISM (MATCHES ALL 10 THEMES)
+   ============================================================ */
+
+/* 1. Core Clay Element (Cards, Buttons, etc.) */
+.clay-card,
+.clay-btn,
+.clay-input {
+  position: relative !important;
+  background: var(--theme-surface) !important;
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.08) !important;
+  border-radius: 1.25rem !important;
+  color: var(--theme-text) !important;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  
+  /* Default (Light Mode) Clay Shadows */
+  box-shadow: 
+    inset 3px 3px 6px rgba(0, 0, 0, 0.06),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.7),
+    0 4px 12px rgba(var(--theme-primary-rgb), 0.08) !important;
+}
+
+/* 2. Dark Mode Adjustments (Mas malalim ang shadows) */
+[data-theme-mode='dark'] .clay-card,
+[data-theme-mode='dark'] .clay-btn,
+[data-theme-mode='dark'] .clay-input {
+  background: var(--theme-surface-2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 
+    inset 3px 3px 6px rgba(0, 0, 0, 0.4),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.04),
+    0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 3. Clay Hover Effects (Tactile pop) */
+.clay-card:hover,
+.clay-btn:hover {
+  transform: translateY(-3px) scale(1.01) !important;
+  box-shadow: 
+    inset 2px 2px 4px rgba(0, 0, 0, 0.04),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.8),
+    0 8px 24px rgba(var(--theme-primary-rgb), 0.15) !important;
+}
+
+[data-theme-mode='dark'] .clay-card:hover,
+[data-theme-mode='dark'] .clay-btn:hover {
+  box-shadow: 
+    inset 2px 2px 4px rgba(0, 0, 0, 0.5),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* 4. Clay Active State (Pinindot) */
+.clay-btn:active,
+.clay-card:active {
+  transform: translateY(1px) scale(0.98) !important;
+  box-shadow: 
+    inset 4px 4px 8px rgba(0, 0, 0, 0.1),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.6) !important;
+}
+
+[data-theme-mode='dark'] .clay-btn:active,
+[data-theme-mode='dark'] .clay-card:active {
+  box-shadow: 
+    inset 4px 4px 8px rgba(0, 0, 0, 0.6),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.03) !important;
+}
+
+/* ============================================================
+   🎯 SPECIFIC OVERRIDES PARA SA 10 THEMES
+   ============================================================ */
+
+/* --- LIGHT THEMES --- */
+
+/* Cream Yellow */
+[data-theme='cream-yellow'] .clay-card,
+[data-theme='cream-yellow'] .clay-btn {
+  background: #FBF6E9 !important;
+  box-shadow: inset 4px 4px 8px rgba(166, 122, 10, 0.1), inset -4px -4px 8px #FFFFFF, 0 4px 12px rgba(166, 122, 10, 0.08) !important;
+}
+
+/* Warm Beige */
+[data-theme='warm-beige'] .clay-card,
+[data-theme='warm-beige'] .clay-btn {
+  background: #F5EFE0 !important;
+  box-shadow: inset 4px 4px 8px rgba(125, 99, 63, 0.1), inset -4px -4px 8px #FFFFFF, 0 4px 12px rgba(125, 99, 63, 0.08) !important;
+}
+
+/* Pure White */
+[data-theme='pure-white'] .clay-card,
+[data-theme='pure-white'] .clay-btn {
+  background: #FFFFFF !important;
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.05), inset -4px -4px 8px #FFFFFF, 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Soft Gray */
+[data-theme='soft-gray'] .clay-card,
+[data-theme='soft-gray'] .clay-btn {
+  background: #F3F4F6 !important;
+  box-shadow: inset 4px 4px 8px rgba(63, 72, 84, 0.08), inset -4px -4px 8px #FFFFFF, 0 4px 12px rgba(63, 72, 84, 0.08) !important;
+}
+
+/* Pale Blush */
+[data-theme='pale-blush'] .clay-card,
+[data-theme='pale-blush'] .clay-btn {
+  background: #FBF0F3 !important;
+  box-shadow: inset 4px 4px 8px rgba(166, 88, 104, 0.1), inset -4px -4px 8px #FFFFFF, 0 4px 12px rgba(166, 88, 104, 0.08) !important;
+}
+
+/* --- DARK THEMES --- */
+
+/* Midnight Navy */
+[data-theme='midnight-navy'] .clay-card,
+[data-theme='midnight-navy'] .clay-btn {
+  background: #222F4D !important;
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.4), inset -4px -4px 8px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Matte Black */
+[data-theme='matte-black'] .clay-card,
+[data-theme='matte-black'] .clay-btn {
+  background: #252525 !important;
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.04), 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Charcoal Gray */
+[data-theme='charcoal-gray'] .clay-card,
+[data-theme='charcoal-gray'] .clay-btn {
+  background: #353535 !important;
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.5), inset -4px -4px 8px rgba(255, 255, 255, 0.06), 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Deep Forest */
+[data-theme='deep-forest'] .clay-card,
+[data-theme='deep-forest'] .clay-btn {
+  background: #1C3D33 !important;
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.4), inset -4px -4px 8px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Dark Plum */
+[data-theme='dark-plum'] .clay-card,
+[data-theme='dark-plum'] .clay-btn {
+  background: #382444 !important;
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.5), inset -4px -4px 8px rgba(255, 255, 255, 0.06), 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+/* ============================================================
+   🎯 FORCE CLAYMORPHISM (PIGILAN ANG GLASS EFFECT)
+   ============================================================ */
+
+/* 1. I-target lahat ng profile cards, inputs, at sections */
+[data-ui="clay"] .profile-card,
+[data-ui="clay"] .profile-side__card,
+[data-ui="clay"] .glass,
+[data-ui="clay"] .in,
+[data-ui="clay"] .pd-metrics,
+[data-ui="clay"] .settings-section,
+[data-ui="clay"] .card {
+  /* 👈 PILITIN ANG SOLID CLAY BACKGROUND (Walang transparency) */
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  
+  /* 👈 TANGGALIN ANG GLASS BLUR */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  
+  /* 👈 CLAY SHADOWS (Puffy 3D effect) */
+  box-shadow: 
+    inset 3px 3px 6px rgba(0, 0, 0, 0.06),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.7),
+    0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.1) !important;
+  border-radius: 1.25rem !important;
+}
+
+/* 2. Dark Mode Clay Adjustments (Midnight Navy, Matte Black, etc.) */
+[data-theme-mode="dark"][data-ui="clay"] .profile-card,
+[data-theme-mode="dark"][data-ui="clay"] .profile-side__card,
+[data-theme-mode="dark"][data-ui="clay"] .glass,
+[data-theme-mode="dark"][data-ui="clay"] .in,
+[data-theme-mode="dark"][data-ui="clay"] .pd-metrics,
+[data-theme-mode="dark"][data-ui="clay"] .settings-section,
+[data-theme-mode="dark"][data-ui="clay"] .card {
+  /* Mas malalim na kulay para sa dark themes */
+  background: var(--theme-surface-2) !important;
+  
+  box-shadow: 
+    inset 3px 3px 6px rgba(0, 0, 0, 0.4),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.05),
+    0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* 3. Ayusin ang loob ng Inputs (Text fields) */
+[data-ui="clay"] .profile-form-field,
+[data-ui="clay"] .settings-field {
+  background: var(--theme-surface) !important;
+  box-shadow: 
+    inset 2px 2px 5px rgba(0, 0, 0, 0.08),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.6) !important;
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.05) !important;
+}
+
+[data-theme-mode="dark"][data-ui="clay"] .profile-form-field,
+[data-theme-mode="dark"][data-ui="clay"] .settings-field {
+  box-shadow: 
+    inset 2px 2px 5px rgba(0, 0, 0, 0.5),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.04) !important;
+}
+
+/* 4. I-override ang mga asul na borders/glows ng lumang glass theme */
+[data-ui="clay"] .profile-tab.is-active,
+[data-ui="clay"] .btn {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  box-shadow: 
+    0 4px 10px rgba(var(--theme-primary-rgb), 0.3),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3) !important;
+  border: 1px solid var(--theme-primary) !important;
+}
+/* ============================================================
+   🎯 ULTIMATE FIX: NEUMORPHISM & SKEUOMORPHISM (WALANG BLUE)
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. NEUMORPHISM (Soft Embossed - Theme Matched)
+   ------------------------------------------------------------ */
+[data-ui="neumorphism"] .glass,
+[data-ui="neumorphism"] .card,
+[data-ui="neumorphism"] .in,
+[data-ui="neumorphism"] .profile-side__card,
+[data-ui="neumorphism"] .profile-card {
+  /* 👈 PILITIN ANG THEME SURFACE (Walang asul/puti) */
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  
+  /* 👈 TANGGALIN ANG GLASS BLUR */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  
+  /* 👈 TANGGALIN ANG BORDER */
+  border: none !important;
+  
+  /* 👈 SHADOWS BASED ON THEME COLORS (Walang asul) */
+  box-shadow: 
+    -6px -6px 12px rgba(255, 255, 255, 0.05),
+    6px 6px 12px rgba(0, 0, 0, 0.4),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme-mode="light"][data-ui="neumorphism"] .glass,
+[data-theme-mode="light"][data-ui="neumorphism"] .card {
+  background: var(--theme-surface) !important;
+  box-shadow: 
+    -6px -6px 12px rgba(255, 255, 255, 0.7),
+    6px 6px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Inset for inputs */
+[data-ui="neumorphism"] input,
+[data-ui="neumorphism"] .in {
+  background: var(--theme-bg) !important;
+  box-shadow: 
+    inset -3px -3px 6px rgba(255, 255, 255, 0.05),
+    inset 3px 3px 6px rgba(0, 0, 0, 0.4) !important;
+}
+[data-theme-mode="light"][data-ui="neumorphism"] input,
+[data-theme-mode="light"][data-ui="neumorphism"] .in {
+  box-shadow: 
+    inset -3px -3px 6px rgba(255, 255, 255, 0.7),
+    inset 3px 3px 6px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* ------------------------------------------------------------
+   2. SKEUOMORPHISM (Glossy 3D - Theme Matched)
+   ------------------------------------------------------------ */
+[data-ui="skeuomorphism"] .glass,
+[data-ui="skeuomorphism"] .card,
+[data-ui="skeuomorphism"] .profile-side__card,
+[data-ui="skeuomorphism"] .profile-card {
+  /* 👈 GRADIENT BASED ON THEME (Walang hardcoded blue) */
+  background: linear-gradient(145deg, var(--theme-surface-2) 0%, var(--theme-surface) 100%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  
+  /* 👈 BORDER NA NAKA-BASE SA THEME (Walang blue) */
+  border: 1px solid rgba(0, 0, 0, 0.3) !important;
+  border-bottom: 3px solid rgba(0, 0, 0, 0.4) !important;
+  border-radius: 8px !important;
+  
+  /* 👈 SHADOWS (Walang blue) */
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 2px 2px rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Buttons */
+[data-ui="skeuomorphism"] .btn,
+[data-ui="skeuomorphism"] .profile-tab.is-active {
+  background: linear-gradient(to bottom, var(--theme-primary) 0%, var(--theme-primary-hover) 100%) !important;
+  color: var(--theme-on-primary) !important;
+  border: 1px solid rgba(0, 0, 0, 0.4) !important;
+  border-bottom: 3px solid rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
+}
+
+/* ------------------------------------------------------------
+   3. HARD RESET (Para sure na walang asul na matira)
+   ------------------------------------------------------------ */
+[data-ui="neumorphism"] .glass *,
+[data-ui="skeuomorphism"] .glass *,
+[data-ui="neumorphism"] .card *,
+[data-ui="skeuomorphism"] .card * {
+  /* I-reset ang anumang asul na background/border na naka-inherit */
+  background-color: transparent !important;
+  border-color: inherit !important;
+  box-shadow: none !important;
+}
+/* ============================================================
+   🎯 FINAL: TANGGALIN ANG GLASS SA NEU AT SKEU (BASE SA TSX)
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. NEUMORPHISM (data-ui="neu")
+   ------------------------------------------------------------ */
+[data-ui="neu"] .glass,
+[data-ui="neu"] .card,
+[data-ui="neu"] .settings-section,
+[data-ui="neu"] .ui-style {
+  /* 👈 PILITIN ANG SOLID BACKGROUND */
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  
+  /* 👈 PATAYIN ANG GLASS BLUR */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  
+  /* 👈 TANGGALIN ANG BORDER NA PUTI/BLUE */
+  border: none !important;
+  
+  /* 👈 NEUMORPHISM SHADOWS (Puti sa itaas/kaliwa, itim sa ibaba/kanan) */
+  box-shadow: 
+    -6px -6px 12px rgba(255, 255, 255, 0.05),
+    6px 6px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Light mode adjustment */
+[data-theme-mode="light"][data-ui="neu"] .glass,
+[data-theme-mode="light"][data-ui="neu"] .card {
+  box-shadow: 
+    -6px -6px 12px rgba(255, 255, 255, 0.8),
+    6px 6px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Inputs sa Neumorphism */
+[data-ui="neu"] .in, 
+[data-ui="neu"] input {
+  background: var(--theme-bg) !important;
+  box-shadow: 
+    inset -3px -3px 6px rgba(255, 255, 255, 0.05),
+    inset 3px 3px 6px rgba(0, 0, 0, 0.4) !important;
+  border: none !important;
+}
+
+/* ------------------------------------------------------------
+   2. SKEUOMORPHISM (data-ui="skeu")
+   ------------------------------------------------------------ */
+[data-ui="skeu"] .glass,
+[data-ui="skeu"] .card,
+[data-ui="skeu"] .settings-section,
+[data-ui="skeu"] .ui-style {
+  /* 👈 PILITIN ANG SOLID GRADIENT */
+  background: linear-gradient(145deg, var(--theme-surface-2) 0%, var(--theme-surface) 100%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  
+  /* 👈 SOLID BORDERS */
+  border: 1px solid rgba(0, 0, 0, 0.3) !important;
+  border-bottom: 3px solid rgba(0, 0, 0, 0.5) !important;
+  border-radius: 12px !important;
+  
+  /* 👈 SKEUOMORPHISM SHADOW */
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 2px 2px rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Dark mode adjustment */
+[data-theme-mode="dark"][data-ui="skeu"] .glass,
+[data-theme-mode="dark"][data-ui="skeu"] .card {
+  background: linear-gradient(145deg, var(--theme-surface-raised) 0%, var(--theme-surface-2) 100%) !important;
+  border-bottom: 3px solid rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Inputs sa Skeuomorphism */
+[data-ui="skeu"] .in, 
+[data-ui="skeu"] input {
+  background: var(--theme-surface-2) !important;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+/* ------------------------------------------------------------
+   3. TANGGALIN ANG ASOL NA ACTIVE STATE SA MGA BUTTONS
+   ------------------------------------------------------------ */
+[data-ui="neu"] .ui-style.on,
+[data-ui="skeu"] .ui-style.on,
+[data-ui="neu"] .ui-style[aria-pressed="true"],
+[data-ui="skeu"] .ui-style[aria-pressed="true"] {
+  /* Override ang asul na background ng active button */
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  border-color: var(--theme-border) !important;
+  
+  /* Inset shadow para magmukhang naka-pindot */
+  box-shadow: 
+    inset 3px 3px 6px rgba(0, 0, 0, 0.3),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Override din ang lumang asul na primary buttons kapag nasa Neu/Skeu */
+[data-ui="neu"] .btn,
+[data-ui="skeu"] .btn {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  box-shadow: 
+    -4px -4px 8px rgba(255, 255, 255, 0.05),
+    4px 4px 8px rgba(0, 0, 0, 0.3) !important;
+}
+[data-ui="neu"] .btn:active,
+[data-ui="skeu"] .btn:active {
+  box-shadow: 
+    inset 2px 2px 4px rgba(0, 0, 0, 0.4),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.05) !important;
+}
+/* ============================================================
+   COMPACT & CENTERED PRODUCTS PAGE (WALANG SAGAD SA DULO)
+   ============================================================ */
+
+/* 1. Ayusin ang Main Container para umurong sa gilid at mag-center */
+html body .org-shell.org-compact .org-main {
+  /* Layo mula sa sidebar */
+  margin-left: 110px !important; 
+  
+  /* 👈 MALAKING MARGIN SA KANAN (60px) PARA UMURONG AT HINDI SAGAD */
+  margin-right: 60px !important; 
+  
+  /* 👈 LIMITAHAN ANG LAPAD PARA MAGING COMPACT */
+  max-width: 1400px !important; 
+  
+  /* I-center sa natitirang espasyo */
+  margin: 0 auto !important; 
+  padding-left: 110px !important; /* Offset para sa sidebar */
+  padding-right: 0 !important;
+  
+  padding-top: 16px !important;
+  padding-bottom: 60px !important;
+}
+
+/* 2. Pilitin ang Products Page na sumunod sa compact layout */
+html body .org-shell.org-compact section.page-products,
+html body .org-shell.org-compact .page-products {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 24px !important;
+}
+
+/* 3. Ayusin ang Topbar para sumunod sa lapad ng main container */
+html body .org-shell.org-compact .top.org-topbar {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* 4. Ayusin ang Stats Cards (gawing compact) */
+html body .org-shell.org-compact .page-products .stats.s3 {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+
+/* 5. Ayusin ang Product Grid (gawing compact ang cards) */
+html body .org-shell.org-compact .page-products .pgrid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+
+/* 6. Gawing mas maliit ang cards at text */
+html body .org-shell.org-compact .page-products .pc {
+  padding: 12px !important; /* Mas maliit na padding */
+  border-radius: 12px !important;
+}
+
+html body .org-shell.org-compact .page-products .pc .p-title {
+  font-size: 14px !important; /* Mas maliit na title */
+}
+
+html body .org-shell.org-compact .page-products .pc .sp-col .price,
+html body .org-shell.org-compact .page-products .pc .sp-col .stock {
+  font-size: 15px !important; /* Mas maliit na price/stock */
+}
+
+/* 7. Responsive adjustments */
+@media (max-width: 1200px) {
+  html body .org-shell.org-compact .org-main {
+    margin-right: 40px !important;
+  }
+  html body .org-shell.org-compact .page-products .pgrid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+@media (max-width: 900px) {
+  html body .org-shell.org-compact .org-main {
+    margin-right: 20px !important;
+  }
+  html body .org-shell.org-compact .page-products .pgrid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+/* ============================================================
+   DYNAMIC STOCK BADGES (MATCHES ALL 10 THEMES)
+   ============================================================ */
+
+/* 1. Base Badge Style */
+html body .org-shell.org-compact .page-products .stock-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 4px 10px !important;
+  border-radius: 99px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+  
+  /* Glass effect base */
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid transparent !important;
+}
+
+/* 2. "In Stock" (is-ok) — Green Match */
+html body .org-shell.org-compact .page-products .stock-badge.is-ok {
+  background: color-mix(in srgb, var(--theme-success) 20%, transparent) !important;
+  color: var(--theme-success) !important;
+  border-color: color-mix(in srgb, var(--theme-success) 30%, transparent) !important;
+}
+html body .org-shell.org-compact .page-products .stock-badge.is-ok .dot {
+  background: var(--theme-success) !important;
+  box-shadow: 0 0 6px var(--theme-success) !important;
+}
+
+/* 3. "Low Stock" (is-low) — Orange/Warning Match */
+html body .org-shell.org-compact .page-products .stock-badge.is-low {
+  background: color-mix(in srgb, var(--theme-warning) 20%, transparent) !important;
+  color: var(--theme-warning) !important;
+  border-color: color-mix(in srgb, var(--theme-warning) 30%, transparent) !important;
+}
+html body .org-shell.org-compact .page-products .stock-badge.is-low .dot {
+  background: var(--theme-warning) !important;
+  box-shadow: 0 0 6px var(--theme-warning) !important;
+}
+
+/* 4. "Out of Stock" (is-out) — Red/Danger Match */
+html body .org-shell.org-compact .page-products .stock-badge.is-out {
+  background: color-mix(in srgb, var(--theme-danger) 20%, transparent) !important;
+  color: var(--theme-danger) !important;
+  border-color: color-mix(in srgb, var(--theme-danger) 30%, transparent) !important;
+}
+html body .org-shell.org-compact .page-products .stock-badge.is-out .dot {
+  background: var(--theme-danger) !important;
+  box-shadow: 0 0 6px var(--theme-danger) !important;
+}
+
+/* 5. Dot Indicator */
+html body .org-shell.org-compact .page-products .stock-badge .dot {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+}
+/* ============================================================
+   🎯 BADGE TEXT COLOR FIX (MATCHES ALL 10 THEMES)
+   ============================================================ */
+
+/* 1. Base Text Style */
+html body .org-shell.org-compact .page-products .stock-badge {
+  /* 👈 SIGURADUHING WALANG HARDCODED NA KULAY SA TEXT */
+  -webkit-text-fill-color: inherit !important; 
+  text-shadow: none !important; /* Alisin ang shadow para malinis */
+  font-weight: 800 !important; /* Gawing mas bold para visible */
+}
+
+/* 2. In Stock Text */
+html body .org-shell.org-compact .page-products .stock-badge.is-ok,
+html body .org-shell.org-compact .page-products .stock-badge.is-ok span {
+  /* Gagamitin ang success color (Green sa dark, Dark Green sa light) */
+  color: var(--theme-success) !important;
+  -webkit-text-fill-color: var(--theme-success) !important;
+}
+
+/* 3. Low Stock Text */
+html body .org-shell.org-compact .page-products .stock-badge.is-low,
+html body .org-shell.org-compact .page-products .stock-badge.is-low span {
+  /* Gagamitin ang warning color (Orange/Yellow sa dark, Dark Orange sa light) */
+  color: var(--theme-warning) !important;
+  -webkit-text-fill-color: var(--theme-warning) !important;
+}
+
+/* 4. Out of Stock Text */
+html body .org-shell.org-compact .page-products .stock-badge.is-out,
+html body .org-shell.org-compact .page-products .stock-badge.is-out span {
+  /* Gagamitin ang danger color (Red sa dark, Dark Red sa light) */
+  color: var(--theme-danger) !important;
+  -webkit-text-fill-color: var(--theme-danger) !important;
+}
+
+/* 5. I-override kung sakaling may lumang code na nagpupumilit mag-puti/itim */
+html body .org-shell.org-compact .page-products .stock-badge * {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+}
+/* ============================================================
+   🎯 UNIVERSAL VISIBILITY & CONTRAST (MATCHES ALL 10 THEMES)
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. PANELS & CARDS (Solid background para visible sa lahat)
+   ------------------------------------------------------------ */
+html body .org-shell .glass,
+html body .org-shell .card,
+html body .org-shell .pc,
+html body .org-shell .hero,
+html body .org-shell .stats > *,
+html body .org-shell .flt {
+  /* 👈 Gagamitin ang Surface ng theme (Dark sa Dark mode, Light sa Light mode) */
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  
+  /* 👈 Alisin ang glass blur para hindi maging transparent/bulantog */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  
+  /* 👈 Border at Shadow base sa theme */
+  border: 1px solid var(--theme-border) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ------------------------------------------------------------
+   2. GLOBAL TEXT COLORS (Auto-contrast sa lahat ng themes)
+   ------------------------------------------------------------ */
+html body .org-shell * {
+  /* Pilitin ang lahat ng text na sumunod sa theme text color */
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+}
+
+/* Muted Text (Descriptions, Subtitles) */
+html body .org-shell small,
+html body .org-shell p,
+html body .org-shell .hero-desc,
+html body .org-shell .pc .p-category,
+html body .org-shell .sp-col small,
+html body .org-shell .ph p {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* ------------------------------------------------------------
+   3. HEADERS & TITLES (Bold at malinaw)
+   ------------------------------------------------------------ */
+html body .org-shell h1,
+html body .org-shell h2,
+html body .org-shell h3,
+html body .org-shell .p-title,
+html body .org-shell .ph h2,
+html body .org-shell .stats > * b {
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  font-weight: 800 !important;
+}
+
+/* ------------------------------------------------------------
+   4. BUTTONS (Primary button contrast)
+   ------------------------------------------------------------ */
+html body .org-shell .btn,
+html body .org-shell .manage-btn:hover {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border: 1px solid var(--theme-primary) !important;
+}
+
+/* Ghost Buttons (Secondary) */
+html body .org-shell .btn.gh {
+  background: transparent !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  border: 1px solid var(--theme-border) !important;
+}
+
+/* ------------------------------------------------------------
+   5. SPECIFIC THEME OVERRIDES (Kung sakaling magulo)
+   ------------------------------------------------------------ */
+
+/* Light Themes (Cream, White, Beige, Gray, Blush) */
+html[data-theme-mode="light"] body .org-shell .glass,
+html[data-theme-mode="light"] body .org-shell .card {
+  background: var(--theme-surface) !important; /* Solid white/light gray */
+  border-color: var(--theme-border) !important; /* Darker border */
+}
+
+/* Dark Themes (Midnight, Plum, Forest, Matte, Charcoal) */
+html[data-theme-mode="dark"] body .org-shell .glass,
+html[data-theme-mode="dark"] body .org-shell .card {
+  background: var(--theme-surface-2) !important; /* Dark gray */
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+/* ============================================================
+   🎯 VISIBILITY FIX: CATEGORIES, FILTERS, & CHIPS (ALL THEMES)
+   ============================================================ */
+
+/* 1. Ang buong Categories / Filter Container */
+html body .org-shell.org-compact .page-products .flt {
+  /* 👈 Gumamit ng theme surface para may solid background */
+  background: var(--theme-surface) !important;
+  background-color: var(--theme-surface) !important;
+  
+  /* Border at shadow base sa theme */
+  border: 1px solid var(--theme-border) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  
+  /* Gawing rounded at may padding */
+  border-radius: 16px !important;
+  padding: 16px 20px !important;
+  
+  /* Alisin ang glass blur para hindi maging transparent */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 2. Ang mga Chips (All Items, BSA, etc.) */
+html body .org-shell.org-compact .page-products .flt .chip,
+html body .org-shell.org-compact .page-products .flt button {
+  /* 👈 Gumamit ng surface-2 para may kontrast sa background */
+  background: var(--theme-surface-2) !important;
+  background-color: var(--theme-surface-2) !important;
+  
+  /* Text color base sa theme */
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  
+  /* Border */
+  border: 1px solid var(--theme-border) !important;
+  
+  /* Shadow para may lalim */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Active Chip (Yung kulay asul kapag pinindot) */
+html body .org-shell.org-compact .page-products .flt .chip.on,
+html body .org-shell.org-compact .page-products .flt button.on {
+  background: var(--theme-primary) !important;
+  color: var(--theme-on-primary) !important;
+  -webkit-text-fill-color: var(--theme-on-primary) !important;
+  border-color: var(--theme-primary) !important;
+  box-shadow: 0 4px 10px rgba(var(--theme-primary-rgb), 0.3) !important;
+}
+
+/* 3. Ang "Showing 1-2 of 2 items" text */
+html body .org-shell.org-compact .page-products .flt span,
+html body .org-shell.org-compact .page-products .flt p {
+  color: var(--theme-text-muted) !important;
+  -webkit-text-fill-color: var(--theme-text-muted) !important;
+}
+
+/* 4. Ang Select Dropdowns (All stock levels, Sort by) */
+html body .org-shell.org-compact .page-products .flt select,
+html body .org-shell.org-compact .page-products .flt .sel {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text) !important;
+  -webkit-text-fill-color: var(--theme-text) !important;
+  border: 1px solid var(--theme-border) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+}
+
+/* 5. Ang "Clear filters" button */
+html body .org-shell.org-compact .page-products .flt .btn.gh {
+  background: var(--theme-surface-2) !important;
+  color: var(--theme-text) !important;
+  border: 1px solid var(--theme-border) !important;
+  padding: 6px 12px !important;
+  font-size: 12px !important;
+  border-radius: 6px !important;
+}

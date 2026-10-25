@@ -1,6 +1,6 @@
 // src/pages/organization/ProductsPage.tsx
 
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../store';
 import StatCard from '../../components/organization/StatCard';
@@ -23,6 +23,37 @@ const DEFAULT_FILTERS: ProductFiltersState = {
   search: '',
 };
 
+/* ============================================================
+   ANIMATED NUMBER HOOK
+   ============================================================ */
+function useAnimatedNumber(target: number) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const end = target;
+    if (start === end) return;
+
+    const duration = 1000; 
+    const startTime = performance.now();
+
+    const updateNumber = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeOut = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      setCount(Math.floor(easeOut * end));
+
+      if (progress < 1) {
+        requestAnimationFrame(updateNumber);
+      }
+    };
+
+    requestAnimationFrame(updateNumber);
+  }, [target]);
+
+  return count.toLocaleString();
+}
+
 function totalStock(p: Product): number {
   if (p.sizeStocks && Object.keys(p.sizeStocks).length > 0) {
     return Object.values(p.sizeStocks).reduce((a, b) => a + (Number(b) || 0), 0);
@@ -30,7 +61,6 @@ function totalStock(p: Product): number {
   return p.stock ?? 0;
 }
 
-// 1 … 4 5 [6] 7 8 … 20  (never renders a wall of page buttons)
 function pageList(page: number, total: number): (number | '…')[] {
   if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
   const out: (number | '…')[] = [1];
@@ -102,6 +132,11 @@ export default function ProductsPage() {
   }).length;
   const outCount = filtered.filter((p) => totalStock(p) <= 0).length;
 
+  // Gamitin ang animated hook
+  const animatedUnits = useAnimatedNumber(units);
+  const animatedLow = useAnimatedNumber(lowCount);
+  const animatedOut = useAnimatedNumber(outCount);
+
   const clearFilters = () => setFilters(DEFAULT_FILTERS);
 
   const goTo = (n: number) => {
@@ -140,9 +175,9 @@ export default function ProductsPage() {
       )}
 
       <div className="stats s3">
-        <StatCard color="g2" icon="box" label="Units in stock" value={units.toLocaleString()} />
-        <StatCard color="g4" icon="info" label="Low stock" value={lowCount} />
-        <StatCard color="g5" icon="x" label="Out of stock" value={outCount} />
+        <StatCard color="g2" icon="box" label="Units in stock" value={animatedUnits} />
+        <StatCard color="g4" icon="info" label="Low stock" value={animatedLow} />
+        <StatCard color="g5" icon="x" label="Out of stock" value={animatedOut} />
       </div>
 
       <ProductFilters
