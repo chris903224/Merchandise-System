@@ -316,3 +316,101 @@ html body .org-shell.org-compact .page-dashboard .b-actions {
   display: flex !important;
   flex-direction: column !important;
 }
+/* ============================================================
+   🎯 FULL-BLEED IMAGES SA RECENT ACTIVITY & UPCOMING
+   ============================================================ */
+
+/* 1. I-target ang container ng image (.ic) */
+.org-shell .page-dashboard .li .ic,
+.org-shell .page-dashboard .b-activity .li .ic,
+.org-shell .page-dashboard .b-upcoming .li .ic {
+  /* 👈 Alisin ang padding at grid para hindi mag-shrink ang image */
+  padding: 0 !important;
+  display: block !important;
+  overflow: hidden !important;
+  
+  /* Saktong laki lang (kaparehas ng dating container) */
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 12px !important;
+  
+  /* Alisin ang background color (para walang berdeng gilid) */
+  background: transparent !important;
+  flex-shrink: 0 !important;
+}
+
+/* 2. Gawing full-bleed ang mismong <img> */
+.org-shell .page-dashboard .li .ic img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important; /* 👈 Pinupuno ang buong container */
+  display: block !important;
+  border-radius: 12px !important;
+}
+
+/* 3. Kapag walang image (fallback sa icon), ibalik ang grid at color */
+.org-shell .page-dashboard .li .ic svg {
+  width: 20px !important;
+  height: 20px !important;
+  margin: auto !important; /* I-center ang icon */
+  display: block !important;
+}
+
+/* 4. Siguraduhing may background color kung icon lang ang laman */
+.org-shell .page-dashboard .li .ic:not(:has(img)) {
+  display: grid !important;
+  place-items: center !important;
+  background: var(--theme-primary) !important; /* O kung anong color class ang gamit */
+}
+/* ============================================================
+   🎯 SALES CHART: VISIBLE LINE KAHIT FLAT
+   ============================================================ */
+
+/* 1. Line (Gawing makapal at solid) */
+.org-shell .sales-chart .sc-line {
+  fill: none !important;
+  stroke: var(--theme-primary) !important; /* 👈 Solid color */
+  stroke-width: 4 !important;               /* 👈 Makapal */
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  filter: drop-shadow(0 4px 10px rgba(var(--theme-primary-rgb), 0.4)) !important;
+}
+
+/* 2. Area sa ilalim ng line (Gawing subtle gradient) */
+.org-shell .sales-chart .sc-area {
+  stroke: none !important;
+  fill: rgba(var(--theme-primary-rgb), 0.15) !important; /* Semi-transparent */
+}
+
+/* 3. Active Dot (Para may indicator kahit flat) */
+.org-shell .sales-chart .sc-dot {
+  fill: var(--theme-surface) !important;
+  stroke: var(--theme-primary) !important;
+  stroke-width: 3.5 !important;
+  filter: drop-shadow(0 0 8px rgba(var(--theme-primary-rgb), 0.8)) !important;
+}
+
+/* 4. Halo (Yung glow sa paligid ng dot) */
+.org-shell .sales-chart .sc-halo {
+  fill: rgba(var(--theme-primary-rgb), 0.25) !important;
+  stroke: none !important;
+}
+
+/* 5. Grid at Axis (Para malinis) */
+.org-shell .sales-chart .sc-grid {
+  stroke: var(--theme-border) !important;
+  stroke-width: 1 !important;
+  stroke-dasharray: 4 6 !important;
+}
+.org-shell .sales-chart .sc-axis {
+  stroke: var(--theme-border) !important;
+  stroke-width: 1 !important;
+}
+
+/* 6. Text Labels */
+.org-shell .sales-chart text {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  fill: var(--theme-text-muted) !important;
+}

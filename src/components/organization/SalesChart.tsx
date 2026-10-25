@@ -7,7 +7,6 @@ interface SalesChartProps {
   data: SalesPoint[];
 }
 
-/** Smooth curve (monotone cubic) — hindi bababa sa 0 at walang "overshoot". */
 function smoothPath(pts: { x: number; y: number }[]): string {
   const n = pts.length;
   if (n === 0) return '';
@@ -55,7 +54,6 @@ export default function SalesChart({ data }: SalesChartProps) {
   const uid = useId().replace(/:/g, '');
   const [hover, setHover] = useState<number | null>(null);
 
-  // 1. Standard Dimensions
   const width = 800;
   const height = 300;
   const padding = { top: 20, right: 24, bottom: 40, left: 56 };
@@ -63,17 +61,26 @@ export default function SalesChart({ data }: SalesChartProps) {
   const plotH = height - padding.top - padding.bottom;
   const baseY = height - padding.bottom;
 
-  // 2. Calculate Scale
-  const maxVal = Math.max(...data.map((d) => d.value), 10);
+  // ✅ DYNAMIC SCALING: Hanapin ang pinakamalaking value sa data
+  const dataMax = Math.max(...data.map((d) => d.value), 0);
+  
+  // Kung zero lahat, gawing 1 para may baseline
+  // Kung may data, dagdagan ng 20% headroom para umakyat sa taas
+  const maxVal = dataMax === 0 ? 1 : dataMax * 1.2;
 
-  // 3. Generate Coordinates
   const points = data.map((d, i) => {
     const x = padding.left + i * (plotW / (data.length - 1 || 1));
-    const y = baseY - (d.value / maxVal) * plotH;
+    
+    // I-compute ang Y position base sa maxVal
+    const rawY = (d.value / maxVal) * plotH;
+    
+    // ✅ Minimum height (8px) para visible ang line kahit zero
+    // Habang lumalaki ang data, umaakyat siya hanggang sa pinakataas
+    const y = baseY - Math.max(rawY, 8);
+    
     return { x, y, label: d.label, value: d.value };
   });
 
-  // 4. Generate Paths
   const linePath = smoothPath(points);
   const areaPath =
     points.length > 1
@@ -98,7 +105,6 @@ export default function SalesChart({ data }: SalesChartProps) {
   }
 
   return (
-    /* 👈 ITO ANG BINAGO: Tinanggal ang minWidth at pinalitan ng responsive rules */
     <div style={{ width: '100%', overflow: 'hidden' }}>
       <svg
         className="sales-chart"
@@ -118,10 +124,10 @@ export default function SalesChart({ data }: SalesChartProps) {
           </linearGradient>
         </defs>
 
-        {/* Y-AXIS & GRID LINES */}
+        {/* Y-AXIS & GRID LINES (Dynamic based sa maxVal) */}
         {[0, 0.5, 1].map((ratio, i) => {
           const y = baseY - ratio * plotH;
-          const val = Math.round(ratio * maxVal);
+          const val = Math.round(ratio * maxVal * 1000); // I-multiply sa 1000 para maging peso
           return (
             <g key={`y-${i}`}>
               {ratio > 0 && (
@@ -134,16 +140,11 @@ export default function SalesChart({ data }: SalesChartProps) {
           );
         })}
 
-        {/* LEFT AXIS */}
         <line className="sc-axis" x1={padding.left} y1={padding.top} x2={padding.left} y2={baseY} />
 
-        {/* AREA BACKGROUND */}
         {areaPath && <path className="sc-area" d={areaPath} fill={`url(#${uid}-area)`} />}
-
-        {/* LINE */}
         <path className="sc-line" d={linePath} fill="none" stroke={`url(#${uid}-line)`} />
 
-        {/* X-AXIS DATES (Auto-skip kapag masyadong marami para hindi mag-overlap) */}
         {points.map((p, i) => {
           const is30Days = data.length > 15;
           const shouldShow = !is30Days || i % 4 === 0 || i === data.length - 1;
@@ -163,12 +164,10 @@ export default function SalesChart({ data }: SalesChartProps) {
           );
         })}
 
-        {/* ACTIVE POINT */}
         {hover !== null && <line className="sc-guide" x1={ap.x} y1={padding.top} x2={ap.x} y2={baseY} />}
         <circle className="sc-halo" cx={ap.x} cy={ap.y} r={9} />
         <circle className="sc-dot" cx={ap.x} cy={ap.y} r={5.5} />
 
-        {/* TOOLTIP */}
         {hover !== null && (
           <g className="sc-tip" transform={`translate(${tipX},${tipY})`} pointerEvents="none">
             <rect className="sc-tip-bg" width={tipW} height={tipH} rx={10} />
@@ -181,7 +180,6 @@ export default function SalesChart({ data }: SalesChartProps) {
           </g>
         )}
 
-        {/* HOVER CAPTURE */}
         <rect
           x={padding.left}
           y={padding.top}

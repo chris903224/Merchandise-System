@@ -1,19 +1,24 @@
 // src/layout/SiteLayout.tsx
 
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, Navigate } from 'react-router-dom'; // 👈 Idinagdag ang Navigate
 import { AnimatePresence, MotionConfig } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import PageTransition from '../components/PageTransition';
-import Footer from '../components/Footer'; // 👈 Idinagdag ito
+import Footer from '../components/Footer';
 
 export default function SiteLayout() {
   const location = useLocation();
+
+  // ✅ KUNG NASA ORG ROUTE, WAG I-RENDER ANG STUDENT LAYOUT
+  // Ito ang pipigil sa Student Navbar na lumabas sa Org pages
+  if (location.pathname.startsWith('/org')) {
+    return <Navigate to="/org/login" replace />;
+  }
 
   return (
     <div className="site-layout">
       <Navbar />
       
-      {/* 👈 Idinagdag ang flex-1 para umurong ang main at mapunta sa baba ang footer */}
       <main className="flex-1" style={{ flex: 1 }}>
         <MotionConfig reducedMotion="user">
           <AnimatePresence mode="popLayout" initial={false}>
@@ -24,7 +29,6 @@ export default function SiteLayout() {
         </MotionConfig>
       </main>
 
-      {/* 👈 Dito natin inilagay ang Footer sa loob ng site-layout */}
       <Footer />
     </div>
   );

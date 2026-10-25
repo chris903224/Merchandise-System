@@ -2043,7 +2043,7 @@ html body #root .auth-experience .auth-quick-login__input::placeholder {
 /* Tinitiyak nating may .auth-experience class, tapos may login mode sa loob */
 .auth-experience:has(.auth-card--login),
 body:has(.auth-card[data-mode="login"]) .auth-experience {
-  zoom: 0.98 !important;
+  zoom: 0.90 !important;
 }
 
 /* 2. REGISTER PAGE (Zoom Out) */

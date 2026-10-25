@@ -10,7 +10,18 @@ export default function UpcomingList({ items }: { items: ActivityItem[] }) {
     <>
       {items.map((a) => (
         <Link key={a.id} to="/org/orders" className="li" data-go>
-          <span className={`ic ${a.color}`}><Icon name={a.icon} /></span>
+          {/* 👈 PINALITAN: Kung may image, ipakita. Kung wala, icon. */}
+          <span className={`ic ${a.color}`} style={{ overflow: 'hidden' }}>
+            {(a as any).image ? (
+              <img 
+                src={(a as any).image} 
+                alt={a.title} 
+                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'inherit' }} 
+              />
+            ) : (
+              <Icon name={a.icon} />
+            )}
+          </span>
           <div>
             <b>{a.title}</b>
             <small>{a.subtitle}</small>

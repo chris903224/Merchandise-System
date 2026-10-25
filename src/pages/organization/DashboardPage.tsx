@@ -10,13 +10,14 @@ import QuickAction from '../../components/organization/QuickAction';
 import UpcomingList from '../../components/organization/UpcomingList';
 import { Icon } from '../../components/Icon';
 import { peso } from '../../utils/format';
+import { supabase } from '../../lib/supabaseClient'; // 👈 IDINAGDAG
 import type { Product, Order } from '../../types';
 import type { SalesPoint, ActivityItem } from '../../types/organization';
 
 const LOW_STOCK = 10;
 
 /* ============================================================
-   ANIMATED NUMBER HOOK (Zero to Real Data)
+   ANIMATED NUMBER HOOK
    ============================================================ */
 function useAnimatedNumber(target: number, isCurrency = false) {
   const [count, setCount] = useState(0);
@@ -32,9 +33,7 @@ function useAnimatedNumber(target: number, isCurrency = false) {
     const updateNumber = (currentTime: number) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      
       const easeOut = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-      
       setCount(Math.floor(easeOut * end));
 
       if (progress < 1) {
@@ -45,10 +44,7 @@ function useAnimatedNumber(target: number, isCurrency = false) {
     requestAnimationFrame(updateNumber);
   }, [target]);
 
-  if (isCurrency) {
-    return peso(count);
-  }
-
+  if (isCurrency) return peso(count);
   return count.toLocaleString();
 }
 
@@ -82,6 +78,18 @@ function localDayKey(d: Date): string {
 export default function DashboardPage() {
   const { session, products, orders } = useApp();
   const [range, setRange] = useState<7 | 30>(7);
+  
+  // ✅ Bagong state para sa product images
+  const [dbProducts, setDbProducts] = useState<any[]>([]);
+
+  // ✅ Fetch products (id, image lang) pagka-load
+  useEffect(() => {
+    async function fetchImages() {
+      const { data } = await supabase.from('products').select('id, image');
+      if (data) setDbProducts(data);
+    }
+    fetchImages();
+  }, []);
 
   const myProducts = useMemo(() => products, [products]);
   const myOrders = useMemo(() => orders, [orders]);
@@ -92,7 +100,6 @@ export default function DashboardPage() {
   );
   const members = useMemo(() => new Set(myOrders.map((o) => o.userId)).size, [myOrders]);
 
-  // Gamitin ang custom hook
   const animatedProducts = useAnimatedNumber(myProducts.length);
   const animatedRevenue = useAnimatedNumber(revenue, true);
   const animatedOrders = useAnimatedNumber(myOrders.length);
@@ -103,9 +110,10 @@ export default function DashboardPage() {
     [myOrders, range]
   );
 
+  // ✅ Ipinasa ang dbProducts para magamit sa image mapping
   const activity: ActivityItem[] = useMemo(
-    () => buildActivity(myOrders, myProducts),
-    [myOrders, myProducts]
+    () => buildActivity(myOrders, myProducts, dbProducts),
+    [myOrders, myProducts, dbProducts]
   );
 
   const firstName = session?.name?.trim().split(' ')[0] ?? 'there';
@@ -115,7 +123,6 @@ export default function DashboardPage() {
       {/* ROW 1 — WELCOME CARD */}
       <div className="glass hero">
         <div className="hero-body">
-          
           <div className="hero-main">
             <div className="greeting-row">
               <span className="greeting-badge">
@@ -130,15 +137,11 @@ export default function DashboardPage() {
                 })}
               </span>
             </div>
-            
-            <h1>
-              Welcome back, <span className="hl">{firstName}</span>.
-            </h1>
+            <h1>Welcome back, <span className="hl">{firstName}</span>.</h1>
             <p className="hero-desc">
               Here's your organization's performance overview for today.
             </p>
           </div>
-
           <div className="hero-side">
             <div className="status-indicator">
               <span className="status-dot"></span>
@@ -148,7 +151,6 @@ export default function DashboardPage() {
               "Small steps every day lead to big results."
             </p>
           </div>
-
         </div>
       </div>
 
@@ -251,8 +253,26 @@ function buildSalesPoints(orders: Order[], days: 7 | 30): SalesPoint[] {
   });
 }
 
-function buildActivity(orders: Order[], products: Product[]): ActivityItem[] {
+/* ✅ UPDATED: May kasamang dbProducts para mag-attach ng image */
+function buildActivity(
+  orders: Order[], 
+  products: Product[], 
+  dbProducts: any[] // 👈 Bagong parameter
+): ActivityItem[] {
   const items: ActivityItem[] = [];
+
+  // Helper para hanapin ang image ng product
+  const getImage = (order: Order) => {
+    const firstItem = order.items[0];
+    if (!firstItem) return null;
+    
+    // Try multiple ID fields
+    const itemId = (firstItem as any).productId || (firstItem as any).id;
+    if (!itemId) return null;
+
+    const product = dbProducts.find((p) => String(p.id) === String(itemId));
+    return product?.image || null;
+  };
 
   [...orders]
     .sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
@@ -267,7 +287,8 @@ function buildActivity(orders: Order[], products: Product[]): ActivityItem[] {
           : `New order • #${o.id}`,
         subtitle: `${o.customerName} • ${peso(o.totalAmount)}`,
         at: o.createdAt,
-      });
+        image: getImage(o), // 👈 I-attach ang image
+      } as any);
     });
 
   products
@@ -282,7 +303,8 @@ function buildActivity(orders: Order[], products: Product[]): ActivityItem[] {
         title: t <= 0 ? `Out of stock • ${p.name}` : `Low stock • ${p.name}`,
         subtitle: `${t} unit${t === 1 ? '' : 's'} left`,
         at: new Date().toISOString(),
-      });
+        image: p.image, // 👈 I-attach ang image ng product
+      } as any);
     });
 
   return items.slice(0, 4);
