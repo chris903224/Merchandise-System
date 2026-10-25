@@ -247,3 +247,72 @@ html body .org-shell.org-compact .page-dashboard .b-chart .sales-chart {
 html body .org-shell.org-compact .page-dashboard .b-chart > div {
   overflow: hidden !important;
 }
+/* ============================================================
+   🎯 PANTay-PANTAY NA LAYOUT (STRETCH TO MATCH)
+   ============================================================ */
+
+/* 1. I-override ang lumang alignment */
+html body .org-shell.org-compact .page-dashboard {
+  align-items: stretch !important; /* 👈 Pilitin pantayin ang taas */
+}
+
+/* 2. Gawing sakop ang buong column ang Sales Chart */
+html body .org-shell.org-compact .page-dashboard .b-chart {
+  height: 100% !important;       /* 👈 Sagarin ang buong taas ng row */
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* 3. I-override ang maliit na height ng Sales Chart SVG */
+html body .org-shell.org-compact .page-dashboard .b-chart .sales-chart {
+  height: 100% !important;       /* 👈 Sumunod sa laki ng container */
+  min-height: 250px !important;  /* Bigyan ng pinakamababang taas */
+  flex: 1 !important;            /* Sakupin ang natitirang espasyo */
+}
+
+/* 4. Gawing pantay ang Recent Activity at Quick Actions */
+html body .org-shell.org-compact .page-dashboard .b-activity,
+html body .org-shell.org-compact .page-dashboard .b-actions {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+/* ============================================================
+   🎯 PANTay-PANTAY NA LAYOUT (STRETCH TO MATCH)
+   ============================================================ */
+
+/* 1. I-override ang lumang alignment sa Grid */
+html body .org-shell.org-compact .page-dashboard .b-grid-middle {
+  display: grid !important;
+  grid-template-columns: 2fr 1fr 1fr !important; /* Sales (2), Activity (1), Quick (1) */
+  gap: 20px !important;
+  align-items: stretch !important; /* 👈 Pilitin silang pantayin ang taas */
+}
+
+/* 2. I-override ang lumang alignment sa Grid */
+html body .org-shell.org-compact .page-dashboard {
+  align-items: stretch !important; 
+}
+
+/* 3. Gawing sakop ang buong column ang Sales Chart */
+html body .org-shell.org-compact .page-dashboard .b-chart {
+  height: 100% !important;       /* 👈 Sagarin ang buong taas ng row */
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+
+/* 4. I-override ang maliit na height ng Sales Chart SVG */
+html body .org-shell.org-compact .page-dashboard .b-chart .sales-chart {
+  height: 100% !important;       /* 👈 Sumunod sa laki ng container */
+  min-height: 250px !important;  /* Bigyan ng pinakamababang taas */
+  flex: 1 !important;            /* Sakupin ang natitirang espasyo */
+}
+
+/* 5. Siguraduhing pantay din ang Recent Activity at Quick Actions */
+html body .org-shell.org-compact .page-dashboard .b-activity,
+html body .org-shell.org-compact .page-dashboard .b-actions {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}

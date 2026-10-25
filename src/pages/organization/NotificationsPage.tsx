@@ -1,6 +1,8 @@
 // src/pages/organization/NotificationsPage.tsx
+// (Palitan lang ang return section, pahawakan ang logic sa taas)
 
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../store';
 import NotificationCard from '../../components/organization/NotificationCard';
 import { Icon } from '../../components/Icon';
@@ -13,7 +15,6 @@ import {
 } from '../../services/userNotifications';
 import '../../styles/organization/notifications.css';
 
-// ✅ Required na ang created_at (walang ?)
 type Notif = {
   id: string;
   type: string;
@@ -28,7 +29,8 @@ type Notif = {
 type Filter = 'all' | 'unread' | 'read';
 
 export default function NotificationsPage() {
-  const { session } = useApp();
+  const { session, setOrderStatus, refreshOrders } = useApp(); 
+  const navigate = useNavigate(); 
   const userId = session?.id ?? '';
 
   const [items, setItems] = useState<Notif[]>([]);
@@ -40,10 +42,7 @@ export default function NotificationsPage() {
     if (!userId) return;
     setLoading(true);
     try {
-      // Isang argumento lang para umayon sa service mo
       const data = await fetchUserNotifications(userId);
-      
-      // ✅ I-mapa natin para may fallback kung walang created_at
       const mapped = (data ?? []).map((n: any) => ({
         id: n.id,
         type: n.type || 'system',
@@ -54,16 +53,13 @@ export default function NotificationsPage() {
         link: n.link,
         actionLabel: n.actionLabel,
       }));
-
       setItems(mapped as Notif[]);
     } finally {
       setLoading(false);
     }
   }
 
-  useEffect(() => {
-    load();
-  }, [userId]);
+  useEffect(() => { load(); }, [userId]);
 
   const filtered = useMemo(() => {
     if (filter === 'unread') return items.filter((n) => !n.read);
@@ -98,6 +94,34 @@ export default function NotificationsPage() {
     setConfirmClear(false);
     await load();
   }
+
+  const handleValidateOrder = async (notifId: string, link?: string) => {
+    const orderId = link?.split('/').pop();
+    if (orderId) {
+      try {
+        await setOrderStatus(orderId, 'Processing');
+        await refreshOrders();
+      } catch (err) {
+        console.error('Failed to validate order', err);
+      }
+    }
+    await markUserNotificationAsRead(notifId);
+    navigate('/org/orders');
+  };
+
+  const handleCancelOrder = async (notifId: string, link?: string) => {
+    const orderId = link?.split('/').pop();
+    if (orderId) {
+      try {
+        await setOrderStatus(orderId, 'Cancelled');
+        await refreshOrders();
+      } catch (err) {
+        console.error('Failed to cancel order', err);
+      }
+    }
+    await markUserNotificationAsRead(notifId);
+    navigate('/org/orders');
+  };
 
   if (loading) return <div className="org-loading">Loading notifications…</div>;
 
@@ -152,14 +176,37 @@ export default function NotificationsPage() {
         </div>
       ) : (
         <div className="stack">
-          {filtered.map((n) => (
-            <NotificationCard
-              key={n.id}
-              notification={n}
-              onMarkRead={handleMarkRead}
-              onRemove={handleRemove}
-            />
-          ))}
+          {filtered.map((n) => {
+            const isOrderNotif = n.type === 'order' || n.title.toLowerCase().includes('order');
+
+            return (
+              <div key={n.id} className="notif-item-container">
+                <NotificationCard
+                  notification={n}
+                  onMarkRead={handleMarkRead}
+                  onRemove={handleRemove}
+                />
+                
+                {/* ✅ DITO NATIN ILALAGAY ANG ORDER ACTIONS (Sa loob ng card layout) */}
+                {isOrderNotif && (
+                  <div className="notif-order-actions">
+                    <button 
+                      className="btn sm" 
+                      onClick={() => handleValidateOrder(n.id, n.link)}
+                    >
+                      <Icon name="check" /> Validate Order
+                    </button>
+                    <button 
+                      className="btn sm gh danger" 
+                      onClick={() => handleCancelOrder(n.id, n.link)}
+                    >
+                      <Icon name="x" /> Cancel Order
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </section>

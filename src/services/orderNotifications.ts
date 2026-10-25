@@ -1,7 +1,7 @@
 // src/services/orderNotifications.ts
 
 import { supabase } from '../lib/supabaseClient';
-import { createUserNotification } from './userNotifications';   // ✅ PALITAN
+import { createUserNotification } from './userNotifications';
 import type { NotificationType } from '../types/notification';
 
 /* ============================================================
@@ -55,13 +55,13 @@ export async function triggerOrderStatusNotifications(
     params.newStatus === 'Ready for Pickup';
 
   /* ============================================
-     ✅ IN-APP NOTIFICATIONS
+     ✅ IN-APP NOTIFICATIONS (NON-FATAL)
      ============================================ */
 
   /* 1️⃣ Order Updates */
   if (orderUpdatesOn && params.newStatus !== 'Pending') {
     try {
-      await createUserNotification(params.userId, {   // ✅ PALITAN
+      await createUserNotification(params.userId, {
         type: getNotificationType(params.newStatus),
         title: getStatusTitle(params.newStatus),
         message: getStatusMessage(params.newStatus, params.orderCode),
@@ -79,14 +79,15 @@ export async function triggerOrderStatusNotifications(
       console.log('[OrderNotif] ✅ In-app (order_updates)');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Unknown error';
-      console.error('[OrderNotif] ❌ In-app failed:', message);
+      // 👈 WARNING LANG, WALANG THROW
+      console.warn('[OrderNotif] ⚠️ In-app skipped (non-fatal):', message);
     }
   }
 
   /* 2️⃣ Ready for Delivery */
   if (readyForDeliveryOn && isDeliveryStatus && !orderUpdatesOn) {
     try {
-      await createUserNotification(params.userId, {   // ✅ PALITAN
+      await createUserNotification(params.userId, {
         type: 'pickup',
         title:
           params.newStatus === 'Out for Delivery'
@@ -106,12 +107,13 @@ export async function triggerOrderStatusNotifications(
       console.log('[OrderNotif] ✅ In-app (ready_for_delivery)');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Unknown error';
-      console.error('[OrderNotif] ❌ In-app failed:', message);
+      // 👈 WARNING LANG, WALANG THROW
+      console.warn('[OrderNotif] ⚠️ In-app skipped (non-fatal):', message);
     }
   }
 
   /* ============================================
-     ✅ EMAIL NOTIFICATIONS
+     ✅ EMAIL NOTIFICATIONS (NON-FATAL)
      ============================================ */
 
   if (!emailOn) {
@@ -164,7 +166,8 @@ export async function triggerOrderStatusNotifications(
     console.log('[OrderNotif] ✅ Email sent:', template);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Email failed';
-    console.error('[OrderNotif] ❌ Email failed:', message);
+    // 👈 WARNING LANG, WALANG THROW
+    console.warn('[OrderNotif] ⚠️ Email failed (non-fatal):', message);
   }
 }
 

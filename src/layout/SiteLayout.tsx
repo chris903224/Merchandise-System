@@ -4,6 +4,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { AnimatePresence, MotionConfig } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import PageTransition from '../components/PageTransition';
+import Footer from '../components/Footer'; // 👈 Idinagdag ito
 
 export default function SiteLayout() {
   const location = useLocation();
@@ -11,7 +12,9 @@ export default function SiteLayout() {
   return (
     <div className="site-layout">
       <Navbar />
-      <main>
+      
+      {/* 👈 Idinagdag ang flex-1 para umurong ang main at mapunta sa baba ang footer */}
+      <main className="flex-1" style={{ flex: 1 }}>
         <MotionConfig reducedMotion="user">
           <AnimatePresence mode="popLayout" initial={false}>
             <PageTransition key={location.pathname}>
@@ -20,7 +23,9 @@ export default function SiteLayout() {
           </AnimatePresence>
         </MotionConfig>
       </main>
- 
+
+      {/* 👈 Dito natin inilagay ang Footer sa loob ng site-layout */}
+      <Footer />
     </div>
   );
 }

@@ -3,62 +3,57 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RefreshCw, Package, MoreVertical, Check, Eye, ArrowRight } from 'lucide-react';
-import { useApp } from '../../store';
 import { peso } from '../../utils/format';
+import { 
+  fetchFreshOrgOrders, 
+  setOrgOrderStatus,
+  ORG_ORDER_FLOW,
+  type OrgOrderStatus
+} from '../../services/organization/orgOrderService'; // 👈 Siguraduhing tama ang filename
+import { useToast } from '../../toast';
 
 const FILTERS = ['all', 'Pending', 'Processing', 'Ready for Pickup', 'Claimed', 'Cancelled'];
 
-const STATUS_OPTIONS = [
-  'Pending',
-  'Processing',
-  'Ready for Pickup',
-  'Claimed',
-  'Cancelled',
-] as const;
-
-type OrgOrderStatus = typeof STATUS_OPTIONS[number];
-
-interface OrderCounts {
-  pending: number;
-  processing: number;
-  ready: number;
-  claimed: number;
-  cancelled: number;
-}
-
-const EMPTY_COUNTS: OrderCounts = {
-  pending: 0,
-  processing: 0,
-  ready: 0,
-  claimed: 0,
-  cancelled: 0,
-};
-
 export default function OrdersPage() {
-  const { orders, setOrderStatus, refreshOrders, isLoading } = useApp();
+  const toast = useToast();
   const navigate = useNavigate();
   
   const [filter, setFilter] = useState('all');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  
+  // ✅ Local state lang (walang global store na makikialam)
+  const [localOrders, setLocalOrders] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 🎯 LOCKING MECHANISM (Pigilan ang Realtime na mag-override)
+  const isUpdatingRef = useRef(false);
+
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const counts = orders.reduce<OrderCounts>((acc, o) => {
-    switch (o.orderStatus) {
-      case 'Pending': acc.pending++; break;
-      case 'Processing': acc.processing++; break;
-      case 'Ready for Pickup': acc.ready++; break;
-      case 'Claimed': acc.claimed++; break;
-      case 'Cancelled': acc.cancelled++; break;
+  // ✅ DIRECT FETCH (Walang Cache)
+  const fetchOrders = useCallback(async () => {
+    // Kung nag-a-update, wag munang i-fetch para hindi mag-revert
+    if (isUpdatingRef.current) return;
+    
+    setIsLoading(true);
+    try {
+      const data = await fetchFreshOrgOrders();
+      setLocalOrders(data);
+    } catch (err) {
+      console.error('Failed to fetch orders:', err);
+      toast('Failed to load orders', 'danger');
+    } finally {
+      setIsLoading(false);
     }
-    return acc;
-  }, { ...EMPTY_COUNTS });
+  }, [toast]);
 
-  const filteredOrders = orders.filter((o) => {
-    if (filter === 'all') return true;
-    return o.orderStatus === filter;
-  });
+  // Load on mount
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
+  // Close dropdown
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
@@ -69,40 +64,79 @@ export default function OrdersPage() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleAdvance = useCallback(async (id: string, currentStatus: string) => {
-    let nextStatus: OrgOrderStatus | null = null;
-    
-    if (currentStatus === 'Pending') nextStatus = 'Processing';
-    else if (currentStatus === 'Processing') nextStatus = 'Ready for Pickup';
-    else if (currentStatus === 'Ready for Pickup') nextStatus = 'Claimed';
-    
-    if (!nextStatus) return;
+  /* ============================================
+     🎯 UPDATE STATUS (OPTIMISTIC + CACHE-FREE)
+     ============================================ */
+  const handleUpdateStatus = async (
+    id: string, 
+    newStatus: OrgOrderStatus, 
+    currentStatus: string
+  ) => {
+    if (newStatus === currentStatus) return;
 
+    // 1. I-LOCK ANG FETCH
+    isUpdatingRef.current = true;
     setIsSubmitting(true);
-    try {
-      await setOrderStatus(id, nextStatus);
-      await refreshOrders();
-    } catch (error) {
-      console.error('Failed to advance order:', error);
-      alert('Failed to advance order.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [setOrderStatus, refreshOrders]);
 
-  const handleSetStatus = useCallback(async (id: string, status: OrgOrderStatus) => {
-    setIsSubmitting(true);
+    // 2. OPTIMISTIC UPDATE (Agad magbabago sa UI)
+    setLocalOrders((prev) =>
+      prev.map((o) => (o.id === id ? { ...o, orderStatus: newStatus } : o))
+    );
+
     try {
-      await setOrderStatus(id, status);
-      await refreshOrders();
+      // 3. I-UPDATE SA DB
+      await setOrgOrderStatus(id, newStatus);
+      toast(`Order updated to ${newStatus}`, 'success');
       setOpenMenuId(null);
+
+      // 4. KUNAHIN ANG FRESH DATA (I-set agad sa UI)
+      const freshData = await fetchFreshOrgOrders();
+      setLocalOrders(freshData); 
+
+      // ❌ WALA NANG refreshOrders() dito. Yan ang nagpapa-revert sa Pending.
+
     } catch (error) {
-      console.error('Failed to set status:', error);
-      alert('Failed to update order status.');
+      console.error('Failed to update status:', error);
+      toast('Failed to update status', 'danger');
+      
+      // I-revert kung nag-fail
+      setLocalOrders((prev) =>
+        prev.map((o) => (o.id === id ? { ...o, orderStatus: currentStatus } : o))
+      );
     } finally {
+      // 5. I-UNLOCK ANG FETCH
+      isUpdatingRef.current = false;
       setIsSubmitting(false);
     }
-  }, [setOrderStatus, refreshOrders]);
+  };
+
+  const handleAdvance = async (id: string, currentStatus: string) => {
+    const idx = ORG_ORDER_FLOW.indexOf(currentStatus as OrgOrderStatus);
+    if (idx === -1 || idx >= ORG_ORDER_FLOW.length - 1) return;
+
+    const nextStatus = ORG_ORDER_FLOW[idx + 1];
+    await handleUpdateStatus(id, nextStatus, currentStatus);
+  };
+
+  /* ============================================
+     COUNTS & FILTERS
+     ============================================ */
+  const counts = localOrders.reduce(
+    (acc, o) => {
+      if (o.orderStatus === 'Pending') acc.pending++;
+      else if (o.orderStatus === 'Processing') acc.processing++;
+      else if (o.orderStatus === 'Ready for Pickup') acc.ready++;
+      else if (o.orderStatus === 'Claimed') acc.claimed++;
+      else if (o.orderStatus === 'Cancelled') acc.cancelled++;
+      return acc;
+    },
+    { pending: 0, processing: 0, ready: 0, claimed: 0, cancelled: 0 }
+  );
+
+  const filteredOrders = localOrders.filter((o) => {
+    if (filter === 'all') return true;
+    return o.orderStatus === filter;
+  });
 
   return (
     <section className="page-orders">
@@ -113,7 +147,7 @@ export default function OrdersPage() {
           <h2>Order Management</h2>
           <p>View all order details, verify customer info, and track fulfillment.</p>
         </div>
-        <button className="btn" onClick={refreshOrders} disabled={isLoading}>
+        <button className="btn" onClick={fetchOrders} disabled={isLoading}>
           <RefreshCw size={18} className={isLoading ? 'spin' : ''} /> Refresh
         </button>
       </div>
@@ -168,10 +202,14 @@ export default function OrdersPage() {
           ) : (
             filteredOrders.map((o) => (
               <div key={o.id} className="order-item">
-                {/* LARGE IMAGE */}
-                <div className="order-item__image">
-                  {(o.items[0] as any)?.image ? (
-                    <img src={(o.items[0] as any).image} alt={o.items[0].name} />
+                {/* IMAGE */}
+                <div className="order-item__image" style={{ overflow: 'hidden', borderRadius: '12px', background: 'rgba(255,255,255,0.05)' }}>
+                  {o.img ? (
+                    <img 
+                      src={o.img} 
+                      alt={o.items[0]?.name || 'Product image'} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                    />
                   ) : (
                     <div className="order-item__placeholder">
                       <Package size={32} />
@@ -196,9 +234,7 @@ export default function OrdersPage() {
                 </div>
 
                 {/* PRICE */}
-                <div className="order-item__price">
-                  {peso(o.totalAmount)}
-                </div>
+                <div className="order-item__price">{peso(o.totalAmount)}</div>
 
                 {/* ACTIONS */}
                 <div className="order-item__actions">
@@ -225,14 +261,14 @@ export default function OrdersPage() {
                     {openMenuId === o.id && (
                       <div className="admin-status-menu__dropdown">
                         <div className="admin-status-menu__header">Set status</div>
-                        {STATUS_OPTIONS.map((status) => {
+                        {ORG_ORDER_FLOW.concat('Cancelled').map((status: OrgOrderStatus) => {
                           const isCurrent = o.orderStatus === status;
                           return (
                             <button
                               key={status}
                               type="button"
                               className={`admin-status-menu__item ${isCurrent ? 'is-current' : ''}`}
-                              onClick={() => handleSetStatus(o.id, status)}
+                              onClick={() => handleUpdateStatus(o.id, status, o.orderStatus)}
                               disabled={isCurrent || isSubmitting}
                             >
                               <span className={`admin-status-menu__dot admin-status-menu__dot--${status.toLowerCase().replace(/\s+/g, '-')}`} />

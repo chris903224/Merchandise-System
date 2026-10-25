@@ -88,7 +88,7 @@ body:has(.auth-experience) {
   color: var(--theme-text);
   font-family: var(--font-ui);
   overflow-x: hidden;
-  zoom: 0.85;
+
 }
 
 @supports not (zoom: 1) {
@@ -2033,5 +2033,43 @@ html body #root .auth-experience .auth-quick-login__input::placeholder {
   .password-popover {
     transition-duration: 0.01ms !important;
     animation: none !important;
+  }
+}
+/* ============================================================
+   🎯 CUSTOM ZOOM: LOGIN (ZOOM IN) AT REGISTER (ZOOM OUT)
+   ============================================================ */
+
+/* 1. LOGIN PAGE (Zoom In) */
+/* Tinitiyak nating may .auth-experience class, tapos may login mode sa loob */
+.auth-experience:has(.auth-card--login),
+body:has(.auth-card[data-mode="login"]) .auth-experience {
+  zoom: 0.98 !important;
+}
+
+/* 2. REGISTER PAGE (Zoom Out) */
+/* Tinitiyak nating may .auth-experience class, tapos may register mode sa loob */
+.auth-experience:has(.auth-card--register),
+body:has(.auth-card[data-mode="register"]) .auth-experience {
+  zoom: 0.81 !important;
+}
+
+/* ============================================================
+   FALLBACK PARA SA MGA BROWSER NA WALANG ZOOM (Firefox)
+   ============================================================ */
+@supports not (zoom: 1) {
+  .auth-experience:has(.auth-card--login),
+  body:has(.auth-card[data-mode="login"]) .auth-experience {
+    transform: scale(1.05) !important;
+    transform-origin: top center !important;
+    width: 95.23% !important;
+    margin: 0 auto !important;
+  }
+
+  .auth-experience:has(.auth-card--register),
+  body:has(.auth-card[data-mode="register"]) .auth-experience {
+    transform: scale(0.9) !important;
+    transform-origin: top center !important;
+    width: 111.11% !important;
+    margin-left: -5.55% !important;
   }
 }

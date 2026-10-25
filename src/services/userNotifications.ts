@@ -1,21 +1,24 @@
 // src/services/userNotifications.ts
-// ✅ Para sa ORDERS/PRODUCTS notifications (user_notifications table)
 
 import { supabase } from '../lib/supabaseClient';
 import type { Notification, NotificationType } from '../types/notification';
 import { getCachedData, invalidateCache } from '../utils/cache';
 
-const TABLE_NAME = 'user_notifications';
+/* ============================================
+   ✅ TABLE NAME
+   Ginawa nating 'notifications' para mag-match sa Student Side.
+   ============================================ */
+const TABLE_NAME = 'notifications';
 
 /* ============================================
    FETCH
-============================================ */
+   ============================================ */
 
 export async function fetchUserNotifications(
   userId: string
 ): Promise<Notification[]> {
   return getCachedData(
-    `user_notifications_${userId}`,
+    `user_notifications_${userId}`, // Cache key (sinync sa store)
     async () => {
       const { data, error } = await supabase
         .from(TABLE_NAME)
@@ -36,8 +39,8 @@ export async function fetchUserNotifications(
 }
 
 /* ============================================
-   CREATE
-============================================ */
+   CREATE (NON-FATAL)
+   ============================================ */
 
 export async function createUserNotification(
   userId: string,
@@ -50,27 +53,34 @@ export async function createUserNotification(
     metadata?: Record<string, any>;
   }
 ): Promise<void> {
-  const { error } = await supabase.from(TABLE_NAME).insert({
-    user_id: userId,
-    type: notification.type,
-    title: notification.title,
-    message: notification.message,
-    link: notification.link ?? null,
-    action_label: notification.actionLabel ?? null,
-    metadata: notification.metadata ?? {},
-  });
+  try {
+    const { error } = await supabase.from(TABLE_NAME).insert({
+      user_id: userId,
+      type: notification.type,
+      title: notification.title,
+      message: notification.message,
+      link: notification.link ?? null,
+      action_label: notification.actionLabel ?? null,
+      metadata: notification.metadata ?? {},
+    });
 
-  if (error) {
-    console.error('[UserNotifications] Failed to create:', error);
-    throw new Error(error.message);
+    if (error) {
+      // 👈 WARNING LANG, WALANG THROW (Para hindi mag-crash ang order update)
+      console.warn('[UserNotifications] ⚠️ Failed to create (non-fatal):', error.message);
+      return;
+    }
+
+    invalidateCache(`user_notifications_${userId}`);
+    console.log('[UserNotifications] ✅ Notification created:', notification.title);
+  } catch (err) {
+    // 👈 WARNING LANG, WALANG THROW
+    console.warn('[UserNotifications] ⚠️ Exception (non-fatal):', err);
   }
-
-  invalidateCache(`user_notifications_${userId}`);
 }
 
 /* ============================================
    MARK AS READ
-============================================ */
+   ============================================ */
 
 export async function markUserNotificationAsRead(
   notificationId: string
@@ -98,7 +108,7 @@ export async function markUserNotificationAsRead(
 
 /* ============================================
    MARK ALL AS READ
-============================================ */
+   ============================================ */
 
 export async function markAllUserNotificationsAsRead(
   userId: string
@@ -119,7 +129,7 @@ export async function markAllUserNotificationsAsRead(
 
 /* ============================================
    DELETE
-============================================ */
+   ============================================ */
 
 export async function deleteUserNotification(
   notificationId: string
@@ -147,7 +157,7 @@ export async function deleteUserNotification(
 
 /* ============================================
    CLEAR ALL
-============================================ */
+   ============================================ */
 
 export async function clearAllUserNotifications(
   userId: string
@@ -167,7 +177,7 @@ export async function clearAllUserNotifications(
 
 /* ============================================
    MAPPER
-============================================ */
+   ============================================ */
 
 function mapNotificationRow(row: any): Notification {
   return {

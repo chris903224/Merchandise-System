@@ -18,7 +18,7 @@ import {
   fetchAllOrders,
   updateOrderStatus as updateOrderStatusService,
   updatePaymentStatus as updatePaymentStatusService,
-  refreshOrders as refreshOrdersService, // ✅ Imported
+  refreshOrders as refreshOrdersService,
 } from './services/orders';
 import { createUserNotification } from './services/userNotifications';
 import { invalidateCache } from './utils/cache';
@@ -54,19 +54,15 @@ interface AppContextValue extends AppState {
   deleteProduct: (productId: string) => Promise<void>;
   updateProfilePicture: (imageUrl: string | null) => void;
   refreshProducts: () => Promise<void>;
-  
-  // ✅ IDINAGDAG: refreshOrders
   refreshOrders: () => Promise<void>;
 
   isLoading: boolean;
 
-  /* ✅ GLOBAL LOGIN LOCK (rate-limit) */
   loginLockUntil: number | null;
   isLoginLocked: boolean;
   lockLogin: (seconds: number) => void;
   unlockLogin: () => void;
 
-  /* ✅ ONBOARDING */
   onboarding: OnboardingRecord | null;
   isLoadingOnboarding: boolean;
   refreshOnboarding: () => Promise<void>;
@@ -75,7 +71,6 @@ interface AppContextValue extends AppState {
 
 const AppContext = createContext<AppContextValue | null>(null);
 
-/* ✅ Storage key para sa login lock */
 const LOGIN_LOCK_KEY = 'sjcm_login_lock_until';
 
 function readLoginLock(): number | null {
@@ -85,9 +80,6 @@ function readLoginLock(): number | null {
   return null;
 }
 
-/* ============================================
-   ✅ CART INITIAL LOAD — session-aware
-============================================ */
 function readClientState(): Pick<AppState, 'session' | 'cart'> {
   const session = readStorage<SessionUser | null>(STORAGE_KEYS.session, null);
 
@@ -112,17 +104,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  /* ✅ ONBOARDING STATE */
   const [onboarding, setOnboarding] = useState<OnboardingRecord | null>(null);
   const [isLoadingOnboarding, setIsLoadingOnboarding] = useState(false);
 
-  /* ✅ GLOBAL LOGIN LOCK state — persistent via localStorage */
   const [loginLockUntil, setLoginLockUntil] = useState<number | null>(
     () => readLoginLock()
   );
   const [lockTick, setLockTick] = useState(0);
 
-  /* ✅ I-persist sa localStorage tuwing magbabago */
   useEffect(() => {
     if (loginLockUntil) {
       writeStorage(LOGIN_LOCK_KEY, loginLockUntil);
@@ -131,7 +120,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, [loginLockUntil]);
 
-  /* ✅ Auto-unlock kapag na-expire na + periodic re-render */
   useEffect(() => {
     if (!loginLockUntil) return;
 
@@ -158,11 +146,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const isLoginLocked =
     loginLockUntil !== null && Date.now() < loginLockUntil;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   void lockTick;
 
   /* ============================================
-     ✅ ONBOARDING — load status when session changes
+     ONBOARDING
      ============================================ */
   useEffect(() => {
     const loadOnboardingStatus = async () => {
@@ -185,7 +172,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     void loadOnboardingStatus();
   }, [session?.id]);
 
-  /* ✅ Manual refresh */
   const refreshOnboarding = useCallback(async () => {
     if (!session?.id) {
       setOnboarding(null);
@@ -203,7 +189,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, [session?.id]);
 
-  /* ✅ Save onboarding response to Supabase */
   const saveOnboarding = useCallback(
     async (response: UniformResponse) => {
       if (!session?.id) {
@@ -240,7 +225,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
      REAL-TIME SUBSCRIPTIONS
      ============================================ */
   useEffect(() => {
-    /* ---------- PRODUCTS ---------- */
     const productsChannel = supabase
       .channel('products-realtime')
       .on(
@@ -264,7 +248,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       )
       .subscribe();
 
-    /* ---------- ORDERS ---------- */
     const ordersChannel = supabase
       .channel('orders-realtime')
       .on(
@@ -279,9 +262,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
               ? (payload.old as any)?.user_id
               : (payload.new as any)?.user_id;
 
-          if (userId) {
-            invalidateCache(`orders_${userId}`);
-          }
+          if (userId) invalidateCache(`orders_${userId}`);
 
           if (payload.eventType === 'INSERT') {
             setOrders((prev) => [mapOrderRow(payload.new), ...prev]);
@@ -298,7 +279,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       )
       .subscribe();
 
-    /* ---------- USER NOTIFICATIONS ---------- */
     const userNotificationsChannel = supabase
       .channel('user-notifications-realtime')
       .on(
@@ -310,9 +290,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
               ? (payload.old as any)?.user_id
               : (payload.new as any)?.user_id;
 
-          if (userId) {
-            invalidateCache(`user_notifications_${userId}`);
-          }
+          if (userId) invalidateCache(`user_notifications_${userId}`);
 
           window.dispatchEvent(
             new CustomEvent('user-notifications-updated', {
@@ -327,7 +305,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       )
       .subscribe();
 
-    /* ---------- LEGACY NOTIFICATIONS (favorites) ---------- */
     const notificationsChannel = supabase
       .channel('notifications-realtime')
       .on(
@@ -339,9 +316,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
               ? (payload.old as any)?.user_id
               : (payload.new as any)?.user_id;
 
-          if (userId) {
-            invalidateCache(`notifications_${userId}`);
-          }
+          if (userId) invalidateCache(`notifications_${userId}`);
 
           window.dispatchEvent(
             new CustomEvent('notifications-updated', {
@@ -365,16 +340,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   /* ============================================
-     ✅ SESSION — with cart restore
+     SESSION
      ============================================ */
   const signIn = useCallback((user: SessionUser) => {
     writeStorage(STORAGE_KEYS.session, user);
     setSession(user);
 
     const savedCart = readStorage<CartItem[]>(STORAGE_KEYS.cart, []);
-    if (savedCart.length > 0) {
-      setCartState(savedCart);
-    }
+    if (savedCart.length > 0) setCartState(savedCart);
   }, []);
 
   const signOut = useCallback(() => {
@@ -396,13 +369,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   /* ============================================
-     ✅ CART — save only if logged in
+     CART
      ============================================ */
   const setCart = useCallback(
     (items: CartItem[]) => {
-      if (session) {
-        writeStorage(STORAGE_KEYS.cart, items);
-      }
+      if (session) writeStorage(STORAGE_KEYS.cart, items);
       setCartState(items);
     },
     [session]
@@ -465,7 +436,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         price: product.price,
         stock: product.stock,
         sizes: product.sizes,
-        size_stocks: product.sizeStocks ?? {}, // ✅ IDINAGDAG ITO
+        size_stocks: product.sizeStocks ?? {},
         image: product.image,
         image_alt: product.imageAlt,
         description: product.description,
@@ -482,78 +453,84 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   /* ============================================
-     ORDERS — status updates fire student notifs
+     ORDERS — RLS-SAFE (non-fatal notifications)
      ============================================ */
   const setOrderStatus = useCallback(
     async (orderId: string, orderStatus: string) => {
+      // 1. Optimistic update (agad magbabago ang UI)
       setOrders((prev) =>
         prev.map((o) => (o.id === orderId ? { ...o, orderStatus } : o))
       );
 
-      await updateOrderStatusService(orderId, orderStatus);
+      // 2. Update sa database
+      try {
+        await updateOrderStatusService(orderId, orderStatus);
+      } catch (err) {
+        console.error('[Store] ❌ Order status update failed:', err);
+        // Hindi mag-revert, pero ita-throw para malaman ng caller
+        throw err;
+      }
 
+      // 3. Non-fatal notification (hindi mag-crash)
       const order = orders.find((o) => o.id === orderId);
-      if (order) {
-        const statusMessages: Record<
-          string,
-          {
-            title: string;
-            message: string;
-            type: 'order' | 'pickup' | 'system' | 'info' | 'promo';
-          }
-        > = {
-          Pending: {
-            title: 'Order Placed',
-            message: `Your order #${orderId} has been placed and is pending review.`,
-            type: 'order',
-          },
-          Processing: {
-            title: 'Order Processing',
-            message: `Your order #${orderId} is now being prepared.`,
-            type: 'order',
-          },
-          'Ready for Pickup': {
-            title: 'Ready for Pickup! 🎉',
-            message: `Your order #${orderId} is ready for pickup at SJCM Campus.`,
-            type: 'pickup',
-          },
-          Claimed: {
-            title: 'Order Claimed',
-            message: `Your order #${orderId} has been successfully claimed. Thank you!`,
-            type: 'order',
-          },
-          Completed: {
-            title: 'Order Completed',
-            message: `Your order #${orderId} has been completed. Thank you!`,
-            type: 'order',
-          },
-          Cancelled: {
-            title: 'Order Cancelled',
-            message: `Your order #${orderId} has been cancelled.`,
-            type: 'system',
-          },
-        };
+      if (!order) return;
 
-        const statusInfo = statusMessages[orderStatus];
-        if (statusInfo) {
-          try {
-            await createUserNotification(order.userId, {
-              type: statusInfo.type,
-              title: statusInfo.title,
-              message: statusInfo.message,
-              link: `/orders/${orderId}`,
-              actionLabel: 'View Order',
-              metadata: {
-                orderId,
-                status: orderStatus,
-                productId: order.items[0]?.id,
-              },
-            });
-            console.log('[Store] ✅ Status notification created:', orderStatus);
-          } catch (err) {
-            console.error('[Store] ❌ Notification failed:', err);
-          }
+      const statusMessages: Record<
+        string,
+        {
+          title: string;
+          message: string;
+          type: 'order' | 'pickup' | 'system' | 'info' | 'promo';
         }
+      > = {
+        Pending: {
+          title: 'Order Placed',
+          message: `Your order #${orderId} has been placed and is pending review.`,
+          type: 'order',
+        },
+        Processing: {
+          title: 'Order Processing',
+          message: `Your order #${orderId} is now being prepared.`,
+          type: 'order',
+        },
+        'Ready for Pickup': {
+          title: 'Ready for Pickup! 🎉',
+          message: `Your order #${orderId} is ready for pickup at SJCM Campus.`,
+          type: 'pickup',
+        },
+        Claimed: {
+          title: 'Order Claimed',
+          message: `Your order #${orderId} has been successfully claimed. Thank you!`,
+          type: 'order',
+        },
+        Completed: {
+          title: 'Order Completed',
+          message: `Your order #${orderId} has been completed. Thank you!`,
+          type: 'order',
+        },
+        Cancelled: {
+          title: 'Order Cancelled',
+          message: `Your order #${orderId} has been cancelled.`,
+          type: 'system',
+        },
+      };
+
+      const statusInfo = statusMessages[orderStatus];
+      if (!statusInfo) return;
+
+      try {
+        await createUserNotification(order.userId, {
+          type: statusInfo.type,
+          title: statusInfo.title,
+          message: statusInfo.message,
+          link: `/orders/${orderId}`,
+          actionLabel: 'View Order',
+          metadata: { orderId, status: orderStatus },
+        });
+        console.log('[Store] ✅ Status notification created:', orderStatus);
+      } catch (err) {
+        // 👈 NON-FATAL — hindi mag-crash ang buong flow
+        console.warn('[Store] ⚠️ Notification failed (non-fatal):', err);
       }
     },
     [orders]
@@ -578,9 +555,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
             actionLabel: 'View Order',
             metadata: { orderId, paymentStatus },
           });
-          console.log('[Store] ✅ Payment notification created:', orderId);
         } catch (err) {
-          console.error('[Store] ❌ Payment notification failed:', err);
+          console.warn('[Store] ⚠️ Payment notification failed (non-fatal):', err);
         }
       }
     },
@@ -601,9 +577,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         })
       );
 
-      if (session) {
-        writeStorage(STORAGE_KEYS.cart, []);
-      }
+      if (session) writeStorage(STORAGE_KEYS.cart, []);
       setCartState([]);
 
       await placeOrderService(order);
@@ -617,9 +591,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
           actionLabel: 'View Order',
           metadata: { orderId: order.id, totalAmount: order.totalAmount },
         });
-        console.log('[Store] ✅ Order notification created:', order.id);
       } catch (err) {
-        console.error('[Store] ❌ Notification failed:', err);
+        console.warn('[Store] ⚠️ Order notification failed (non-fatal):', err);
       }
     },
     [session]
@@ -633,7 +606,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setProducts(data);
   }, []);
 
-  // ✅ IDINAGDAG: refreshOrders function
   const refreshOrdersData = useCallback(async () => {
     const data = await refreshOrdersService();
     setOrders(data);
@@ -661,7 +633,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       deleteProduct,
       updateProfilePicture,
       refreshProducts: refreshProductsData,
-      refreshOrders: refreshOrdersData, // ✅ Exposed sa context
+      refreshOrders: refreshOrdersData,
 
       loginLockUntil,
       isLoginLocked,

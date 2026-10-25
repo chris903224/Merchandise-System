@@ -30,12 +30,14 @@ export default function OrgLoginPage() {
     setToast(null);
 
     try {
+      // 1. Supabase Login
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email: staffUser.trim(),
         password: password,
       });
       if (authError) throw new Error(authError.message || 'Invalid credentials.');
 
+      // 2. Kunin ang profile (kung saan naka-save ang role)
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
@@ -44,11 +46,14 @@ export default function OrgLoginPage() {
 
       if (profileError) throw new Error(profileError.message);
       if (!profile) throw new Error('Profile not found in database.');
+      
+      // 3. I-verify kung Organization
       if (profile.role !== 'Organization') {
         await supabase.auth.signOut();
         throw new Error('Access denied. This account is not an Organization.');
       }
 
+      // 4. I-setup ang Session object
       const session = {
         id: profile.id,
         name: profile.name,
@@ -58,9 +63,25 @@ export default function OrgLoginPage() {
         idNumber: profile.student_id || 'ORG-001',
       };
 
+      // 5. I-save sa global state (para sa OrgGuard)
       signIn(session);
+
+      // 6. ✅ I-SAVE ANG SESSION SA LOCALSTORAGE (Para sa Order Updates)
+      const orgSession = {
+        userId: profile.id,
+        email: profile.email,
+        role: 'Organization',
+        name: profile.name,
+        organization: 'SJC Supply Office',
+      };
+      
+      localStorage.setItem('sjcm_org_session', JSON.stringify(orgSession));
+      console.log('[OrgLogin] ✅ Session saved to localStorage:', orgSession);
+
+      // 7. Redirect
       setToast({ msg: `Welcome back, ${session.name}. Access granted.`, type: 'success' });
       setTimeout(() => navigate('/org/dashboard', { replace: true }), 800);
+      
     } catch (err: any) {
       setToast({ msg: err.message || 'Login failed. Please check your credentials.', type: 'error' });
     } finally {

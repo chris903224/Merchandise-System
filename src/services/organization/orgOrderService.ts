@@ -1,264 +1,191 @@
-// src/services/admin/adminOrdersService.ts
+// src/services/organization/orgOrdersService.ts
 
-import {
-  fetchAllOrders,
-  updateOrderStatus,
-  updatePaymentStatus,
-  refreshOrders,
-} from '../orders';
-import { fetchProducts } from '../products';
+import { supabase } from '../../lib/supabaseClient';
+import type { Order } from '../../types';
 import { triggerOrderStatusNotifications } from '../orderNotifications';
-
-// ✅ PALITAN: supabase → supabaseAdmin
-import { supabaseAdmin } from '../../lib/supabaseClient';
-
-import type { Order, OrderItem, Product } from '../../types';
-import type { AdminOrder, AdminOrderStatus } from '../../store/adminStore';
+import { invalidateCache } from '../../utils/cache';
 
 /* ============================================
-   HELPERS
-============================================ */
+   ✅ ORG SESSION SERVICE (Para hindi bumalik sa Pending)
+   ============================================ */
 
-export const ORDER_FLOW: AdminOrderStatus[] = [
+const ORG_SESSION_KEY = 'sjcm_org_session';
+
+export interface OrgSession {
+  userId: string;
+  email: string;
+  role: string;
+  name: string;
+  organization: string;
+}
+
+export function saveOrgSession(session: OrgSession) {
+  localStorage.setItem(ORG_SESSION_KEY, JSON.stringify(session));
+  console.log('[OrgSession] ✅ Session saved:', session);
+}
+
+export function getOrgSession(): OrgSession | null {
+  const raw = localStorage.getItem(ORG_SESSION_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as OrgSession;
+  } catch {
+    return null;
+  }
+}
+
+export function clearOrgSession() {
+  localStorage.removeItem(ORG_SESSION_KEY);
+  console.log('[OrgSession] 🗑️ Session cleared');
+}
+
+/* ============================================
+   ✅ TYPES
+   ============================================ */
+
+export type OrgOrderStatus =
+  | 'Pending'
+  | 'Processing'
+  | 'Ready for Pickup'
+  | 'Claimed'
+  | 'Cancelled';
+
+export interface OrgOrderCounts {
+  pending: number;
+  processing: number;
+  ready: number;
+  claimed: number;
+  cancelled: number;
+}
+
+export const ORG_ORDER_FLOW: OrgOrderStatus[] = [
   'Pending',
   'Processing',
   'Ready for Pickup',
-  'Completed',
+  'Claimed',
 ];
 
-function formatDate(iso: string): { date: string; time: string } {
-  try {
-    const d = new Date(iso);
-    return {
-      date: d.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      }),
-      time: d.toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-      }),
-    };
-  } catch {
-    return { date: iso, time: '' };
-  }
-}
+/* ============================================
+   ✅ HELPERS
+   ============================================ */
 
-function findProductImage(order: Order, products: Product[]): string | null {
+function findProductImage(order: Order, products: any[]): string | null {
   const firstItem = order.items[0];
   if (!firstItem) return null;
-  const productId = (firstItem as any).id;
-  if (!productId) return null;
-  const product = products.find((p) => p.id === productId);
+
+  const itemId =
+    (firstItem as any).productId ||
+    (firstItem as any).id ||
+    (firstItem as any)._id ||
+    (firstItem as any).product_id;
+
+  if (!itemId) return null;
+
+  const product = products.find((p) => String(p.id) === String(itemId));
   return product?.image ?? null;
 }
 
-function mapOrderToAdmin(o: Order, products: Product[]): AdminOrder {
-  const { date, time } = formatDate(o.createdAt);
-  const image = findProductImage(o, products);
-
+export function mapOrderToOrg(o: Order, products: any[]): Order & { img: string | null } {
   return {
-    id: o.id,
-    status: o.orderStatus as AdminOrderStatus,
-    customer: {
-      name: o.customerName,
-      studentId: o.studentId,
-      email: o.email,
-      phone: o.phone,
-    },
-    shipping: {
-      method: 'Campus Pickup',
-      location: o.claimLocation,
-      date: o.claimDate,
-    },
-    payment: {
-      method: o.paymentMethod,
-      ref: o.paymentRef ?? '—',
-      status: o.paymentStatus,
-    },
-    items: o.items.map((it: OrderItem) => ({
-      name: it.name,
-      qty: it.qty,
-      price: it.price,
-    })),
-    date,
-    time,
-    img: image,
+    ...o,
+    img: findProductImage(o, products),
   };
 }
 
 /* ============================================
-   READ — lahat gumagamit ng supabaseAdmin
-============================================ */
-
-export async function getOrders(filter: string = 'all'): Promise<AdminOrder[]> {
-  const [orders, products] = await Promise.all([
-    fetchAllOrders(supabaseAdmin),   // ✅ ADMIN CLIENT
-    fetchProducts(),
-  ]);
-  const mapped = orders.map((o) => mapOrderToAdmin(o, products));
-  if (filter === 'all') return mapped;
-  return mapped.filter((o) => o.status === filter);
-}
-
-export async function getAllOrders(): Promise<AdminOrder[]> {
-  const [orders, products] = await Promise.all([
-    fetchAllOrders(supabaseAdmin),   // ✅ ADMIN CLIENT
-    fetchProducts(),
-  ]);
-  return orders.map((o) => mapOrderToAdmin(o, products));
-}
-
-export async function getOrderById(id: string): Promise<AdminOrder | null> {
-  const [orders, products] = await Promise.all([
-    fetchAllOrders(supabaseAdmin),   // ✅ ADMIN CLIENT
-    fetchProducts(),
-  ]);
-  const found = orders.find((o) => o.id === id);
-  return found ? mapOrderToAdmin(found, products) : null;
-}
-
-export async function getOrderCounts() {
-  const orders = await fetchAllOrders(supabaseAdmin);   // ✅ ADMIN CLIENT
-  return {
-    pending:    orders.filter((o) => o.orderStatus === 'Pending').length,
-    processing: orders.filter((o) => o.orderStatus === 'Processing').length,
-    ready:      orders.filter((o) => o.orderStatus === 'Ready for Pickup').length,
-    completed:  orders.filter((o) => o.orderStatus === 'Completed').length,
-    cancelled:  orders.filter((o) => o.orderStatus === 'Cancelled').length,
-  };
-}
-
-/* ============================================
-   ✅ SALES CHART DATA
-============================================ */
-
-export interface SalesChartPoint {
-  label: string;
-  value: number;
-}
-
-export async function getSalesChartData(
-  days: number = 7
-): Promise<SalesChartPoint[]> {
-  const orders = await fetchAllOrders(supabaseAdmin);   // ✅ ADMIN CLIENT
-  const now = new Date();
-  const points: SalesChartPoint[] = [];
-
-  for (let i = days - 1; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
-    date.setHours(0, 0, 0, 0);
-
-    const dayLabel = date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-    });
-
-    const nextDay = new Date(date);
-    nextDay.setDate(nextDay.getDate() + 1);
-
-    const dayTotal = orders
-      .filter((o) => {
-        const orderDate = new Date(o.createdAt);
-        return orderDate >= date && orderDate < nextDay;
-      })
-      .reduce((sum, o) => sum + Number(o.totalAmount ?? 0), 0);
-
-    points.push({
-      label: dayLabel,
-      value: dayTotal,
-    });
-  }
-
-  return points;
-}
-
-/* ============================================
-   ✅ TOP SELLING PRODUCTS
-============================================ */
-
-export interface TopSellingProduct {
-  id: string;
-  name: string;
-  category: string;
-  image: string | null;
-  totalQty: number;
-  totalRevenue: number;
-}
-
-export async function getTopSellingProducts(
-  limit: number = 4
-): Promise<TopSellingProduct[]> {
-  const [orders, products] = await Promise.all([
-    fetchAllOrders(supabaseAdmin),   // ✅ ADMIN CLIENT
-    fetchProducts(),
-  ]);
-
-  const tally = new Map<string, { qty: number; revenue: number }>();
-
-  orders.forEach((order) => {
-    order.items.forEach((item: any) => {
-      const productId = item.id;
-      if (!productId) return;
-
-      const existing = tally.get(productId) ?? { qty: 0, revenue: 0 };
-      existing.qty += Number(item.qty) || 0;
-      existing.revenue += (Number(item.qty) || 0) * (Number(item.price) || 0);
-      tally.set(productId, existing);
-    });
+   ✅ FETCH: Direct sa Supabase (NO CACHE)
+   ============================================ */
+export async function fetchFreshOrgOrders(): Promise<Array<Order & { img: string | null }>> {
+  // 1. I-force bura ang cache para walang lumang data
+  Object.keys(localStorage).forEach(key => {
+    if (key.startsWith('sjcm_cache_orders')) {
+      localStorage.removeItem(key);
+    }
   });
 
-  const sorted = Array.from(tally.entries())
-    .map(([id, stats]) => {
-      const product = products.find((p) => p.id === id);
-      return {
-        id,
-        name: product?.name ?? 'Unknown Product',
-        category: product?.category ?? '—',
-        image: product?.image ?? null,
-        totalQty: stats.qty,
-        totalRevenue: stats.revenue,
-      };
-    })
-    .sort((a, b) => b.totalQty - a.totalQty)
-    .slice(0, limit);
+  // 2. Kunin ang orders
+  const { data: ordersData, error: ordersError } = await supabase
+    .from('orders')
+    .select('*')
+    .order('created_at', { ascending: false });
 
-  return sorted;
+  if (ordersError) {
+    console.error('[OrgOrders] Failed to fetch orders:', ordersError);
+    return [];
+  }
+
+  // 3. Kunin ang products para sa image
+  const { data: productsData, error: productsError } = await supabase
+    .from('products')
+    .select('id, image, name');
+
+  if (productsError) {
+    console.error('[OrgOrders] Failed to fetch products:', productsError);
+  }
+
+  const products = (productsData ?? []) as any[]; 
+
+  // 4. I-map ang data
+  return (ordersData ?? []).map((row) => {
+    const order: Order = {
+      id: row.id,
+      userId: row.user_id,
+      customerName: row.customer_name,
+      studentId: row.student_id ?? '',
+      email: row.email ?? '',
+      phone: row.phone ?? '',
+      items: row.items ?? [],
+      totalAmount: Number(row.total_amount),
+      paymentMethod: row.payment_method ?? '',
+      paymentRef: row.payment_ref ?? null,
+      paymentStatus: row.payment_status ?? '',
+      orderStatus: row.order_status ?? '',
+      claimLocation: row.claim_location ?? '',
+      claimDate: row.claim_date ?? '',
+      createdAt: row.created_at,
+    };
+
+    return mapOrderToOrg(order, products);
+  });
+}
+
+export async function getOrgOrders(
+  filter: string = 'all'
+): Promise<Array<Order & { img: string | null }>> {
+  const orders = await fetchFreshOrgOrders();
+  if (filter === 'all') return orders;
+  return orders.filter((o) => o.orderStatus === filter);
+}
+
+export async function getOrgOrderCounts(): Promise<OrgOrderCounts> {
+  const orders = await fetchFreshOrgOrders();
+  return {
+    pending: orders.filter((o) => o.orderStatus === 'Pending').length,
+    processing: orders.filter((o) => o.orderStatus === 'Processing').length,
+    ready: orders.filter((o) => o.orderStatus === 'Ready for Pickup').length,
+    claimed: orders.filter((o) => o.orderStatus === 'Claimed').length,
+    cancelled: orders.filter((o) => o.orderStatus === 'Cancelled').length,
+  };
 }
 
 /* ============================================
-   HELPERS
-============================================ */
+   ✅ NOTIFICATION HELPER (Non-fatal)
+   ============================================ */
 
-export function orderTotal(order: AdminOrder): number {
-  return order.items.reduce((sum, item) => sum + item.qty * item.price, 0);
-}
-
-export function orderItemCount(order: AdminOrder): number {
-  return order.items.reduce((sum, item) => sum + item.qty, 0);
-}
-
-/* ============================================
-   ✅ NOTIFICATION HELPER — supabaseAdmin
-============================================ */
-
-async function triggerStatusNotification(
+async function triggerOrgNotification(
   orderId: string,
   previousStatus: string,
   newStatus: string
 ): Promise<void> {
   try {
-    // ✅ PALITAN: supabase → supabaseAdmin
-    const { data: order, error } = await supabaseAdmin
+    const { data: order, error } = await supabase
       .from('orders')
       .select('*')
       .eq('id', orderId)
       .maybeSingle();
 
     if (error || !order) {
-      console.warn('[AdminOrders] Order not found for notification:', orderId);
+      console.warn('[OrgOrders] Order not found for notification:', orderId);
       return;
     }
 
@@ -278,88 +205,94 @@ async function triggerStatusNotification(
       productName: firstItem?.name,
     });
 
-    console.log(
-      `[AdminOrders] ✅ Notification triggered: ${previousStatus} → ${newStatus}`
-    );
+    console.log(`[OrgOrders] ✅ Notification: ${previousStatus} → ${newStatus}`);
   } catch (err) {
-    console.error('[AdminOrders] ❌ Notification failed:', err);
-    // Don't throw — hindi dapat mag-block sa order update
+    console.warn('[OrgOrders] ⚠️ Notification failed (non-fatal):', err);
   }
 }
 
 /* ============================================
-   ✅ WRITE — supabaseAdmin
-============================================ */
+   ✅ WRITE: SET STATUS (Cache-free & Session Check)
+   ============================================ */
 
-export async function advanceOrder(id: string): Promise<void> {
-  // ✅ ADMIN CLIENT
-  const orders = await fetchAllOrders(supabaseAdmin);
-  const order = orders.find((o) => o.id === id);
-  if (!order) throw new Error(`Order ${id} not found.`);
-
-  const idx = ORDER_FLOW.indexOf(order.orderStatus as AdminOrderStatus);
-  if (idx === -1 || idx >= ORDER_FLOW.length - 1) return;
-
-  const next = ORDER_FLOW[idx + 1];
-  const previousStatus = order.orderStatus;
-
-  // ✅ Update sa DB gamit ang ADMIN client
-  await updateOrderStatus(id, next, supabaseAdmin);
-
-  // ✅ Trigger notification + email
-  await triggerStatusNotification(id, previousStatus, next);
-}
-
-export async function setOrderStatus(
+export async function setOrgOrderStatus(
   id: string,
-  status: AdminOrderStatus
+  status: OrgOrderStatus
 ): Promise<void> {
-  // ✅ ADMIN CLIENT — kunin ang current status
-  const orders = await fetchAllOrders(supabaseAdmin);
-  const order = orders.find((o) => o.id === id);
+  // 1. Kunin ang session (para sure na Organization ka)
+  const session = getOrgSession();
+  if (!session || session.role !== 'Organization') {
+    throw new Error('Unauthorized: Organization session required.');
+  }
 
-  if (!order) {
-    console.error('[AdminOrders] Order not found:', id);
+  // 2. Kunin ang kasalukuyang order
+  const { data: order, error: fetchError } = await supabase
+    .from('orders')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+
+  if (fetchError || !order) {
     throw new Error(`Order ${id} not found.`);
   }
 
-  const previousStatus = order.orderStatus;
+  const previousStatus = order.order_status;
 
-  // ✅ Skip kung walang change
   if (previousStatus === status) {
-    console.log('[AdminOrders] Status unchanged, skipping');
+    console.log('[OrgOrders] Status unchanged, skipping');
     return;
   }
 
-  // ✅ Update sa DB gamit ang ADMIN client
-  await updateOrderStatus(id, status, supabaseAdmin);
+  // 3. I-update ang status sa database
+  const { error: updateError } = await supabase
+    .from('orders')
+    .update({ order_status: status })
+    .eq('id', id);
 
-  console.log(`[AdminOrders] Status updated: ${previousStatus} → ${status}`);
+  if (updateError) throw new Error(updateError.message);
 
-  // ✅ Trigger notification + email
-  await triggerStatusNotification(id, previousStatus, status);
+  // 4. I-invalidate ang cache
+  invalidateCache('orders');
+  invalidateCache('orders_all');
+  invalidateCache(`orders_${order.user_id}`);
+
+  console.log(`[OrgOrders] Status updated: ${previousStatus} → ${status}`);
+
+  // 5. I-trigger ang notification (non-fatal)
+  await triggerOrgNotification(id, previousStatus, status);
 }
 
-export async function cancelOrder(id: string): Promise<void> {
-  await setOrderStatus(id, 'Cancelled');
+export async function advanceOrgOrder(id: string): Promise<OrgOrderStatus | null> {
+  const session = getOrgSession();
+  if (!session || session.role !== 'Organization') {
+    throw new Error('Unauthorized: Organization session required.');
+  }
+
+  const { data: order, error: fetchError } = await supabase
+    .from('orders')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+
+  if (fetchError || !order) throw new Error(`Order ${id} not found.`);
+
+  const currentStatus = order.order_status as OrgOrderStatus;
+  const idx = ORG_ORDER_FLOW.indexOf(currentStatus);
+  if (idx === -1 || idx >= ORG_ORDER_FLOW.length - 1) return null;
+
+  const next = ORG_ORDER_FLOW[idx + 1];
+
+  await setOrgOrderStatus(id, next);
+
+  return next;
 }
 
-export async function updateOrderPaymentStatus(
-  id: string,
-  paymentStatus: string
-): Promise<void> {
-  // ✅ ADMIN CLIENT
-  await updatePaymentStatus(id, paymentStatus, supabaseAdmin);
+export async function cancelOrgOrder(id: string): Promise<void> {
+  await setOrgOrderStatus(id, 'Cancelled');
 }
 
-/* ============================================
-   FORCE REFRESH
-============================================ */
-
-export async function forceRefreshOrders(): Promise<AdminOrder[]> {
-  const [orders, products] = await Promise.all([
-    refreshOrders(undefined, supabaseAdmin),   // ✅ ADMIN CLIENT
-    fetchProducts(),
-  ]);
-  return orders.map((o) => mapOrderToAdmin(o, products));
+export async function forceRefreshOrgOrders(): Promise<Array<Order & { img: string | null }>> {
+  invalidateCache('orders');
+  invalidateCache('orders_all');
+  return fetchFreshOrgOrders();
 }

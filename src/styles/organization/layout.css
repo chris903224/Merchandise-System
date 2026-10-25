@@ -2790,3 +2790,76 @@ html body .org-shell.org-compact .floating-sidebar .me small {
   color: var(--theme-text-muted) !important;
   -webkit-text-fill-color: var(--theme-text-muted) !important;
 }
+/* ============================================================
+   🎯 SIDEBAR EXPAND: DIKIT NA GAP (TULAD NG IMAGE 2)
+   ============================================================ */
+
+/* 1. I-set ang default na layo (kapag naka-collapse ang sidebar) */
+html body .org-shell.org-compact .org-main {
+  margin-left: 112px !important; /* 16px (left) + 72px (sidebar) + 24px (gap) */
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* 2. Kapag naka-hover ang sidebar, i-adjust ang margin ng main content */
+html body .org-shell.org-compact .floating-sidebar:hover ~ .org-main {
+  margin-left: 220px !important; /* 16px (left) + 190px (sidebar hover) + 14px (saktong gap) */
+}
+
+/* 3. Siguraduhing umuurong din ang Topbar kasabay ng main content */
+html body .org-shell.org-compact .floating-sidebar:hover ~ .org-main .top.org-topbar {
+  margin-left: 0 !important; /* Bahala na ang main content mag-adjust */
+}
+/* ============================================================
+   🎯 ZOOM OUT PARA SA ORGANIZATION DASHBOARD LANG
+   ============================================================ */
+
+/* 1. I-target lang ang .org-shell (Organization System) */
+html body .org-shell {
+  zoom: 0.92 !important; 
+  overflow-x: hidden !important;
+}
+
+/* 2. I-override ang lumang zoom sa html at body kung meron man */
+html, body {
+  zoom: 1 !important; /* Ibalik sa normal */
+}
+/* ============================================================
+   🎯 SOLID & MAKAPAL NA ICONS SA SIDEBAR (WALANG FILL)
+   ============================================================ */
+
+/* 1. I-target ang lahat ng icons sa sidebar (Home, Products, etc.) */
+html body .org-shell.org-compact .floating-sidebar .nav-icon svg,
+html body .org-shell.org-compact .floating-sidebar .foot svg,
+html body .org-shell.org-compact .floating-sidebar .brand svg {
+  /* 👈 PANATILIHIN ANG STROKE (Walang fill) */
+  fill: none !important; 
+  stroke: currentColor !important;
+  
+  /* 👈 GAWING MAKAPAL ANG STROKE */
+  stroke-width: 2.5 !important; 
+  
+  /* 👈 SIGURADUHING TAMA ANG LAKI */
+  width: 22px !important;
+  height: 22px !important;
+  min-width: 22px !important;
+  min-height: 22px !important;
+  
+  /* 👈 PANATILIHIN ANG ROUNDED CAPS */
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+/* 2. Siguraduhing puti ang stroke kapag naka-active (Home, etc.) */
+html body .org-shell.org-compact .floating-sidebar .nav-icon.active svg {
+  stroke: var(--theme-on-primary) !important;
+}
+
+/* 3. Siguraduhing kulay theme text ang stroke kapag hindi active */
+html body .org-shell.org-compact .floating-sidebar .nav-icon:not(.active) svg {
+  stroke: var(--theme-text-muted) !important;
+}
+
+/* 4. Hover State */
+html body .org-shell.org-compact .floating-sidebar .nav-icon:hover svg {
+  stroke: var(--theme-text) !important;
+}
