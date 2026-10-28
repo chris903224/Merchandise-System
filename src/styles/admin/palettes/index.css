@@ -1,0 +1,6 @@
+/* src/styles/admin/palettes/index.css
+   Import order matters: base first, then each palette. */
+@import './base.css';
+@import './midnight.css';
+@import './sand.css';
+@import './ocean.css';

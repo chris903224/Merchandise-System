@@ -9,6 +9,7 @@ const NAV = [
   { to: '/org/dashboard', icon: 'home', label: 'Home' },
   { to: '/org/products', icon: 'box', label: 'Products' },
   { to: '/org/orders', icon: 'cart', label: 'Orders' },
+  { to: '/org/onboarding', icon: 'clipboard', label: 'Onboarding' }, // ✅
   { to: '/org/notifications', icon: 'bell', label: 'Notifications' },
   { to: '/org/settings', icon: 'gear', label: 'Settings' },
 ];
@@ -24,7 +25,6 @@ export default function OrgSidebar({ session }: { session: Session | null }) {
 
   return (
     <aside className="floating-sidebar">
-      {/* Brand (Logo lang kapag hindi hover, may text kapag hover) */}
       <div className="brand">
         <img className="logo" src={BRAND.logo} alt="" />
         <b className="t">{orgName}</b>
@@ -44,7 +44,6 @@ export default function OrgSidebar({ session }: { session: Session | null }) {
         ))}
       </div>
 
-      {/* Profile (Avatar lang kapag hindi hover, may text kapag hover) */}
       <div className="foot">
         <NavLink to="/org/profile" className="me">
           <span className="av">{initialsOf(name)}</span>
@@ -56,4 +55,4 @@ export default function OrgSidebar({ session }: { session: Session | null }) {
       </div>
     </aside>
   );
-}
+} 

@@ -1,0 +1,87 @@
+/* ============================================================
+   OCEAN — cool mist blues, calm and modern
+   File: src/styles/admin/palettes/ocean.css
+   ============================================================ */
+
+html[data-admin-palette="ocean"] {
+  --pal-bg: #eef4f8;
+  --pal-surface: #fbfdff;
+  --pal-surface-2: #f0f6fa;
+  --pal-hover: #e8f1f7;
+  --pal-hero-end: #1d5473;
+
+  --admin-pine-900: #0a1c2b;
+  --admin-pine-800: #0f2a3f;
+  --admin-pine-700: #163a55;
+
+  --admin-brand-500: #2a82ad;
+  --admin-brand-400: #3b9bc9;
+  --admin-brand-text: #1d6a91;
+  --admin-brand-100: #e2f0f8;
+
+  --admin-cream-50: #f1f6fa;
+  --admin-cream-100: #e6eef5;
+
+  --admin-ink-900: #14283a;
+  --admin-ink-700: #2c4256;
+  --admin-ink-500: #566c80;
+  --admin-ink-400: #627889;
+  --admin-ink-300: #9eb0bf;
+
+  --admin-line: #dce6ee;
+  --admin-line-soft: #e8eff5;
+}
+
+/* ---------- Ocean + Claymorphism ---------- */
+html[data-admin-palette="ocean"][data-admin-theme="clay"] {
+  --admin-line: transparent;
+  --admin-line-soft: rgba(70, 110, 140, 0.12);
+
+  --pal-bg: #dde8f0;
+  --pal-surface: #e8f1f7;
+  --pal-surface-2: #d3e1ec;
+  --pal-hover: #e2edf5;
+
+  --clay-bg: #dde8f0;
+  --clay-surface: #e8f1f7;
+  --clay-surface-2: #d3e1ec;
+
+  --clay-shadow:
+    10px 12px 24px rgba(70, 110, 140, 0.3),
+    -8px -8px 18px rgba(255, 255, 255, 0.85),
+    inset -6px -6px 12px rgba(70, 110, 140, 0.13),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.75);
+  --clay-shadow-sm:
+    6px 8px 14px rgba(70, 110, 140, 0.26),
+    -5px -5px 12px rgba(255, 255, 255, 0.8),
+    inset -4px -4px 8px rgba(70, 110, 140, 0.15),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.7);
+  --clay-pressed:
+    inset 6px 6px 12px rgba(70, 110, 140, 0.28),
+    inset -5px -5px 10px rgba(255, 255, 255, 0.8);
+  --clay-dark:
+    10px 12px 26px rgba(10, 28, 43, 0.4),
+    inset -6px -6px 14px rgba(0, 0, 0, 0.26),
+    inset 6px 6px 14px rgba(255, 255, 255, 0.12);
+}
+
+/* ---------- Ocean + Glassmorphism ---------- */
+html[data-admin-palette="ocean"][data-admin-theme="glass"] {
+  --glass-bg: rgba(255, 255, 255, 0.42);
+  --glass-bg-strong: rgba(255, 255, 255, 0.66);
+  --glass-shadow:
+    0 8px 32px rgba(40, 90, 130, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+
+  --pal-surface: var(--glass-bg);
+  --pal-surface-2: rgba(255, 255, 255, 0.5);
+  --pal-hover: rgba(255, 255, 255, 0.7);
+}
+html[data-admin-palette="ocean"] .admin-shell::before {
+  background:
+    radial-gradient(circle at 12% 18%, #8fc9e8 0, transparent 42%),
+    radial-gradient(circle at 88% 12%, #a3b8f0 0, transparent 40%),
+    radial-gradient(circle at 75% 88%, #a6e0d4 0, transparent 42%),
+    radial-gradient(circle at 20% 90%, #b9d9f2 0, transparent 38%),
+    linear-gradient(135deg, #e4eff7, #d8e7f2);
+}

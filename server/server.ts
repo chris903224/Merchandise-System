@@ -384,6 +384,76 @@ app.post(
 );
 
 /* ============================================
+   ✅ POST /api/send-otp
+   ✅ Ipapadala ang OTP via Brevo
+============================================================ */
+app.post('/api/send-otp', async (req: Request, res: Response) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ message: 'Missing email or OTP' });
+    }
+
+    if (!BREVO_API_KEY || !BREVO_SENDER_EMAIL) {
+      console.error('[OTP API] ❌ Missing Brevo config');
+      return res.status(500).json({ message: 'Email service not configured' });
+    }
+
+    console.log(`[OTP API] Sending OTP to ${email}`);
+
+    const brevoRes = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'api-key': BREVO_API_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sender: {
+          email: BREVO_SENDER_EMAIL,
+          name: BREVO_SENDER_NAME,
+        },
+        to: [
+          {
+            email: email,
+            name: 'Admin',
+          },
+        ],
+        subject: '🔐 SJCM Admin Console - OTP Verification',
+        htmlContent: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h2 style="color: #333;">Admin Console Access</h2>
+            <p>Your OTP code is:</p>
+            <div style="text-align: center; margin: 30px 0;">
+              <span style="font-size: 36px; letter-spacing: 10px; font-weight: bold; color: #2ecc71; background: #f0f0f0; padding: 15px 25px; border-radius: 10px;">
+                ${otp}
+              </span>
+            </div>
+            <p>This code will expire in 5 minutes.</p>
+            <p style="color: #666; font-size: 12px; margin-top: 30px;">If you did not request this, please ignore this email.</p>
+          </div>
+        `,
+      }),
+    });
+
+    const json: any = await brevoRes.json();
+
+    if (!brevoRes.ok) {
+      console.error('[OTP API] ❌ Brevo error:', json);
+      return res.status(brevoRes.status).json({
+        message: json.message || 'OTP email send failed',
+      });
+    }
+
+    console.log('[OTP API] ✅ Sent via Brevo:', json.messageId);
+    return res.status(200).json({ success: true, id: json.messageId });
+  } catch (error: any) {
+    console.error('[OTP API] ❌ Error:', error);
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+/* ============================================
    ✅ ERROR HANDLER
    ============================================ */
 app.use((err: any, req: Request, res: Response, next: any) => {

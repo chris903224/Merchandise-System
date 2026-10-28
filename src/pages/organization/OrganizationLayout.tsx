@@ -30,9 +30,7 @@ export default function OrganizationLayout() {
   useEffect(() => {
     if (isLoading) return;
     
-    // ✅ Kung walang session, i-redirect sa login
     if (!session || session.role !== 'Organization') {
-      // 👈 BURAHIN ANG LUMANG SESSION PARA HINDI MAKAPASOK SA STUDENT SIDE
       localStorage.removeItem('sjc-session');
       localStorage.removeItem('sjc-org-session');
       navigate('/login', { replace: true });

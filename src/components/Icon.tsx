@@ -41,6 +41,15 @@ const ICONS: Record<string, React.ReactNode> = {
   mail: <><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3.500 7 8.500 6 8.500-6"/></>,
   phone: <path d="M5 4h4l2 5-2.500 1.500a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>,
   msg: <path d="M21 12a8 8 0 0 1-11.800 7L4 20.500l1.500-4.700A8 8 0 1 1 21 12z"/>,
+
+  // 🚨 IDINAGDAG PARA SA ONBOARDING
+  clipboard: (
+    <>
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+      <path d="M9 14l2 2 4-4" />
+    </>
+  ),
 };
 
 interface IconProps extends React.SVGProps<SVGSVGElement> {
@@ -59,8 +68,8 @@ export function Icon({ name, ...props }: IconProps) {
       strokeWidth="1.8"
       strokeLinecap="round"
       strokeLinejoin="round"
-      width="1em"   // ✅ ITO ANG MAG-AYOS NG LAKI
-      height="1em"  // ✅ ITO ANG MAG-AYOS NG LAKI
+      width="1em"   
+      height="1em"  
       {...props}
     >
       {path}

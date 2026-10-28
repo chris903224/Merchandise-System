@@ -2863,3 +2863,63 @@ html body .org-shell.org-compact .floating-sidebar .nav-icon:not(.active) svg {
 html body .org-shell.org-compact .floating-sidebar .nav-icon:hover svg {
   stroke: var(--theme-text) !important;
 }
+/* ============================================================
+   🎯 FORCE ONBOARDING SIDEBAR TO BE ALWAYS BLACK/DARK
+   ============================================================ */
+
+/* 1. Default na itsura (kahit hindi naka-hover ang sidebar) */
+.org-shell .floating-sidebar .nav-icon[href="/org/onboarding"],
+.org-shell .floating-sidebar .nav-icon[href="/org/onboarding"] .t {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+.org-shell .floating-sidebar .nav-icon[href="/org/onboarding"] svg {
+  stroke: #000000 !important;
+  color: #000000 !important;
+}
+
+/* 2. Kapag naka-active (naka-highlight ang pink/maroon background) */
+.org-shell .floating-sidebar .nav-icon[href="/org/onboarding"].active,
+.org-shell .floating-sidebar .nav-icon[href="/org/onboarding"].active .t,
+.org-shell .floating-sidebar .nav-icon[href="/org/onboarding"][aria-current="page"],
+.org-shell .floating-sidebar .nav-icon[href="/org/onboarding"][aria-current="page"] .t {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+.org-shell .floating-sidebar .nav-icon[href="/org/onboarding"].active svg,
+.org-shell .floating-sidebar .nav-icon[href="/org/onboarding"][aria-current="page"] svg {
+  stroke: #000000 !important;
+  color: #000000 !important;
+}
+
+/* 3. Kapag naka-hover ang cursor sa mismong Onboarding link */
+.org-shell .floating-sidebar .nav-icon[href="/org/onboarding"]:hover,
+.org-shell .floating-sidebar .nav-icon[href="/org/onboarding"]:hover .t {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+.org-shell .floating-sidebar .nav-icon[href="/org/onboarding"]:hover svg {
+  stroke: #000000 !important;
+  color: #000000 !important;
+}
+
+/* 4. Kapag naka-hover ang cursor sa LOOB ng buong Sidebar (ito ang salarin kanina) */
+.org-shell .floating-sidebar:hover .nav-icon[href="/org/onboarding"],
+.org-shell .floating-sidebar:hover .nav-icon[href="/org/onboarding"] .t {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+.org-shell .floating-sidebar:hover .nav-icon[href="/org/onboarding"] svg {
+  stroke: #000000 !important;
+  color: #000000 !important;
+}
+
+/* 5. Siguraduhing itim din kapag naka-hover AT naka-active nang sabay */
+.org-shell .floating-sidebar:hover .nav-icon[href="/org/onboarding"].active,
+.org-shell .floating-sidebar:hover .nav-icon[href="/org/onboarding"].active .t {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+.org-shell .floating-sidebar:hover .nav-icon[href="/org/onboarding"].active svg {
+  stroke: #000000 !important;
+}

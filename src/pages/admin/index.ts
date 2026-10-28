@@ -4,6 +4,7 @@ export { default as AdminLayout } from './AdminLayout';
 export { default as AdminLoginPage } from './AdminLoginPage';
 export { default as DashboardPage } from './DashboardPage';
 export { default as ProductsPage } from './ProductsPage';
+export { default as AdminOtpPage } from './AdminOtpPage';
 export { default as OrdersPage } from './OrdersPage';
 export { default as PaymentsPage } from './PaymentsPage';
 export { default as PayMongoPage } from './PayMongoPage';
