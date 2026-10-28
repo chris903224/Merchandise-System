@@ -1,0 +1,249 @@
+/* ============================================================
+   RAINBOW — full spectrum page, translucent panels, bold accents
+   File: src/styles/admin/palettes/rainbow.css
+   Import AFTER base.css (see palettes/index.css)
+   ============================================================ */
+
+html[data-admin-palette="rainbow"] {
+  /* base palette tokens */
+  --pal-bg: #f7f5fd;
+  --pal-surface: rgba(255, 255, 255, 0.55);
+  --pal-surface-2: rgba(255, 255, 255, 0.45);
+  --pal-hover: rgba(255, 255, 255, 0.7);
+  --pal-hero-end: #e05a3a;
+
+  --admin-pine-900: #17122e;
+  --admin-pine-800: #211a42;
+  --admin-pine-700: #2e2559;
+
+  --admin-brand-500: #6d4fd6;
+  --admin-brand-400: #8b6cf0;
+  --admin-brand-text: #5a3bc2;
+  --admin-brand-100: #ece6fd;
+
+  --admin-cream-50: #f6f3fd;
+  --admin-cream-100: #ece7f8;
+
+  --admin-ink-900: #221b3a;
+  --admin-ink-700: #3f3760;
+  --admin-ink-500: #6a6288;
+  --admin-ink-400: #6a6288;
+  --admin-ink-300: #b3acc9;
+
+  --admin-line: #e6e0f5;
+  --admin-line-soft: #eeeaf8;
+
+  /* the spectrum: card tints */
+  --rb-1: rgba(255, 214, 229, 0.92);  /* pink   */
+  --rb-2: rgba(255, 228, 199, 0.92);  /* orange */
+  --rb-3: rgba(255, 245, 190, 0.94);  /* yellow */
+  --rb-4: rgba(207, 242, 210, 0.92);  /* green  */
+  --rb-5: rgba(204, 231, 250, 0.92);  /* blue   */
+  --rb-6: rgba(228, 214, 250, 0.92);  /* violet */
+
+  /* the spectrum: icon bubbles */
+  --rb-s1: #ffb0cb;
+  --rb-s2: #ffcf9a;
+  --rb-s3: #ffe27a;
+  --rb-s4: #9fe3aa;
+  --rb-s5: #98cff5;
+  --rb-s6: #c9b2f5;
+
+  --rainbow-page: linear-gradient(135deg,
+    #ff0000 0%,
+    #ff7f00 16.67%,
+    #ffff00 33.33%,
+    #00ff00 50%,
+    #0000ff 66.67%,
+    #4b0082 83.33%,
+    #9400d3 100%);
+  --rainbow-gradient: linear-gradient(120deg, #3b2a8f 0%, #7a3fc9 30%, #c2378c 62%, #e05a3a 100%);
+  --rainbow-side: linear-gradient(180deg, #3b2a8f 0%, #7a3fc9 28%, #c2378c 58%, #e05a3a 100%);
+  --rainbow-accent: linear-gradient(135deg, #8b6cf0, #e0508f 55%, #f0944a);
+}
+
+/* ---------- page background ---------- */
+html[data-admin-palette="rainbow"] .admin-shell,
+html[data-admin-palette="rainbow"] .admin-main {
+  background: var(--rainbow-page) fixed;
+}
+
+/* ---------- translucent panels (so the spectrum shows through) ---------- */
+/* Adjust these selectors to match your real class names if some panels stay white */
+html[data-admin-palette="rainbow"] .admin-shell :is(
+  .admin-topbar, .admin-card, .admin-panel, .admin-settings-card,
+  .admin-settings-section, .admin-search
+) {
+  background: var(--pal-surface);
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+}
+
+/* ---------- sidebar, hero, small accents ---------- */
+html[data-admin-palette="rainbow"] .admin-shell .admin-sidebar {
+  background: var(--rainbow-side);
+}
+html[data-admin-palette="rainbow"] .admin-shell .admin-sidebar__item.is-active {
+  background: rgba(255, 255, 255, 0.24);
+}
+html[data-admin-palette="rainbow"] .admin-shell .admin-hero {
+  background: var(--rainbow-gradient);
+}
+html[data-admin-palette="rainbow"] .admin-sidebar__logo,
+html[data-admin-palette="rainbow"] .admin-topbar__avatar {
+  background: var(--rainbow-accent);
+}
+
+/* ---------- modals / dropdowns stay solid so text is readable ---------- */
+html[data-admin-palette="rainbow"] :is(
+  .admin-modal, .admin-dropdown, .admin-status-menu__dropdown, .admin-toast
+):not(.is-active) {
+  background: #5f4b88;
+}
+
+/* ---------- tinted cards: 6-colour cycle ---------- */
+html[data-admin-palette="rainbow"] .admin-shell :is(
+  .admin-product-card, .admin-shop-card, .admin-org-card, .admin-console-card
+):nth-child(6n+1) { background: var(--rb-1); }
+html[data-admin-palette="rainbow"] .admin-shell :is(
+  .admin-product-card, .admin-shop-card, .admin-org-card, .admin-console-card
+):nth-child(6n+2) { background: var(--rb-2); }
+html[data-admin-palette="rainbow"] .admin-shell :is(
+  .admin-product-card, .admin-shop-card, .admin-org-card, .admin-console-card
+):nth-child(6n+3) { background: var(--rb-3); }
+html[data-admin-palette="rainbow"] .admin-shell :is(
+  .admin-product-card, .admin-shop-card, .admin-org-card, .admin-console-card
+):nth-child(6n+4) { background: var(--rb-4); }
+html[data-admin-palette="rainbow"] .admin-shell :is(
+  .admin-product-card, .admin-shop-card, .admin-org-card, .admin-console-card
+):nth-child(6n+5) { background: var(--rb-5); }
+html[data-admin-palette="rainbow"] .admin-shell :is(
+  .admin-product-card, .admin-shop-card, .admin-org-card, .admin-console-card
+):nth-child(6n+6) { background: var(--rb-6); }
+
+/* ---------- tinted cards: rows of four (stats, quick actions, payments) ---------- */
+html[data-admin-palette="rainbow"] .admin-shell :is(
+  .admin-stat, .admin-quick-action, .admin-payment-summary__card
+):nth-child(4n+1) { background: var(--rb-1); }
+html[data-admin-palette="rainbow"] .admin-shell :is(
+  .admin-stat, .admin-quick-action, .admin-payment-summary__card
+):nth-child(4n+2) { background: var(--rb-3); }
+html[data-admin-palette="rainbow"] .admin-shell :is(
+  .admin-stat, .admin-quick-action, .admin-payment-summary__card
+):nth-child(4n+3) { background: var(--rb-4); }
+html[data-admin-palette="rainbow"] .admin-shell :is(
+  .admin-stat, .admin-quick-action, .admin-payment-summary__card
+):nth-child(4n+4) { background: var(--rb-5); }
+
+/* ---------- icon bubbles match their card ---------- */
+html[data-admin-palette="rainbow"] .admin-stat:nth-child(4n+1) .admin-stat__icon,
+html[data-admin-palette="rainbow"] .admin-quick-action:nth-child(4n+1) .admin-quick-action__icon { background: var(--rb-s1); }
+html[data-admin-palette="rainbow"] .admin-stat:nth-child(4n+2) .admin-stat__icon,
+html[data-admin-palette="rainbow"] .admin-quick-action:nth-child(4n+2) .admin-quick-action__icon { background: var(--rb-s3); }
+html[data-admin-palette="rainbow"] .admin-stat:nth-child(4n+3) .admin-stat__icon,
+html[data-admin-palette="rainbow"] .admin-quick-action:nth-child(4n+3) .admin-quick-action__icon { background: var(--rb-s4); }
+html[data-admin-palette="rainbow"] .admin-stat:nth-child(4n+4) .admin-stat__icon,
+html[data-admin-palette="rainbow"] .admin-quick-action:nth-child(4n+4) .admin-quick-action__icon { background: var(--rb-s5); }
+
+/* ---------- Rainbow + Claymorphism (shadows only, tinted violet) ---------- */
+html[data-admin-palette="rainbow"][data-admin-theme="clay"] {
+  --admin-line: transparent;
+  --admin-line-soft: rgba(100, 80, 170, 0.12);
+
+  --pal-surface: rgba(255, 255, 255, 0.6);
+  --pal-surface-2: rgba(255, 255, 255, 0.5);
+
+  --clay-bg: transparent;
+  --clay-surface: rgba(255, 255, 255, 0.6);
+  --clay-surface-2: rgba(255, 255, 255, 0.5);
+
+  --clay-shadow:
+    10px 12px 24px rgba(100, 80, 170, 0.26),
+    -8px -8px 18px rgba(255, 255, 255, 0.85),
+    inset -6px -6px 12px rgba(100, 80, 170, 0.1),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.75);
+  --clay-shadow-sm:
+    6px 8px 14px rgba(100, 80, 170, 0.22),
+    -5px -5px 12px rgba(255, 255, 255, 0.8),
+    inset -4px -4px 8px rgba(100, 80, 170, 0.12),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.7);
+  --clay-pressed:
+    inset 6px 6px 12px rgba(100, 80, 170, 0.24),
+    inset -5px -5px 10px rgba(255, 255, 255, 0.8);
+  --clay-dark:
+    10px 12px 26px rgba(23, 18, 46, 0.4),
+    inset -6px -6px 14px rgba(0, 0, 0, 0.26),
+    inset 6px 6px 14px rgba(255, 255, 255, 0.12);
+}
+
+/* ---------- Rainbow + Glassmorphism ---------- */
+html[data-admin-palette="rainbow"][data-admin-theme="glass"] {
+  --glass-bg: rgba(255, 255, 255, 0.42);
+  --glass-bg-strong: rgba(255, 255, 255, 0.66);
+  --glass-shadow:
+    0 8px 32px rgba(90, 70, 170, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+
+  --pal-surface: var(--glass-bg);
+  --pal-surface-2: rgba(255, 255, 255, 0.5);
+  --pal-hover: rgba(255, 255, 255, 0.7);
+}
+html[data-admin-palette="rainbow"] .admin-shell::before {
+  background: var(--rainbow-page);
+}
+/* ---------- fallback: force the spectrum behind everything ---------- */
+html[data-admin-palette="rainbow"],
+html[data-admin-palette="rainbow"] body {
+  background: var(--rainbow-page) fixed !important;
+  min-height: 100%;
+}
+html[data-admin-palette="rainbow"] :is(#root, #app, #__next, main, .admin-shell, .admin-main, .admin-content) {
+  background: transparent !important;
+}
+html[data-admin-palette="rainbow"] .admin-shell :is([class*="card"], [class*="panel"], [class*="topbar"], [class*="search"]) {
+  background: var(--pal-surface) !important;
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+}
+/* ============================================================
+   FORCE RAINBOW: real class names, high specificity
+   ============================================================ */
+
+/* page background */
+html[data-admin-palette="rainbow"],
+html[data-admin-palette="rainbow"] body,
+html[data-admin-palette="rainbow"] body #root,
+html[data-admin-palette="rainbow"] body #root .admin-shell,
+html[data-admin-palette="rainbow"] body #root .admin-main,
+html[data-admin-palette="rainbow"] body #root .admin-content {
+  background: var(--rainbow-page) fixed !important;
+}
+
+/* sidebar keeps the purple-to-orange accent */
+html[data-admin-palette="rainbow"] body #root .admin-sidebar {
+  background: var(--rainbow-side) !important;
+}
+
+/* topbar and search: translucent glass */
+html[data-admin-palette="rainbow"] body #root .admin-topbar,
+html[data-admin-palette="rainbow"] body #root .admin-topbar > * {
+  background: var(--pal-surface) !important;
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+}
+
+/* settings cards (direct children of the grid, plus any nested panels) */
+html[data-admin-palette="rainbow"] body #root .admin-settings-grid > * {
+  background: var(--pal-surface) !important;
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+}
+
+/* make page header text readable over the saturated gradient */
+html[data-admin-palette="rainbow"] body #root .admin-page-header {
+  background: var(--pal-surface) !important;
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  border-radius: 16px;
+  padding: 16px 20px;
+}
