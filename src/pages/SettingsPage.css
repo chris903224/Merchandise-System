@@ -47,8 +47,6 @@
 /* ============================================================
    2. SIDEBAR
 ============================================================ */
-
-/* ----- Base (mobile / tablet): simple horizontal strip ----- */
 .settings-sidebar {
   --sidebar-accent: var(--theme-accent);
   --sidebar-accent-rgb: var(--theme-accent-rgb);
@@ -101,7 +99,6 @@
   font-weight: 700;
 }
 
-/* ----- Desktop: glass pill, expands on hover ----- */
 @media (min-width: 1024px) {
   .settings-sidebar {
     position: fixed;
@@ -109,32 +106,20 @@
     left: 1.25rem;
     transform: translateY(-50%);
     z-index: 50;
-
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 4rem;
     padding: 0.75rem 0.5rem;
-
     background: var(--theme-glass-bg);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid var(--theme-glass-border);
     border-radius: 1.25rem;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.12),
-      0 4px 12px rgba(0, 0, 0, 0.06),
-      0 16px 40px rgba(0, 0, 0, 0.08),
-      0 32px 80px rgba(var(--theme-primary-rgb), 0.06);
-
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06), 0 16px 40px rgba(0, 0, 0, 0.08), 0 32px 80px rgba(var(--theme-primary-rgb), 0.06);
     overflow: visible;
     contain: layout;
-    transition:
-      width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      padding 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      background 0.4s ease,
-      border-color 0.4s ease,
-      box-shadow 0.4s ease;
+    transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), padding 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
   }
 
   .settings-sidebar:hover {
@@ -142,11 +127,7 @@
     padding: 0.75rem 0.65rem;
     background: var(--theme-surface);
     border-color: rgba(var(--theme-primary-rgb), 0.2);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.12),
-      0 8px 20px rgba(0, 0, 0, 0.08),
-      0 24px 56px rgba(0, 0, 0, 0.1),
-      0 40px 100px rgba(var(--theme-primary-rgb), 0.1);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 8px 20px rgba(0, 0, 0, 0.08), 0 24px 56px rgba(0, 0, 0, 0.1), 0 40px 100px rgba(var(--theme-primary-rgb), 0.1);
   }
 
   .settings-sidebar__top,
@@ -167,7 +148,6 @@
     align-items: stretch;
   }
 
-  /* Item — icon-only by default */
   .settings-sidebar__item {
     position: relative;
     justify-content: center;
@@ -179,11 +159,7 @@
     border: 1px solid transparent;
     border-radius: 0.75rem;
     overflow: hidden;
-    transition:
-      background 0.2s ease,
-      color 0.2s ease,
-      width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-      padding 0.3s ease;
+    transition: background 0.2s ease, color 0.2s ease, width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), padding 0.3s ease;
   }
 
   .settings-sidebar__item .react-icon {
@@ -193,7 +169,6 @@
     z-index: 2;
   }
 
-  /* Label — hidden until the pill expands */
   .settings-sidebar__item span {
     display: inline-block;
     max-width: 0;
@@ -209,7 +184,6 @@
     transition: max-width 0.35s ease, opacity 0.2s ease;
   }
 
-  /* Pill hovered → items widen and show labels (no extra bg) */
   .settings-sidebar:hover .settings-sidebar__item {
     flex: 0 0 auto;
     width: auto;
@@ -223,14 +197,12 @@
     opacity: 1;
   }
 
-  /* Single hover state per item */
   .settings-sidebar__item:hover {
     background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-hover) 100%);
     color: var(--theme-on-primary);
     box-shadow: 0 6px 18px rgba(var(--theme-primary-rgb), 0.3);
   }
 
-  /* Active */
   .settings-sidebar__item.is-active {
     background: rgba(var(--theme-primary-rgb), 0.12);
     color: var(--theme-primary);
@@ -264,7 +236,6 @@
     background: linear-gradient(180deg, var(--theme-accent) 0%, var(--theme-primary) 100%);
   }
 
-  /* Offset only — no layout shift on sidebar hover */
   .settings-main {
     margin-left: 6rem;
   }
@@ -287,7 +258,6 @@
   padding: 1.5rem clamp(1rem, 3vw, 2rem) 3rem;
 }
 
-/* ----- Hero ----- */
 .settings-hero {
   position: relative;
   display: flex;
@@ -384,7 +354,6 @@
   display: block;
 }
 
-/* ----- Tabs ----- */
 .settings-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -426,7 +395,6 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 6px 16px -8px rgba(var(--theme-primary-rgb), 0.15);
 }
 
-/* ----- Layout ----- */
 .settings-layout {
   display: grid;
   grid-template-columns: 1fr 20rem;
@@ -513,7 +481,7 @@
 }
 
 /* ============================================================
-   5. PROFILE PHOTO — IG-style badge outside the circle
+   5. PROFILE PHOTO
 ============================================================ */
 .settings-photo {
   display: flex;
@@ -522,14 +490,12 @@
   gap: 0.9rem;
 }
 
-/* wrapper = positioning context (NOT clipped) */
 .settings-photo__avatar {
   position: relative;
   width: 8.5rem;
   height: 8.5rem;
 }
 
-/* frame = the clipped circle */
 .settings-photo__frame {
   display: grid;
   place-items: center;
@@ -554,7 +520,6 @@
   color: var(--theme-primary);
 }
 
-/* badge sits on the circle's edge, fully visible */
 .settings-photo__badge {
   position: absolute;
   right: -0.35rem;
@@ -663,7 +628,6 @@
   height: 0.6rem;
 }
 
-/* ----- Inputs & selects (shared) ----- */
 .settings-field__input,
 .settings-field__select {
   box-sizing: border-box;
@@ -702,7 +666,6 @@
   min-width: 12rem;
 }
 
-/* Locked */
 .settings-field__input--locked,
 .settings-field__input--locked:disabled {
   background: repeating-linear-gradient(
@@ -719,7 +682,6 @@
   opacity: 1;
 }
 
-/* Textarea */
 .settings-field__input--textarea {
   height: auto;
   padding: 0.65rem 0.85rem;
@@ -737,12 +699,12 @@
   opacity: 0.7;
 }
 
-/* ----- ICON FIELDS — one wrapper, one height, perfectly centered ----- */
 .settings-field__icon-wrap {
   position: relative;
   display: block;
   width: 100%;
   height: var(--settings-field-h);
+  background: transparent;
 }
 
 .settings-field__icon-wrap > :is(input, select) {
@@ -763,7 +725,6 @@
   background-color: var(--color-surface-raised) !important;
 }
 
-/* icon: absolutely centered via top/bottom + auto margin (no translate) */
 .settings-field__icon-wrap > .react-icon {
   position: absolute !important;
   top: 0 !important;
@@ -786,7 +747,6 @@
   pointer-events: none !important;
 }
 
-/* date: keep native picker clickable across the whole field, hide its icon */
 .settings-field__icon-wrap > input[type='date'] {
   position: relative;
 }
@@ -800,7 +760,6 @@
   cursor: pointer;
 }
 
-/* ----- Password ----- */
 .settings-field__password {
   position: relative;
   display: flex;
@@ -828,7 +787,6 @@
   height: 1rem;
 }
 
-/* ----- Hints ----- */
 .settings-field__hint {
   display: flex;
   align-items: center;
@@ -863,15 +821,16 @@
 .settings-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0.7rem 1.1rem;
+  padding: 0.75rem 1.5rem;
   border: 1px solid transparent;
   border-radius: 0.6rem;
   font-family: inherit;
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: all 0.2s ease;
 }
 
 .settings-btn .react-icon {
@@ -887,11 +846,14 @@
 
 .settings-btn--primary:hover:not(:disabled) {
   background: var(--theme-primary-hover);
+  filter: brightness(1.1);
+  transform: translateY(-1px);
 }
 
 .settings-btn--primary:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
 }
 
 .settings-btn--ghost {
@@ -905,7 +867,6 @@
   border-color: rgba(var(--theme-primary-rgb), 0.3);
 }
 
-/* ----- Address ----- */
 .settings-address {
   display: flex;
   align-items: center;
@@ -1018,7 +979,6 @@
   color: var(--theme-text-muted);
 }
 
-/* ----- Toggles ----- */
 .settings-toggle-group {
   display: flex;
   flex-direction: column;
@@ -1119,7 +1079,6 @@
   gap: 1rem;
 }
 
-/* ----- Brand card ----- */
 .settings-brand-card {
   display: flex;
   gap: 0.85rem;
@@ -1173,7 +1132,6 @@
   opacity: 0.9;
 }
 
-/* ----- Side cards ----- */
 .settings-side-card {
   padding: 1.25rem;
   border: 1px solid var(--color-line);
@@ -1218,7 +1176,6 @@
   color: #9c3737;
 }
 
-/* ----- Quick links ----- */
 .settings-quicklinks {
   display: flex;
   flex-direction: column;
@@ -1287,7 +1244,6 @@
   color: var(--color-text-subtle);
 }
 
-/* ----- Danger ----- */
 .settings-danger-btn {
   display: flex;
   align-items: center;
@@ -1538,7 +1494,6 @@
   stroke-width: 3;
 }
 
-/* ----- Current theme ----- */
 .appearance-current-theme {
   margin-top: 1rem;
   padding: 1.15rem;
@@ -1638,7 +1593,7 @@
 .settings-modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 200;
+  z-index: 9999;
   display: grid;
   place-items: center;
   padding: 1.5rem;
@@ -1654,15 +1609,17 @@
 }
 
 .settings-modal {
+  position: relative;
   width: 100%;
   max-width: 32rem;
   max-height: calc(100vh - 3rem);
   overflow-y: auto;
   border: 1px solid var(--color-line);
   border-radius: 1.25rem;
-  background: var(--color-surface);
+  background: var(--theme-bg-card, var(--color-surface));
   box-shadow: 0 32px 80px -20px rgba(35, 26, 12, 0.35);
   animation: settings-modal-pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 10000;
 }
 
 @keyframes settings-modal-pop {
@@ -1677,12 +1634,25 @@
   gap: 1rem;
   padding: 1.5rem 1.5rem 1rem;
   border-bottom: 1px solid var(--color-line);
+  background: var(--theme-bg-card-hover, var(--color-surface-raised));
+  border-radius: 1.25rem 1.25rem 0 0;
 }
 
 .settings-modal__heading {
   display: flex;
   gap: 0.85rem;
   align-items: flex-start;
+}
+
+.settings-modal__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  color: var(--theme-primary);
+  border-radius: 10px;
 }
 
 .settings-modal__title {
@@ -1728,46 +1698,23 @@
 .settings-modal__body {
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
-  padding: 1.25rem 1.5rem;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  max-height: 65vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--theme-primary, #4ade80) transparent;
 }
 
-.settings-modal__labels {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+.settings-modal__body::-webkit-scrollbar {
+  width: 6px;
 }
-
-.settings-modal__label-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.5rem 0.85rem;
-  border: 1px solid var(--color-line);
-  border-radius: 999px;
-  background: var(--color-surface-raised);
-  color: var(--color-text-muted);
-  font-family: inherit;
-  font-size: 0.75rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.18s ease;
+.settings-modal__body::-webkit-scrollbar-track {
+  background: transparent;
 }
-
-.settings-modal__label-chip:hover {
-  border-color: rgba(var(--theme-primary-rgb), 0.3);
-  background: rgba(var(--theme-primary-rgb), 0.04);
-}
-
-.settings-modal__label-chip.is-active {
-  background: var(--theme-primary);
-  border-color: var(--theme-primary);
-  color: #ffffff;
-}
-
-.settings-modal__label-chip .react-icon {
-  width: 0.75rem;
-  height: 0.75rem;
+.settings-modal__body::-webkit-scrollbar-thumb {
+  background-color: var(--theme-border, #2e3d33);
+  border-radius: 10px;
 }
 
 .settings-modal__footer {
@@ -1777,7 +1724,7 @@
   padding: 1rem 1.5rem 1.5rem;
   border-top: 1px solid var(--color-line);
   border-radius: 0 0 1.25rem 1.25rem;
-  background: var(--color-surface-raised);
+  background: var(--theme-bg-card-hover, var(--color-surface-raised));
 }
 
 /* ============================================================
@@ -1875,8 +1822,7 @@
 }
 
 /* ============================================================
-   ICON FIELD OVERRIDE — beats global input/select/tel/email rules
-   (keep this block at the very END of the file)
+   ICON FIELD OVERRIDE — Beats global rules
 ============================================================ */
 .settings-shell .settings-field .settings-field__icon-wrap > input.settings-field__input--icon,
 .settings-shell .settings-field .settings-field__icon-wrap > select.settings-field__select--icon {
@@ -1899,11 +1845,6 @@
   background-size: 12px 12px !important;
 }
 
-/* ============================================================
-   SELECT FIX — ID-level specificity (:not(#_) x2 = +2 IDs)
-   Beats any global select/theme rule that is class- or tag-based.
-   Keep at the very END of the file.
-============================================================ */
 .settings-shell .settings-field__icon-wrap > select.settings-field__select--icon:not(#_):not(#_) {
   appearance: none !important;
   -webkit-appearance: none !important;
@@ -1927,317 +1868,32 @@
   height: 1rem !important;
   z-index: 10 !important;
 }
-/* ============================================
-   FIX FOR EDIT SHIPPING ADDRESS MODAL
-   ============================================ */
 
-/* Siguraduhing nasa taas lahat ng elements at hindi nag-o-overlap */
-.settings-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 9999; /* Pina-taas natin para hindi matabunan */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
-}
-
-.settings-modal {
-  position: relative;
-  background: var(--theme-bg-card, #1e2922);
-  width: 100%;
-  max-width: 500px; /* Tamang lapad */
-  border-radius: 16px;
-  border: 1px solid var(--theme-border, #2e3d33);
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
-  display: flex;
-  flex-direction: column;
-  z-index: 10000;
-}
-
-/* Ayusin ang laman ng modal para umayos ang spacing */
-.settings-modal__body {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem; /* Bigyan ng espasyo ang bawat field */
-  max-height: 70vh; /* Para may scroll kung masyadong mahaba */
-  overflow-y: auto;
-}
-
-/* Siguraduhing visible at tama ang layout ng bawat field */
-.settings-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  width: 100%;
-}
-
-.settings-field__label {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--theme-text-muted, #a0aec0);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* Ayusin ang dropdown at input fields */
-.settings-field__icon-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.settings-field__select,
-.settings-field__input {
-  width: 100%;
-  height: 48px;
-  padding: 0 1rem 0 2.5rem; /* Space para sa icon sa kaliwa */
-  background: var(--theme-bg-input, #162019);
-  color: var(--theme-text, #ffffff);
-  border: 1px solid var(--theme-border, #2e3d33);
-  border-radius: 10px;
-  font-size: 0.95rem;
-  outline: none;
-  transition: all 0.2s ease;
-  appearance: none; /* Tanggalin ang default arrow ng browser */
-}
-
-/* Custom arrow para sa select */
-.settings-field__select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 1rem;
-  cursor: pointer;
-}
-
-/* Ayusin ang textarea */
-.settings-field__input--textarea {
-  height: auto;
-  min-height: 100px;
-  padding: 1rem;
-  resize: vertical;
-}
-
-/* Iposisyon ang icon sa loob ng input */
-.settings-field__icon-wrap > .react-icon {
-  position: absolute;
-  left: 1rem;
-  color: var(--theme-text-muted, #a0aec0);
-  pointer-events: none;
-  width: 1.1rem;
-  height: 1.1rem;
-}
-
-/* Focus states */
-.settings-field__select:focus,
-.settings-field__input:focus {
-  border-color: var(--theme-primary, #4ade80);
-  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.15);
-}
-
-/* Ayusin ang header ng modal */
-.settings-modal__header {
-  padding: 1.5rem;
-  border-bottom: 1px solid var(--theme-border, #2e3d33);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--theme-bg-card-hover, #243328);
-  border-radius: 16px 16px 0 0;
-}
-
-.settings-modal__heading {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-}
-
-.settings-modal__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: rgba(74, 222, 128, 0.1);
-  color: var(--theme-primary, #4ade80);
-  border-radius: 10px;
-}
-
-.settings-modal__title {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: var(--theme-text, #ffffff);
-  margin: 0 0 0.25rem 0;
-}
-
-.settings-modal__subtitle {
-  font-size: 0.85rem;
-  color: var(--theme-text-muted, #a0aec0);
-  margin: 0;
-}
-
-.settings-modal__close {
-  background: transparent;
-  border: none;
-  color: var(--theme-text-muted, #a0aec0);
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-}
-
-.settings-modal__close:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--theme-text, #ffffff);
-}
-
-/* Ayusin ang preview area sa ilalim */
-.settings-address-preview {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 1.25rem;
-  background: var(--theme-bg-input, #162019);
-  border-radius: 12px;
-  border: 1px solid var(--theme-border, #2e3d33);
-  margin-top: 0.5rem;
-}
-
-.settings-address-preview > .react-icon {
-  color: var(--theme-primary, #4ade80);
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.settings-address-preview__title {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--theme-text, #ffffff);
-  margin: 0 0 0.25rem 0;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.settings-address-preview__text {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--theme-text, #ffffff);
-  margin: 0 0 0.25rem 0;
-}
-
-.settings-address-preview__note {
-  font-size: 0.8rem;
-  color: var(--theme-text-muted, #a0aec0);
-  margin: 0;
-}
-
-/* Ayusin ang footer (buttons) */
-.settings-modal__footer {
-  padding: 1.5rem;
-  border-top: 1px solid var(--theme-border, #2e3d33);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 1rem;
-  background: var(--theme-bg-card-hover, #243328);
-  border-radius: 0 0 16px 16px;
-}
-
-/* Siguraduhing visible at tama ang size ng buttons */
-.settings-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-}
-
-.settings-btn--ghost {
-  background: transparent;
-  color: var(--theme-text, #ffffff);
-  border: 1px solid var(--theme-border, #2e3d33);
-}
-
-.settings-btn--ghost:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.settings-btn--primary {
-  background: var(--theme-primary, #4ade80);
-  color: var(--theme-bg, #0f1712); /* Dark text para sa contrast */
-  border: none;
-}
-
-.settings-btn--primary:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
-}
-
-.settings-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-}
 /* ============================================
    FIX FOR DROPDOWN (OPTIONS) IN ALL THEMES
    ============================================ */
-
-/* 1. Siguraduhing ang <select> ay sumusunod sa background ng theme */
 .settings-field__select {
-  background-color: var(--theme-bg-input, #162019) !important;
-  color: var(--theme-text, #ffffff) !important;
+  background-color: var(--theme-bg-input, var(--color-surface-raised)) !important;
+  color: var(--theme-text, var(--color-text)) !important;
+  font-weight: 500;
 }
 
-/* 2. Ayusin ang mismong listahan ng options para hindi puti */
 .settings-field__select option,
 .settings-field__select optgroup {
-  background-color: var(--theme-bg-card, #1e2922) !important;
-  color: var(--theme-text, #ffffff) !important;
+  background-color: var(--theme-bg-card, var(--color-surface)) !important;
+  color: var(--theme-text, var(--color-text)) !important;
   padding: 10px;
 }
 
-/* 3. Kapag naka-hover o napili ang isang option, gawing primary color */
 .settings-field__select option:checked,
 .settings-field__select option:hover {
-  background-color: var(--theme-primary, #4ade80) !important;
-  color: var(--theme-bg, #0f1712) !important;
+  background-color: var(--theme-primary) !important;
+  color: var(--theme-bg) !important;
 }
 
 /* ============================================
    GENERAL THEME COMPATIBILITY FIXES
    ============================================ */
-
-/* Siguraduhing transparent ang select wrapper */
-.settings-field__icon-wrap {
-  background: transparent;
-}
-
-/* Ayusin ang kulay ng icons depende sa theme */
-.settings-field__icon-wrap > .react-icon {
-  color: var(--theme-text-muted, #a0aec0);
-  z-index: 2;
-}
-
-/* Ayusin ang text color ng select */
-.settings-field__select {
-  color: var(--theme-text, #ffffff);
-  font-weight: 500;
-}
-
-/* Para sa mga light themes, siguraduhing madilim ang text */
 [data-theme="light"] .settings-field__select,
 [data-theme="light"] .settings-field__input {
   color: var(--theme-text, #000000);
@@ -2247,32 +1903,91 @@
   background-color: var(--theme-bg-card, #ffffff) !important;
   color: var(--theme-text, #000000) !important;
 }
+/* ============================================
+   FINAL FIX: OVERRIDE GLOBAL INPUT STYLES
+   ============================================ */
 
-/* Fix z-index para hindi matabunan ng ibang elements */
-.settings-modal {
-  z-index: 10000;
+/* 1. I-reset ang lahat ng settings fields para mawala ang kakaibang shadows */
+.settings-field__input,
+.settings-field__select,
+.settings-field__icon-wrap > input,
+.settings-field__icon-wrap > select {
+  background: var(--color-surface-raised) !important;
+  background-color: var(--color-surface-raised) !important;
+  color: var(--color-text) !important;
+  -webkit-text-fill-color: var(--color-text) !important;
+  
+  /* 🚨 Inaalis nito yung "neumorphism" shadow na tumatagos sa loob */
+  box-shadow: none !important; 
+  inset: unset !important;
+  
+  border: 1px solid var(--color-line-strong) !important;
+  border-radius: 0.6rem !important;
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 0.9rem !important;
+  font-style: normal !important; /* Pinipigilan ang italic */
+  font-weight: 500 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  height: var(--settings-field-h) !important;
+  box-sizing: border-box !important;
 }
 
-.settings-modal-overlay {
-  z-index: 9999;
+/* 2. Siguraduhing normal ang text align at padding */
+.settings-field__icon-wrap > input,
+.settings-field__icon-wrap > select {
+  padding-left: 2.6rem !important; /* Space para sa icon */
+  padding-right: 1rem !important;
+  text-indent: 0 !important;
+  margin: 0 !important;
 }
 
-/* Modal body scrolling para sa maliliit na screen */
-.settings-modal__body {
-  max-height: 65vh;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--theme-primary, #4ade80) transparent;
+/* 3. I-override ang locked fields para maging maayos */
+.settings-field__input--locked,
+.settings-field__input--locked:disabled {
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(var(--theme-primary-rgb), 0.03),
+    rgba(var(--theme-primary-rgb), 0.03) 8px,
+    rgba(var(--theme-primary-rgb), 0.05) 8px,
+    rgba(var(--theme-primary-rgb), 0.05) 16px
+  ) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: none !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.2) !important;
+  font-style: normal !important;
+  cursor: not-allowed !important;
 }
 
-/* Custom scrollbar para sa webkit browsers (Chrome, Safari) */
-.settings-modal__body::-webkit-scrollbar {
-  width: 6px;
+/* 4. Iposisyon nang tama ang icons */
+.settings-field__icon-wrap > .react-icon {
+  left: 1rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important; /* Perfect center */
+  color: var(--theme-primary) !important;
+  z-index: 10 !important;
+  pointer-events: none !important;
 }
-.settings-modal__body::-webkit-scrollbar-track {
-  background: transparent;
+
+/* 5. Ayusin ang labels */
+.settings-field__label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  color: var(--color-text-muted) !important;
+  margin-bottom: 0.25rem !important;
 }
-.settings-modal__body::-webkit-scrollbar-thumb {
-  background-color: var(--theme-border, #2e3d33);
-  border-radius: 10px;
+
+/* 6. I-reset ang focus states */
+.settings-field__input:focus,
+.settings-field__select:focus {
+  outline: none !important;
+  border-color: var(--theme-primary) !important;
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.15) !important;
 }
