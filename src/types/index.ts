@@ -1,6 +1,7 @@
 // src/types/index.ts
 
-export type UserRole = 'Student' | 'Faculty' | 'School Staff' | 'Admin' | 'Organization';
+// ✅ TOTOONG ROLES LANG: Student, Admin, Organization
+export type UserRole = 'Student' | 'Admin' | 'Organization';
 
 export interface Product {
   id: string;
@@ -10,7 +11,7 @@ export interface Product {
   price: number;
   stock: number;
   sizes: string[];
-  /** ✅ IDINAGDAG: Per-size stock tracking */
+  /** ✅ Per-size stock tracking */
   sizeStocks?: Record<string, number>;
   image: string;
   imageAlt: string;
@@ -33,7 +34,7 @@ export interface OrderItem {
   price: number;
   qty: number;
   size: string;
-  /** ✅ IDINAGDAG: Para sa product image sa orders list */
+  /** ✅ Para sa product image sa orders list */
   image?: string;
 }
 
@@ -53,7 +54,7 @@ export interface Order {
   claimLocation: string;
   claimDate: string;
   createdAt: string;
-  /** ✅ IDINAGDAG: Para sa cancelled orders */
+  /** ✅ Para sa cancelled orders */
   cancellationReason?: string;
   cancelledAt?: string;
 }
@@ -67,10 +68,11 @@ export interface SessionUser {
   idNumber: string;
   profilePicture?: string | null;
   
-  // ✅ Profile fields
-  courseStrand?: string | null;
-  yearLevel?: string | null;
-  dateOfBirth?: string | null;
+  // ✅ MGA PROFILE FIELDS
+  course?: string;
+  yearLevel?: string;
+  dateOfBirth?: string;
+  phone?: string | null;
 }
 
 export interface UserRecord extends SessionUser {

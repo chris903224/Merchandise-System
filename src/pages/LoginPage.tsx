@@ -22,6 +22,7 @@ import { useApp } from '../store';
 import { useToast } from '../toast';
 import { loginUser, mapSupabaseUser } from '../data/auth';
 import { fetchUserProfile } from '../data/storage';
+import { getOrgSession } from '../services/organization/orgSessionService';
 import {
   isStrongPassword,
   PASSWORD_RULES,
@@ -55,22 +56,16 @@ function PasswordStrength({ value }: { value: string }) {
 
 export default function LoginPage() {
   const toast = useToast();
-  const { signIn, session } = useApp();
-  const navigate = useNavigate(); // 👈 Ginamit natin ito imbes na window.location
+  const { signIn } = useApp();
+  const navigate = useNavigate();
 
-  // 🚨 Check kung Org Admin/Staff ang naka-login na, i-redirect agad
+  // 🚨 REDIRECT PAGKA-LOAD: Kung may Org Session na, deretso sa Org Dashboard
   useEffect(() => {
-    if (session) {
-      const isOrg = 
-        session.role === 'School Staff' || 
-        session.role === 'Staff' || 
-        session.email?.includes('org-admin');
-      
-      if (isOrg) {
-        navigate('/org/dashboard', { replace: true });
-      }
+    const orgSession = getOrgSession();
+    if (orgSession) {
+      navigate('/org/dashboard', { replace: true });
     }
-  }, [session, navigate]);
+  }, [navigate]);
 
   const [headerIdentifier, setHeaderIdentifier] = useState('');
   const [headerPassword, setHeaderPassword] = useState('');
@@ -121,7 +116,20 @@ export default function LoginPage() {
     try {
       const result = await loginUser(identifier, password);
       const user = mapSupabaseUser(result.user);
-      const appRole = user.role === 'Staff' ? 'School Staff' : user.role;
+      
+      // 🚨 I-CAST SA STRING PARA MAIWASAN ANG ERROR
+      const appRole = user.role as string;
+
+      // 🚨 CHECK KUNG ORG ADMIN ITO
+      const isOrgAccount = 
+        appRole === 'Organization' || 
+        (user.email && user.email.includes('org-'));
+
+      if (isOrgAccount) {
+        toast(`Welcome back, Organization Admin ${user.name}.`, 'success');
+        window.location.href = '/org/dashboard';
+        return;
+      }
 
       clear();
 
@@ -140,13 +148,14 @@ export default function LoginPage() {
         console.warn('[Login] Failed to fetch database profile:', err);
       }
 
+      // REGULAR STUDENT LOGIN
       const loginSession = {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: appRole,
+        role: user.role, // Dito, hindi na kailangan i-cast
         idNumber: user.studentId ?? '',
-        organization: user.organization || 'SJCM General', // 👈 Kunin ang org mula sa user object
+        organization: (user as any).organization || 'SJCM General', 
         course: finalCourse,
         yearLevel: finalYearLevel,
         dateOfBirth: finalDob,
@@ -160,19 +169,7 @@ export default function LoginPage() {
       signIn(loginSession as any);
 
       toast(`Welcome back, ${user.name}.`, 'success');
-
-      // 🚨 CRITICAL FIX: I-redirect base sa role
-      const isOrgAccount = 
-        appRole === 'School Staff' || 
-        appRole === 'Staff' || 
-        user.email?.includes('org-admin') ||
-        (user.organization && user.organization !== 'SJCM General'); // Org admin check
-
-      if (isOrgAccount) {
-        window.location.href = '/org/dashboard'; // 👈 Org Admin deretso sa dashboard
-      } else {
-        window.location.href = '/'; // 👈 Regular student sa homepage
-      }
+      window.location.href = '/';
 
     } catch (error) {
       const newStatus = recordFailure();
@@ -223,7 +220,6 @@ export default function LoginPage() {
   return (
     <main className="auth-experience">
       <AuthBackground />
-
       <AuthHeader
         identifier={headerIdentifier}
         password={headerPassword}
@@ -233,11 +229,9 @@ export default function LoginPage() {
         onPasswordChange={setHeaderPassword}
         onSubmit={(event) => void handleHeaderSubmit(event)}
       />
-
       <div className="auth-experience__content">
         <GuidelinesPanel />
         <ImageMarquee />
-
         <AuthCard
           mode="login"
           title="Welcome back"
