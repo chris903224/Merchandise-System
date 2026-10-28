@@ -1,7 +1,7 @@
 // src/pages/LoginPage.tsx
 
-import { useState, type FormEvent, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import {
   AlertCircle,
   ArrowRight,
@@ -22,7 +22,6 @@ import { useApp } from '../store';
 import { useToast } from '../toast';
 import { loginUser, mapSupabaseUser } from '../data/auth';
 import { fetchUserProfile } from '../data/storage';
-import { getOrgSession } from '../services/organization/orgSessionService';
 import {
   isStrongPassword,
   PASSWORD_RULES,
@@ -57,15 +56,6 @@ function PasswordStrength({ value }: { value: string }) {
 export default function LoginPage() {
   const toast = useToast();
   const { signIn } = useApp();
-  const navigate = useNavigate();
-
-  // 🚨 REDIRECT PAGKA-LOAD: Kung may Org Session na, deretso sa Org Dashboard
-  useEffect(() => {
-    const orgSession = getOrgSession();
-    if (orgSession) {
-      navigate('/org/dashboard', { replace: true });
-    }
-  }, [navigate]);
 
   const [headerIdentifier, setHeaderIdentifier] = useState('');
   const [headerPassword, setHeaderPassword] = useState('');
@@ -117,17 +107,25 @@ export default function LoginPage() {
       const result = await loginUser(identifier, password);
       const user = mapSupabaseUser(result.user);
       
-      // 🚨 I-CAST SA STRING PARA MAIWASAN ANG ERROR
       const appRole = user.role as string;
 
-      // 🚨 CHECK KUNG ORG ADMIN ITO
+      // 🚨 STRICT CHECK: Kung Org Admin, i-block sa student login
       const isOrgAccount = 
         appRole === 'Organization' || 
         (user.email && user.email.includes('org-'));
 
       if (isOrgAccount) {
-        toast(`Welcome back, Organization Admin ${user.name}.`, 'success');
-        window.location.href = '/org/dashboard';
+        toast('Please use the Organization Login Page.', 'warning');
+        // Hindi natin gagamitin ang window.location.href para hindi mag-reload
+        // Ipapakita lang natin ang error message.
+        setSubmitting(false);
+        return;
+      }
+
+      // 🚨 STRICT CHECK: Kung Admin, i-block din sa student login
+      if (appRole === 'Admin') {
+        toast('Please use the Admin Login Page.', 'warning');
+        setSubmitting(false);
         return;
       }
 
@@ -153,7 +151,7 @@ export default function LoginPage() {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role, // Dito, hindi na kailangan i-cast
+        role: user.role,
         idNumber: user.studentId ?? '',
         organization: (user as any).organization || 'SJCM General', 
         course: finalCourse,

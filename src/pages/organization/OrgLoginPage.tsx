@@ -1,6 +1,6 @@
 // src/pages/organization/OrgLoginPage.tsx
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   User, Lock, Eye, EyeOff, Boxes, ShieldHalf,
@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../store';
 import { supabase } from '../../lib/supabaseClient';
+import { saveOrgSession } from '../../services/organization/orgSessionService'; // 🚨 IDINAGDAG
 
 export default function OrgLoginPage() {
   const [staffUser, setStaffUser] = useState('');
@@ -18,7 +19,15 @@ export default function OrgLoginPage() {
   const [openAcc, setOpenAcc] = useState(0);
 
   const navigate = useNavigate();
-  const { signIn } = useApp();
+  const { signIn, session: currentSession, isLoading } = useApp();
+
+  // 🚨 MATINDING HARANG #1: Bawal pumasok ang Student dito
+  useEffect(() => {
+    if (!isLoading && currentSession && currentSession.role !== 'Organization') {
+      console.warn('[OrgLogin] Student detected. Blocking access.');
+      navigate('/', { replace: true });
+    }
+  }, [currentSession, isLoading, navigate]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -30,6 +39,12 @@ export default function OrgLoginPage() {
     setToast(null);
 
     try {
+      // 🚨 MATINDING HARANG #2: Linisin ang lumang Student session
+      localStorage.removeItem('sjc-session');
+      localStorage.removeItem('sjc-course');
+      localStorage.removeItem('sjc-year-level');
+      localStorage.removeItem('sjc-dob');
+
       // 1. Supabase Login
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email: staffUser.trim(),
@@ -37,7 +52,7 @@ export default function OrgLoginPage() {
       });
       if (authError) throw new Error(authError.message || 'Invalid credentials.');
 
-      // 2. Kunin ang profile (kung saan naka-save ang role)
+      // 2. Kunin ang profile
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
@@ -66,17 +81,15 @@ export default function OrgLoginPage() {
       // 5. I-save sa global state (para sa OrgGuard)
       signIn(session);
 
-      // 6. ✅ I-SAVE ANG SESSION SA LOCALSTORAGE (Para sa Order Updates)
-      const orgSession = {
+      // 6. I-save sa orgSessionService (Ito na ang tamang paraan)
+      saveOrgSession({
         userId: profile.id,
         email: profile.email,
         role: 'Organization',
         name: profile.name,
         organization: 'SJC Supply Office',
-      };
-      
-      localStorage.setItem('sjcm_org_session', JSON.stringify(orgSession));
-      console.log('[OrgLogin] ✅ Session saved to localStorage:', orgSession);
+      });
+      console.log('[OrgLogin] ✅ Org Session saved properly.');
 
       // 7. Redirect
       setToast({ msg: `Welcome back, ${session.name}. Access granted.`, type: 'success' });
@@ -95,6 +108,8 @@ export default function OrgLoginPage() {
     { icon: LockKeyhole, title: 'Account provisioning', body: 'Accounts are created and issued by the System Administrator for authorized personnel only. Public registration is disabled.' },
     { icon: HelpCircle, title: 'Need help?', body: 'Contact your administrator or official support for account assistance, password resets, and technical questions.' },
   ];
+
+  if (isLoading) return null;
 
   return (
     <div className="org-login-wrapper">

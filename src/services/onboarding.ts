@@ -2,9 +2,6 @@
 
 import { supabase } from '../lib/supabaseClient';
 
-/* ============================================
-   ✅ TYPES — yes/no ONLY
-============================================ */
 export type UniformResponse = 'yes' | 'no';
 
 export interface OnboardingRecord {
@@ -15,9 +12,20 @@ export interface OnboardingRecord {
   created_at: string;
 }
 
-/* ============================================
-   ✅ GET ONBOARDING STATUS
-============================================ */
+// 🚨 INTERFACE PARA SA VIEW/FUNCTION
+export interface OnboardingViewRecord {
+  id: string;
+  user_id: string;
+  email: string;
+  name: string;
+  student_id: string;
+  course_strand: string;
+  year_level: string;
+  uniform_response: UniformResponse;
+  responded_at: string;
+  created_at: string;
+}
+
 export async function getOnboardingStatus(
   userId: string
 ): Promise<OnboardingRecord | null> {
@@ -27,17 +35,10 @@ export async function getOnboardingStatus(
     .eq('user_id', userId)
     .maybeSingle();
 
-  if (error) {
-    console.warn('[Onboarding] Failed to fetch status:', error);
-    return null;
-  }
-
+  if (error) return null;
   return data as OnboardingRecord | null;
 }
 
-/* ============================================
-   ✅ SAVE ONBOARDING RESPONSE — yes OR no lang
-============================================ */
 export async function saveOnboardingResponse(
   userId: string,
   response: UniformResponse
@@ -45,27 +46,16 @@ export async function saveOnboardingResponse(
   const { data, error } = await supabase
     .from('user_onboarding')
     .upsert(
-      {
-        user_id: userId,
-        uniform_response: response,
-        responded_at: new Date().toISOString(),
-      },
+      { user_id: userId, uniform_response: response, responded_at: new Date().toISOString() },
       { onConflict: 'user_id' }
     )
     .select()
     .single();
 
-  if (error) {
-    console.error('[Onboarding] Failed to save response:', error);
-    throw new Error(error.message);
-  }
-
+  if (error) throw new Error(error.message);
   return data as OnboardingRecord;
 }
 
-/* ============================================
-   ✅ CHECK KUNG MAY RECORD NA
-============================================ */
 export async function hasCompletedOnboarding(
   userId: string
 ): Promise<boolean> {
@@ -75,10 +65,25 @@ export async function hasCompletedOnboarding(
     .eq('user_id', userId)
     .maybeSingle();
 
+  if (error) return false;
+  return !!data;
+}
+
+/* ============================================
+   ✅ GET ALL ONBOARDING VIA RPC (Para sa Org Admin)
+   ============================================ */
+export async function getAllOnboardingResponses(): Promise<OnboardingViewRecord[]> {
+  console.log('[Onboarding] Fetching via secure RPC...');
+  
+  // 🚨 Gagamitin natin ang function na ginawa sa Supabase
+  const { data, error } = await supabase
+    .rpc('get_org_onboarding_view');
+
   if (error) {
-    console.warn('[Onboarding] Check failed:', error);
-    return false;
+    console.error('[Onboarding] Failed to fetch all responses:', error);
+    return [];
   }
 
-  return !!data;
+  console.log('[Onboarding] Data fetched:', data);
+  return (data ?? []) as OnboardingViewRecord[];
 }

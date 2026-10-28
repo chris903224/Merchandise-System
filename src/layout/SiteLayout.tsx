@@ -1,6 +1,6 @@
 // src/layout/SiteLayout.tsx
 
-import { Outlet, useLocation, Navigate } from 'react-router-dom'; // 👈 Idinagdag ang Navigate
+import { Outlet, useLocation } from 'react-router-dom';
 import { AnimatePresence, MotionConfig } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import PageTransition from '../components/PageTransition';
@@ -8,12 +8,6 @@ import Footer from '../components/Footer';
 
 export default function SiteLayout() {
   const location = useLocation();
-
-  // ✅ KUNG NASA ORG ROUTE, WAG I-RENDER ANG STUDENT LAYOUT
-  // Ito ang pipigil sa Student Navbar na lumabas sa Org pages
-  if (location.pathname.startsWith('/org')) {
-    return <Navigate to="/org/login" replace />;
-  }
 
   return (
     <div className="site-layout">

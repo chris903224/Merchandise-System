@@ -11,3 +11,4 @@ export { default as AdminStatCard } from './AdminStatCard';
 export { default as AdminOrderDetailModal } from './AdminOrderDetailModal';
 export { default as AdminPaymentDetailModal } from './AdminPaymentDetailModal';
 export { default as AdminToastStack } from './AdminToastStack';
+export { default as SystemPreferencesCard } from './SystemPreferencesCard';

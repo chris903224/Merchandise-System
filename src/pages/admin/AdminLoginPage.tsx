@@ -1,7 +1,7 @@
 // src/pages/admin/AdminLoginPage.tsx
 
-import { useState, useEffect, type FormEvent, type KeyboardEvent } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, type FormEvent, type KeyboardEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Activity,
   AlertCircle,
@@ -17,26 +17,12 @@ import {
   TriangleAlert,
 } from 'lucide-react';
 import { useToast } from '../../toast';
-import { useAdminStore } from '../../store/adminStore';
+// 🚨 INALIS ANG useAdminStore IMPORT DITO
 import { loginAdmin, mapSupabaseUser } from '../../data/auth';
 import { supabase, supabaseAdmin } from '../../lib/supabaseClient';
 
 import '../../styles/admin/admin.css';
 import '../../styles/admin/admin-login.css';
-
-/* ============================================
-   HELPERS
-============================================ */
-
-function isStaffRole(role: string): boolean {
-  const normalized = role.toLowerCase().trim();
-  return (
-    normalized === 'admin' ||
-    normalized === 'administrator' ||
-    normalized === 'staff' ||
-    normalized === 'school staff'
-  );
-}
 
 const FEATURES = [
   {
@@ -56,14 +42,10 @@ const FEATURES = [
   },
 ];
 
-/* ============================================
-   COMPONENT
-============================================ */
-
 export default function AdminLoginPage() {
-  const navigate = useNavigate();
   const toast = useToast();
-  const { setSession, session } = useAdminStore();
+  const navigate = useNavigate();
+  // 🚨 INALIS ANG setSession DITO
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -71,13 +53,6 @@ export default function AdminLoginPage() {
   const [capsLock, setCapsLock] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (session) {
-      console.log('[AdminLogin] ✅ Session detected — redirecting to /admin');
-      navigate('/admin', { replace: true });
-    }
-  }, [session, navigate]);
 
   const handlePasswordKey = (event: KeyboardEvent<HTMLInputElement>) => {
     setCapsLock(event.getModifierState('CapsLock'));
@@ -87,6 +62,14 @@ export default function AdminLoginPage() {
     event.preventDefault();
     setError(null);
 
+    // 🚨 HARANG #1: Domain Check
+    const emailDomain = email.split('@')[1]?.toLowerCase();
+    if (emailDomain !== 'phinmaed.com') {
+      setError('Access Denied. Only @phinmaed.com emails are allowed.');
+      toast('Only @phinmaed.com emails can access the Admin Console.', 'danger');
+      return;
+    }
+
     if (!email.trim() || !password) {
       setError('Please enter both email and password.');
       return;
@@ -94,7 +77,18 @@ export default function AdminLoginPage() {
 
     setIsSubmitting(true);
     try {
-      console.log('[AdminLogin] 🧹 Clearing all sessions...');
+      // 🚨 HARANG #2: Secure RPC Check (Verify kung nasa authorized list)
+      const { data: isAuthorized, error: rpcError } = await supabase
+        .rpc('verify_admin_email', { p_email: email.trim().toLowerCase() });
+
+      if (rpcError || !isAuthorized) {
+        setError('Access Denied. Your account is not authorized for the Admin Console.');
+        toast('Access Denied. You are not in the authorized admin list.', 'danger');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Clearing sessions
       try {
         await Promise.all([
           supabase.auth.signOut().catch(() => {}),
@@ -113,45 +107,60 @@ export default function AdminLoginPage() {
         }
       });
 
-      console.log('[AdminLogin] ✅ All sessions cleared');
-
+      // 🚨 ITO ANG LOGIN ACTUAL
       const result = await loginAdmin(email, password);
       const user = mapSupabaseUser(result.user);
 
-      console.log('[AdminLogin] ✅ Logged in:', {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-      });
+      // 🚨 HARANG #4: OTP GENERATION
+      const { data: otpCode, error: otpError } = await supabase
+        .rpc('generate_admin_otp', { p_email: email.trim().toLowerCase() });
 
-      if (!isStaffRole(user.role)) {
-        setError('Access denied. This portal is for administrators only.');
-        toast('Access denied. Administrator account required.', 'danger');
+      if (otpError || !otpCode) {
+        setError('Failed to generate OTP. Please try again.');
+        toast('OTP generation failed.', 'danger');
         setIsSubmitting(false);
         return;
       }
 
-      const adminSession = {
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role === 'Staff' ? 'School Staff' : user.role,
-          profilePicture: user.profilePicture,
+      // 🚨 IPADALA ANG OTP VIA EMAIL (Gamit ang API endpoint)
+      try {
+        const emailResponse = await fetch('/api/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            email: email.trim().toLowerCase(), 
+            otp: otpCode 
+          }),
+        });
+
+        if (!emailResponse.ok) {
+          throw new Error('Email sending failed');
+        }
+
+        console.log(`[AdminLogin] 🔐 OTP Code for ${email}: ${otpCode}`);
+        toast(`OTP code sent to ${email}. Check your inbox.`, 'success');
+      } catch (emailErr) {
+        console.error('[AdminLogin] Failed to send OTP email:', emailErr);
+        setError('Failed to send OTP email. Please try again.');
+        toast('Email sending failed. Please try again.', 'danger');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 🚨 Pumunta sa OTP Page
+      navigate('/admin/otp', {
+        state: {
+          email: email.trim().toLowerCase(),
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            profilePicture: user.profilePicture,
+          },
         },
-        loginAt: Date.now(),
-        remember: false,
-      };
+      });
 
-      setSession(adminSession);
-
-      console.log('[AdminLogin] ✅ Admin session saved:', user.email);
-      toast(`Welcome back, ${user.name}.`, 'success');
-
-      setTimeout(() => {
-        console.log('[AdminLogin] 🚀 Redirecting to /admin...');
-        window.location.href = '/admin';
-      }, 300);
     } catch (err) {
       const message =
         err instanceof Error ? err.message : 'Login failed. Please try again.';
@@ -167,7 +176,6 @@ export default function AdminLoginPage() {
       <div className="pl-page__overlay" aria-hidden="true" />
 
       <div className="pl-shell">
-        {/* LEFT — Brand panel */}
         <aside className="pl-brand">
           <div className="pl-brand__mark">
             <div className="pl-logo">
@@ -207,7 +215,6 @@ export default function AdminLoginPage() {
           </div>
         </aside>
 
-        {/* RIGHT — Login form */}
         <section className="pl-card">
           <div className="pl-card__inner">
             <span className="pl-eyebrow">

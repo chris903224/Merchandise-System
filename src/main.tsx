@@ -1,5 +1,5 @@
 // src/main.tsx
-import { StrictMode, useEffect } from 'react'; // ✅ Idinagdag ang useEffect
+import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
@@ -8,20 +8,19 @@ import { ToastProvider } from './toast';
 import { ensureSeeded } from './data/seed';
 import { applyTheme, getStoredTheme } from './theme';
 import ScrollToTop from './components/ScrollToTop';
-import { STORAGE_KEYS, readStorage } from './data/storage';
-import type { SessionUser } from './types';
 import './styles/index.css';
+import { restoreAdminAppearance } from './lib/adminTheme';
+import { supabase } from './lib/supabaseClient';
 
-// ✅ DAGDAG: Root component para i-unlock ang scroll ng buong app
+restoreAdminAppearance();
+
 function Root() {
   useEffect(() => {
-    // I-force ang scroll sa html at body
     document.documentElement.style.setProperty('overflow', 'auto', 'important');
     document.documentElement.style.setProperty('height', 'auto', 'important');
     document.body.style.setProperty('overflow', 'auto', 'important');
     document.body.style.setProperty('height', 'auto', 'important');
     
-    // I-unlock ang React root container
     const root = document.getElementById('root');
     if (root) {
       root.style.setProperty('overflow', 'visible', 'important');
@@ -32,35 +31,47 @@ function Root() {
   return <App />;
 }
 
-import { restoreAdminAppearance } from './lib/adminTheme';
-
-restoreAdminAppearance();
-/**
- * Seeding is async because passwords are hashed with the Web Crypto API, so the
- * app mounts only once localStorage holds a consistent data set.
- */
 async function bootstrap(): Promise<void> {
   await ensureSeeded();
   applyTheme(getStoredTheme());
 
-  // ✅ ORGANIZATION URL VALIDATION GUARD
-  const isOrgRoute = window.location.pathname.startsWith('/org') && window.location.pathname !== '/org/login';
+  const pathname = window.location.pathname;
 
-  if (isOrgRoute) {
-    const session = readStorage<SessionUser | null>(STORAGE_KEYS.session, null);
-    if (!session || session.role !== 'Organization') {
-      window.location.replace('/org/login');
-      return;
-    }
+  // 🚨 HARANG #1: Org Session Clear (Idinagdag ang /admin/otp sa exception)
+  if (!pathname.startsWith('/org') && 
+      pathname !== '/admin/login' && 
+      pathname !== '/admin/otp') {
+    localStorage.removeItem('sjcm_org_session');
+    localStorage.removeItem('sjc-org-session');
   }
 
-  // ✅ ORGANIZATION LOGIN GUARD
-  const isOrgLoginRoute = window.location.pathname === '/org/login';
-  if (isOrgLoginRoute) {
-    const session = readStorage<SessionUser | null>(STORAGE_KEYS.session, null);
-    if (session && session.role === 'Organization') {
-      window.location.replace('/org/dashboard');
-      return;
+  // 🚨 HARANG #2: Admin Access Check
+  const isAdminRoute = pathname.startsWith('/admin') && 
+                       pathname !== '/admin/login' && 
+                       pathname !== '/admin/otp';
+
+  if (isAdminRoute) {
+    // 🚨 CHECK #1: Kung may localStorage session, payagan agad
+    const adminSession = localStorage.getItem('sjcm_admin_auth');
+    
+    if (adminSession) {
+      console.log('[Main] Admin session found in localStorage. Allowing access.');
+    } else {
+      // 🚨 CHECK #2: Kung wala, tignan ang JWT claim OR RPC fallback
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      let isAuthorized = session?.user.app_metadata?.is_system_admin === true;
+      
+      if (!isAuthorized && session?.user?.email) {
+        const { data } = await supabase.rpc('verify_admin_email', { p_email: session.user.email });
+        isAuthorized = data === true;
+      }
+
+      if (!isAuthorized) {
+        console.warn('[Main] ⚠️ Unauthorized admin access attempt. Redirecting to login.');
+        window.location.replace('/admin/login');
+        return;
+      }
     }
   }
 
@@ -70,7 +81,6 @@ async function bootstrap(): Promise<void> {
         <ScrollToTop />
         <ToastProvider>
           <AppProvider>
-            {/* ✅ Pinalitan ang <App /> ng <Root /> */}
             <Root />
           </AppProvider>
         </ToastProvider>
