@@ -1,7 +1,7 @@
 // src/pages/LoginPage.tsx
 
-import { useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, type FormEvent, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   AlertCircle,
   ArrowRight,
@@ -21,7 +21,7 @@ import { useRateLimit } from '../components/auth/useRateLimit';
 import { useApp } from '../store';
 import { useToast } from '../toast';
 import { loginUser, mapSupabaseUser } from '../data/auth';
-import { fetchUserProfile } from '../data/storage'; // 👈 Kailangan ito para makuha ang tamang course
+import { fetchUserProfile } from '../data/storage';
 import {
   isStrongPassword,
   PASSWORD_RULES,
@@ -55,7 +55,22 @@ function PasswordStrength({ value }: { value: string }) {
 
 export default function LoginPage() {
   const toast = useToast();
-  const { signIn } = useApp();
+  const { signIn, session } = useApp();
+  const navigate = useNavigate(); // 👈 Ginamit natin ito imbes na window.location
+
+  // 🚨 Check kung Org Admin/Staff ang naka-login na, i-redirect agad
+  useEffect(() => {
+    if (session) {
+      const isOrg = 
+        session.role === 'School Staff' || 
+        session.role === 'Staff' || 
+        session.email?.includes('org-admin');
+      
+      if (isOrg) {
+        navigate('/org/dashboard', { replace: true });
+      }
+    }
+  }, [session, navigate]);
 
   const [headerIdentifier, setHeaderIdentifier] = useState('');
   const [headerPassword, setHeaderPassword] = useState('');
@@ -110,7 +125,6 @@ export default function LoginPage() {
 
       clear();
 
-      /* 🚨 CRITICAL FIX: KUNIN ANG TOTOONG PROFILE SA DATABASE BAGO MAG-LOGIN */
       let finalCourse = user.course ?? '';
       let finalYearLevel = user.yearLevel ?? '';
       let finalDob = user.dateOfBirth ?? '';
@@ -126,32 +140,39 @@ export default function LoginPage() {
         console.warn('[Login] Failed to fetch database profile:', err);
       }
 
-      /* ✅ 1. I-SETUP ANG SESSION OBJECT (Gamit ang totoong course) */
       const loginSession = {
         id: user.id,
         name: user.name,
         email: user.email,
         role: appRole,
         idNumber: user.studentId ?? '',
-        organization: 'SJCM General',
+        organization: user.organization || 'SJCM General', // 👈 Kunin ang org mula sa user object
         course: finalCourse,
         yearLevel: finalYearLevel,
         dateOfBirth: finalDob,
       };
 
-      /* ✅ 2. I-SAVE SA LOCAL STORAGE */
       localStorage.setItem('sjc-session', JSON.stringify(loginSession));
       localStorage.setItem('sjc-course', finalCourse);
       localStorage.setItem('sjc-year-level', finalYearLevel);
       localStorage.setItem('sjc-dob', finalDob);
 
-      /* ✅ 3. I-SAVE SA GLOBAL STATE */
       signIn(loginSession as any);
 
       toast(`Welcome back, ${user.name}.`, 'success');
 
-      // Hard reload para siguradong sariwa ang lahat ng state at makuha ang tamang course
-      window.location.href = '/';
+      // 🚨 CRITICAL FIX: I-redirect base sa role
+      const isOrgAccount = 
+        appRole === 'School Staff' || 
+        appRole === 'Staff' || 
+        user.email?.includes('org-admin') ||
+        (user.organization && user.organization !== 'SJCM General'); // Org admin check
+
+      if (isOrgAccount) {
+        window.location.href = '/org/dashboard'; // 👈 Org Admin deretso sa dashboard
+      } else {
+        window.location.href = '/'; // 👈 Regular student sa homepage
+      }
 
     } catch (error) {
       const newStatus = recordFailure();
