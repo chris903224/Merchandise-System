@@ -1,7 +1,7 @@
 // src/pages/admin/ProductsPage.tsx
 
-import { useState, useEffect, useCallback } from 'react';
-import { Plus } from 'lucide-react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { Plus, Search, X } from 'lucide-react'; // ✅ Idinagdag ang Search at X
 import { AdminPageHeader, AdminChip, AdminModal } from '../../components/admin';
 import {
   getProducts,
@@ -18,12 +18,15 @@ const FILTERS = [
   { id: 'low-stock', label: 'Low Stock' },
 ];
 
-/* ✅ Common sizes for reference */
 const COMMON_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
+
+const ITEMS_PER_PAGE = 12; // ✅ Idinagdag para sa pagination
 
 export default function ProductsPage() {
   const [filter, setFilter] = useState('all');
   const [refreshKey, setRefreshKey] = useState(0);
+  const [searchQuery, setSearchQuery] = useState(''); // ✅ Idinagdag ang state para sa search
+  const [currentPage, setCurrentPage] = useState(1); // ✅ Idinagdag ang state para sa page
 
   // Data state
   const [products, setProducts] = useState<AdminProduct[]>([]);
@@ -35,9 +38,6 @@ export default function ProductsPage() {
   const [stockProduct, setStockProduct] = useState<AdminProduct | null>(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
 
-  /* ============================================
-     LOAD PRODUCTS (async)
-     ============================================ */
   useEffect(() => {
     let cancelled = false;
 
@@ -60,9 +60,37 @@ export default function ProductsPage() {
   }, [filter, refreshKey]);
 
   /* ============================================
+     SEARCH & PAGINATION LOGIC
+     ============================================ */
+  const filteredProducts = useMemo(() => {
+    if (!searchQuery.trim()) return products;
+    const lowerQuery = searchQuery.toLowerCase();
+    return products.filter(
+      (p) =>
+        p.name.toLowerCase().includes(lowerQuery) ||
+        p.category.toLowerCase().includes(lowerQuery)
+    );
+  }, [products, searchQuery]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / ITEMS_PER_PAGE));
+  const safePage = Math.min(Math.max(1, currentPage), totalPages);
+  
+  const rangeStart = filteredProducts.length === 0 ? 0 : (safePage - 1) * ITEMS_PER_PAGE + 1;
+  const rangeEnd = Math.min(safePage * ITEMS_PER_PAGE, filteredProducts.length);
+
+  const paginatedProducts = useMemo(() => {
+    const start = (safePage - 1) * ITEMS_PER_PAGE;
+    return filteredProducts.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredProducts, safePage]);
+
+  // Reset page kapag nag-search
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+  /* ============================================
      HANDLERS
      ============================================ */
-
   const handleSaveEdit = useCallback(
     async (updates: Partial<AdminProduct>) => {
       if (!editingProduct) return;
@@ -140,13 +168,15 @@ export default function ProductsPage() {
             key={f.id}
             label={f.label}
             active={filter === f.id}
-            onClick={() => setFilter(f.id)}
+            onClick={() => {
+              setFilter(f.id);
+              setCurrentPage(1);
+            }}
           />
         ))}
       </div>
 
-      {/* Products grid */}
-      {/* ✅ Search Bar */}
+      {/* Search Bar */}
       <div className="admin-search-bar" style={{
         position: 'relative',
         marginTop: '12px',
@@ -214,7 +244,7 @@ export default function ProductsPage() {
         )}
       </div>
 
-      {/* ✅ Results summary */}
+      {/* Results summary */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -232,14 +262,14 @@ export default function ProductsPage() {
         </span>
       </div>
 
-      {/* ✅ Products grid */}
+      {/* Products grid */}
       <div className="admin-shop-grid">
         {isLoading ? (
           <p className="admin-empty">Loading products…</p>
-        ) : products.length === 0 ? (
-          <p className="admin-empty">No products in this category.</p>
+        ) : filteredProducts.length === 0 ? (
+          <p className="admin-empty">No products found.</p>
         ) : (
-          products.map((p) => (
+          paginatedProducts.map((p) => (
             <article key={p.id} className="admin-shop-card">
               <div className="admin-shop-card__image">
                 <img src={p.img} alt={p.name} loading="lazy" />
@@ -255,7 +285,6 @@ export default function ProductsPage() {
                 <h3 className="admin-shop-card__name">{p.name}</h3>
                 <p className="admin-shop-card__category">{p.category}</p>
 
-                {/* ✅ Display Sizes */}
                 {p.sizes && p.sizes.length > 0 && (
                   <p className="admin-shop-card__sizes">
                     <strong>Sizes:</strong> {p.sizes.join(', ')}
@@ -278,8 +307,31 @@ export default function ProductsPage() {
         )}
       </div>
 
+      {/* Pagination Controls */}
+      {filteredProducts.length > ITEMS_PER_PAGE && (
+        <div className="admin-pagination" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', marginTop: '24px' }}>
+          <button
+            className="admin-btn admin-btn--ghost"
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={safePage === 1}
+          >
+            Previous
+          </button>
+          <span style={{ fontSize: '13px', color: 'var(--admin-ink-500)' }}>
+            Page {safePage} of {totalPages}
+          </span>
+          <button
+            className="admin-btn admin-btn--ghost"
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={safePage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}
+
       {/* ============================================
-          EDIT MODAL — with Sizes
+          EDIT MODAL
       ============================================ */}
       <AdminModal
         open={Boolean(editingProduct)}
@@ -304,7 +356,6 @@ export default function ProductsPage() {
                 if (!form) return;
                 const fd = new FormData(form);
 
-                /* ✅ Extract sizes from checked checkboxes */
                 const sizes = Array.from(
                   form.querySelectorAll<HTMLInputElement>(
                     'input[name="sizes"]:checked'
@@ -315,7 +366,7 @@ export default function ProductsPage() {
                   name: String(fd.get('name')),
                   category: String(fd.get('category')),
                   price: Number(fd.get('price')),
-                  sizes, // ✅ Include sizes
+                  sizes, 
                 });
               }}
             >
@@ -350,7 +401,6 @@ export default function ProductsPage() {
               </div>
             </div>
 
-            {/* ✅ SIZES FIELD */}
             <div className="admin-modal__field">
               <label>Sizes</label>
               <div className="admin-modal__sizes">
@@ -425,7 +475,7 @@ export default function ProductsPage() {
       </AdminModal>
 
       {/* ============================================
-          ADD MODAL — with Sizes
+          ADD MODAL
       ============================================ */}
       <AdminModal
         open={isAddOpen}
@@ -453,7 +503,6 @@ export default function ProductsPage() {
                 const price = Number(fd.get('price'));
                 if (!name || !price) return;
 
-                /* ✅ Extract sizes from checked checkboxes */
                 const sizes = Array.from(
                   form.querySelectorAll<HTMLInputElement>(
                     'input[name="sizes"]:checked'
@@ -465,7 +514,7 @@ export default function ProductsPage() {
                   category: String(fd.get('category')),
                   price,
                   stock: Math.max(0, Number(fd.get('stock')) || 0),
-                  sizes, // ✅ Include sizes
+                  sizes, 
                   img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=70',
                 });
               }}
@@ -501,7 +550,6 @@ export default function ProductsPage() {
             <input name="stock" type="number" placeholder="30" />
           </div>
 
-          {/* ✅ SIZES FIELD */}
           <div className="admin-modal__field">
             <label>Sizes</label>
             <div className="admin-modal__sizes">

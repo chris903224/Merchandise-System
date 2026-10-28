@@ -6,24 +6,28 @@ import { AdminSidebar, AdminTopbar, AdminToastStack } from '../../components/adm
 import { useAdminStore } from '../../store/adminStore';
 import { readAdminSession } from '../../services/admin';
 import '../../styles/admin/admin.css';
-<<<<<<< HEAD
-=======
 import '../../styles/admin/palettes/base.css';
 import '../../styles/admin/palettes/midnight.css';
 import '../../styles/admin/palettes/sand.css';
 import '../../styles/admin/palettes/ocean.css';
 import '../../styles/admin/clay-theme.css';
 import '../../styles/admin/glass-theme.css';
+
+// 🚨 I-IMPORT NATIN ITO PARA MAGAMIT
 import { applyAdminTheme, getAdminTheme } from '../../lib/adminTheme';
->>>>>>> a7179a9 ( admin side themes)
 
 export default function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const { session, setSession } = useAdminStore();
 
+  // 🚨 THEME APPLICATION: Ito ang magpapa-andar sa mga design/theme
   useEffect(() => {
-    // ✅ I-check ang stored session
+    const currentTheme = getAdminTheme();
+    applyAdminTheme(currentTheme);
+  }, []);
+
+  useEffect(() => {
     const stored = readAdminSession();
 
     console.log('[AdminLayout] Session check:', {
@@ -32,26 +36,20 @@ export default function AdminLayout() {
       currentPath: location.pathname,
     });
 
-    // ✅ Kung WALANG session sa store at WALANG stored session
-    // → redirect sa login
     if (!session && !stored) {
       console.log('[AdminLayout] ❌ No session — redirecting to /admin/login');
       navigate('/admin/login', { replace: true });
       return;
     }
 
-    // ✅ Kung may stored session pero walang store session
-    // → hydrate ang store
     if (stored && !session) {
       console.log('[AdminLayout] 🔄 Hydrating session from storage');
       setSession(stored);
     }
 
-    // ✅ Kung may session (store or stored) — allow access
     console.log('[AdminLayout] ✅ Access granted');
   }, [navigate, session, setSession, location.pathname]);
 
-  // ✅ Render nothing habang nag-w-wait ng session
   const stored = readAdminSession();
   if (!session && !stored) {
     return null;
