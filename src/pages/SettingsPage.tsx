@@ -263,11 +263,13 @@ export default function SettingsPage() {
 
   const handlePhoneChange = (value: string) => setPhone(formatPhoneNumber(value));
 
+  // ✅ INUPDATE PARA MAG-REFRESH ANG SESSION KAPAG MAY BAGONG COURSE
   const handleSaveAccount = async () => {
     if (phone && !isValidPhone(phone)) { toast('Phone number must be 11 digits starting with 09 (e.g., 0917 123 4567).', 'warning'); return; }
 
     setIsSavingAccount(true);
     try {
+      // 1. Update Database
       await updateUserProfile(session.id, {
         course_strand: courseStrand || null, // Naka-lock na
         year_level: yearLevel || null,
@@ -275,6 +277,7 @@ export default function SettingsPage() {
         phone: phone ? phone.replace(/\D/g, '') : null,
       });
 
+      // 2. Update Local Session (Para mag-render agad sa Catalog/Product Pages)
       signIn({
         ...session,
         course: courseStrand,
@@ -283,6 +286,7 @@ export default function SettingsPage() {
         phone: phone ? phone.replace(/\D/g, '') : null,
       } as any);
 
+      // 3. Update LocalStorage (Backup para sa hard reload)
       localStorage.setItem('sjc-course', courseStrand ?? '');
       localStorage.setItem('sjc-year-level', yearLevel ?? '');
 

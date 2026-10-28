@@ -3,19 +3,17 @@
 export function canUserOrderProduct(
   userCourse: string | undefined | null,
   productOrganization: string | undefined | null,
-  productCategory?: string | undefined | null
+  _productCategory?: string | undefined | null // Nilagyan ng underscore para walang TS6133 error
 ): boolean {
   // 1. Kung walang session/course (e.g., Admin or Guest), payagan muna.
   if (!userCourse || !productOrganization) return true;
 
   const course = userCourse.toUpperCase().trim();
   const org = productOrganization.toUpperCase().trim();
-  const cat = (productCategory ?? '').toUpperCase().trim();
 
   // ============================================================
   // ✅ RULE 1: GENERAL / INSTITUTIONAL ITEMS
   // Pwede sa LAHAT ng courses (ID Laces, PE, Institutional, etc.)
-  // ❌ Hindi kasama ang "UNIFORMS" para hindi ma-bypass ang specific org shirts.
   // ============================================================
   if (
     org.includes('INSTITUTIONAL') ||
@@ -24,8 +22,7 @@ export function canUserOrderProduct(
     org.includes('CSDL') ||
     org.includes('ATHLETIC') ||
     org.includes('NSTP') ||
-    cat.includes('INSTITUTIONAL') ||
-    cat.includes('GENERAL')
+    org === 'SJCM GENERAL'
   ) {
     return true;
   }
@@ -34,12 +31,15 @@ export function canUserOrderProduct(
   // ✅ RULE 2: SPECIFIC COURSE MATCHING
   // ============================================================
 
-  // CITE / IT / Computer Studies
+  // 🔥 CITE / IT / Computer Studies
   if (
     course.includes('IT') ||
     course.includes('COMPUTER') ||
     course.includes('CITE') ||
-    course.includes('INFORMATION TECHNOLOGY')
+    course.includes('INFORMATION TECHNOLOGY') ||
+    course.includes('BSIT') ||
+    course.includes('BSCS') ||
+    course.includes('BSIS')
   ) {
     return (
       org.includes('CITE') ||
@@ -50,12 +50,18 @@ export function canUserOrderProduct(
   }
 
   // BSA (Accounting)
-  if (course.includes('BSA') || course.includes('ACCOUNTANCY')) {
+  if (
+    course.includes('BSA') ||
+    course.includes('ACCOUNTANCY')
+  ) {
     return org.includes('BSA') || org.includes('JPIA');
   }
 
   // BSBA (Business Administration)
-  if (course.includes('BSBA') || course.includes('BUSINESS')) {
+  if (
+    course.includes('BSBA') ||
+    course.includes('BUSINESS')
+  ) {
     return org.includes('BSBA');
   }
 
@@ -70,7 +76,10 @@ export function canUserOrderProduct(
   }
 
   // CCJE (Criminology)
-  if (course.includes('CRIM') || course.includes('CCJE')) {
+  if (
+    course.includes('CRIM') ||
+    course.includes('CCJE')
+  ) {
     return org.includes('CCJE') || org.includes('CRIMINAL JUSTICE');
   }
 
@@ -108,7 +117,10 @@ export function canUserOrderProduct(
   }
 
   // CAS (Arts & Sciences)
-  if (course.includes('CAS') || course.includes('ARTS')) {
+  if (
+    course.includes('CAS') ||
+    course.includes('ARTS')
+  ) {
     return org.includes('CAS') || org.includes('ARTS');
   }
 
@@ -121,6 +133,6 @@ export function canUserOrderProduct(
     return org.includes('SHS');
   }
 
-
+  // Default: I-block kung walang tugma
   return false;
 }

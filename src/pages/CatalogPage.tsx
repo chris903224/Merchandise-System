@@ -668,7 +668,6 @@ function ProductCard({
   const toast = useToast();
   const addNotification = useNotificationStore((s) => s.addNotification);
 
-  /* ✅ Global favorites store */
   const isFav = useFavoritesStore((s) => s.favIds.has(product.id));
   const toggleFavorite = useFavoritesStore((s) => s.toggleFavorite);
   const [isToggling, setIsToggling] = useState(false);
@@ -676,20 +675,14 @@ function ProductCard({
   const badge = getStockBadge(product.stock);
   const isOutOfStock = (Number(product.stock) || 0) <= 0;
 
-  // 🚨 CONFLICT-FREE LOGIC: 
-  // Gagamit tayo ng custom logic para masigurong nakuha ang tamang course.
-  // Kung may session, gamitin. Kung wala, tignan sa localStorage.
-  // Kung wala pa rin, tignan kung may naka-save sa ilalim ng ibang key.
+  // 🚨 Gagamit tayo ng custom logic para masigurong nakuha ang tamang course.
   const getUserCourse = () => {
-    // 1. Try session first (ito ang updated ng store.tsx)
     const fromSession = (session as any)?.course;
     if (fromSession && fromSession.trim() !== '') return fromSession.trim();
 
-    // 2. Try localStorage (galing sa LoginPage o SettingsPage)
     const fromStorage = localStorage.getItem('sjc-course');
     if (fromStorage && fromStorage.trim() !== '') return fromStorage.trim();
 
-    // 3. Try reading the whole session object from localStorage
     try {
       const rawSession = localStorage.getItem('sjc-session');
       if (rawSession) {
@@ -712,15 +705,6 @@ function ProductCard({
     product.organization,
     product.category
   );
-
-  // Debugging: Tingnan sa Console (F12)
-  console.log(`[ProductCard] ${product.name}`, {
-    userCourse,
-    fromSession: (session as any)?.course,
-    fromStorage: localStorage.getItem('sjc-course'),
-    org: product.organization,
-    isAllowed,
-  });
 
   const handleCardClick = () => {
     if (!isAllowed) {

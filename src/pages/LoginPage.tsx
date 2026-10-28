@@ -1,7 +1,7 @@
 // src/pages/LoginPage.tsx
 
 import { useState, type FormEvent } from 'react';
-import { Link, } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   AlertCircle,
   ArrowRight,
@@ -21,7 +21,7 @@ import { useRateLimit } from '../components/auth/useRateLimit';
 import { useApp } from '../store';
 import { useToast } from '../toast';
 import { loginUser, mapSupabaseUser } from '../data/auth';
-import { fetchUserProfile } from '../data/storage'; // 👈 I-IMPORT ITO PARA MAKAKUHA SA DATABASE
+import { fetchUserProfile } from '../data/storage'; // 👈 Kailangan ito para makuha ang tamang course
 import {
   isStrongPassword,
   PASSWORD_RULES,
@@ -56,7 +56,6 @@ function PasswordStrength({ value }: { value: string }) {
 export default function LoginPage() {
   const toast = useToast();
   const { signIn } = useApp();
-
 
   const [headerIdentifier, setHeaderIdentifier] = useState('');
   const [headerPassword, setHeaderPassword] = useState('');
@@ -112,8 +111,6 @@ export default function LoginPage() {
       clear();
 
       /* 🚨 CRITICAL FIX: KUNIN ANG TOTOONG PROFILE SA DATABASE BAGO MAG-LOGIN */
-      // Ito ang mag-sosolve ng "BSN default" issue. 
-      // Kukunin natin ang totoong course sa `user_profiles` table.
       let finalCourse = user.course ?? '';
       let finalYearLevel = user.yearLevel ?? '';
       let finalDob = user.dateOfBirth ?? '';
@@ -137,9 +134,9 @@ export default function LoginPage() {
         role: appRole,
         idNumber: user.studentId ?? '',
         organization: 'SJCM General',
-        course: finalCourse,       // 👈 Galing na sa database
-        yearLevel: finalYearLevel, // 👈 Galing na sa database
-        dateOfBirth: finalDob,     // 👈 Galing na sa database
+        course: finalCourse,
+        yearLevel: finalYearLevel,
+        dateOfBirth: finalDob,
       };
 
       /* ✅ 2. I-SAVE SA LOCAL STORAGE */
@@ -153,7 +150,7 @@ export default function LoginPage() {
 
       toast(`Welcome back, ${user.name}.`, 'success');
 
-      // Hard reload para siguradong sariwa ang lahat ng state
+      // Hard reload para siguradong sariwa ang lahat ng state at makuha ang tamang course
       window.location.href = '/';
 
     } catch (error) {
