@@ -23,9 +23,13 @@ function totalStock(p: Product): number {
 
 export default function ProductDetailsPage() {
   const { id } = useParams<{ id: string }>();
-  const { session, products, refreshProducts } = useApp();
+  
+  // 🚨 INALIS NATIN ANG `session` DAHIL HINDI NAMAN GINAGAMIT SA UI
+  // Kung kailangan mo ito sa ibang parte ng code sa hinaharap, ibalik mo lang.
+  const { products, refreshProducts } = useApp(); 
+  
   const navigate = useNavigate();
-  const org = session?.organization ?? '';
+  // 🚨 TINANGGAL NA NATIN ITO: const org = session?.organization ?? '';
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);

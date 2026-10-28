@@ -1,7 +1,7 @@
 // src/pages/LoginPage.tsx
 
 import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, } from 'react-router-dom';
 import {
   AlertCircle,
   ArrowRight,
@@ -21,6 +21,7 @@ import { useRateLimit } from '../components/auth/useRateLimit';
 import { useApp } from '../store';
 import { useToast } from '../toast';
 import { loginUser, mapSupabaseUser } from '../data/auth';
+import { fetchUserProfile } from '../data/storage'; // 👈 I-IMPORT ITO PARA MAKAKUHA SA DATABASE
 import {
   isStrongPassword,
   PASSWORD_RULES,
@@ -53,9 +54,9 @@ function PasswordStrength({ value }: { value: string }) {
 }
 
 export default function LoginPage() {
-  const navigate = useNavigate();
   const toast = useToast();
-  const { signIn, refreshOnboarding } = useApp();
+  const { signIn } = useApp();
+
 
   const [headerIdentifier, setHeaderIdentifier] = useState('');
   const [headerPassword, setHeaderPassword] = useState('');
@@ -110,24 +111,51 @@ export default function LoginPage() {
 
       clear();
 
-      /* ✅ IPASA LAHAT NG DATA SA SIGNIN */
-      signIn({
+      /* 🚨 CRITICAL FIX: KUNIN ANG TOTOONG PROFILE SA DATABASE BAGO MAG-LOGIN */
+      // Ito ang mag-sosolve ng "BSN default" issue. 
+      // Kukunin natin ang totoong course sa `user_profiles` table.
+      let finalCourse = user.course ?? '';
+      let finalYearLevel = user.yearLevel ?? '';
+      let finalDob = user.dateOfBirth ?? '';
+
+      try {
+        const dbProfile = await fetchUserProfile(user.id);
+        if (dbProfile) {
+          if (dbProfile.course_strand) finalCourse = dbProfile.course_strand;
+          if (dbProfile.year_level) finalYearLevel = dbProfile.year_level;
+          if (dbProfile.date_of_birth) finalDob = dbProfile.date_of_birth;
+        }
+      } catch (err) {
+        console.warn('[Login] Failed to fetch database profile:', err);
+      }
+
+      /* ✅ 1. I-SETUP ANG SESSION OBJECT (Gamit ang totoong course) */
+      const loginSession = {
         id: user.id,
         name: user.name,
         email: user.email,
         role: appRole,
         idNumber: user.studentId ?? '',
         organization: 'SJCM General',
-        
-        // 👇 ITO YUNG KULANG KANINA 👇
-        course: user.course ?? '', 
-        yearLevel: user.yearLevel ?? '',
-        dateOfBirth: user.dateOfBirth ?? '',
-      } as any);
+        course: finalCourse,       // 👈 Galing na sa database
+        yearLevel: finalYearLevel, // 👈 Galing na sa database
+        dateOfBirth: finalDob,     // 👈 Galing na sa database
+      };
 
-      await refreshOnboarding();
+      /* ✅ 2. I-SAVE SA LOCAL STORAGE */
+      localStorage.setItem('sjc-session', JSON.stringify(loginSession));
+      localStorage.setItem('sjc-course', finalCourse);
+      localStorage.setItem('sjc-year-level', finalYearLevel);
+      localStorage.setItem('sjc-dob', finalDob);
+
+      /* ✅ 3. I-SAVE SA GLOBAL STATE */
+      signIn(loginSession as any);
+
       toast(`Welcome back, ${user.name}.`, 'success');
-      navigate('/', { replace: true });
+
+      // Hard reload para siguradong sariwa ang lahat ng state
+      window.location.href = '/';
+
     } catch (error) {
       const newStatus = recordFailure();
 

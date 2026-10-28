@@ -1927,3 +1927,352 @@
   height: 1rem !important;
   z-index: 10 !important;
 }
+/* ============================================
+   FIX FOR EDIT SHIPPING ADDRESS MODAL
+   ============================================ */
+
+/* Siguraduhing nasa taas lahat ng elements at hindi nag-o-overlap */
+.settings-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999; /* Pina-taas natin para hindi matabunan */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.settings-modal {
+  position: relative;
+  background: var(--theme-bg-card, #1e2922);
+  width: 100%;
+  max-width: 500px; /* Tamang lapad */
+  border-radius: 16px;
+  border: 1px solid var(--theme-border, #2e3d33);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  z-index: 10000;
+}
+
+/* Ayusin ang laman ng modal para umayos ang spacing */
+.settings-modal__body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem; /* Bigyan ng espasyo ang bawat field */
+  max-height: 70vh; /* Para may scroll kung masyadong mahaba */
+  overflow-y: auto;
+}
+
+/* Siguraduhing visible at tama ang layout ng bawat field */
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.settings-field__label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--theme-text-muted, #a0aec0);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Ayusin ang dropdown at input fields */
+.settings-field__icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.settings-field__select,
+.settings-field__input {
+  width: 100%;
+  height: 48px;
+  padding: 0 1rem 0 2.5rem; /* Space para sa icon sa kaliwa */
+  background: var(--theme-bg-input, #162019);
+  color: var(--theme-text, #ffffff);
+  border: 1px solid var(--theme-border, #2e3d33);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s ease;
+  appearance: none; /* Tanggalin ang default arrow ng browser */
+}
+
+/* Custom arrow para sa select */
+.settings-field__select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  cursor: pointer;
+}
+
+/* Ayusin ang textarea */
+.settings-field__input--textarea {
+  height: auto;
+  min-height: 100px;
+  padding: 1rem;
+  resize: vertical;
+}
+
+/* Iposisyon ang icon sa loob ng input */
+.settings-field__icon-wrap > .react-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--theme-text-muted, #a0aec0);
+  pointer-events: none;
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+/* Focus states */
+.settings-field__select:focus,
+.settings-field__input:focus {
+  border-color: var(--theme-primary, #4ade80);
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.15);
+}
+
+/* Ayusin ang header ng modal */
+.settings-modal__header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--theme-border, #2e3d33);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--theme-bg-card-hover, #243328);
+  border-radius: 16px 16px 0 0;
+}
+
+.settings-modal__heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.settings-modal__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(74, 222, 128, 0.1);
+  color: var(--theme-primary, #4ade80);
+  border-radius: 10px;
+}
+
+.settings-modal__title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--theme-text, #ffffff);
+  margin: 0 0 0.25rem 0;
+}
+
+.settings-modal__subtitle {
+  font-size: 0.85rem;
+  color: var(--theme-text-muted, #a0aec0);
+  margin: 0;
+}
+
+.settings-modal__close {
+  background: transparent;
+  border: none;
+  color: var(--theme-text-muted, #a0aec0);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.settings-modal__close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--theme-text, #ffffff);
+}
+
+/* Ayusin ang preview area sa ilalim */
+.settings-address-preview {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--theme-bg-input, #162019);
+  border-radius: 12px;
+  border: 1px solid var(--theme-border, #2e3d33);
+  margin-top: 0.5rem;
+}
+
+.settings-address-preview > .react-icon {
+  color: var(--theme-primary, #4ade80);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.settings-address-preview__title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--theme-text, #ffffff);
+  margin: 0 0 0.25rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.settings-address-preview__text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--theme-text, #ffffff);
+  margin: 0 0 0.25rem 0;
+}
+
+.settings-address-preview__note {
+  font-size: 0.8rem;
+  color: var(--theme-text-muted, #a0aec0);
+  margin: 0;
+}
+
+/* Ayusin ang footer (buttons) */
+.settings-modal__footer {
+  padding: 1.5rem;
+  border-top: 1px solid var(--theme-border, #2e3d33);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  background: var(--theme-bg-card-hover, #243328);
+  border-radius: 0 0 16px 16px;
+}
+
+/* Siguraduhing visible at tama ang size ng buttons */
+.settings-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.settings-btn--ghost {
+  background: transparent;
+  color: var(--theme-text, #ffffff);
+  border: 1px solid var(--theme-border, #2e3d33);
+}
+
+.settings-btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.settings-btn--primary {
+  background: var(--theme-primary, #4ade80);
+  color: var(--theme-bg, #0f1712); /* Dark text para sa contrast */
+  border: none;
+}
+
+.settings-btn--primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.settings-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+/* ============================================
+   FIX FOR DROPDOWN (OPTIONS) IN ALL THEMES
+   ============================================ */
+
+/* 1. Siguraduhing ang <select> ay sumusunod sa background ng theme */
+.settings-field__select {
+  background-color: var(--theme-bg-input, #162019) !important;
+  color: var(--theme-text, #ffffff) !important;
+}
+
+/* 2. Ayusin ang mismong listahan ng options para hindi puti */
+.settings-field__select option,
+.settings-field__select optgroup {
+  background-color: var(--theme-bg-card, #1e2922) !important;
+  color: var(--theme-text, #ffffff) !important;
+  padding: 10px;
+}
+
+/* 3. Kapag naka-hover o napili ang isang option, gawing primary color */
+.settings-field__select option:checked,
+.settings-field__select option:hover {
+  background-color: var(--theme-primary, #4ade80) !important;
+  color: var(--theme-bg, #0f1712) !important;
+}
+
+/* ============================================
+   GENERAL THEME COMPATIBILITY FIXES
+   ============================================ */
+
+/* Siguraduhing transparent ang select wrapper */
+.settings-field__icon-wrap {
+  background: transparent;
+}
+
+/* Ayusin ang kulay ng icons depende sa theme */
+.settings-field__icon-wrap > .react-icon {
+  color: var(--theme-text-muted, #a0aec0);
+  z-index: 2;
+}
+
+/* Ayusin ang text color ng select */
+.settings-field__select {
+  color: var(--theme-text, #ffffff);
+  font-weight: 500;
+}
+
+/* Para sa mga light themes, siguraduhing madilim ang text */
+[data-theme="light"] .settings-field__select,
+[data-theme="light"] .settings-field__input {
+  color: var(--theme-text, #000000);
+}
+
+[data-theme="light"] .settings-field__select option {
+  background-color: var(--theme-bg-card, #ffffff) !important;
+  color: var(--theme-text, #000000) !important;
+}
+
+/* Fix z-index para hindi matabunan ng ibang elements */
+.settings-modal {
+  z-index: 10000;
+}
+
+.settings-modal-overlay {
+  z-index: 9999;
+}
+
+/* Modal body scrolling para sa maliliit na screen */
+.settings-modal__body {
+  max-height: 65vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--theme-primary, #4ade80) transparent;
+}
+
+/* Custom scrollbar para sa webkit browsers (Chrome, Safari) */
+.settings-modal__body::-webkit-scrollbar {
+  width: 6px;
+}
+.settings-modal__body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.settings-modal__body::-webkit-scrollbar-thumb {
+  background-color: var(--theme-border, #2e3d33);
+  border-radius: 10px;
+}

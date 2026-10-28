@@ -5,35 +5,47 @@ export function canUserOrderProduct(
   productOrganization: string | undefined | null,
   productCategory?: string | undefined | null
 ): boolean {
-  // Kung walang course (e.g., Admin), payagan muna.
+  // 1. Kung walang session/course (e.g., Admin or Guest), payagan muna.
   if (!userCourse || !productOrganization) return true;
 
   const course = userCourse.toUpperCase().trim();
   const org = productOrganization.toUpperCase().trim();
-  
-  // ✅ RULE 1: General / Institutional items — pwede sa LAHAT ng courses
+  const cat = (productCategory ?? '').toUpperCase().trim();
+
+  // ============================================================
+  // ✅ RULE 1: GENERAL / INSTITUTIONAL ITEMS
+  // Pwede sa LAHAT ng courses (ID Laces, PE, Institutional, etc.)
+  // ❌ Hindi kasama ang "UNIFORMS" para hindi ma-bypass ang specific org shirts.
+  // ============================================================
   if (
     org.includes('INSTITUTIONAL') ||
+    org.includes('GENERAL') ||
+    org.includes('ALL') ||
     org.includes('CSDL') ||
     org.includes('ATHLETIC') ||
-    org.includes('NSTP')
+    org.includes('NSTP') ||
+    cat.includes('INSTITUTIONAL') ||
+    cat.includes('GENERAL')
   ) {
     return true;
   }
 
-  // ✅ RULE 2: Specific Course Matching (Gagamit tayo ng `.includes` para sure)
+  // ============================================================
+  // ✅ RULE 2: SPECIFIC COURSE MATCHING
+  // ============================================================
 
   // CITE / IT / Computer Studies
   if (
-    course.includes('IT') || 
-    course.includes('COMPUTER') || 
+    course.includes('IT') ||
+    course.includes('COMPUTER') ||
     course.includes('CITE') ||
     course.includes('INFORMATION TECHNOLOGY')
   ) {
     return (
-      org.includes('CITE') || 
-      org.includes('SSITE') || 
-      org.includes('CISE')
+      org.includes('CITE') ||
+      org.includes('SSITE') ||
+      org.includes('CISE') ||
+      org.includes('CSDL')
     );
   }
 
@@ -49,9 +61,9 @@ export function canUserOrderProduct(
 
   // COED (Education)
   if (
-    course.includes('EDUC') || 
-    course.includes('COED') || 
-    course.includes('BSED') || 
+    course.includes('EDUC') ||
+    course.includes('COED') ||
+    course.includes('BSED') ||
     course.includes('BEED')
   ) {
     return org.includes('COED');
@@ -64,43 +76,51 @@ export function canUserOrderProduct(
 
   // CMA (Hospitality / Tourism)
   if (
-    course.includes('HOSPITALITY') || 
-    course.includes('TOURISM') || 
-    course.includes('CMA') || 
-    course.includes('BSTM') || 
+    course.includes('HOSPITALITY') ||
+    course.includes('TOURISM') ||
+    course.includes('CMA') ||
+    course.includes('BSTM') ||
     course.includes('BSHM')
   ) {
-    return org.includes('BSTM') || org.includes('BSHM');
+    return (
+      org.includes('BSTM') ||
+      org.includes('BSHM') ||
+      org.includes('CMA')
+    );
   }
 
   // CAHS (Nursing, MedTech, RadTech)
   if (
-    course.includes('NURS') || 
-    course.includes('CAHS') || 
-    course.includes('BSN') || 
-    course.includes('MEDTECH') || 
-    course.includes('BSMT') || 
+    course.includes('NURS') ||
+    course.includes('CAHS') ||
+    course.includes('BSN') ||
+    course.includes('MEDTECH') ||
+    course.includes('BSMT') ||
     course.includes('BSRT')
   ) {
     return (
-      org.includes('CAHS') || 
-      org.includes('BSN') || 
-      org.includes('BSRT') || 
-      org.includes('BSMT') || 
+      org.includes('CAHS') ||
+      org.includes('BSN') ||
+      org.includes('BSRT') ||
+      org.includes('BSMT') ||
       org.includes('VANGUARDS')
     );
   }
 
   // CAS (Arts & Sciences)
   if (course.includes('CAS') || course.includes('ARTS')) {
-    return org.includes('CAS');
+    return org.includes('CAS') || org.includes('ARTS');
   }
 
   // SHS (Senior High School)
-  if (course.includes('SHS') || course.includes('GRADE 11') || course.includes('GRADE 12')) {
+  if (
+    course.includes('SHS') ||
+    course.includes('GRADE 11') ||
+    course.includes('GRADE 12')
+  ) {
     return org.includes('SHS');
   }
 
-  // Default: I-block kung walang tugma
+
   return false;
 }

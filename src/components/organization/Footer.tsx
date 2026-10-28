@@ -13,7 +13,7 @@ import {
   ArrowUp,
 } from 'lucide-react';
 import { useApp } from '../../store';
-import { SUPPORT, BRAND } from '../../data/constants';
+import { SUPPORT,  } from '../../data/constants';
 import '../../styles/organization/Footer.css'; // ✅ Import ang bagong CSS
 
 /** Is the supply office open right now? (Mon–Fri, 8:00 AM – 5:00 PM, Manila time) */

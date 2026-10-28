@@ -80,8 +80,38 @@ function readLoginLock(): number | null {
   return null;
 }
 
+/* ============================================
+   ✅ FIXED: SESSION INITIAL LOAD
+   🚨 Tinitiyak na ang course ay laging tama
+============================================ */
 function readClientState(): Pick<AppState, 'session' | 'cart'> {
   const session = readStorage<SessionUser | null>(STORAGE_KEYS.session, null);
+  
+  // 🚨 KUNIN ANG COURSE MULA SA LOCALSTORAGE (galing sa LoginPage/SettingsPage)
+  const savedCourse = localStorage.getItem('sjc-course');
+  const savedYearLevel = localStorage.getItem('sjc-year-level');
+  const savedDob = localStorage.getItem('sjc-dob');
+
+  // 👈 I-override ang session properties kung may naka-save sa localStorage
+  if (session) {
+    // Kung may naka-save na course sa localStorage, ito ang gamitin
+    if (savedCourse && savedCourse.trim() !== '') {
+      (session as any).course = savedCourse.trim();
+    }
+    if (savedYearLevel && savedYearLevel.trim() !== '') {
+      (session as any).yearLevel = savedYearLevel.trim();
+    }
+    if (savedDob && savedDob.trim() !== '') {
+      (session as any).dateOfBirth = savedDob.trim();
+    }
+  }
+
+  console.log('[Store] readClientState:', {
+    sessionId: session?.id,
+    sessionCourse: (session as any)?.course,
+    localStorageCourse: savedCourse,
+    finalCourse: session?.id ? (session as any)?.course : 'NO SESSION',
+  });
 
   return {
     session,
@@ -340,11 +370,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   /* ============================================
-     SESSION
+     SESSION — May LocalStorage Sync
      ============================================ */
   const signIn = useCallback((user: SessionUser) => {
     writeStorage(STORAGE_KEYS.session, user);
     setSession(user);
+
+    // 🚨 I-SAVE ANG COURSE, YEAR LEVEL, AT DOB SA LOCAL STORAGE
+    const userAny = user as any;
+    if (userAny.course) {
+      localStorage.setItem('sjc-course', userAny.course);
+    }
+    if (userAny.yearLevel) {
+      localStorage.setItem('sjc-year-level', userAny.yearLevel);
+    }
+    if (userAny.dateOfBirth) {
+      localStorage.setItem('sjc-dob', userAny.dateOfBirth);
+    }
 
     const savedCart = readStorage<CartItem[]>(STORAGE_KEYS.cart, []);
     if (savedCart.length > 0) setCartState(savedCart);
@@ -353,6 +395,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(() => {
     localStorage.removeItem(STORAGE_KEYS.session);
     localStorage.removeItem(STORAGE_KEYS.cart);
+    localStorage.removeItem('sjc-course');
+    localStorage.removeItem('sjc-year-level');
+    localStorage.removeItem('sjc-dob');
 
     setSession(null);
     setCartState([]);
@@ -457,21 +502,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
      ============================================ */
   const setOrderStatus = useCallback(
     async (orderId: string, orderStatus: string) => {
-      // 1. Optimistic update (agad magbabago ang UI)
       setOrders((prev) =>
         prev.map((o) => (o.id === orderId ? { ...o, orderStatus } : o))
       );
 
-      // 2. Update sa database
       try {
         await updateOrderStatusService(orderId, orderStatus);
       } catch (err) {
         console.error('[Store] ❌ Order status update failed:', err);
-        // Hindi mag-revert, pero ita-throw para malaman ng caller
         throw err;
       }
 
-      // 3. Non-fatal notification (hindi mag-crash)
       const order = orders.find((o) => o.id === orderId);
       if (!order) return;
 
@@ -529,7 +570,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         });
         console.log('[Store] ✅ Status notification created:', orderStatus);
       } catch (err) {
-        // 👈 NON-FATAL — hindi mag-crash ang buong flow
         console.warn('[Store] ⚠️ Notification failed (non-fatal):', err);
       }
     },

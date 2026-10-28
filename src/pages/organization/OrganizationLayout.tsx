@@ -1,3 +1,5 @@
+// src/pages/organization/OrganizationLayout.tsx
+
 import { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useApp } from '../../store';
@@ -27,13 +29,15 @@ export default function OrganizationLayout() {
   // 2. Auth Guard
   useEffect(() => {
     if (isLoading) return;
+    
+    // ✅ Kung walang session, i-redirect sa login
     if (!session || session.role !== 'Organization') {
+      // 👈 BURAHIN ANG LUMANG SESSION PARA HINDI MAKAPASOK SA STUDENT SIDE
+      localStorage.removeItem('sjc-session');
+      localStorage.removeItem('sjc-org-session');
       navigate('/login', { replace: true });
     }
   }, [session, isLoading, navigate]);
-
-  // ✅ Binalik sa normal. Wala nang JS scroll hack.
-  // Ang CSS na ang bahala sa scroll.
 
   if (isLoading || !session || session.role !== 'Organization') return null;
 
@@ -41,7 +45,6 @@ export default function OrganizationLayout() {
     <div className="org-shell org-compact">
       <OrgSidebar session={session} />
       
-      {/* ✅ Dito nakalagay ang scroll */}
       <main className="org-main">
         <OrgTopbar session={session} />
         <div className="org-content">

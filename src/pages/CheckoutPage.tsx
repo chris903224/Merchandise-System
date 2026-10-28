@@ -28,16 +28,33 @@ import { useApp } from '../store';
 import { useToast } from '../toast';
 import { formatPrice, isStaffRole, sumCartItems } from '../services';
 import { createPayMongoCheckout } from '../services/paymongo';
-import { BUILDINGS, BUILDING_NAMES } from '../data/constants';
 import type { Order } from '../types';
 
 type PaymentMethod = 'gcash_paymongo' | 'gcash_manual' | 'cod' | 'cop';
+
+// 🚨 DYNAMIC ROOM CONFIGURATION
+const roomConfig: Record<string, string> = {
+  'Phinma Hall': 'PH',
+  'Dimasalang Hall': 'DH',
+  'Silang Hall': 'S',
+};
+
+const BUILDING_NAMES = Object.keys(roomConfig);
+
+function generateAllRooms(prefix: string): string[] {
+  const rooms: string[] = [];
+  for (let floor = 2; floor <= 7; floor++) {
+    for (let roomNum = 1; roomNum <= 21; roomNum++) {
+      rooms.push(`${prefix}${floor}${roomNum.toString().padStart(2, '0')}`);
+    }
+  }
+  return rooms;
+}
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
   const toast = useToast();
 
-  // ✅ GAMITIN ang `placeOrder` mula sa store (may notification trigger)
   const { session, cart, setCart, placeOrder } = useApp();
 
   const fullName = session?.name || '';
@@ -91,7 +108,11 @@ export default function CheckoutPage() {
     [cart]
   );
 
-  const availableRooms = BUILDINGS[building] || [];
+  // 🚨 DYNAMIC ROOMS
+  const availableRooms = useMemo(() => {
+    if (!building || !roomConfig[building]) return [];
+    return generateAllRooms(roomConfig[building]);
+  }, [building]);
 
   const notesPlaceholder = useMemo(() => {
     if (paymentMethod === 'gcash_paymongo') return 'Reference number after payment or notes...';
@@ -103,7 +124,13 @@ export default function CheckoutPage() {
 
   const handleBuildingChange = (newBuilding: string) => {
     setBuilding(newBuilding);
-    setRoom(BUILDINGS[newBuilding]?.[0] || '');
+    // I-set ang unang room base sa napiling building
+    if (newBuilding && roomConfig[newBuilding]) {
+      const rooms = generateAllRooms(roomConfig[newBuilding]);
+      setRoom(rooms[0] || '');
+    } else {
+      setRoom('');
+    }
   };
 
   const openGcashPayMongoModal = () => {
@@ -132,13 +159,6 @@ export default function CheckoutPage() {
     setIsRedirectModalOpen(true);
   };
 
-  /* ============================================
-     ✅ PROCEED TO PAYMONGO — FIXED
-     - Step 1: Save order sa DB (may notification)
-     - Step 2: Clear cart BEFORE redirect
-     - Step 3: Create PayMongo session
-     - Step 4: Redirect to PayMongo
-  ============================================ */
   const proceedToPayMongo = async () => {
     if (!session) {
       toast('Please sign in to continue.', 'warning');
@@ -164,13 +184,11 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
     setIsRedirectModalOpen(false);
 
-    // ✅ Backup ang cart para sa cancel page
     const cartBackup = [...cart];
 
     try {
       const orderId = `SJCM-${Date.now()}`;
 
-      /* ✅ STEP 1: SAVE ORDER SA SUPABASE (via store.placeOrder → may notification) */
       const newOrder: Order = {
         id: orderId,
         userId: session.id,
@@ -197,21 +215,15 @@ export default function CheckoutPage() {
       };
 
       console.log('[Checkout] Placing order (with notification):', orderId);
-
-      // ✅ GAMITIN ang `placeOrder` mula sa store — nag-trigger ng notification
       await placeOrder(newOrder);
-
       console.log('[Checkout] ✅ Order placed with notification:', orderId);
 
-      /* ✅ STEP 2: I-CLEAR ANG CART DITO — BAGO mag-redirect */
       setCart([]);
       console.log('[Checkout] ✅ Cart cleared BEFORE redirect');
 
-      /* ✅ Save cart backup para sa cancel page */
       sessionStorage.setItem('cartBackup', JSON.stringify(cartBackup));
       sessionStorage.setItem('backupOrderId', orderId);
 
-      /* ✅ STEP 3: Create PayMongo session */
       const timeoutPromise = new Promise<string>((_, reject) =>
         setTimeout(() => reject(new Error('Request timeout. Please try again.')), 15000)
       );
@@ -230,13 +242,11 @@ export default function CheckoutPage() {
 
       const checkoutUrl = await Promise.race([paymongoPromise, timeoutPromise]);
 
-      /* ✅ STEP 4: Redirect to PayMongo */
       console.log('[Checkout] Redirecting to:', checkoutUrl);
       window.location.href = checkoutUrl;
     } catch (error: any) {
       console.error('[Checkout] PayMongo error:', error);
 
-      /* ✅ Kung mag-fail, i-restore ang cart */
       const backup = sessionStorage.getItem('cartBackup');
       if (backup) {
         try {
@@ -358,7 +368,6 @@ export default function CheckoutPage() {
         createdAt: new Date().toISOString(),
       };
 
-      // ✅ GAMITIN ang `placeOrder` mula sa store — nag-trigger ng notification
       await placeOrder(newOrder);
 
       sessionStorage.setItem('lastOrderId', orderId);
