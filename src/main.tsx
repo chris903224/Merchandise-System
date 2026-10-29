@@ -10,7 +10,7 @@ import { applyTheme, getStoredTheme } from './theme';
 import ScrollToTop from './components/ScrollToTop';
 import './styles/index.css';
 import { restoreAdminAppearance } from './lib/adminTheme';
-import { supabase } from './lib/supabaseClient'; // 🚨 SIGURADUHING NAKA-IMPORT ITO
+import { supabase } from './lib/supabaseClient';
 
 restoreAdminAppearance();
 
@@ -29,9 +29,7 @@ function isAllowedAdminEmail(email?: string | null): boolean {
 
 function Root() {
   useEffect(() => {
-    // 🚨 I-activate ang anti-console
-    disableConsole();
-
+    // 🚨 TINANGGAL ANG disableConsole() PARA WALANG ERROR
     document.documentElement.style.setProperty('overflow', 'auto', 'important');
     document.body.style.setProperty('overflow', 'auto', 'important');
     const root = document.getElementById('root');

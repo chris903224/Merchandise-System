@@ -114,6 +114,7 @@ export function getOrderStatusBadge(status: string | undefined): BadgeInfo {
 
 /* ---- Auth ---- */
 
+// 🚨 IDINAGDAG ANG course, yearLevel, at dateOfBirth
 function toSessionUser(user: UserRecord): SessionUser {
   return {
     id: user.id,
@@ -122,6 +123,9 @@ function toSessionUser(user: UserRecord): SessionUser {
     role: user.role,
     organization: user.organization || 'SJCM General',
     idNumber: user.idNumber || user.userCode || user.id || '',
+    course: user.course || '',        // 🚨 IDAGDAG
+    yearLevel: user.yearLevel || '',  // 🚨 IDAGDAG
+    dateOfBirth: user.dateOfBirth || '', // 🚨 IDAGDAG
   };
 }
 
@@ -181,6 +185,7 @@ export async function registerUser(input: RegisterInput): Promise<AuthResult> {
   const idNumber = String(input.idNumber || '').trim();
   const passwordSalt = createPasswordSalt();
 
+  // 🚨 IDINAGDAG ANG course, yearLevel, at dateOfBirth
   const newUser: UserRecord = {
     id: `USR-${Date.now().toString().slice(-6)}`,
     name,
@@ -192,6 +197,9 @@ export async function registerUser(input: RegisterInput): Promise<AuthResult> {
     userCode: idNumber,
     passwordSalt,
     passwordHash: await hashPassword(input.password || '', passwordSalt),
+    course: '',        // 🚨 IDAGDAG
+    yearLevel: '',     // 🚨 IDAGDAG
+    dateOfBirth: '',   // 🚨 IDAGDAG
   };
 
   writeStorage(STORAGE_KEYS.users, [...users, newUser]);
