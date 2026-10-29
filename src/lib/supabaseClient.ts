@@ -2,10 +2,6 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-/* ============================================================
-   ✅ SUPABASE CLIENTS
-============================================================ */
-
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
@@ -53,8 +49,6 @@ export const supabaseOrg = createClient(supabaseUrl, supabaseAnonKey, {
 
 /* ============================================
    🚨 IMPERSONATION FUNCTION (Backend API)
-   ✅ Wala nang service role key sa browser
-   ✅ Tumatawag sa server.ts endpoint
 ============================================ */
 export async function viewAsStudent(studentEmail: string) {
   // 🚨 1. Kunin ang Admin JWT Token
@@ -65,7 +59,9 @@ export async function viewAsStudent(studentEmail: string) {
   }
 
   // 🚨 2. Tawagin ang backend API na may JWT
-  const response = await fetch('http://localhost:3001/api/admin/impersonate', {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+  
+  const response = await fetch(`${backendUrl}/api/admin/impersonate`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -126,8 +126,9 @@ export default function AdminLoginPage() {
         return;
       }
 
-      // Send OTP via Email
-      const emailResponse = await fetch('/api/send-otp', {
+      // 🚨 Send OTP via Email (Backend URL with fallback)
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const emailResponse = await fetch(`${backendUrl}/api/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: emailToCheck, otp: otpCode }),
