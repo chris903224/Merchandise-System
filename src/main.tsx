@@ -10,7 +10,7 @@ import { applyTheme, getStoredTheme } from './theme';
 import ScrollToTop from './components/ScrollToTop';
 import './styles/index.css';
 import { restoreAdminAppearance } from './lib/adminTheme';
-import { supabase } from './lib/supabaseClient';
+import { supabase } from './lib/supabaseClient'; // 🚨 SIGURADUHING NAKA-IMPORT ITO
 
 restoreAdminAppearance();
 
@@ -45,13 +45,7 @@ async function bootstrap(): Promise<void> {
   applyTheme(getStoredTheme());
 
   const pathname = window.location.pathname;
-  
-  // 🚨 ITO ANG TAMANG SECRET ADMIN URL
   const SECRET_ADMIN_URL = '/sjcm-internal-portal-2026';
-
-  // 🚨 TUKUYIN KUNG NASA ADMIN ROUTE
-  const isAdminRoute = pathname.startsWith('/admin') || pathname === SECRET_ADMIN_URL;
-  const isOrgRoute = pathname.startsWith('/org');
 
   const isMagicLink = window.location.hash.includes('access_token') || window.location.hash.includes('refresh_token');
   
@@ -77,8 +71,10 @@ async function bootstrap(): Promise<void> {
 
   const isTestAdmin = sessionStorage.getItem('sjc_test_admin') === 'true';
   const isImpersonating = sessionStorage.getItem('sjc_impersonating') === 'true';
+  const isOrgRoute = pathname.startsWith('/org');
+  const isAdminRoute = pathname.startsWith('/admin') || pathname === SECRET_ADMIN_URL;
 
-  if (!isOrgRoute && !isAdminRoute) {
+  if (!pathname.startsWith('/org') && !pathname.startsWith('/admin') && pathname !== SECRET_ADMIN_URL) {
     localStorage.removeItem('sjcm_org_session');
     localStorage.removeItem('sjc-org-session');
   }
@@ -88,8 +84,6 @@ async function bootstrap(): Promise<void> {
   const isSystemAdmin = session?.user?.app_metadata?.is_system_admin === true;
   const isAdminEmail = isAllowedAdminEmail(currentEmail);
 
-  // HARANG #1: GMAIL DETECTED
-  // 🚨 I-BYPASS ANG CHECK KUNG NAKA-IMPERSONATE, TEST MODE, MAGIC LINK, ORG ROUTE, O ADMIN ROUTE
   const shouldBypassEmailCheck = isTestAdmin || isImpersonating || isMagicLink || isOrgRoute || isAdminRoute;
   
   if (currentEmail && !currentEmail.endsWith('@phinmaed.com') && !isAdminEmail && !shouldBypassEmailCheck) {
@@ -102,7 +96,6 @@ async function bootstrap(): Promise<void> {
     }
   }
 
-  // HARANG #2: STRICT ADMIN ROUTE PROTECTION
   if (isAdminRoute) {
     const isPublicAdminRoute = pathname === SECRET_ADMIN_URL || pathname === '/admin/otp';
     
@@ -111,7 +104,6 @@ async function bootstrap(): Promise<void> {
       return;
     }
     
-    // 🚨 DAPAT ALLOWED ADMIN EMAIL AT is_system_admin === true
     if (currentEmail && !isPublicAdminRoute) {
       if (!isAdminEmail || !isSystemAdmin) {
         console.warn('[Main] 🚨 Unauthorized admin user blocked:', currentEmail, 'isSystemAdmin:', isSystemAdmin);
