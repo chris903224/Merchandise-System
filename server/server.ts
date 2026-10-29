@@ -1,10 +1,5 @@
 // app/server/server.ts
 
-/* ============================================
-   ✅ LOCAL DEV BACKEND SERVER
-   ✅ Para sa local testing ng PayMongo + Brevo
-============================================================ */
-
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -41,21 +36,20 @@ const BREVO_API_KEY = process.env.BREVO_API_KEY;
 const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL;
 const BREVO_SENDER_NAME = process.env.BREVO_SENDER_NAME || 'SJCM Store';
 
-// 🚨 SUPABASE ADMIN CLIENT (Non-VITE env variables)
+// 🚨 SUPABASE ADMIN CLIENT
 const supabaseAdmin = createClient(
   process.env.SUPABASE_URL || '',
   process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
+// 🚨 HUWAG I-CRASH KUNG WALANG PAYMONGO KEY (Para hindi mag-500 error sa Vercel)
 if (!PAYMONGO_SECRET_KEY) {
-  console.error('❌ PAYMONGO_SECRET_KEY is not set in .env');
-  console.error('💡 Please add it to app/.env file');
-  process.exit(1);
+  console.warn('⚠️ PAYMONGO_SECRET_KEY is not set. PayMongo features will fail.');
 }
 
 console.log(
   `✅ PayMongo Mode: ${
-    PAYMONGO_SECRET_KEY.startsWith('sk_test_') ? '🧪 TEST' : '🚀 LIVE'
+    PAYMONGO_SECRET_KEY?.startsWith('sk_test_') ? '🧪 TEST' : '🚀 LIVE'
   }`
 );
 console.log(
@@ -93,7 +87,7 @@ app.get('/', (req: Request, res: Response) => {
   res.json({
     status: 'ok',
     message: 'SJCM Store Backend is running',
-    paymongoMode: PAYMONGO_SECRET_KEY.startsWith('sk_test_') ? 'test' : 'live',
+    paymongoMode: PAYMONGO_SECRET_KEY?.startsWith('sk_test_') ? 'test' : 'live',
     brevoConfigured: !!BREVO_API_KEY,
     supabaseAdminConfigured: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
     timestamp: new Date().toISOString(),
@@ -111,8 +105,11 @@ app.post('/api/paymongo/create-checkout', async (req: Request, res: Response) =>
       return res.status(400).json({ message: 'Invalid order details' });
     }
 
+    if (!PAYMONGO_SECRET_KEY) {
+      return res.status(500).json({ message: 'PayMongo not configured' });
+    }
+
     console.log(`[PayMongo] Creating checkout for order: ${orderId}`);
-    console.log(`[PayMongo] Amount: ₱${(amount / 100).toFixed(2)}`);
 
     const auth = Buffer.from(`${PAYMONGO_SECRET_KEY}:`).toString('base64');
 
@@ -175,6 +172,10 @@ app.get('/api/paymongo/verify', async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Missing session_id' });
     }
 
+    if (!PAYMONGO_SECRET_KEY) {
+      return res.status(500).json({ message: 'PayMongo not configured' });
+    }
+
     console.log(`[PayMongo] Verifying session: ${session_id}`);
 
     const auth = Buffer.from(`${PAYMONGO_SECRET_KEY}:`).toString('base64');
@@ -235,10 +236,6 @@ function renderEmail(template: string, data: EmailPayload): { subject: string; h
     order_ready_pickup: {
       subject: `📦 Ready for Pickup — ${orderCode}`,
       html: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;"><h2 style="color: #333;">Hi ${customerName},</h2><p>Your order <strong>${orderCode}</strong> is now ready for pickup!</p><p><strong>Pickup Location:</strong> ${claimLocation || 'SJCM Supply Office'}</p><p>Please bring a valid school ID.</p><p style="margin-top: 24px; color: #666;">— SJCM Store Team</p></div>`,
-    },
-    order_out_for_delivery: {
-      subject: `🚚 Out for Delivery — ${orderCode}`,
-      html: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;"><h2 style="color: #333;">Hi ${customerName},</h2><p>Your order <strong>${orderCode}</strong> is now out for delivery.</p><p><strong>Delivery to:</strong> ${claimLocation || 'Your registered address'}</p><p>Please be available to receive it.</p><p style="margin-top: 24px; color: #666;">— SJCM Store Team</p></div>`,
     },
     order_completed: {
       subject: `✨ Order Completed — ${orderCode}`,
@@ -306,7 +303,7 @@ app.post('/api/notifications/send-order-email', async (req: Request, res: Respon
 });
 
 /* ============================================
-   🚨 OTP — SEND (With Rate Limiter)
+   🚨 OTP — SEND
 ============================================ */
 app.post('/api/send-otp', otpRateLimiter, async (req: Request, res: Response) => {
   try {
@@ -352,12 +349,10 @@ app.post('/api/send-otp', otpRateLimiter, async (req: Request, res: Response) =>
 });
 
 /* ============================================
-   🚨 IMPERSONATE (With JWT Verification + Rate Limiter)
-   ✅ Naka-secure: Admin JWT token check
+   🚨 IMPERSONATE
 ============================================ */
 app.post('/api/admin/impersonate', impersonateRateLimiter, async (req: Request, res: Response) => {
   try {
-    // 🚨 1. Kunin ang Authorization Header
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ message: 'Missing authorization token' });
@@ -370,13 +365,11 @@ app.post('/api/admin/impersonate', impersonateRateLimiter, async (req: Request, 
       return res.status(400).json({ message: 'Missing studentEmail' });
     }
 
-    // 🚨 2. I-verify ang token gamit ang Supabase
     const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
     if (authError || !user) {
       return res.status(401).json({ message: 'Invalid or expired token' });
     }
 
-    // 🚨 3. Check kung Admin ang user sa database
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('profiles')
       .select('role')
@@ -389,7 +382,6 @@ app.post('/api/admin/impersonate', impersonateRateLimiter, async (req: Request, 
 
     console.log(`[Impersonate] ✅ Admin verified: ${user.email} → ${studentEmail}`);
 
-    // 4. Gumawa ng Magic Link
     const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
       type: 'magiclink',
       email: studentEmail,
@@ -425,21 +417,23 @@ app.use((req: Request, res: Response) => {
 });
 
 /* ============================================
-   ✅ START SERVER
+   ✅ EXPORT PARA SA VERCEL (Serverless Function)
 ============================================ */
-const PORT = process.env.PORT || 3001;
+export default app;
 
-app.listen(PORT, () => {
-  console.log('');
-  console.log('╔════════════════════════════════════════════╗');
-  console.log('║  🚀 SJCM Store Backend Server              ║');
-  console.log('╠════════════════════════════════════════════╣');
-  console.log(`║  Port:      http://localhost:${PORT}         ║`);
-  console.log(`║  Frontend:  ${process.env.FRONTEND_URL || 'http://localhost:5173'}  ║`);
-  console.log(`║  PayMongo:  ${PAYMONGO_SECRET_KEY.startsWith('sk_test_') ? 'TEST Mode 🧪' : 'LIVE Mode 🚀     '}           ║`);
-  console.log(`║  Brevo:     ${BREVO_API_KEY ? '✅ Configured   ' : '❌ Missing      '}           ║`);
-  console.log('╚════════════════════════════════════════════╝');
-  console.log('');
-  console.log('✅ Ready to accept requests');
-  console.log('');
-});
+// 🚨 LOCAL DEV ONLY
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => {
+    console.log('');
+    console.log('╔════════════════════════════════════════════╗');
+    console.log('║  🚀 SJCM Store Backend Server              ║');
+    console.log('╠════════════════════════════════════════════╣');
+    console.log(`║  Port:      http://localhost:${PORT}         ║`);
+    console.log(`║  Frontend:  ${process.env.FRONTEND_URL || 'http://localhost:5173'}  ║`);
+    console.log('╚════════════════════════════════════════════╝');
+    console.log('');
+    console.log('✅ Ready to accept requests');
+    console.log('');
+  });
+}
