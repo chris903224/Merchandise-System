@@ -1,11 +1,13 @@
 // src/services/orders.ts
 
-import { supabase, supabaseAdmin } from '../lib/supabaseClient';
+import { supabaseAdmin } from '../lib/supabaseClient';
 import type { Order, OrderItem } from '../types';
 import { getCachedData, invalidateCache } from '../utils/cache';
 import { triggerOrderStatusNotifications } from './orderNotifications';
 
-type SupabaseClient = typeof supabase;
+// 🚨 GINAWANG "ANY" PARA TANGGAPIN ANG KAHIT ANONG CLIENT
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SupabaseClient = any;
 
 /* ============================================
    ✅ PLACE ORDER — UPSERT
@@ -13,7 +15,7 @@ type SupabaseClient = typeof supabase;
 
 export async function placeOrder(
   order: Order,
-  client: SupabaseClient = supabase
+  client: SupabaseClient = supabaseAdmin
 ): Promise<void> {
   const { error } = await client.from('orders').upsert(
     {
@@ -53,7 +55,7 @@ export async function placeOrder(
 
 export async function fetchOrderById(
   orderId: string,
-  client: SupabaseClient = supabase
+  client: SupabaseClient = supabaseAdmin
 ): Promise<Order | null> {
   const { data, error } = await client
     .from('orders')
@@ -75,7 +77,7 @@ export async function fetchOrderById(
 
 export async function fetchOrders(
   userId: string,
-  client: SupabaseClient = supabase
+  client: SupabaseClient = supabaseAdmin
 ): Promise<Order[]> {
   if (!userId) {
     console.warn('[Orders] fetchOrders called with empty userId');
@@ -107,7 +109,7 @@ export async function fetchOrders(
 ============================================ */
 
 export async function fetchAllOrders(
-  client: SupabaseClient = supabase
+  client: SupabaseClient = supabaseAdmin
 ): Promise<Order[]> {
   return getCachedData(
     'orders_all',
@@ -129,14 +131,17 @@ export async function fetchAllOrders(
 }
 
 /* ============================================
-   ✅ UPDATE ORDER STATUS — optional client
+   ✅ UPDATE ORDER STATUS
 ============================================ */
 
 export async function updateOrderStatus(
   orderId: string,
   status: string,
-  client: SupabaseClient = supabase
+  client: SupabaseClient = supabaseAdmin // 🚨 ADMIN CLIENT NA
 ): Promise<void> {
+  console.log(`[Orders] Updating status for ${orderId} to "${status}"`);
+
+  // 1. Fetch existing order
   const { data: existing, error: fetchError } = await client
     .from('orders')
     .select('*')
@@ -145,7 +150,7 @@ export async function updateOrderStatus(
 
   if (fetchError) {
     console.error('[Orders] updateOrderStatus fetch error:', fetchError);
-    throw new Error(fetchError.message);
+    throw new Error(`Failed to fetch order: ${fetchError.message}`);
   }
 
   if (!existing) {
@@ -159,16 +164,20 @@ export async function updateOrderStatus(
     return;
   }
 
-  const { error } = await client
+  // 2. Perform update
+  const { error: updateError } = await client
     .from('orders')
     .update({ order_status: status })
     .eq('id', orderId);
 
-  if (error) {
-    console.error('[Orders] updateOrderStatus error:', error);
-    throw new Error(error.message);
+  if (updateError) {
+    console.error('[Orders] ❌ updateOrderStatus error:', updateError);
+    throw new Error(`Update failed: ${updateError.message}`);
   }
 
+  console.log(`[Orders] ✅ Status updated: ${previousStatus} → ${status}`);
+
+  // 3. Invalidate cache
   invalidateCache('orders_all');
   invalidateCache('orders');
 
@@ -176,6 +185,7 @@ export async function updateOrderStatus(
     invalidateCache(`orders_${existing.user_id}`);
   }
 
+  // 4. Notify user
   const items = (existing.items ?? []) as OrderItem[];
   const firstItem = items[0];
   const productId = firstItem?.id;
@@ -206,7 +216,7 @@ export async function updateOrderStatus(
 export async function cancelOrder(
   orderId: string,
   reason: string = 'Cancelled by user',
-  client: SupabaseClient = supabase
+  client: SupabaseClient = supabaseAdmin // 🚨 ADMIN CLIENT NA
 ): Promise<void> {
   const { data: order, error: fetchError } = await client
     .from('orders')
@@ -272,7 +282,7 @@ export async function cancelOrder(
 export async function updatePaymentStatus(
   orderId: string,
   paymentStatus: string,
-  client: SupabaseClient = supabase
+  client: SupabaseClient = supabaseAdmin // 🚨 ADMIN CLIENT NA
 ): Promise<void> {
   const { data: existing } = await client
     .from('orders')
@@ -304,7 +314,7 @@ export async function updatePaymentStatus(
 
 export async function refreshOrders(
   userId?: string,
-  client: SupabaseClient = supabase
+  client: SupabaseClient = supabaseAdmin
 ): Promise<Order[]> {
   if (userId) {
     invalidateCache(`orders_${userId}`);

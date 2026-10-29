@@ -1,7 +1,7 @@
 // src/App.tsx
 
 import { useEffect, useState } from 'react';
-import { Routes, Route, Navigate, useLocation, Outlet, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, Outlet } from 'react-router-dom';
 import SiteLayout from './layout/SiteLayout';
 import HomePage from './pages/HomePage';
 import CatalogPage from './pages/CatalogPage';
@@ -25,8 +25,8 @@ import FavoritesPage from './pages/FavoritesPage';
 import AuthPageTransition from './components/auth/AuthPageTransition';
 import { useNotificationStore } from './store/notificationStore';
 import { useApp } from './store';
+import { useAdminStore } from './store/adminStore';
 
-// ADMIN PAGES
 import {
   AdminLayout,
   AdminLoginPage,
@@ -42,7 +42,6 @@ import {
   SettingsPage as AdminSettingsPage,
 } from './pages/admin';
 
-// ORGANIZATION PAGES
 import {
   OrganizationLayout,
   OrgLoginPage,
@@ -60,9 +59,19 @@ import {
 import { getStoredTheme, applyTheme, getThemeDefinition } from './theme';
 import { supabase } from './lib/supabaseClient';
 
-/* ============================================
-  ✅ THEME INITIALIZER
-============================================ */
+const ALLOWED_ADMINS = [
+  'ropu.sengco.sjc@phinmaed.com',
+  'javi.borlagdan.sjc@phinmaed.com',
+  'leda.lutrania.sjc@phinmaed.com',
+  'chpe.villanueva.sjc@phinmaed.com',
+  'chdi.lomocso.sjc@phinmaed.com'
+];
+
+function isAllowedAdminEmail(email?: string | null): boolean {
+  if (!email) return false;
+  return ALLOWED_ADMINS.includes(email.toLowerCase().trim());
+}
+
 function ThemeInitializer() {
   useEffect(() => {
     const theme = getStoredTheme();
@@ -75,9 +84,6 @@ function ThemeInitializer() {
   return null;
 }
 
-/* ============================================
-  ✅ GLOBAL NOTIFICATION LOADER
-============================================ */
 function GlobalNotificationLoader() {
   const { session, isLoading } = useApp();
 
@@ -97,28 +103,83 @@ function GlobalNotificationLoader() {
 }
 
 /* ============================================
-  ✅ STUDENT GUARD
+   🚨 STUDENT GUARD (CLEANED UP)
+   ✅ Ini-clear ang Admin at Org session
 ============================================ */
 function StudentGuard() {
   const { session, isLoading } = useApp();
-  if (isLoading) return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>Loading...</div>;
-  if (!session || session.role === 'Organization') return <Navigate to="/login" replace />;
-  return <Outlet />;
+  
+  const isTestAdmin = sessionStorage.getItem('sjc_test_admin') === 'true';
+  const isImpersonating = sessionStorage.getItem('sjc_impersonating') === 'true';
+  
+  if (isTestAdmin || isImpersonating) {
+    return <Outlet />; 
+  }
+
+  // 🚨 I-CLEAR ANG ADMIN SESSION KAPAG NASA STUDENT SIDE
+  localStorage.removeItem('sjcm_admin_auth');
+  localStorage.removeItem('sjc-admin-session');
+  
+  const savedSession = localStorage.getItem('sjc-session');
+  let localUser = null;
+  if (savedSession) {
+    try { localUser = JSON.parse(savedSession); } catch (e) {}
+  }
+
+  // 🚨 KUNG ORGANIZATION, CLEAR LAHAT AT THROW OUT
+  if (localUser?.role === 'Organization') {
+    localStorage.removeItem('sjc-session');
+    localStorage.removeItem('sjcm_org_session');
+    localStorage.removeItem('sjc-org-session');
+    return <Navigate to="/org/login" replace />;
+  }
+
+  if (localUser) {
+    return <Outlet />;
+  }
+
+  const isMagicLinkAuth = 
+    sessionStorage.getItem('sjc_magic_link_auth') === 'true' || 
+    window.location.hash.includes('access_token') || 
+    window.location.hash.includes('refresh_token');
+
+  if (isLoading || isMagicLinkAuth) {
+    return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#050a16', color: '#fff' }}>Authenticating...</div>;
+  }
+
+  if (session) {
+    sessionStorage.removeItem('sjc_magic_link_auth');
+    if (session.role === 'Organization') {
+      return <Navigate to="/org/login" replace />;
+    }
+    return <Outlet />;
+  }
+
+  return <Navigate to="/login" replace />;
 }
 
 /* ============================================
-  ✅ ORG GUARD
+   🚨 ORG GUARD
 ============================================ */
 function OrgGuard() {
   const { session, isLoading } = useApp();
-  if (isLoading) return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>Loading...</div>;
-  if (!session || session.role !== 'Organization') return <Navigate to="/org/login" replace />;
+  
+  if (isLoading) {
+    return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>Loading...</div>;
+  }
+
+  // 🚨 I-CLEAR ANG ADMIN AT STUDENT SESSION KAPAG NASA ORG SIDE
+  localStorage.removeItem('sjcm_admin_auth');
+  localStorage.removeItem('sjc-admin-session');
+  localStorage.removeItem('sjc-session');
+
+  if (!session || session.role !== 'Organization') {
+    return <Navigate to="/org/login" replace />;
+  }
+  
   return <Outlet />;
 }
 
-/* ============================================
-  ✅ ORG LOGIN GUARD
-============================================ */
 function OrgLoginGuard() {
   const { session, isLoading } = useApp();
   if (isLoading) return null;
@@ -127,100 +188,119 @@ function OrgLoginGuard() {
 }
 
 /* ============================================
-  ✅ ADMIN LOGIN GUARD
+   🚨 ADMIN LOGIN GUARD
 ============================================ */
 function AdminLoginGuard() {
   const [isChecking, setIsChecking] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
+    let cancelled = false;
+
     async function checkUser() {
       try {
+        // 🚨 I-CLEAR ANG STUDENT AT ORG SESSION KAPAG NASA ADMIN LOGIN
+        localStorage.removeItem('sjc-session');
+        localStorage.removeItem('sjcm_org_session');
+        localStorage.removeItem('sjc-org-session');
+
         const { data: { session } } = await supabase.auth.getSession();
-        
-        if (session?.user?.email && !session.user.email.endsWith('@phinmaed.com')) {
-          console.warn('[AdminGuard] Blocked Gmail user.');
-          window.location.replace('/login'); 
+        const currentEmail = session?.user?.email?.toLowerCase().trim();
+
+        if (currentEmail && !currentEmail.endsWith('@phinmaed.com')) {
+          await supabase.auth.signOut();
+          localStorage.clear();
+          if (!cancelled) window.location.replace('/login');
           return;
         }
+
+        if (!cancelled) setIsChecking(false);
       } catch (err) {
         console.error(err);
-      } finally {
-        setIsChecking(false);
+        if (!cancelled) setIsChecking(false);
       }
     }
+
     checkUser();
-  }, [navigate]);
+    return () => { cancelled = true; };
+  }, []);
 
   if (isChecking) {
-    return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#050a16', color: '#fff' }}>Checking authorization...</div>;
+    return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#050a16', color: '#fff' }}>Verifying secure portal...</div>;
   }
-
   return <Outlet />;
 }
 
+function AdminOtpGuard() {
+  return <Outlet />; 
+}
+
 /* ============================================
-  ✅ ADMIN ROUTE GUARD (LOCALSTORAGE FIRST)
+   🚨 ADMIN ROUTE GUARD
 ============================================ */
 function AdminRouteGuard() {
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
-  const navigate = useNavigate();
+  const { session: adminSession } = useAdminStore();
 
   useEffect(() => {
     async function checkAdminAccess() {
-      // 🚨 CHECK #1: Basahin ang localStorage (galing sa OTP verification)
-      const adminSession = localStorage.getItem('sjcm_admin_auth');
-      
+      // 🚨 I-CLEAR ANG STUDENT AT ORG SESSION KAPAG NASA ADMIN ROUTE
+      localStorage.removeItem('sjc-session');
+      localStorage.removeItem('sjcm_org_session');
+      localStorage.removeItem('sjc-org-session');
+
+      // 1. Check sa localStorage backup
+      const savedAuth = localStorage.getItem('sjcm_admin_auth');
+      if (savedAuth) {
+        try {
+          const parsed = JSON.parse(savedAuth);
+          const backupEmail = parsed?.user?.email;
+          if (backupEmail && isAllowedAdminEmail(backupEmail)) {
+            setIsAuthorized(true);
+            return;
+          }
+        } catch (e) {}
+      }
+
+      // 2. Check sa adminSession store
       if (adminSession) {
-        console.log('[AdminRouteGuard] ✅ LocalStorage session found. Allowing access.');
-        setIsAuthorized(true);
-        return; // 🚨 Dito tayo titigil, wag nang titingin sa JWT
+        const email = (adminSession as any)?.email || (adminSession as any)?.user?.email || '';
+        if (email && isAllowedAdminEmail(email)) {
+          setIsAuthorized(true);
+          return;
+        }
       }
 
-      // 🚨 CHECK #2: Kung wala sa localStorage, tignan ang JWT (Fallback)
+      // 3. Check sa Supabase JWT
       const { data: { session } } = await supabase.auth.getSession();
-
-      if (!session) {
-        setIsAuthorized(false);
-        navigate('/admin/login', { replace: true });
+      const currentEmail = session?.user?.email?.toLowerCase().trim();
+      
+      if (session && currentEmail && isAllowedAdminEmail(currentEmail)) {
+        setIsAuthorized(true);
         return;
       }
 
-      let isAdminAuthorized = session.user.app_metadata?.is_system_admin === true;
-
-      if (!isAdminAuthorized && session.user.email) {
-        const { data } = await supabase.rpc('verify_admin_email', { p_email: session.user.email });
-        isAdminAuthorized = data === true;
-      }
-
-      if (!isAdminAuthorized) {
-        console.warn('[AdminRouteGuard] ⚠️ Unauthorized Admin.');
-        // 🚨 INALIS NATIN ANG supabase.auth.signOut() DITO
-        setIsAuthorized(false);
-        navigate('/admin/login', { replace: true });
-        return;
-      }
-
-      setIsAuthorized(true);
+      // 4. Throw out
+      setIsAuthorized(false);
+      window.location.replace('/login');
     }
+    
     checkAdminAccess();
-  }, [navigate]);
+  }, [adminSession]);
 
   if (isAuthorized === null) {
-    return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>Verifying Access...</div>;
+    return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>Verifying Clearance...</div>;
   }
-
+  
   if (!isAuthorized) return null;
-
   return <Outlet />;
 }
 
-/* ============================================
-  ✅ DETECT KUNG AUTH PAGE ANG CURRENT ROUTE
-============================================ */
 function useIsAuthRoute() {
   const location = useLocation();
-  const authPaths = ['/login', '/register', '/forgot-password', '/org/login', '/admin/login', '/admin/otp'];
+  const authPaths = [
+    '/login', '/register', '/forgot-password', '/org/login', 
+    '/sjcm-internal-portal-2026', '/admin/otp'
+  ];
   return authPaths.some((path) => location.pathname === path);
 }
 
@@ -241,7 +321,11 @@ export default function App() {
           </Route>
 
           <Route element={<AdminLoginGuard />}>
-            <Route path="/admin/login" element={<AdminLoginPage />} />
+            <Route path="/sjcm-internal-portal-2026" element={<AdminLoginPage />} />
+            <Route path="/admin/login" element={<Navigate to="/login" replace />} />
+          </Route>
+
+          <Route element={<AdminOtpGuard />}>
             <Route path="/admin/otp" element={<AdminOtpPage />} />
           </Route>
         </Routes>
@@ -255,7 +339,6 @@ export default function App() {
       <GlobalNotificationLoader />
 
       <Routes>
-        {/* ORGANIZATION DASHBOARD */}
         <Route element={<OrgGuard />}>
           <Route path="/org" element={<OrganizationLayout />}>
             <Route index element={<Navigate to="/org/dashboard" replace />} />
@@ -272,7 +355,6 @@ export default function App() {
           </Route>
         </Route>
 
-        {/* STUDENT SIDE */}
         <Route element={<StudentGuard />}>
           <Route element={<SiteLayout />}>
             <Route path="/" element={<HomePage />} />
@@ -293,7 +375,6 @@ export default function App() {
           </Route>
         </Route>
 
-        {/* ADMIN DASHBOARD (Protected) */}
         <Route element={<AdminRouteGuard />}>
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboardPage />} />
@@ -309,9 +390,8 @@ export default function App() {
           </Route>
         </Route>
 
-        {/* FALLBACK */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </>
-  );
+  );  
 }

@@ -1,273 +1,607 @@
 /* src/styles/organization/OrgLoginPage.css */
 
-/* ✅ WRAPPER PARA HINDI MAKAGULO SA GLOBAL CSS */
-.org-login-wrapper {
-  --s1: 8px; --s2: 16px; --s3: 24px; --s4: 32px; --s5: 40px; --s6: 48px; --s8: 64px; --s10: 80px;
-  --fs-display: 40px; --lh-display: 48px; --fs-title: 32px; --lh-title: 40px;
-  --fs-body: 16px; --lh-body: 24px; --fs-small: 14px; --lh-small: 24px; --fs-micro: 12px; --lh-micro: 16px;
-  --r-sm: 8px; --r-md: 16px; --r-lg: 24px;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap');
 
-  --bg: #f4f6f5;
-  --bg-rgb: 244, 246, 245;
-  --glow-1: #d9efe3;
-  --glow-2: #e4e9f2;
-  --surface: rgba(255, 255, 255, 0.82);
-  --surface-2: rgba(20, 40, 30, 0.035);
-  --line: rgba(20, 40, 30, 0.12);
-  --text: #1d2823;
-  --heading: #0f1a15;
-  --text-dim: #4a5a53;
-  --text-mute: #6d7d76;
-  --accent: #16794f;
-  --accent-hi: #1b9163;
-  --accent-rgb: 22, 121, 79;
-  --accent-tx: #16794f;
-  --on-accent: #ffffff;
-  --input-bg: #ffffff;
-  --input-text: #0f1f18;
-  --input-ph: #8a98a8;
-  --input-icon: #6b7a74;
-  --input-icon-hover: #2f3f38;
-  --input-bd: #cdd6d1;
-  --shadow: rgba(20, 40, 30, 0.14);
-  --inset: rgba(255, 255, 255, 0.9);
-  --ok-bg: rgba(209, 250, 229, .9); --ok-bd: rgba(16, 185, 129, .5); --ok-tx: #065f46;
-  --err-bg: rgba(255, 228, 230, .9); --err-bd: rgba(244, 63, 94, .5); --err-tx: #9f1239;
+/* ============================================
+   1. BASE STYLES & VARIABLES
+============================================ */
+.ol-page {
+  --ol-bg: #040a18;
+  --ol-ink: #e9efff;
+  --ol-ink-2: rgba(214, 225, 252, 0.72);
+  --ol-ink-3: rgba(186, 202, 240, 0.5);
+  --ol-sapphire: #3b82f6;
+  --ol-sapphire-hi: #6ea8ff;
+  --ol-sapphire-lo: #1d4ed8;
+  --ol-edge: rgba(150, 185, 255, 0.16);
+  --ol-ok: #7ee2b8;
+  --ol-err: #ff9db0;
+  --ol-head: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+  --ol-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  --font-head: 'Libre Baskerville', Georgia, serif;
-  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --bg-image: url('/assets/campus-bg.jpg');
-  --students-image: url('/assets/students.jpg');
-
-  /* Full screen setup */
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  position: fixed;
+  inset: 0;
   z-index: 50;
-  min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--s3);
-  font-family: var(--font-body);
-  font-size: var(--fs-body);
-  line-height: var(--lh-body);
-  color: var(--text) !important;
-  background-color: var(--bg) !important;
+  padding: 24px 20px;
+  padding-top: max(24px, env(safe-area-inset-top, 0px));
+  padding-bottom: max(24px, env(safe-area-inset-bottom, 0px));
+  overflow-y: auto;
+  font-family: var(--ol-body);
+  font-size: 16px;
+  line-height: 1.5;
+  
+  /* 🚨 SIGURADUHING PUTI ANG TEXT AT DARK MODE */
+  color: var(--ol-ink) !important;
+  color-scheme: dark;
+  background: transparent;
   -webkit-font-smoothing: antialiased;
 }
 
-.org-login-wrapper *, .org-login-wrapper *::before, .org-login-wrapper *::after {
-  box-sizing: border-box;
-  margin: 0;
-}
+.ol-page *,
+.ol-page *::before,
+.ol-page *::after { box-sizing: border-box; margin: 0; }
 
-.org-login-wrapper .page-bg {
+/* ============================================
+   2. BACKGROUND
+============================================ */
+.ol-bg {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: 0;
+  pointer-events: none;
   background:
-    var(--bg-image) center / cover no-repeat,
-    radial-gradient(circle at 15% 10%, var(--glow-1) 0%, transparent 55%),
-    radial-gradient(circle at 90% 95%, var(--glow-2) 0%, transparent 60%),
-    var(--bg);
-}
-.org-login-wrapper .page-bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(var(--bg-rgb), 0.88) 0%, rgba(var(--bg-rgb), 0.72) 100%);
+    radial-gradient(900px 560px at 14% 8%, rgba(59, 130, 246, 0.15), transparent 62%),
+    radial-gradient(760px 520px at 92% 96%, rgba(99, 102, 241, 0.1), transparent 62%),
+    linear-gradient(160deg, rgba(4, 10, 24, 0.6), rgba(6, 16, 40, 0.7) 55%, rgba(3, 8, 20, 0.65)),
+    url('/campus.png') center / cover no-repeat,
+    var(--ol-bg);
 }
 
-.org-login-wrapper .shell {
+.ol-bg::before,
+.ol-bg::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+}
+.ol-bg::before { width: 420px; height: 420px; top: 8%; left: 6%; background: rgba(59, 130, 246, 0.16); }
+.ol-bg::after  { width: 360px; height: 360px; bottom: 4%; right: 6%; background: rgba(99, 102, 241, 0.12); }
+
+/* ============================================
+   3. SHELL & ZOOM FIX
+============================================ */
+.ol-shell {
   position: relative;
   z-index: 1;
-  width: 100%;
   max-width: 1120px;
+  margin: auto;
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--s4);
+  gap: 28px;
+  
+  /* Zoom Fix (0.92 scale) */
+  zoom: normal !important; 
+  transform: scale(0.92);
+  transform-origin: center center;
+  width: 108.7%;
+  height: auto;
 }
 
 @media (min-width: 1024px) {
-  .org-login-wrapper .shell { grid-template-columns: 1fr 1fr; align-items: stretch; }
+  .ol-shell { grid-template-columns: 1fr 1fr; align-items: stretch; }
 }
 
-.org-login-wrapper .panel {
-  background: var(--surface);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  box-shadow: 0 24px 48px var(--shadow), inset 0 1px 0 var(--inset);
-  --pad: var(--s4);
-  padding: var(--pad);
+/* ============================================
+   4. PANELS (CLAYMORPHISM)
+============================================ */
+.ol-panel {
+  position: relative;
+  padding: 32px;
+  border-radius: 36px; 
+  background: linear-gradient(145deg, rgba(30, 45, 80, 0.6), rgba(10, 20, 45, 0.8));
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 
+    20px 20px 60px rgba(0, 0, 0, 0.6),
+    -10px -10px 40px rgba(255, 255, 255, 0.03),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.08),
+    inset -6px -6px 12px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(40px) saturate(150%);
+  -webkit-backdrop-filter: blur(40px) saturate(150%);
+  animation: olRise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@media (min-width: 640px) {
-  .org-login-wrapper .panel { --pad: var(--s6); }
+.ol-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 28%);
 }
 
-/* ✅ FORCE COLORS PARA HINDI MAGING PUTI */
-.org-login-wrapper .eyebrow {
-  font-size: var(--fs-micro) !important;
-  line-height: var(--lh-micro) !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.08em !important;
-  text-transform: uppercase !important;
-  color: var(--accent-tx) !important;
-  margin-bottom: var(--s1) !important;
+.ol-login-panel { animation-delay: 0.08s; }
+
+@media (min-width: 640px) { .ol-panel { padding: 48px; } }
+
+@keyframes olRise {
+  from { opacity: 0; transform: translateY(22px) scale(0.985); }
+  to   { opacity: 1; transform: none; }
 }
 
-.org-login-wrapper h1, 
-.org-login-wrapper h2 {
-  font-family: var(--font-head) !important;
-  font-weight: 700 !important;
-  color: var(--heading) !important;
-  letter-spacing: -0.01em !important;
+/* ============================================
+   5. TYPOGRAPHY
+============================================ */
+.ol-eyebrow {
+  margin-bottom: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ol-sapphire-hi) !important;
 }
 
-.org-login-wrapper h1 { font-size: var(--fs-display) !important; line-height: var(--lh-display) !important; margin-bottom: var(--s2) !important; }
-.org-login-wrapper h2 { font-size: var(--fs-title) !important; line-height: var(--lh-title) !important; margin-bottom: var(--s1) !important; }
-
-.org-login-wrapper .lead {
-  font-size: var(--fs-body) !important;
-  line-height: var(--lh-body) !important;
-  color: var(--text-dim) !important;
-  max-width: 56ch !important;
+.ol-title,
+.ol-brand-title {
+  font-family: var(--ol-head);
+  font-weight: 700;
+  color: var(--ol-ink) !important;
+  letter-spacing: -0.012em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Guidelines */
-.org-login-wrapper .guidelines { display: flex; flex-direction: column; justify-content: center; }
-.org-login-wrapper .guidelines__head { margin-bottom: var(--s4); }
-.org-login-wrapper .acc-list { display: flex; flex-direction: column; gap: var(--s2); }
-.org-login-wrapper .acc {
-  background: var(--surface-2);
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  transition: border-color .25s ease, background-color .25s ease;
-}
-.org-login-wrapper .acc:hover { border-color: rgba(var(--accent-rgb), 0.45); }
-.org-login-wrapper .acc.is-open { background: rgba(var(--accent-rgb), 0.07); border-color: rgba(var(--accent-rgb), 0.4); }
+.ol-title { font-size: clamp(30px, 4vw, 40px); line-height: 1.2; margin-bottom: 14px; }
+.ol-brand-title { font-size: clamp(26px, 3vw, 32px); line-height: 1.2; }
 
-.org-login-wrapper .acc__trigger {
+.ol-lead {
+  max-width: 54ch;
+  font-size: 15px;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  color: var(--ol-ink-2) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================
+   6. GUIDELINES (LEFT)
+============================================ */
+.ol-guidelines { display: flex; flex-direction: column; justify-content: center; }
+.ol-guidelines__head { margin-bottom: 30px; }
+
+.ol-acc-list { display: flex; flex-direction: column; gap: 12px; }
+
+.ol-acc {
+  border-radius: 24px;
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all 0.35s ease;
+}
+
+.ol-acc:hover:not(.is-open) {
+  background: rgba(140, 175, 255, 0.05);
+  border-color: rgba(150, 185, 255, 0.12);
+}
+
+.ol-acc.is-open {
+  transform: translateY(-2px);
+  background: linear-gradient(145deg, rgba(45, 70, 130, 0.4), rgba(20, 35, 70, 0.6));
+  border-color: rgba(120, 170, 255, 0.36);
+  box-shadow: 
+    12px 12px 30px rgba(0, 0, 0, 0.5),
+    -6px -6px 20px rgba(255, 255, 255, 0.02),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.1),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.4);
+}
+
+.ol-acc__trigger {
   width: 100%;
+  min-height: 72px;
   display: flex;
   align-items: center;
-  gap: var(--s2);
-  padding: var(--s2) var(--s3);
-  min-height: var(--s10);
-  background: none;
+  gap: 16px;
+  padding: 14px 20px;
   border: 0;
-  color: var(--text) !important;
+  border-radius: 24px;
+  background: none;
   font: inherit;
   text-align: left;
+  color: var(--ol-ink) !important;
   cursor: pointer;
-  border-radius: var(--r-md);
 }
 
-.org-login-wrapper .acc__icon {
-  flex: none; width: var(--s5); height: var(--s5);
-  display: grid; place-items: center;
-  border-radius: var(--r-sm);
-  background: rgba(var(--accent-rgb), 0.14);
-  border: 1px solid rgba(var(--accent-rgb), 0.3);
-  color: var(--accent-tx) !important;
-  font-size: var(--fs-body);
-}
-
-.org-login-wrapper .acc__title {
-  flex: 1; font-size: var(--fs-body); line-height: var(--lh-body); font-weight: 600; color: var(--text) !important;
-}
-
-.org-login-wrapper .acc__chevron {
-  color: var(--accent-tx) !important; font-size: var(--fs-micro); transition: transform .3s ease;
-}
-.org-login-wrapper .acc.is-open .acc__chevron { transform: rotate(180deg); }
-
-.org-login-wrapper .acc__body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
-.org-login-wrapper .acc.is-open .acc__body { grid-template-rows: 1fr; }
-.org-login-wrapper .acc__inner { overflow: hidden; }
-.org-login-wrapper .acc__inner p {
-  padding: 0 var(--s3) var(--s3) calc(var(--s3) + var(--s5) + var(--s2));
-  font-size: var(--fs-small); line-height: var(--lh-small); color: var(--text-dim) !important;
-}
-
-/* Login Panel */
-.org-login-wrapper .login {
-  position: relative; overflow: hidden;
+.ol-acc__icon {
+  flex: none;
+  width: 42px;
+  height: 42px;
   display: grid;
-  grid-template-rows: minmax(192px, 1fr) auto minmax(192px, 1fr);
-  padding-top: 0; padding-bottom: 0;
-}
-.org-login-wrapper .login__content { grid-row: 2; display: flex; flex-direction: column; }
-.org-login-wrapper .login__top { display: flex; flex-direction: column; gap: var(--s2); margin-bottom: var(--s4); }
-.org-login-wrapper .login__brand { display: flex; align-items: center; gap: var(--s3); }
-.org-login-wrapper .login__brand h2 { margin-bottom: 0 !important; }
-.org-login-wrapper .login__logo { flex: none; width: 96px; height: 96px; object-fit: contain; }
-.org-login-wrapper .login__logo-fallback {
-  display: none; flex: none; width: 96px; height: 96px; border-radius: 50%;
-  align-items: center; justify-content: center;
-  background: rgba(var(--accent-rgb), 0.14); border: 1px solid rgba(var(--accent-rgb), 0.4);
-  font-family: var(--font-head); font-weight: 700; font-size: var(--s3); color: var(--accent-tx) !important;
-}
-.org-login-wrapper .login__top .lead { font-size: var(--fs-small) !important; line-height: var(--lh-small) !important; }
-
-.org-login-wrapper .login__art {
-  grid-row: 3; position: relative; margin: 0 calc(-1 * var(--pad));
-  background: var(--students-image) center top / cover no-repeat,
-              linear-gradient(180deg, rgba(var(--accent-rgb), 0.10), rgba(var(--accent-rgb), 0.22));
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 64px);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 64px);
-}
-.org-login-wrapper .login__art::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(to bottom, rgba(var(--bg-rgb), 0) 55%, rgba(var(--bg-rgb), 0.55) 100%);
+  place-items: center;
+  border-radius: 16px;
+  color: var(--ol-sapphire-hi);
+  background: rgba(4, 12, 36, 0.5);
+  border: 1px solid rgba(150, 185, 255, 0.14);
+  box-shadow: inset 3px 3px 7px rgba(0, 3, 14, 0.65), inset -2px -2px 5px rgba(120, 160, 255, 0.06);
+  transition: all 0.3s ease;
 }
 
-/* Forms */
-.org-login-wrapper .form { display: flex; flex-direction: column; gap: var(--s3); }
-.org-login-wrapper .field label {
-  display: block; margin-bottom: var(--s1); font-size: var(--fs-small); line-height: var(--lh-small); font-weight: 500; color: var(--text) !important;
+.ol-acc.is-open .ol-acc__icon {
+  color: #fff !important;
+  background: linear-gradient(145deg, #4f8ff7, #2358d9);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 
+    4px 4px 10px rgba(0, 0, 0, 0.5),
+    -2px -2px 6px rgba(255, 255, 255, 0.1),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.3);
 }
-.org-login-wrapper .input-wrap { position: relative; }
-.org-login-wrapper .input-wrap > .icon-left {
-  position: absolute; top: 0; left: 0; width: var(--s6); height: var(--s6);
-  display: grid; place-items: center; line-height: 1; color: var(--text-mute) !important; font-size: var(--fs-small); pointer-events: none;
-}
-.org-login-wrapper .input {
-  width: 100%; height: var(--s6); padding: 0 var(--s6);
-  font: inherit; font-size: var(--fs-body); color: var(--input-text) !important;
-  background: var(--input-bg) !important; border: 1px solid var(--input-bd) !important;
-  border-radius: var(--r-sm) !important; outline: none; transition: box-shadow .2s ease, border-color .2s ease;
-}
-.org-login-wrapper .input::placeholder { color: var(--input-ph) !important; }
-.org-login-wrapper .input:focus { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.35) !important; }
 
-.org-login-wrapper .toggle-pw {
-  position: absolute; top: 0; right: 0; width: var(--s6); height: var(--s6);
-  display: grid; place-items: center; padding: 0; line-height: 1;
-  background: none; border: 0; border-radius: var(--r-sm); color: var(--input-icon) !important; cursor: pointer;
-}
-.org-login-wrapper .toggle-pw:hover { color: var(--input-icon-hover) !important; }
+.ol-acc__title { flex: 1; font-size: 15px; font-weight: 600; letter-spacing: 0.01em; color: var(--ol-ink) !important; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4); }
+.ol-acc__chevron { flex: none; color: var(--ol-ink-3); transition: transform 0.4s ease, color 0.3s ease; }
+.ol-acc.is-open .ol-acc__chevron { transform: rotate(180deg); color: var(--ol-sapphire-hi); }
 
-.org-login-wrapper .btn {
-  margin-top: var(--s1); width: 100%; height: var(--s6);
-  display: inline-flex; align-items: center; justify-content: center; gap: var(--s1);
-  font: inherit; font-size: var(--fs-body); font-weight: 600; line-height: 1;
-  color: var(--on-accent) !important; background: var(--accent) !important;
-  border: 0; border-radius: var(--r-sm) !important; box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.3);
-  cursor: pointer; transition: background-color .2s ease, box-shadow .2s ease, transform .2s ease;
-}
-.org-login-wrapper .btn:hover { background: var(--accent-hi) !important; box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.45); }
-.org-login-wrapper .btn:active { transform: translateY(1px); }
-.org-login-wrapper .btn:disabled { opacity: .8; cursor: not-allowed; }
+.ol-acc__body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+.ol-acc.is-open .ol-acc__body { grid-template-rows: 1fr; }
 
-.org-login-wrapper .toast {
-  display: none; align-items: flex-start; gap: var(--s2);
-  margin-top: var(--s3); padding: var(--s2); border-radius: var(--r-sm);
-  font-size: var(--fs-small); line-height: var(--lh-small); font-weight: 500;
+.ol-acc__inner { overflow: hidden; visibility: hidden; transition: visibility 0s linear 0.4s; }
+.ol-acc.is-open .ol-acc__inner { visibility: visible; transition-delay: 0s; }
+
+.ol-acc__inner p {
+  padding: 0 24px 22px 78px;
+  font-size: 14px;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  color: var(--ol-ink-2) !important;
 }
-.org-login-wrapper .toast.show { display: flex; }
-.org-login-wrapper .toast--success { background: var(--ok-bg); border: 1px solid var(--ok-bd); color: var(--ok-tx) !important; }
-.org-login-wrapper .toast--error   { background: var(--err-bg); border: 1px solid var(--err-bd); color: var(--err-tx) !important; }
-.org-login-wrapper .toast i { margin-top: 4px; }
+
+/* ============================================
+   7. LOGIN FORM (RIGHT)
+============================================ */
+.ol-login-panel { display: flex; flex-direction: column; justify-content: center; }
+.ol-login-inner { width: 100%; max-width: 400px; margin: 0 auto; }
+
+.ol-brand { display: flex; align-items: center; gap: 22px; margin-bottom: 18px; }
+
+.ol-logo-ring {
+  position: relative;
+  flex: none;
+  width: 96px;
+  height: 96px;
+  padding: 7px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.04) 45%, rgba(110, 168, 255, 0.16));
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 14px 28px -6px rgba(0, 4, 18, 0.7), 0 0 34px rgba(59, 130, 246, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.4), inset 0 -8px 14px rgba(0, 4, 18, 0.28);
+}
+
+.ol-logo-ring::after {
+  content: '';
+  position: absolute;
+  top: 5%;
+  left: 14%;
+  width: 52%;
+  height: 28%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), transparent);
+}
+
+.ol-logo { display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: contain; background: rgba(4, 12, 36, 0.45); }
+.ol-login-lead { margin-bottom: 34px; font-size: 14px; }
+
+.ol-form { display: flex; flex-direction: column; gap: 24px; }
+.ol-field { display: flex; flex-direction: column; gap: 10px; }
+
+.ol-field label {
+  padding: 0 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ol-ink-3) !important;
+}
+
+/* Input Fields - Claymorphism */
+.ol-input {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  align-items: center;
+  height: 54px;
+  border-radius: 18px;
+  background: rgba(10, 20, 45, 0.8); /* Mas madilim para kitang-kita ang text */
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(150, 185, 255, 0.2);
+  box-shadow: 
+    inset 6px 6px 12px rgba(0, 0, 0, 0.6),
+    inset -4px -4px 10px rgba(255, 255, 255, 0.05);
+  transition: all 0.35s ease;
+}
+
+.ol-input:hover { border-color: rgba(150, 185, 255, 0.4); }
+
+.ol-input:focus-within {
+  border-color: rgba(110, 168, 255, 0.7);
+  box-shadow: 
+    inset 6px 6px 12px rgba(0, 0, 0, 0.7),
+    inset -4px -4px 10px rgba(255, 255, 255, 0.1),
+    0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+.ol-input__icon {
+  grid-column: 1;
+  justify-self: center;
+  width: 18px;
+  height: 18px;
+  color: var(--ol-ink-3);
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+.ol-input:focus-within .ol-input__icon { color: var(--ol-sapphire-hi); }
+
+.ol-page .ol-input .ol-input__field {
+  grid-column: 2;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0 12px 0 0;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background: transparent !important;
+  box-shadow: none;
+  font: 500 15px/1.2 var(--ol-body);
+  letter-spacing: 0.01em;
+  color: var(--ol-ink) !important;
+  -webkit-text-fill-color: var(--ol-ink) !important;
+}
+
+.ol-input__field::placeholder { color: rgba(186, 202, 240, 0.4) !important; font-weight: 400; }
+.ol-input__field:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Fix Autofill Glow */
+.ol-input__field:-webkit-autofill,
+.ol-input__field:-webkit-autofill:hover, 
+.ol-input__field:-webkit-autofill:focus, 
+.ol-input__field:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #0e1a38 inset !important; 
+  -webkit-text-fill-color: var(--ol-ink) !important; 
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Toggle Password */
+.ol-toggle {
+  grid-column: 3;
+  width: 38px;
+  height: 38px;
+  margin-right: 8px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 11px;
+  cursor: pointer;
+  color: var(--ol-ink-2);
+  background: linear-gradient(145deg, rgba(140, 175, 255, 0.12), rgba(140, 175, 255, 0.02));
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5), inset -1px -1px 3px rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+.ol-toggle:hover { color: var(--ol-sapphire-hi); }
+.ol-toggle:active { box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.6); }
+
+/* Login Button - Claymorphism */
+.ol-btn {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 54px;
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  font: 700 13px/1 var(--ol-body);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #fff !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  background: linear-gradient(145deg, #4f8ff7, #2358d9);
+  box-shadow: 
+    8px 8px 20px rgba(0, 0, 0, 0.6),
+    inset 2px 2px 6px rgba(255, 255, 255, 0.2),
+    inset -4px -4px 10px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.ol-btn:hover:not(:disabled) {
+  box-shadow: 
+    4px 4px 10px rgba(0, 0, 0, 0.6), 
+    inset 2px 2px 6px rgba(255, 255, 255, 0.2),
+    inset -4px -4px 10px rgba(0, 0, 0, 0.5);
+  transform: translateY(2px);
+  filter: brightness(1.08);
+}
+
+.ol-btn:active:not(:disabled) {
+  transform: translateY(4px);
+  filter: brightness(0.96);
+  box-shadow: inset 8px 8px 16px rgba(0, 0, 0, 0.6), inset -8px -8px 16px rgba(255, 255, 255, 0.1);
+}
+
+.ol-btn:disabled { cursor: progress; opacity: 0.8; }
+
+.ol-spinner {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  animation: olSpin 0.7s linear infinite;
+}
+@keyframes olSpin { to { transform: rotate(360deg); } }
+
+/* Alert Messages */
+.ol-alert {
+  margin-top: 24px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.55;
+  background: rgba(8, 18, 46, 0.55);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--ol-edge);
+  animation: olRise 0.4s ease both;
+}
+.ol-alert--success { color: #c8f5e1 !important; border-color: rgba(126, 226, 184, 0.4); border-left: 3px solid var(--ol-ok); }
+.ol-alert--error   { color: #ffd3dc !important; border-color: rgba(255, 157, 176, 0.35); border-left: 3px solid var(--ol-err); animation-name: olShake; animation-duration: 0.4s; }
+
+@keyframes olShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.ol-acc__trigger:focus-visible,
+.ol-toggle:focus-visible,
+.ol-btn:focus-visible {
+  outline: 2px solid var(--ol-sapphire-hi);
+  outline-offset: 3px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .ol-page { padding-left: 12px; padding-right: 12px; }
+  .ol-panel { padding: 26px 20px; border-radius: 24px; }
+  .ol-brand { gap: 16px; }
+  .ol-logo-ring { width: 76px; height: 76px; }
+  .ol-acc__inner p { padding-left: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ol-panel, .ol-alert, .ol-spinner { animation-duration: 0.01ms; animation-iteration-count: 1; }
+  .ol-acc, .ol-acc__body, .ol-btn, .ol-input { transition: none; }
+}
+/* ============================================
+   🚨 FINAL BACKGROUND FIX (PANGITAS SA GLOBAL OVERLAY)
+============================================ */
+
+/* 1. Pilitin ang page na maging transparent para lumabas ang image */
+.ol-page {
+  background: transparent !important;
+}
+
+/* 2. Bawasan ang dilim ng campus image sa .ol-bg */
+.ol-bg {
+  background:
+    radial-gradient(900px 560px at 14% 8%, rgba(59, 130, 246, 0.15), transparent 62%),
+    radial-gradient(760px 520px at 92% 96%, rgba(99, 102, 241, 0.1), transparent 62%),
+    /* 🚨 GINAWANG 0.2 HANGGANG 0.3 LANG PARA MALIWANAG */
+    linear-gradient(160deg, rgba(4, 10, 24, 0.2), rgba(6, 16, 40, 0.3) 55%, rgba(3, 8, 20, 0.25)),
+    url('/campus.png') center / cover no-repeat,
+    var(--ol-bg) !important;
+}
+
+/* 3. Alisin ang dark overlay ng body kapag nasa login page */
+body.org-body-bg::before {
+  display: none !important;
+}
+/* ============================================
+   🚨 FINAL TEXT COLOR FIX (PILITING PUTI)
+============================================ */
+
+/* Pilitin ang lahat ng text sa loob ng .ol-page na maging puti/light */
+.ol-page,
+.ol-page h1, 
+.ol-page h2, 
+.ol-page h3, 
+.ol-page p, 
+.ol-page span, 
+.ol-page label,
+.ol-page button:not(.ol-btn) {
+  color: #e9efff !important; 
+}
+
+/* Gawing light blue/faded ang mga descriptions at subtitles */
+.ol-page .ol-lead,
+.ol-page .ol-acc__inner p,
+.ol-page .ol-login-lead {
+  color: rgba(214, 225, 252, 0.8) !important;
+}
+
+/* Siguraduhing puti ang mga titles */
+.ol-page .ol-title,
+.ol-page .ol-brand-title,
+.ol-page .ol-acc__title {
+  color: #ffffff !important;
+}
+
+/* Siguraduhing puti ang text sa loob ng input fields */
+.ol-page .ol-input .ol-input__field {
+  color: #e9efff !important;
+  -webkit-text-fill-color: #e9efff !important;
+  caret-color: #e9efff !important;
+}
+
+/* Siguraduhing puti ang placeholder */
+.ol-page .ol-input__field::placeholder {
+  color: rgba(186, 202, 240, 0.5) !important;
+}
+/* ============================================
+   🚨 FINAL FORCE WHITE TEXT (OVERRIDE LIGHT MODE)
+============================================ */
+
+/* Pilitin lahat ng elements sa loob ng .ol-page na maging puti */
+.ol-page,
+.ol-page h1,
+.ol-page h2,
+.ol-page h3,
+.ol-page h4,
+.ol-page p,
+.ol-page span,
+.ol-page label,
+.ol-page div,
+.ol-page button,
+.ol-page a,
+.ol-page strong {
+  color: #e9efff !important;
+}
+
+/* Gawing light blue/faded ang descriptions at subtitles */
+.ol-page .ol-lead,
+.ol-page .ol-login-lead,
+.ol-page .ol-acc__inner p {
+  color: rgba(214, 225, 252, 0.85) !important;
+}
+
+/* Siguraduhing puting-puti ang mga titles */
+.ol-page .ol-title,
+.ol-page .ol-brand-title,
+.ol-page .ol-acc__title {
+  color: #ffffff !important;
+}
+
+/* Gawing light gray/blue ang EMAIL at PASSWORD labels */
+.ol-page .ol-field label {
+  color: rgba(186, 202, 240, 0.7) !important;
+}
+
+/* Input fields - puting text */
+.ol-page .ol-input .ol-input__field {
+  color: #e9efff !important;
+  -webkit-text-fill-color: #e9efff !important;
+  caret-color: #e9efff !important;
+}
+
+/* Placeholder */
+.ol-page .ol-input__field::placeholder {
+  color: rgba(186, 202, 240, 0.5) !important;
+}
+
+/* Override ang index.css light mode variables */
+html[data-mode="light"] .ol-page {
+  --text-primary: #e9efff !important;
+  --text-secondary: rgba(214, 225, 252, 0.72) !important;
+  --heading-color: #ffffff !important;
+  --background: #040a18 !important;
+}

@@ -13,32 +13,17 @@ import { restoreAdminAppearance } from './lib/adminTheme';
 
 restoreAdminAppearance();
 
-// 🚨 ANTI-CONSOLE (Pinigilan ang right click, F12, at console logs sa production)
-function disableConsole() {
-  // Disable right-click
-  document.addEventListener('contextmenu', (e) => e.preventDefault());
+const ALLOWED_ADMINS = [
+  'ropu.sengco.sjc@phinmaed.com',
+  'javi.borlagdan.sjc@phinmaed.com',
+  'leda.lutrania.sjc@phinmaed.com',
+  'chpe.villanueva.sjc@phinmaed.com',
+  'chdi.lomocso.sjc@phinmaed.com'
+];
 
-  // Disable keyboard shortcuts (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U)
-  document.addEventListener('keydown', (e) => {
-    if (
-      e.key === 'F12' ||
-      (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
-      (e.ctrlKey && e.key === 'U')
-    ) {
-      e.preventDefault();
-      return false;
-    }
-  });
-
-  // Override console methods kapag production
-  if (process.env.NODE_ENV === 'production') {
-    const noop = () => {};
-    console.log = noop;
-    console.warn = noop;
-    console.error = noop;
-    console.info = noop;
-    console.debug = noop;
-  }
+function isAllowedAdminEmail(email?: string | null): boolean {
+  if (!email) return false;
+  return ALLOWED_ADMINS.includes(email.toLowerCase().trim());
 }
 
 function Root() {
@@ -47,17 +32,13 @@ function Root() {
     disableConsole();
 
     document.documentElement.style.setProperty('overflow', 'auto', 'important');
-    document.documentElement.style.setProperty('height', 'auto', 'important');
     document.body.style.setProperty('overflow', 'auto', 'important');
-    document.body.style.setProperty('height', 'auto', 'important');
-    
     const root = document.getElementById('root');
     if (root) {
       root.style.setProperty('overflow', 'visible', 'important');
       root.style.setProperty('height', 'auto', 'important');
     }
   }, []);
-
   return <App />;
 }
 
@@ -65,8 +46,84 @@ async function bootstrap(): Promise<void> {
   await ensureSeeded();
   applyTheme(getStoredTheme());
 
-  // 🚨 TINANGGAL NATIN ANG LAHAT NG REDIRECT LOGIC DITO
-  // Ang App.tsx (StudentGuard, OrgGuard, AdminRouteGuard) na ang bahala sa lahat.
+  const pathname = window.location.pathname;
+  
+  // 🚨 ITO ANG TAMANG SECRET ADMIN URL
+  const SECRET_ADMIN_URL = '/sjcm-internal-portal-2026';
+
+  // 🚨 TUKUYIN KUNG NASA ADMIN ROUTE
+  const isAdminRoute = pathname.startsWith('/admin') || pathname === SECRET_ADMIN_URL;
+  const isOrgRoute = pathname.startsWith('/org');
+
+  const isMagicLink = window.location.hash.includes('access_token') || window.location.hash.includes('refresh_token');
+  
+  if (isMagicLink) {
+    sessionStorage.setItem('sjc_magic_link_auth', 'true');
+    console.log('[Main] 🎟️ Magic link detected. Waiting for Supabase...');
+    
+    await new Promise<void>((resolve) => {
+      const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
+        console.log('[Main] Auth Event:', event);
+        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+          authListener.subscription.unsubscribe();
+          resolve();
+        }
+      });
+
+      setTimeout(() => {
+        authListener.subscription.unsubscribe();
+        resolve();
+      }, 3000);
+    });
+  }
+
+  const isTestAdmin = sessionStorage.getItem('sjc_test_admin') === 'true';
+  const isImpersonating = sessionStorage.getItem('sjc_impersonating') === 'true';
+
+  if (!isOrgRoute && !isAdminRoute) {
+    localStorage.removeItem('sjcm_org_session');
+    localStorage.removeItem('sjc-org-session');
+  }
+
+  const { data: { session } } = await supabase.auth.getSession();
+  const currentEmail = session?.user?.email?.toLowerCase().trim() ?? null;
+  const isSystemAdmin = session?.user?.app_metadata?.is_system_admin === true;
+  const isAdminEmail = isAllowedAdminEmail(currentEmail);
+
+  // HARANG #1: GMAIL DETECTED
+  // 🚨 I-BYPASS ANG CHECK KUNG NAKA-IMPERSONATE, TEST MODE, MAGIC LINK, ORG ROUTE, O ADMIN ROUTE
+  const shouldBypassEmailCheck = isTestAdmin || isImpersonating || isMagicLink || isOrgRoute || isAdminRoute;
+  
+  if (currentEmail && !currentEmail.endsWith('@phinmaed.com') && !isAdminEmail && !shouldBypassEmailCheck) {
+    console.warn('[Main] 🚨 Gmail user detected. Forcing signout.');
+    await supabase.auth.signOut();
+    localStorage.clear();
+    if (isAdminRoute) {
+      window.location.replace('/login');
+      return;
+    }
+  }
+
+  // HARANG #2: STRICT ADMIN ROUTE PROTECTION
+  if (isAdminRoute) {
+    const isPublicAdminRoute = pathname === SECRET_ADMIN_URL || pathname === '/admin/otp';
+    
+    if (!currentEmail && !isPublicAdminRoute) {
+      window.location.replace('/login');
+      return;
+    }
+    
+    // 🚨 DAPAT ALLOWED ADMIN EMAIL AT is_system_admin === true
+    if (currentEmail && !isPublicAdminRoute) {
+      if (!isAdminEmail || !isSystemAdmin) {
+        console.warn('[Main] 🚨 Unauthorized admin user blocked:', currentEmail, 'isSystemAdmin:', isSystemAdmin);
+        await supabase.auth.signOut();
+        localStorage.clear();
+        window.location.replace('/login');
+        return;
+      }
+    }
+  }
 
   createRoot(document.getElementById('root')!).render(
     <StrictMode>

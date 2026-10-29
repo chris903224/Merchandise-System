@@ -1,6 +1,7 @@
 // src/services/organization/orgOrdersService.ts
 
-import { supabase } from '../../lib/supabaseClient';
+// 🚨 IDINAGDAG ANG supabaseAdmin PARA SA WRITE OPERATIONS
+import { supabase, supabaseAdmin } from '../../lib/supabaseClient'; 
 import type { Order } from '../../types';
 import { triggerOrderStatusNotifications } from '../orderNotifications';
 import { invalidateCache } from '../../utils/cache';
@@ -103,7 +104,7 @@ export async function fetchFreshOrgOrders(): Promise<Array<Order & { img: string
     }
   });
 
-  // 2. Kunin ang orders
+  // 2. Kunin ang orders gamit ang supabaseOrg (authenticated)
   const { data: ordersData, error: ordersError } = await supabase
     .from('orders')
     .select('*')
@@ -178,7 +179,8 @@ async function triggerOrgNotification(
   newStatus: string
 ): Promise<void> {
   try {
-    const { data: order, error } = await supabase
+    // 🚨 GAMITIN ANG ADMIN CLIENT PARA MAKAPAG-INSERT NG NOTIFICATION
+    const { data: order, error } = await supabaseAdmin
       .from('orders')
       .select('*')
       .eq('id', orderId)
@@ -225,8 +227,8 @@ export async function setOrgOrderStatus(
     throw new Error('Unauthorized: Organization session required.');
   }
 
-  // 2. Kunin ang kasalukuyang order
-  const { data: order, error: fetchError } = await supabase
+  // 2. Kunin ang kasalukuyang order GAMIT ANG supabaseAdmin
+  const { data: order, error: fetchError } = await supabaseAdmin
     .from('orders')
     .select('*')
     .eq('id', id)
@@ -243,8 +245,8 @@ export async function setOrgOrderStatus(
     return;
   }
 
-  // 3. I-update ang status sa database
-  const { error: updateError } = await supabase
+  // 3. I-update ang status sa database GAMIT ANG supabaseAdmin PARA MA-BYPASS ANG RLS
+  const { error: updateError } = await supabaseAdmin
     .from('orders')
     .update({ order_status: status })
     .eq('id', id);
@@ -256,7 +258,7 @@ export async function setOrgOrderStatus(
   invalidateCache('orders_all');
   invalidateCache(`orders_${order.user_id}`);
 
-  console.log(`[OrgOrders] Status updated: ${previousStatus} → ${status}`);
+  console.log(`[OrgOrders] ✅ Status updated sa DB: ${previousStatus} → ${status}`);
 
   // 5. I-trigger ang notification (non-fatal)
   await triggerOrgNotification(id, previousStatus, status);
@@ -268,7 +270,7 @@ export async function advanceOrgOrder(id: string): Promise<OrgOrderStatus | null
     throw new Error('Unauthorized: Organization session required.');
   }
 
-  const { data: order, error: fetchError } = await supabase
+  const { data: order, error: fetchError } = await supabaseAdmin
     .from('orders')
     .select('*')
     .eq('id', id)

@@ -7706,3 +7706,89 @@ html body input.auth-quick-login__input[style] {
     right: 0.4rem !important;
   }
 }
+/* ============================================
+   🚨 NOTICE BANNER (Pickup Notification)
+============================================ */
+.notice-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(34, 145, 92, 0.15); /* Light green background */
+  border: 1px solid rgba(34, 145, 92, 0.3);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  color: #fff;
+  position: relative;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.notice-banner__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #22915c;
+  border-radius: 50%;
+  color: white;
+  flex-shrink: 0;
+}
+
+.notice-banner__body {
+  flex: 1;
+}
+
+.notice-banner__title {
+  margin: 0 0 4px 0;
+  font-weight: 700;
+  font-size: 16px;
+  color: #fff;
+}
+
+.notice-banner__description {
+  margin: 0;
+  font-size: 14px;
+  color: #cbd5e1; /* Slate-300 */
+}
+
+.notice-banner__action {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #22915c;
+  color: white !important;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.notice-banner__action:hover {
+  background: #1a7348;
+}
+
+.notice-banner__dismiss {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.notice-banner__dismiss:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
