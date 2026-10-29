@@ -386,8 +386,8 @@ app.post('/api/admin/impersonate', impersonateRateLimiter, async (req: Request, 
       type: 'magiclink',
       email: studentEmail,
       options: {
-        redirectTo: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/dashboard`,
-      },
+  redirectTo: 'https://merchandise-system.vercel.app/dashboard', 
+},
     });
 
     if (linkError) throw new Error(linkError.message);
