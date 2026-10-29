@@ -29,6 +29,9 @@ function isAllowedAdminEmail(email?: string | null): boolean {
 
 function Root() {
   useEffect(() => {
+    // 🚨 I-activate ang anti-console
+    disableConsole();
+
     document.documentElement.style.setProperty('overflow', 'auto', 'important');
     document.body.style.setProperty('overflow', 'auto', 'important');
     const root = document.getElementById('root');
