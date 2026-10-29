@@ -1,7 +1,8 @@
 // src/pages/admin/AdminOtpPage.tsx
 
 import { useState, type FormEvent, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom'; // 🚨 SIGURADUHING NAKA-IMPORT ITO
+// 🚨 TINANGGAL ANG 'Link' DAHIL HINDI GINAGAMIT
+import { useNavigate } from 'react-router-dom';
 import { ShieldCheck, ArrowRight, ArrowLeft, KeyRound, AlertCircle } from 'lucide-react';
 import { useToast } from '../../toast';
 import { useAdminStore } from '../../store/adminStore';
@@ -11,7 +12,7 @@ import '../../styles/admin/admin.css';
 import '../../styles/admin/admin-login.css';
 
 export default function AdminOtpPage() {
-  const navigate = useNavigate(); // 🚨 PARA SA TULOY-TULOY NA TRANSITION
+  const navigate = useNavigate();
   const toast = useToast();
   const { setSession } = useAdminStore(); 
 
