@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../store';
 import { supabaseOrg } from '../../lib/supabaseClient';
-// 🚨 SIGURADUHING TAMA ANG PATH NA ITO (kung saan naka-export ang saveOrgSession)
 import { saveOrgSession } from '../../services/organization/orgSessionService'; 
 
 import '../../styles/organization/OrgLoginPage.css';
@@ -77,8 +76,10 @@ export default function OrgLoginPage() {
       
       if (otpError) throw new Error(`Failed to generate OTP: ${otpError.message}`);
 
-      // 🚨 5. TATAWAGIN ANG BREVO API PARA SA EMAIL
-      const emailResponse = await fetch('http://localhost:3001/api/send-otp', {
+      // 🚨 5. TAWAGIN ANG BACKEND API PARA SA BREVO EMAIL
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      
+      const emailResponse = await fetch(`${backendUrl}/api/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -90,7 +91,6 @@ export default function OrgLoginPage() {
       if (!emailResponse.ok) {
         const errData = await emailResponse.json();
         console.warn('[OrgLogin] Brevo email failed:', errData);
-        // Continue pa rin — naka-save naman ang OTP sa DB
       } else {
         console.log('[OrgLogin] ✅ OTP email sent via Brevo');
       }
@@ -161,10 +161,8 @@ export default function OrgLoginPage() {
         dateOfBirth: '',
       };
 
-      // 🚨 I-SAVE SA APP STORE
       signIn(session);
 
-      // 🚨 I-SAVE DIN SA ORG SESSION (Para hindi mag-error sa Orders Page)
       saveOrgSession({
         userId: profile.id,
         email: profile.email,
@@ -289,4 +287,4 @@ export default function OrgLoginPage() {
       </main>
     </div>
   );
-}
+} 
