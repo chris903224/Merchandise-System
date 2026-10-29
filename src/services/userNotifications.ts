@@ -1,24 +1,23 @@
 // src/services/userNotifications.ts
 
-import { supabase } from '../lib/supabaseClient';
+import { supabase, supabaseAdmin } from '../lib/supabaseClient'; // 🚨 IDINAGDAG ANG supabaseAdmin
 import type { Notification, NotificationType } from '../types/notification';
 import { getCachedData, invalidateCache } from '../utils/cache';
 
 /* ============================================
    ✅ TABLE NAME
-   Ginawa nating 'notifications' para mag-match sa Student Side.
-   ============================================ */
+============================================ */
 const TABLE_NAME = 'notifications';
 
 /* ============================================
-   FETCH
-   ============================================ */
+   FETCH (Student/Own)
+============================================ */
 
 export async function fetchUserNotifications(
   userId: string
 ): Promise<Notification[]> {
   return getCachedData(
-    `user_notifications_${userId}`, // Cache key (sinync sa store)
+    `user_notifications_${userId}`,
     async () => {
       const { data, error } = await supabase
         .from(TABLE_NAME)
@@ -39,8 +38,8 @@ export async function fetchUserNotifications(
 }
 
 /* ============================================
-   CREATE (NON-FATAL)
-   ============================================ */
+   CREATE (NON-FATAL) — GAMIT ANG ADMIN CLIENT
+============================================ */
 
 export async function createUserNotification(
   userId: string,
@@ -54,7 +53,8 @@ export async function createUserNotification(
   }
 ): Promise<void> {
   try {
-    const { error } = await supabase.from(TABLE_NAME).insert({
+    // 🚨 SUPABASE_ADMIN PARA HINDI MA-BLOCK NG RLS
+    const { error } = await supabaseAdmin.from(TABLE_NAME).insert({
       user_id: userId,
       type: notification.type,
       title: notification.title,
@@ -65,7 +65,6 @@ export async function createUserNotification(
     });
 
     if (error) {
-      // 👈 WARNING LANG, WALANG THROW (Para hindi mag-crash ang order update)
       console.warn('[UserNotifications] ⚠️ Failed to create (non-fatal):', error.message);
       return;
     }
@@ -73,25 +72,24 @@ export async function createUserNotification(
     invalidateCache(`user_notifications_${userId}`);
     console.log('[UserNotifications] ✅ Notification created:', notification.title);
   } catch (err) {
-    // 👈 WARNING LANG, WALANG THROW
     console.warn('[UserNotifications] ⚠️ Exception (non-fatal):', err);
   }
 }
 
 /* ============================================
-   MARK AS READ
-   ============================================ */
+   MARK AS READ — GAMIT ANG ADMIN CLIENT
+============================================ */
 
 export async function markUserNotificationAsRead(
   notificationId: string
 ): Promise<void> {
-  const { data: existing } = await supabase
+  const { data: existing } = await supabaseAdmin
     .from(TABLE_NAME)
     .select('user_id')
     .eq('id', notificationId)
     .maybeSingle();
 
-  const { error } = await supabase
+  const { error } = await supabaseAdmin
     .from(TABLE_NAME)
     .update({ read: true })
     .eq('id', notificationId);
@@ -107,13 +105,13 @@ export async function markUserNotificationAsRead(
 }
 
 /* ============================================
-   MARK ALL AS READ
-   ============================================ */
+   MARK ALL AS READ — GAMIT ANG ADMIN CLIENT
+============================================ */
 
 export async function markAllUserNotificationsAsRead(
   userId: string
 ): Promise<void> {
-  const { error } = await supabase
+  const { error } = await supabaseAdmin
     .from(TABLE_NAME)
     .update({ read: true })
     .eq('user_id', userId)
@@ -128,19 +126,19 @@ export async function markAllUserNotificationsAsRead(
 }
 
 /* ============================================
-   DELETE
-   ============================================ */
+   DELETE — GAMIT ANG ADMIN CLIENT
+============================================ */
 
 export async function deleteUserNotification(
   notificationId: string
 ): Promise<void> {
-  const { data: existing } = await supabase
+  const { data: existing } = await supabaseAdmin
     .from(TABLE_NAME)
     .select('user_id')
     .eq('id', notificationId)
     .maybeSingle();
 
-  const { error } = await supabase
+  const { error } = await supabaseAdmin
     .from(TABLE_NAME)
     .delete()
     .eq('id', notificationId);
@@ -156,13 +154,13 @@ export async function deleteUserNotification(
 }
 
 /* ============================================
-   CLEAR ALL
-   ============================================ */
+   CLEAR ALL — GAMIT ANG ADMIN CLIENT
+============================================ */
 
 export async function clearAllUserNotifications(
   userId: string
 ): Promise<void> {
-  const { error } = await supabase
+  const { error } = await supabaseAdmin
     .from(TABLE_NAME)
     .delete()
     .eq('user_id', userId);
@@ -177,7 +175,7 @@ export async function clearAllUserNotifications(
 
 /* ============================================
    MAPPER
-   ============================================ */
+============================================ */
 
 function mapNotificationRow(row: any): Notification {
   return {

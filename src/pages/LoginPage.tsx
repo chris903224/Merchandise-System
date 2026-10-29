@@ -1,7 +1,7 @@
 // src/pages/LoginPage.tsx
 
 import { useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'; // 🚨 TINANGGAL ANG useNavigate
 import {
   AlertCircle,
   ArrowRight,
@@ -21,7 +21,8 @@ import { useRateLimit } from '../components/auth/useRateLimit';
 import { useApp } from '../store';
 import { useToast } from '../toast';
 import { loginUser, mapSupabaseUser } from '../data/auth';
-import { fetchUserProfile } from '../data/storage';
+// 🚨 TINANGGAL ANG fetchUserProfile
+import { supabase } from '../lib/supabaseClient';
 import {
   isStrongPassword,
   PASSWORD_RULES,
@@ -107,46 +108,55 @@ export default function LoginPage() {
       const result = await loginUser(identifier, password);
       const user = mapSupabaseUser(result.user);
       
-      const appRole = user.role as string;
+      const { data: dbProfile } = await supabase
+        .from('profiles')
+        .select('role, email')
+        .eq('id', user.id)
+        .maybeSingle();
 
-      // 🚨 STRICT CHECK: Kung Org Admin, i-block sa student login
-      const isOrgAccount = 
-        appRole === 'Organization' || 
-        (user.email && user.email.includes('org-'));
+      const trueRole = dbProfile?.role || user.role;
+      // 🚨 TINANGGAL ANG userEmail (unused)
 
-      if (isOrgAccount) {
-        toast('Please use the Organization Login Page.', 'warning');
-        // Hindi natin gagamitin ang window.location.href para hindi mag-reload
-        // Ipapakita lang natin ang error message.
+      if (trueRole === 'Admin') {
+        toast('Access Denied. Admins must use the Admin Portal.', 'danger');
+        await supabase.auth.signOut();
+        
+        localStorage.removeItem('sjc-session');
+        localStorage.removeItem('sjcm_admin_auth');
+        sessionStorage.removeItem('sjc_test_admin');
+        
         setSubmitting(false);
         return;
       }
 
-      // 🚨 STRICT CHECK: Kung Admin, i-block din sa student login
-      if (appRole === 'Admin') {
-        toast('Please use the Admin Login Page.', 'warning');
+      if (trueRole === 'Organization') {
+        toast('Access Denied. Please use the Organization Portal.', 'danger');
+        await supabase.auth.signOut(); 
         setSubmitting(false);
         return;
       }
 
+      sessionStorage.removeItem('sjc_test_admin');
       clear();
 
       let finalCourse = user.course ?? '';
       let finalYearLevel = user.yearLevel ?? '';
       let finalDob = user.dateOfBirth ?? '';
 
-      try {
-        const dbProfile = await fetchUserProfile(user.id);
-        if (dbProfile) {
-          if (dbProfile.course_strand) finalCourse = dbProfile.course_strand;
-          if (dbProfile.year_level) finalYearLevel = dbProfile.year_level;
-          if (dbProfile.date_of_birth) finalDob = dbProfile.date_of_birth;
+      if (dbProfile) {
+        const { data: detailedProfile } = await supabase
+          .from('profiles')
+          .select('course_strand, year_level, date_of_birth')
+          .eq('id', user.id)
+          .maybeSingle();
+          
+        if (detailedProfile) {
+          if (detailedProfile.course_strand) finalCourse = detailedProfile.course_strand;
+          if (detailedProfile.year_level) finalYearLevel = detailedProfile.year_level;
+          if (detailedProfile.date_of_birth) finalDob = detailedProfile.date_of_birth;
         }
-      } catch (err) {
-        console.warn('[Login] Failed to fetch database profile:', err);
       }
 
-      // REGULAR STUDENT LOGIN
       const loginSession = {
         id: user.id,
         name: user.name,

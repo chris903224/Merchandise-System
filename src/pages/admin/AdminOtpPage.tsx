@@ -1,96 +1,101 @@
 // src/pages/admin/AdminOtpPage.tsx
 
 import { useState, type FormEvent, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { ShieldCheck, ArrowRight, ArrowLeft, KeyRound } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom'; // 🚨 SIGURADUHING NAKA-IMPORT ITO
+import { ShieldCheck, ArrowRight, ArrowLeft, KeyRound, AlertCircle } from 'lucide-react';
 import { useToast } from '../../toast';
-// 🚨 INALIS ANG useAdminStore DITO
+import { useAdminStore } from '../../store/adminStore';
 import { supabase } from '../../lib/supabaseClient';
 
 import '../../styles/admin/admin.css';
 import '../../styles/admin/admin-login.css';
 
 export default function AdminOtpPage() {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate = useNavigate(); // 🚨 PARA SA TULOY-TULOY NA TRANSITION
   const toast = useToast();
-  // 🚨 INALIS ANG setSession DITO
-
-  const email = (location.state as any)?.email || '';
-  const user = (location.state as any)?.user;
+  const { setSession } = useAdminStore(); 
 
   const [otp, setOtp] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pendingData, setPendingData] = useState<{ email: string, user: any } | null>(null);
 
-  // 🚨 Kung walang state (na-refresh), ibalik sa login
+  // 🚨 Kunin ang data mula sa sessionStorage
   useEffect(() => {
-    if (!email || !user) {
-      navigate('/admin/login', { replace: true });
+    const raw = sessionStorage.getItem('sjcm_admin_pending_otp');
+    if (!raw) {
+      navigate('/sjcm-internal-portal-2026', { replace: true });
+      return;
     }
-  }, [email, user, navigate]);
+    try {
+      const parsed = JSON.parse(raw);
+      if (!parsed.email || !parsed.user) throw new Error('Invalid');
+      setPendingData(parsed);
+    } catch (err) {
+      sessionStorage.removeItem('sjcm_admin_pending_otp');
+      navigate('/sjcm-internal-portal-2026', { replace: true });
+    }
+  }, [navigate]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!pendingData) return;
+    
     setError(null);
-
-    if (!otp || otp.length !== 6) {
-      setError('Please enter the 6-digit OTP code.');
-      return;
-    }
+    if (otp.length !== 6) return setError('Please enter the 6-digit OTP code.');
 
     setIsSubmitting(true);
     try {
-      // 🚨 I-verify ang OTP sa database
-      const { data: isValid, error: rpcError } = await supabase
-        .rpc('verify_admin_otp', { 
-          p_email: email.toLowerCase(), 
-          p_otp: otp 
-        });
+      // Verify OTP sa Supabase
+      const { data: isValid, error: rpcError } = await supabase.rpc('verify_admin_otp', { 
+        p_email: pendingData.email.toLowerCase(), 
+        p_otp: otp 
+      });
 
       if (rpcError || !isValid) {
         setError('Invalid or expired OTP code.');
-        toast('Invalid OTP. Please try again.', 'danger');
         setIsSubmitting(false);
         return;
       }
 
-      // 🚨 I-save DIRETSO SA LOCALSTORAGE (Dahil inalis natin ang setSession)
       const adminSession = {
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role === 'Staff' ? 'School Staff' : user.role,
-          profilePicture: user.profilePicture,
+        user: { 
+          id: pendingData.user.id, 
+          name: pendingData.user.name, 
+          email: pendingData.user.email, 
+          role: pendingData.user.role, 
+          profilePicture: pendingData.user.profilePicture 
         },
         loginAt: Date.now(),
         remember: false,
       };
 
-      // 🚨 ITO ANG NAG-I-SAVE SA LOCALSTORAGE
+      // 🚨 I-SAVE SA STORE AT LOCALSTORAGE
+      setSession(adminSession); 
       localStorage.setItem('sjcm_admin_auth', JSON.stringify(adminSession));
+      sessionStorage.removeItem('sjcm_admin_pending_otp');
 
-      toast(`Welcome back, ${user.name}.`, 'success');
-
-      // 🚨 EMERGENCY FIX: Gamitin ang `window.location.href` para sure na mag-reload
+      toast(`Welcome back, ${pendingData.user.name}.`, 'success');
+      
+      // 🚨 GAMITIN ANG NAVIGATE PARA WALANG RELOAD
       setTimeout(() => {
-        window.location.href = '/admin';
-      }, 500);
+        navigate('/admin', { replace: true });
+      }, 300);
 
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'OTP verification failed.';
-      setError(message);
-      toast(message, 'danger');
+    } catch (err: any) {
+      setError(err.message || 'OTP verification failed.');
       setIsSubmitting(false);
     }
   };
+
+  if (!pendingData) {
+    return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#050a16', color: '#fff' }}>Loading secure data...</div>;
+  }
 
   return (
     <main className="pl-page">
       <div className="pl-page__bg" aria-hidden="true" />
       <div className="pl-page__overlay" aria-hidden="true" />
-      
       <div className="pl-shell" style={{ gridTemplateColumns: '1fr', maxWidth: '500px' }}>
         <section className="pl-card">
           <div className="pl-card__inner">
@@ -100,12 +105,12 @@ export default function AdminOtpPage() {
             </span>
             <h2 className="pl-title">Enter Verification Code</h2>
             <p className="pl-subtitle">
-              We sent a 6-digit code to <strong>{email}</strong>. Enter it below to continue.
+              We sent a 6-digit code to <strong>{pendingData.email}</strong>. Enter it below to continue.
             </p>
 
             {error && (
               <div className="pl-alert" role="alert">
-                <ShieldCheck className="react-icon" aria-hidden="true" />
+                <AlertCircle className="react-icon" aria-hidden="true" />
                 <span>{error}</span>
               </div>
             )}
@@ -152,7 +157,10 @@ export default function AdminOtpPage() {
 
             <button
               type="button"
-              onClick={() => navigate('/admin/login')}
+              onClick={() => { 
+                sessionStorage.removeItem('sjcm_admin_pending_otp'); 
+                navigate('/sjcm-internal-portal-2026'); 
+              }}
               className="pl-back"
               style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px', color: 'var(--color-text-muted)' }}
             >

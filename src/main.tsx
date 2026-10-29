@@ -14,20 +14,29 @@ import { supabase } from './lib/supabaseClient';
 
 restoreAdminAppearance();
 
+const ALLOWED_ADMINS = [
+  'ropu.sengco.sjc@phinmaed.com',
+  'javi.borlagdan.sjc@phinmaed.com',
+  'leda.lutrania.sjc@phinmaed.com',
+  'chpe.villanueva.sjc@phinmaed.com',
+  'chdi.lomocso.sjc@phinmaed.com'
+];
+
+function isAllowedAdminEmail(email?: string | null): boolean {
+  if (!email) return false;
+  return ALLOWED_ADMINS.includes(email.toLowerCase().trim());
+}
+
 function Root() {
   useEffect(() => {
     document.documentElement.style.setProperty('overflow', 'auto', 'important');
-    document.documentElement.style.setProperty('height', 'auto', 'important');
     document.body.style.setProperty('overflow', 'auto', 'important');
-    document.body.style.setProperty('height', 'auto', 'important');
-    
     const root = document.getElementById('root');
     if (root) {
       root.style.setProperty('overflow', 'visible', 'important');
       root.style.setProperty('height', 'auto', 'important');
     }
   }, []);
-
   return <App />;
 }
 
@@ -36,40 +45,79 @@ async function bootstrap(): Promise<void> {
   applyTheme(getStoredTheme());
 
   const pathname = window.location.pathname;
+  
+  // 🚨 ITO ANG TAMANG SECRET ADMIN URL
+  const SECRET_ADMIN_URL = '/sjcm-internal-portal-2026';
 
-  // 🚨 HARANG #1: Org Session Clear (Idinagdag ang /admin/otp sa exception)
-  if (!pathname.startsWith('/org') && 
-      pathname !== '/admin/login' && 
-      pathname !== '/admin/otp') {
+  // 🚨 TUKUYIN KUNG NASA ADMIN ROUTE
+  const isAdminRoute = pathname.startsWith('/admin') || pathname === SECRET_ADMIN_URL;
+  const isOrgRoute = pathname.startsWith('/org');
+
+  const isMagicLink = window.location.hash.includes('access_token') || window.location.hash.includes('refresh_token');
+  
+  if (isMagicLink) {
+    sessionStorage.setItem('sjc_magic_link_auth', 'true');
+    console.log('[Main] 🎟️ Magic link detected. Waiting for Supabase...');
+    
+    await new Promise<void>((resolve) => {
+      const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
+        console.log('[Main] Auth Event:', event);
+        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+          authListener.subscription.unsubscribe();
+          resolve();
+        }
+      });
+
+      setTimeout(() => {
+        authListener.subscription.unsubscribe();
+        resolve();
+      }, 3000);
+    });
+  }
+
+  const isTestAdmin = sessionStorage.getItem('sjc_test_admin') === 'true';
+  const isImpersonating = sessionStorage.getItem('sjc_impersonating') === 'true';
+
+  if (!isOrgRoute && !isAdminRoute) {
     localStorage.removeItem('sjcm_org_session');
     localStorage.removeItem('sjc-org-session');
   }
 
-  // 🚨 HARANG #2: Admin Access Check
-  const isAdminRoute = pathname.startsWith('/admin') && 
-                       pathname !== '/admin/login' && 
-                       pathname !== '/admin/otp';
+  const { data: { session } } = await supabase.auth.getSession();
+  const currentEmail = session?.user?.email?.toLowerCase().trim() ?? null;
+  const isSystemAdmin = session?.user?.app_metadata?.is_system_admin === true;
+  const isAdminEmail = isAllowedAdminEmail(currentEmail);
 
+  // HARANG #1: GMAIL DETECTED
+  // 🚨 I-BYPASS ANG CHECK KUNG NAKA-IMPERSONATE, TEST MODE, MAGIC LINK, ORG ROUTE, O ADMIN ROUTE
+  const shouldBypassEmailCheck = isTestAdmin || isImpersonating || isMagicLink || isOrgRoute || isAdminRoute;
+  
+  if (currentEmail && !currentEmail.endsWith('@phinmaed.com') && !isAdminEmail && !shouldBypassEmailCheck) {
+    console.warn('[Main] 🚨 Gmail user detected. Forcing signout.');
+    await supabase.auth.signOut();
+    localStorage.clear();
+    if (isAdminRoute) {
+      window.location.replace('/login');
+      return;
+    }
+  }
+
+  // HARANG #2: STRICT ADMIN ROUTE PROTECTION
   if (isAdminRoute) {
-    // 🚨 CHECK #1: Kung may localStorage session, payagan agad
-    const adminSession = localStorage.getItem('sjcm_admin_auth');
+    const isPublicAdminRoute = pathname === SECRET_ADMIN_URL || pathname === '/admin/otp';
     
-    if (adminSession) {
-      console.log('[Main] Admin session found in localStorage. Allowing access.');
-    } else {
-      // 🚨 CHECK #2: Kung wala, tignan ang JWT claim OR RPC fallback
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      let isAuthorized = session?.user.app_metadata?.is_system_admin === true;
-      
-      if (!isAuthorized && session?.user?.email) {
-        const { data } = await supabase.rpc('verify_admin_email', { p_email: session.user.email });
-        isAuthorized = data === true;
-      }
-
-      if (!isAuthorized) {
-        console.warn('[Main] ⚠️ Unauthorized admin access attempt. Redirecting to login.');
-        window.location.replace('/admin/login');
+    if (!currentEmail && !isPublicAdminRoute) {
+      window.location.replace('/login');
+      return;
+    }
+    
+    // 🚨 DAPAT ALLOWED ADMIN EMAIL AT is_system_admin === true
+    if (currentEmail && !isPublicAdminRoute) {
+      if (!isAdminEmail || !isSystemAdmin) {
+        console.warn('[Main] 🚨 Unauthorized admin user blocked:', currentEmail, 'isSystemAdmin:', isSystemAdmin);
+        await supabase.auth.signOut();
+        localStorage.clear();
+        window.location.replace('/login');
         return;
       }
     }

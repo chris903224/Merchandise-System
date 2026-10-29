@@ -133,7 +133,7 @@
 }
 
 .admin-shell:has(.admin-sidebar.is-pinned) .admin-sidebar__pin-icon,
-.admin-sidebar:hover .admin-sidebar__pin-icon {
+.admin-sidebar:hover .admin-sidebar__pin-g {
   transform: rotate(180deg);
 }
 

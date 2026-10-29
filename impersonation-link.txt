@@ -1,0 +1,1 @@
+https://phajmijxktzoljxamlzu.supabase.co/auth/v1/verify?token=a36b2560c00a7834217e02ced2eec4c4b204062599167f39f85333d1&type=magiclink&redirect_to=http://localhost:3000

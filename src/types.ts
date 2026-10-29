@@ -16,9 +16,8 @@ export interface Product {
   price: number;
   stock: number;
   sizes: string[];
-  sizeStocks?: Record<string, number>; // { S: 100, M: 100, L: 100, ... }
+  sizeStocks?: Record<string, number>;
   image: string;
-  /** Alt text including photographer attribution for the stock image. */
   imageAlt: string;
   description: string;
 }
@@ -75,6 +74,9 @@ export interface SessionUser {
   role: UserRole;
   organization: string;
   idNumber: string;
+  course: string;          // 🚨 IDINAGDAG
+  yearLevel: string;       // 🚨 IDINAGDAG
+  dateOfBirth: string;     // 🚨 IDINAGDAG
   profilePicture?: string;
 }
 
@@ -83,10 +85,6 @@ export interface UserRecord extends SessionUser {
   userCode: string;
   passwordSalt: string;
   passwordHash: string;
-  /**
-   * @deprecated Legacy plaintext password from earlier builds. Records that
-   * still carry it are upgraded to salt + hash by `ensureSeeded()`.
-   */
   password?: string;
 }
 

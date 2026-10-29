@@ -20,34 +20,32 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const { session, setSession } = useAdminStore();
 
-  // 🚨 Ibalik ang saved theme
   useEffect(() => {
     restoreAdminAppearance();
   }, []);
 
   useEffect(() => {
-    // 🚨 CHECK #1: Basahin ang session mula sa localStorage
     const stored = readAdminSession();
-
-    // 🚨 Kung may naka-save, i-hydrate ang store
     if (stored && !session) {
-      console.log('[AdminLayout] 🔄 Hydrating session from storage');
       setSession(stored);
       return;
     }
 
-    // 🚨 Kung wala talaga (kahit sa localStorage), doon lang tayo mag-redirect sa login
-    if (!session && !stored) {
-      console.log('[AdminLayout] ❌ No session found — redirecting to /admin/login');
-      navigate('/admin/login', { replace: true });
+    // 🚨 CHECK KUNG NAKA-TEST MODE
+    const isTestAdmin = sessionStorage.getItem('sjc_test_admin') === 'true';
+
+    // 🚨 KUNG WALANG SESSION AT WALANG TEST MODE, DOON LANG MAG-REDIRECT
+    if (!session && !stored && !isTestAdmin) {
+      console.log('[AdminLayout] ❌ No session found — redirecting to secret portal');
+      navigate('/sjcm-internal-portal-2026', { replace: true });
     }
   }, [navigate, session, setSession]);
 
-  // 🚨 BASAHIN ULIT: Para sure na naka-render lang tayo kapag may session
   const currentSession = session || readAdminSession();
+  const isTestAdmin = sessionStorage.getItem('sjc_test_admin') === 'true';
 
-  // Kung wala pa ring session, wag i-render (para hindi mag-flicker)
-  if (!currentSession) {
+  // 🚨 KUNG WALANG SESSION PERO NAKA-TEST MODE, PAYAGAN MAG-RENDER
+  if (!currentSession && !isTestAdmin) {
     return null;
   }
 

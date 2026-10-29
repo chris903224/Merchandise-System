@@ -55,10 +55,11 @@ export default function AuthHeader({
 
   return (
     <header className="auth-experience__header">
+      {/* 🚨 PALITAN NATIN ITO PAPUNTANG /dashboard */}
       <Link
-        to="/"
+        to="/dashboard"
         className="auth-brand"
-        aria-label="Saint Jude College Manila home"
+        aria-label="Back to Store Dashboard"
       >
         <img
           className="auth-brand__logo"

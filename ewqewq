@@ -1,0 +1,165 @@
+* [33m829fea4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature-scroll-fix[m[33m, [m[1;31morigin/feature-scroll-fix[m[33m)[m adding the admin anti console
+* [33m598c977[m add the existing files and adding the security features for admin only 5 admins can access admin url
+* [33m108ba1f[m geeze
+* [33mb7ddefb[m  admin side themes
+* [33mf45d13f[m tite
+* [33m31bac57[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m, [m[1;32mbackup-feature-scroll-fix[m[33m)[m i polished the existing code for index, those role based are accurate on system
+* [33m4bf4872[m dsad
+* [33m384f094[m updating toast
+*   [33m36a21d2[m Resolved merge conflicts and updated restrictions
+[32m|[m[33m\[m  
+[32m|[m * [33m71ad9fc[m remove the uncessary code for restriction.ts
+[32m|[m * [33mce32e07[m Cleaning the exsiting UI
+[32m|[m * [33m9e96a6b[m Update README.md
+[32m|[m *   [33m7848cb8[m Merge branch 'main' of https://github.com/chris903224/Merchandise-System into Branch-Alpha
+[32m|[m [34m|[m[35m\[m  
+[32m|[m * [35m|[m [33ma4cc2ec[m package.json
+* [35m|[m [35m|[m [33m4eff207[m adjusting the error files
+* [35m|[m [35m|[m [33mae4edfc[m Improving the organization dashboard page
+* [35m|[m [35m|[m [33mdf3aa06[m Updating the org page
+* [35m|[m [35m|[m [33m95eea67[m improving the overall ui
+* [35m|[m [35m|[m   [33m7346b10[m[33m ([m[1;31morigin/Branch-Beta[m[33m, [m[1;32mBranch-Alpha[m[33m)[m Merge branch 'Branch-Alpha' of https://github.com/chris903224/Merchandise-System into Branch-Alpha
+[36m|[m[1;31m\[m [35m\[m [35m\[m  
+[36m|[m * [35m|[m [35m|[m [33m16ab8f1[m[33m ([m[1;31morigin/Branch-Alpha[m[33m)[m Merge remote changes into Branch-Alpha
+[36m|[m * [35m|[m [35m|[m   [33mbe50da0[m Merge branch 'Branch-Alpha' of https://github.com/chris903224/Merchandise-System into Branch-Alpha
+[36m|[m [1;32m|[m[1;33m\[m [35m\[m [35m\[m  
+[36m|[m * [1;33m|[m [35m|[m [35m|[m [33m4bdfc20[m nigga
+[36m|[m [35m|[m [1;33m|[m[35m/[m [35m/[m  
+[36m|[m [35m|[m[35m/[m[1;33m|[m [35m|[m   
+* [35m|[m [1;33m|[m [35m|[m [33m9999ca2[m organization polished ....
+[1;33m|[m [35m|[m[1;33m/[m [35m/[m  
+[1;33m|[m[1;33m/[m[35m|[m [35m|[m   
+* [35m|[m [35m|[m [33m697895b[m Add the organization page
+* [35m|[m [35m|[m [33m6dea2d2[m Cleaning the exsiting UI
+[35m|[m [35m|[m[35m/[m  
+[35m|[m[35m/[m[35m|[m   
+* [35m|[m [33m1ba97e0[m Improve the overall uncessary UI I will make it precise and applied ux for the profile settingsa nad auth also I add the onboarding ts when those user are new account, the onboarding will appear at the system and ask if you have already uniform
+* [35m|[m [33me522392[m notification panel
+* [35m|[m [33maaf9961[m Adjusting the color pallete and contrasting
+* [35m|[m [33mccf775f[m adjusting the hover
+[35m|[m[35m/[m  
+* [33md20f9c5[m Adding the nerumoorphism x claymorphism approach
+* [33m0f8b1a3[m Adding neurmphism ui for adminlogin
+* [33mbcda827[m Adjusting the sidebar
+* [33mae1f282[m m
+* [33mfe56ddb[m Adding the security features
+* [33m957da83[m Changing the product page Ui and animation improvement
+* [33m84ed615[m Error in mobiletopnavbar
+* [33m81dd494[m Mobile optimization
+* [33m820faf1[m Added mobile features
+* [33me5b0669[m Midnight navy blue default
+* [33m133dc1c[m Color pallette bug
+* [33m6caf1d9[m changing the root color default
+*   [33ma383c0e[m Merge pull request #16 from chris903224/Branch-Alpha
+[1;34m|[m[1;35m\[m  
+[1;34m|[m * [33mff9eb8c[m change the root from cream yellow to midnight navy
+[1;34m|[m[1;34m/[m  
+* [33md9945e7[m Bug in ratelimiting
+* [33me485960[m Improvement the login system
+* [33mcfee386[m Contrasting the text in cart and order details
+* [33ma07cea4[m Contrasting the all UI
+*   [33m148287a[m Merge pull request #15 from chris903224/Branch-Alpha
+[1;36m|[m[31m\[m  
+[1;36m|[m * [33m037ccd9[m Settings save preference adjustment
+* [31m|[m [33m0fa7c46[m Merge pull request #14 from chris903224/Branch-Alpha
+[32m|[m[31m\[m[31m|[m 
+[32m|[m * [33mc172961[m Remove uncessary code between settingspage and verify email
+[32m|[m * [33m64823f5[m Adding the dynamic notifications
+* [33m|[m [33m2b7b6ef[m Merge pull request #13 from chris903224/Branch-Alpha
+[34m|[m[33m\[m[33m|[m 
+[34m|[m * [33m60f1e26[m Paymongo redirect bug
+[34m|[m * [33ma2e4ecb[m Paymongo hardcoded
+* [35m|[m [33m34f1422[m Merge pull request #12 from chris903224/Branch-Alpha
+[36m|[m[35m\[m[35m|[m 
+[36m|[m * [33m375c5d8[m Paymongo features
+* [1;31m|[m [33me1f0081[m Merge pull request #11 from chris903224/Branch-Alpha
+[1;32m|[m[1;31m\[m[1;31m|[m 
+[1;32m|[m * [33mfcfe48c[m Qr Page
+* [1;33m|[m [33md87e719[m Merge pull request #10 from chris903224/Branch-Alpha
+[1;34m|[m[1;33m\[m[1;33m|[m 
+[1;34m|[m * [33m51f1d87[m Add the paymongo features and thememodal.tsx
+[1;34m|[m [1;35m|[m * [33ma7179a9[m[33m ([m[1;32mBranch-Beta[m[33m)[m  admin side themes
+[1;34m|[m [1;35m|[m * [33m57a54c3[m admin updates
+[1;34m|[m [1;35m|[m * [33m2e245a9[m last update beta
+[1;34m|[m [1;35m|[m * [33m56fa185[m logo issue fixed
+[1;34m|[m [1;35m|[m * [33m36a608d[m logo update of the admin sidebar
+[1;34m|[m [1;35m|[m * [33m74b193b[m admin sidebar fixations
+[1;34m|[m [1;35m|[m[1;34m/[m  
+[1;34m|[m[1;34m/[m[1;35m|[m   
+* [1;35m|[m [33m82d79f4[m Merge pull request #9 from chris903224/Branch-Alpha
+[31m|[m[1;35m\[m[1;35m|[m 
+[31m|[m * [33md64f51e[m Adjsut the catalog card and product card comapact
+* [32m|[m [33m11dc3f7[m Merge pull request #8 from chris903224/Branch-Alpha
+[33m|[m[32m\[m[32m|[m 
+[33m|[m * [33m5024747[m Add the universal language and shipping address too building and room
+* [34m|[m [33md896654[m Merge pull request #7 from chris903224/Branch-Alpha
+[35m|[m[34m\[m[34m|[m 
+[35m|[m * [33mebf58e7[m Remove the uncessary part for orderdetailspage
+* [36m|[m [33m3b969a5[m Merge pull request #6 from chris903224/Branch-Alpha
+[1;31m|[m[36m\[m[36m|[m 
+[1;31m|[m * [33mf407008[m Added the logo tabs
+[1;31m|[m * [33meb61039[m Changing the background colors
+* [1;32m|[m [33m1cb90f8[m Merge pull request #5 from chris903224/Branch-Alpha
+[1;33m|[m[1;32m\[m[1;32m|[m 
+[1;33m|[m * [33m3e3a862[m Remove the uncessary code in seed.ts
+[1;33m|[m * [33mc10c8f1[m improvement for catalog unaligned, second one I improve the overall contrast in system
+* [1;34m|[m [33mf870d2a[m Merge pull request #4 from chris903224/Branch-Alpha
+[1;35m|[m[1;34m\[m[1;34m|[m 
+[1;35m|[m * [33m59d6d25[m I add the footer features
+* [1;36m|[m [33mcce003d[m Merge pull request #3 from chris903224/Branch-Alpha
+[31m|[m[1;36m\[m[1;36m|[m 
+[31m|[m * [33m49c24b1[m Error in consolepage
+[31m|[m * [33md6ce23c[m Revisions for types/notifications
+[31m|[m * [33mbd9d731[m Improving the admin dashboard and all hardcoded are already remove
+[31m|[m * [33m65ce0bf[m Paymongo Error
+[31m|[m * [33mbc3c82e[m Implement the admin system
+[31m|[m * [33mc622ac7[m Implement the admin system
+[31m|[m * [33m3ff0a05[m Implement the admin system
+[31m|[m * [33m096a721[m Revisions in useRateLimit.ts
+[31m|[m * [33m12c4d83[m Improving rate limiting from local to dynamic
+* [32m|[m [33m60f23ad[m Merge pull request #2 from chris903224/Branch-Alpha
+[33m|[m[32m\[m[32m|[m 
+[33m|[m * [33m9af1b29[m[33m ([m[1;32mBranch[m[33m)[m Update the rate limiting and add forgot password features
+* [34m|[m [33m14427f6[m Merge pull request #1 from chris903224/Branch-Alpha
+[35m|[m[34m\[m[34m|[m 
+[35m|[m * [33m90015dd[m Vercel On
+[35m|[m * [33m171d5d9[m Updated New logo
+[35m|[m[35m/[m  
+* [33m72443ec[m[33m ([m[1;31morigin/main-base-code[m[33m, [m[1;31morigin/Branch-Fire[m[33m, [m[1;31morigin/Branch-Echo[m[33m, [m[1;31morigin/Branch-Delta[m[33m, [m[1;31morigin/Branch-Chalk[m[33m, [m[1;32mmain-base-code[m[33m)[m Improvement files for these 3 Such as NotifciationsBell, NotificationsPage, store.tsx
+* [33m32e4870[m New Improvement Files such as store notifications bell and notificationsPage
+* [33mf293672[m Meta tag
+* [33m1cb711a[m Adding cache files
+* [33m5226d37[m Notifications types errors
+* [33m0e28302[m New file
+* [33m7360ba9[m Polished the notifications in types
+* [33m4353de8[m Delete the data/notifications.ts
+* [33m0df5564[m Improve the notifications, The year level course and birth date is already dynamic
+* [33m083901b[m Rechange color hero bullet
+* [33m6b4c938[m Minor Polished for body background
+* [33m87173e4[m Just mistaken in auth background
+* [33m384a88e[m Body background implementation and settingspage, navigation, dashboard polished
+*   [33m9fb36a1[m ProductCatalog have a real backend and database
+[1;31m|[m[1;32m\[m  
+[1;31m|[m * [33mba35f68[m image assets product inclussion, image log in replace, login dashboard inclussion
+* [1;32m|[m [33m079d136[m Polishing the Catalogs and add 41 products
+[1;32m|[m[1;32m/[m  
+* [33m815504a[m Improving Authentication Panels
+* [33m52a379c[m login and register merge
+* [33me346f4e[m Settings sidebar glitch
+* [33m4100c5d[m Settingspage shipping adddress
+* [33m5f6af85[m Sidebar Responsive
+* [33m12356d9[m Profile picture backend implementation
+* [33mf99f2af[m from Sign In to reserve to my orders
+* [33mac0bc5a[m Loginpage.tsx improvement
+* [33m426967c[m New revisions
+* [33m136c287[m Apperance Implementation these are 20+ files
+* [33m14c301c[m Removed the arrow left
+* [33m073e83c[m All tsx are already revised
+* [33m1a01128[m All tsx are already revised
+* [33m782cf8f[m New improvement for ui
+* [33m4a32ad9[m Polished the settings and profilepage
+* [33m5016c5d[m Add rate limiting in loginPage.tsx
+* [33ma9d1372[m Vercel json new file
+* [33mf98a2de[m changing the placeholder in register
+* [33m25b0a89[m New Revisions
+* [33m6631edc[m Initial commit - SJCM Merchandise System

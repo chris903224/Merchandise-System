@@ -8,15 +8,22 @@ import OrgSidebar from '../../components/organization/Sidebar';
 import OrgTopbar from '../../components/organization/Topbar';
 import ThemeModal from '../../components/organization/ThemeModal';
 import LanguageModal from '../../components/organization/LanguageModal';
-import '../../styles/organization/index.css';
 
 export default function OrganizationLayout() {
   const { session, isLoading } = useApp();
   const navigate = useNavigate();
   const { themeOpen, langOpen } = useUIStore();
 
-  // 1. Theme & UI Initialization
+  // 🚨 DYNAMIC CSS INJECTION (Para sa Org Dashboard lang)
   useEffect(() => {
+    // 1. Gumawa ng <link> tag para sa index.css
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '/src/styles/organization/index.css'; // Siguraduhing tama ang path na ito
+    link.id = 'org-layout-css';
+    document.head.appendChild(link);
+
+    // Theme & Background init
     const savedTheme = localStorage.getItem('sjc-theme') ?? 'midnight';
     const savedMode = localStorage.getItem('sjc-mode') ?? 'dark';
     const savedUi = localStorage.getItem('sjc-ui') ?? 'glass';
@@ -24,9 +31,20 @@ export default function OrganizationLayout() {
     document.documentElement.dataset.theme = savedTheme;
     document.documentElement.dataset.mode = savedMode;
     document.documentElement.dataset.ui = savedUi;
+
+    document.body.classList.add('org-body-bg');
+
+    // 2. Cleanup function: Tanggalin ang CSS at background class pag-alis
+    return () => {
+      const existingLink = document.getElementById('org-layout-css');
+      if (existingLink) {
+        existingLink.remove();
+      }
+      document.body.classList.remove('org-body-bg');
+    };
   }, []);
 
-  // 2. Auth Guard
+  // Auth Guard
   useEffect(() => {
     if (isLoading) return;
     

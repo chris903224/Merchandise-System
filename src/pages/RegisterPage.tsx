@@ -5,7 +5,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
   BookOpen,
-  Calendar,
   Check,
   CheckCircle2,
   Eye,
@@ -56,7 +55,6 @@ type RegistrationErrors = {
   idNumber?: string;
   course?: string;
   yearLevel?: string;
-  dateOfBirth?: string;
   password?: string;
   confirmPassword?: string;
   otp?: string;
@@ -77,45 +75,6 @@ function formatStudentIdInput(value: string): string {
     return `${digits.slice(0, 2)}-${digits.slice(2)}`;
   }
   return `${digits.slice(0, 2)}-${digits.slice(2, 6)}-${digits.slice(6)}`;
-}
-
-/* ============================================
-   ✅ Date of Birth validation helpers
-============================================ */
-function getMaxDob(): string {
-  const today = new Date();
-  const max = new Date(today.getFullYear() - 5, today.getMonth(), today.getDate());
-  return max.toISOString().split('T')[0];
-}
-
-function getMinDob(): string {
-  const today = new Date();
-  const min = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate());
-  return min.toISOString().split('T')[0];
-}
-
-function isValidDob(dob: string): boolean {
-  if (!dob) return false;
-  const date = new Date(dob);
-  if (isNaN(date.getTime())) return false;
-
-  const today = new Date();
-  const minDate = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate());
-  const maxDate = new Date(today.getFullYear() - 5, today.getMonth(), today.getDate());
-
-  return date >= minDate && date <= maxDate;
-}
-
-function calculateAge(dob: string): number {
-  if (!dob) return 0;
-  const birth = new Date(dob);
-  const today = new Date();
-  let age = today.getFullYear() - birth.getFullYear();
-  const m = today.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
-    age--;
-  }
-  return age;
 }
 
 export default function RegisterPage() {
@@ -140,7 +99,6 @@ export default function RegisterPage() {
   const [idNumber, setIdNumber] = useState('');
   const [course, setCourse] = useState('');
   const [yearLevel, setYearLevel] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [otp, setOtp] = useState('');
@@ -210,12 +168,6 @@ export default function RegisterPage() {
       nextErrors.yearLevel = 'Year level is required.';
     }
 
-    if (!dateOfBirth.trim()) {
-      nextErrors.dateOfBirth = 'Date of birth is required.';
-    } else if (!isValidDob(dateOfBirth)) {
-      nextErrors.dateOfBirth = 'Please enter a valid date of birth.';
-    }
-
     if (!password) {
       nextErrors.password = 'Password is required.';
     } else if (!isStrongPassword(password)) {
@@ -238,7 +190,6 @@ export default function RegisterPage() {
         idNumber: 'register-id',
         course: 'register-course',
         yearLevel: 'register-year-level',
-        dateOfBirth: 'register-dob',
         password: 'register-password',
         confirmPassword: 'register-confirm-password',
       };
@@ -273,8 +224,8 @@ export default function RegisterPage() {
         studentId: idNumber,
         course,
         yearLevel,
-        dateOfBirth,
-      });
+        // dateOfBirth: inalis na
+      } as any);
       toast('A verification code was sent to your email.', 'success');
       setStage('otp');
       resetTimer();
@@ -343,7 +294,6 @@ export default function RegisterPage() {
         idNumber: user.studentId ?? idNumber,
         course: user.course ?? course,
         yearLevel: user.yearLevel ?? yearLevel,
-        dateOfBirth: user.dateOfBirth ?? dateOfBirth,
         organization: 'SJCM General',
       } as any);
 
@@ -391,8 +341,6 @@ export default function RegisterPage() {
     confirmPassword.length > 0 && password === confirmPassword;
 
   const showPasswordPopover = isPasswordFocused || Boolean(errors.password);
-
-  const age = dateOfBirth ? calculateAge(dateOfBirth) : 0;
 
   return (
     <main className="auth-experience">
@@ -538,13 +486,6 @@ export default function RegisterPage() {
           ) : (
             /* ============================================
                STAGE: REGISTER FORM
-               Layout (6 rows, walang scroll):
-                 1  Username
-                 2  Email           (hint sa label row)
-                 3  Student ID      (format sa label row)
-                 4  Course / Strand (full width)
-                 5  Year Level | Date of Birth (age sa label row)
-                 6  Password   | Confirm Password (match sa label row)
             ============================================ */
             <form
               className="auth-form auth-form--register"
@@ -674,76 +615,40 @@ export default function RegisterPage() {
                 ) : null}
               </div>
 
-              {/* 5 · YEAR LEVEL + DATE OF BIRTH */}
-              <div className="auth-field-grid">
-                <div className="auth-field">
-                  <div className="auth-field__label-row">
-                    <label htmlFor="register-year-level">
-                      Year Level{' '}
-                      <span className="auth-field__required">*</span>
-                    </label>
-                  </div>
-                  <div className="auth-input-wrap">
-                    <GraduationCap
-                      className="react-icon"
-                      aria-hidden="true"
-                    />
-                    <select
-                      id="register-year-level"
-                      className={`auth-input auth-input--select ${
-                        errors.yearLevel ? 'has-error' : ''
-                      }`}
-                      required
-                      value={yearLevel}
-                      onChange={(event) => setYearLevel(event.target.value)}
-                      aria-invalid={Boolean(errors.yearLevel)}
-                    >
-                      <option value="">Select year</option>
-                      {YEAR_LEVELS.map((year) => (
-                        <option key={year} value={year}>
-                          {year}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  {errors.yearLevel ? (
-                    <span className="auth-error">{errors.yearLevel}</span>
-                  ) : null}
+              {/* 5 · YEAR LEVEL */}
+              <div className="auth-field">
+                <div className="auth-field__label-row">
+                  <label htmlFor="register-year-level">
+                    Year Level{' '}
+                    <span className="auth-field__required">*</span>
+                  </label>
                 </div>
-
-                <div className="auth-field">
-                  <div className="auth-field__label-row">
-                    <label htmlFor="register-dob">
-                      Date of Birth{' '}
-                      <span className="auth-field__required">*</span>
-                    </label>
-                    {age > 0 && !errors.dateOfBirth ? (
-                      <span className="auth-field__aside">
-                        Age <strong>{age}</strong>
-                      </span>
-                    ) : null}
-                  </div>
-                  <div className="auth-input-wrap">
-                    <Calendar className="react-icon" aria-hidden="true" />
-                    <input
-                      id="register-dob"
-                      className={`auth-input ${
-                        errors.dateOfBirth ? 'has-error' : ''
-                      }`}
-                      type="date"
-                      required
-                      min={getMinDob()}
-                      max={getMaxDob()}
-                      value={dateOfBirth}
-                      onChange={(event) => setDateOfBirth(event.target.value)}
-                      aria-invalid={Boolean(errors.dateOfBirth)}
-                      title="Enter your birth date as shown on your ID."
-                    />
-                  </div>
-                  {errors.dateOfBirth ? (
-                    <span className="auth-error">{errors.dateOfBirth}</span>
-                  ) : null}
+                <div className="auth-input-wrap">
+                  <GraduationCap
+                    className="react-icon"
+                    aria-hidden="true"
+                  />
+                  <select
+                    id="register-year-level"
+                    className={`auth-input auth-input--select ${
+                      errors.yearLevel ? 'has-error' : ''
+                    }`}
+                    required
+                    value={yearLevel}
+                    onChange={(event) => setYearLevel(event.target.value)}
+                    aria-invalid={Boolean(errors.yearLevel)}
+                  >
+                    <option value="">Select year</option>
+                    {YEAR_LEVELS.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+                {errors.yearLevel ? (
+                  <span className="auth-error">{errors.yearLevel}</span>
+                ) : null}
               </div>
 
               {/* 6 · PASSWORD + CONFIRM PASSWORD — 2 columns */}

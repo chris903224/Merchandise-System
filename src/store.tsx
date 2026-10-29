@@ -82,19 +82,18 @@ function readLoginLock(): number | null {
 
 /* ============================================
    ✅ FIXED: SESSION INITIAL LOAD
-   🚨 Tinitiyak na ang course ay laging tama
 ============================================ */
 function readClientState(): Pick<AppState, 'session' | 'cart'> {
-  const session = readStorage<SessionUser | null>(STORAGE_KEYS.session, null);
+  // Normal na session read (Galing sa localStorage)
+  let session = readStorage<SessionUser | null>(STORAGE_KEYS.session, null);
   
-  // 🚨 KUNIN ANG COURSE MULA SA LOCALSTORAGE (galing sa LoginPage/SettingsPage)
+  // Kunin ang course mula sa localStorage
   const savedCourse = localStorage.getItem('sjc-course');
   const savedYearLevel = localStorage.getItem('sjc-year-level');
   const savedDob = localStorage.getItem('sjc-dob');
 
-  // 👈 I-override ang session properties kung may naka-save sa localStorage
+  // I-override ang session properties kung may naka-save sa localStorage
   if (session) {
-    // Kung may naka-save na course sa localStorage, ito ang gamitin
     if (savedCourse && savedCourse.trim() !== '') {
       (session as any).course = savedCourse.trim();
     }
@@ -105,13 +104,6 @@ function readClientState(): Pick<AppState, 'session' | 'cart'> {
       (session as any).dateOfBirth = savedDob.trim();
     }
   }
-
-  console.log('[Store] readClientState:', {
-    sessionId: session?.id,
-    sessionCourse: (session as any)?.course,
-    localStorageCourse: savedCourse,
-    finalCourse: session?.id ? (session as any)?.course : 'NO SESSION',
-  });
 
   return {
     session,
@@ -141,6 +133,83 @@ export function AppProvider({ children }: { children: ReactNode }) {
     () => readLoginLock()
   );
   const [lockTick, setLockTick] = useState(0);
+
+  /* ============================================
+     🚨 AUTH LISTENER PARA SA MAGIC LINK AT NORMAL LOGIN
+  ============================================ */
+  useEffect(() => {
+    const loadSessionUser = async (supaSession: any) => {
+      if (!supaSession?.user) {
+        setSession(null);
+        return;
+      }
+
+      // Kunin ang profile details sa database
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', supaSession.user.id)
+        .single();
+
+      if (profile) {
+        const sessionUser: SessionUser = {
+          id: profile.id,
+          name: profile.name,
+          email: profile.email,
+          role: profile.role,
+          idNumber: profile.student_id,
+          organization: profile.organization,
+          course: profile.course_strand,
+          yearLevel: profile.year_level,
+          dateOfBirth: profile.date_of_birth,
+        };
+        
+        setSession(sessionUser);
+        writeStorage(STORAGE_KEYS.session, sessionUser);
+        
+        if (sessionUser.course) localStorage.setItem('sjc-course', sessionUser.course);
+        if (sessionUser.yearLevel) localStorage.setItem('sjc-year-level', sessionUser.yearLevel);
+        if (sessionUser.dateOfBirth) localStorage.setItem('sjc-dob', sessionUser.dateOfBirth);
+      } else {
+        // Fallback kung walang profile record
+        setSession({
+          id: supaSession.user.id,
+          name: supaSession.user.user_metadata?.name || 'Student',
+          email: supaSession.user.email || '',
+          role: 'Student',
+          idNumber: '',
+          organization: '',
+          course: '',
+          yearLevel: '',
+          dateOfBirth: '',
+        });
+      }
+    };
+
+    // 1. Check agad kung may existing session sa localStorage
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      if (currentSession) {
+        void loadSessionUser(currentSession);
+      }
+    });
+
+    // 2. Makinig sa mga pagbabago (TULAD NG MAGIC LINK)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, supaSession) => {
+        console.log('[Store] Auth Event:', event);
+        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+          if (supaSession) await loadSessionUser(supaSession);
+        } else if (event === 'SIGNED_OUT') {
+          setSession(null);
+          setCartState([]);
+        }
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     if (loginLockUntil) {
@@ -376,17 +445,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     writeStorage(STORAGE_KEYS.session, user);
     setSession(user);
 
-    // 🚨 I-SAVE ANG COURSE, YEAR LEVEL, AT DOB SA LOCAL STORAGE
     const userAny = user as any;
-    if (userAny.course) {
-      localStorage.setItem('sjc-course', userAny.course);
-    }
-    if (userAny.yearLevel) {
-      localStorage.setItem('sjc-year-level', userAny.yearLevel);
-    }
-    if (userAny.dateOfBirth) {
-      localStorage.setItem('sjc-dob', userAny.dateOfBirth);
-    }
+    if (userAny.course) localStorage.setItem('sjc-course', userAny.course);
+    if (userAny.yearLevel) localStorage.setItem('sjc-year-level', userAny.yearLevel);
+    if (userAny.dateOfBirth) localStorage.setItem('sjc-dob', userAny.dateOfBirth);
 
     const savedCart = readStorage<CartItem[]>(STORAGE_KEYS.cart, []);
     if (savedCart.length > 0) setCartState(savedCart);
@@ -398,6 +460,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('sjc-course');
     localStorage.removeItem('sjc-year-level');
     localStorage.removeItem('sjc-dob');
+    sessionStorage.removeItem('sjc_test_admin');
+    sessionStorage.removeItem('sjc_impersonating');
+    sessionStorage.removeItem('sjc_magic_link_auth');
 
     setSession(null);
     setCartState([]);
@@ -722,7 +787,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
 /* ============================================
    HOOKS
-   ============================================ */
+============================================ */
 
 export function useApp(): AppContextValue {
   const context = useContext(AppContext);
@@ -742,7 +807,7 @@ export function useOrders(): Order[] {
 
 /* ============================================
    MAPPERS
-   ============================================ */
+============================================ */
 
 function mapProductRow(row: any): Product {
   return {

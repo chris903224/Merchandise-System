@@ -56,9 +56,6 @@ const sideNavItems = [
   { to: '/settings', label: 'Settings', icon: Shield },
 ];
 
-/* ============================================
-   ORDER CARD
-============================================ */
 function OrderCard({
   order,
   products,
@@ -174,68 +171,69 @@ function OrderCard({
   );
 }
 
-/* ============================================
-   DASHBOARD PAGE
-============================================ */
 export default function DashboardPage() {
-  const { session } = useApp();
-  const toast = useToast();
   const navigate = useNavigate();
+  const toast = useToast();
+
+  // ✅ TOTOONG SESSION LANG ANG GAGAMITIN
+  const { session, isLoading } = useApp();
+
+  // 🚨 CHECK KUNG NAKA-IMPERSONATE O ADMIN ANG NAKA-LOGIN (para sa logic lang, hindi sa UI)
+  const isImpersonating = sessionStorage.getItem('sjc_impersonating') === 'true';
+  const isMagicLinkAuth = sessionStorage.getItem('sjc_magic_link_auth') === 'true';
+  const isAdmin = sessionStorage.getItem('sjc_test_admin') === 'true';
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoadingOrders, setIsLoadingOrders] = useState(true);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
 
-  /* ✅ GATE — check kung may unverified order */
   const [isCheckingVerification, setIsCheckingVerification] = useState(true);
   const [hasPendingVerification, setHasPendingVerification] = useState(false);
 
-  /* ✅ BANNER — galing sa Supabase notifications */
   const [pickupNotification, setPickupNotification] =
     useState<Notification | null>(null);
 
-  /* ============================================
-     ✅ GATE 1: CHECK VERIFICATION BEFORE RENDER
-     Kung may unverified order → redirect sa /verify-email
-  ============================================ */
+  /* CHECK VERIFICATION */
   useEffect(() => {
-    if (!session) {
+    if (!session && !isAdmin) {
       setIsCheckingVerification(false);
       return;
     }
 
-    /* ✅ Get last order ID from sessionStorage */
-    const lastOrderId = sessionStorage.getItem('lastOrderId');
-    const pendingOrderId = sessionStorage.getItem('pendingOrderId');
-    const checkOrderId = lastOrderId || pendingOrderId;
-
-    if (!checkOrderId) {
-      /* Walang pending order — OK lang pumasok */
+    // 🚨 KUNG NAKA-IMPERSONATE O ADMIN, LAKTAWAN ANG VERIFICATION GATE
+    if (isImpersonating || isAdmin) {
       setIsCheckingVerification(false);
       setHasPendingVerification(false);
       return;
     }
 
-    /* ✅ Check kung naka-verify na */
+    const lastOrderId = sessionStorage.getItem('lastOrderId');
+    const pendingOrderId = sessionStorage.getItem('pendingOrderId');
+    const checkOrderId = lastOrderId || pendingOrderId;
+
+    if (!checkOrderId) {
+      setIsCheckingVerification(false);
+      setHasPendingVerification(false);
+      return;
+    }
+
     const isVerified = sessionStorage.getItem(`order_verified_${checkOrderId}`) === 'true';
 
     if (!isVerified) {
-      /* ❌ Hindi naka-verify — hindi papasukin */
-      console.log('[Dashboard] Order not verified, redirecting to verify-email');
       setHasPendingVerification(true);
       setIsCheckingVerification(false);
       return;
     }
 
-    /* ✅ Verified — OK lang pumasok */
     setHasPendingVerification(false);
     setIsCheckingVerification(false);
-  }, [session]);
+  }, [session, isImpersonating, isAdmin]);
 
-  /* Redirect kapag walang session */
+  /* REDIRECT KUNG WALANG SESSION */
   useEffect(() => {
-    if (!session) {
+    // 🚨 HUWAG I-REDIRECT KUNG NAKA-IMPERSONATE, ADMIN, O NAGHIHINTAY PA SA MAGIC LINK
+    if (!session && !isLoading && !isImpersonating && !isMagicLinkAuth && !isAdmin) {
       toast('Please sign in to view your dashboard.', 'warning');
       const timer = window.setTimeout(
         () => navigate('/login', { replace: true }),
@@ -243,9 +241,9 @@ export default function DashboardPage() {
       );
       return () => window.clearTimeout(timer);
     }
-  }, [session, navigate, toast]);
+  }, [session, isLoading, navigate, toast, isImpersonating, isMagicLinkAuth, isAdmin]);
 
-  /* Fetch orders + products — ONLY if verified */
+  /* FETCH TOTOONG DATA */
   useEffect(() => {
     if (!session || hasPendingVerification) {
       setOrders([]);
@@ -259,7 +257,7 @@ export default function DashboardPage() {
       setIsLoadingOrders(true);
 
       const [ordersData, productsData] = await Promise.all([
-        fetchOrders(session.id),
+        fetchOrders(session.id), // ✅ TOTOONG ID NA ITO
         import('../services/products').then((m) => m.fetchProducts()),
       ]);
 
@@ -277,7 +275,7 @@ export default function DashboardPage() {
     };
   }, [session, hasPendingVerification]);
 
-  /* ✅ BANNER — fetch latest unread pickup notification */
+  /* FETCH PICKUP NOTIFICATION */
   useEffect(() => {
     if (!session?.id || hasPendingVerification) {
       setPickupNotification(null);
@@ -364,7 +362,6 @@ export default function DashboardPage() {
 
   const handleDismissBanner = async () => {
     if (!pickupNotification) return;
-
     setPickupNotification(null);
 
     try {
@@ -375,10 +372,8 @@ export default function DashboardPage() {
     }
   };
 
-  /* ============================================
-     ✅ LOADING STATE — Habang Nag-Check
-  ============================================ */
-  if (isCheckingVerification) {
+  // 🚨 KUNG HINDI ALLOWED (WALANG SESSION AT HINDI ADMIN), SHOW LOADING
+  if (isCheckingVerification || isLoading || ((isImpersonating || isMagicLinkAuth) && !session)) {
     return (
       <div className="dashboard-shell">
         <div className="dashboard-main">
@@ -386,6 +381,19 @@ export default function DashboardPage() {
             <Clock3 className="react-icon animate-spin" aria-hidden="true" />
             <p>Loading your dashboard...</p>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 🚨 KUNG ADMIN PERO WALANG SESSION, SHOW READ-ONLY VIEW
+  if (!session && isAdmin) {
+    return (
+      <div className="dashboard-shell">
+        <div className="dashboard-main" style={{ padding: '40px', textAlign: 'center' }}>
+          <h1>Admin View Mode</h1>
+          <p>You are viewing the student dashboard in read-only mode.</p>
+          <button onClick={() => window.location.href = '/admin'}>Back to Admin</button>
         </div>
       </div>
     );
@@ -399,9 +407,6 @@ export default function DashboardPage() {
     );
   }
 
-  /* ============================================
-     ✅ GATE 2: HINDI NAKA-VERIFY — Show Gate Screen
-  ============================================ */
   if (hasPendingVerification) {
     const lastOrderId = sessionStorage.getItem('lastOrderId') || sessionStorage.getItem('pendingOrderId');
     const email = session.email || '';
@@ -467,11 +472,10 @@ export default function DashboardPage() {
     );
   }
 
-  /* ============================================
-     ✅ RENDER — User Is Verified
-  ============================================ */
   return (
     <div className="dashboard-shell">
+      {/* 🚨 DILAW NA BANNER AY TINANGGAL NA PARA MALINIS ANG DESIGN */}
+      
       <aside className="dashboard-sidebar">
         <div className="dashboard-sidebar__top">
           <nav className="dashboard-sidebar__nav">
@@ -482,9 +486,7 @@ export default function DashboardPage() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`dashboard-sidebar__item ${
-                    isActive ? 'is-active' : ''
-                  }`}
+                  className={`dashboard-sidebar__item ${isActive ? 'is-active' : ''}`}
                   data-label={item.label}
                 >
                   <Icon className="react-icon" aria-hidden="true" />
@@ -498,7 +500,6 @@ export default function DashboardPage() {
 
       <div className="dashboard-main">
         <div className="dashboard-scroll">
-          {/* BANNER */}
           {pickupNotification ? (
             <div className="notice-banner" role="status">
               <span className="notice-banner__icon">
@@ -558,9 +559,7 @@ export default function DashboardPage() {
             <select
               className="dashboard-toolbar__select"
               value={statusFilter}
-              onChange={(e) =>
-                setStatusFilter(e.target.value as StatusFilter)
-              }
+              onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
               aria-label="Filter by status"
             >
               <option value="ALL">All statuses</option>
@@ -610,30 +609,12 @@ export default function DashboardPage() {
               {filteredOrders.length > 0 ? (
                 <div className="order-pagination">
                   <span>
-                    Showing 1–{filteredOrders.length} of{' '}
-                    {filteredOrders.length} orders
+                    Showing 1–{filteredOrders.length} of {filteredOrders.length} orders
                   </span>
                   <div className="order-pagination__controls">
-                    <button
-                      type="button"
-                      className="order-pagination__btn"
-                      disabled
-                    >
-                      ‹
-                    </button>
-                    <button
-                      type="button"
-                      className="order-pagination__btn is-active"
-                    >
-                      1
-                    </button>
-                    <button
-                      type="button"
-                      className="order-pagination__btn"
-                      disabled
-                    >
-                      ›
-                    </button>
+                    <button type="button" className="order-pagination__btn" disabled>‹</button>
+                    <button type="button" className="order-pagination__btn is-active">1</button>
+                    <button type="button" className="order-pagination__btn" disabled>›</button>
                   </div>
                 </div>
               ) : null}
@@ -645,46 +626,31 @@ export default function DashboardPage() {
                 <ul className="dashboard-summary__list">
                   <li className="dashboard-summary__item">
                     <span className="dashboard-summary__icon">
-                      <ReceiptText
-                        className="react-icon"
-                        aria-hidden="true"
-                      />
+                      <ReceiptText className="react-icon" aria-hidden="true" />
                     </span>
-                    <span className="dashboard-summary__label">
-                      Total Orders
-                    </span>
-                    <strong className="dashboard-summary__value">
-                      {userOrders.length}
-                    </strong>
+                    <span className="dashboard-summary__label">Total Orders</span>
+                    <strong className="dashboard-summary__value">{userOrders.length}</strong>
                   </li>
                   <li className="dashboard-summary__item">
                     <span className="dashboard-summary__icon dashboard-summary__icon--success">
                       <Package className="react-icon" aria-hidden="true" />
                     </span>
                     <span className="dashboard-summary__label">Completed</span>
-                    <strong className="dashboard-summary__value">
-                      {completedCount}
-                    </strong>
+                    <strong className="dashboard-summary__value">{completedCount}</strong>
                   </li>
                   <li className="dashboard-summary__item">
                     <span className="dashboard-summary__icon dashboard-summary__icon--warning">
                       <Clock3 className="react-icon" aria-hidden="true" />
                     </span>
-                    <span className="dashboard-summary__label">
-                      Processing
-                    </span>
-                    <strong className="dashboard-summary__value">
-                      {pendingCount}
-                    </strong>
+                    <span className="dashboard-summary__label">Processing</span>
+                    <strong className="dashboard-summary__value">{pendingCount}</strong>
                   </li>
                   <li className="dashboard-summary__item">
                     <span className="dashboard-summary__icon dashboard-summary__icon--danger">
                       <X className="react-icon" aria-hidden="true" />
                     </span>
                     <span className="dashboard-summary__label">Cancelled</span>
-                    <strong className="dashboard-summary__value">
-                      {cancelledCount}
-                    </strong>
+                    <strong className="dashboard-summary__value">{cancelledCount}</strong>
                   </li>
                 </ul>
 
